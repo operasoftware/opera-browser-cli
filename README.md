@@ -12,6 +12,14 @@ It wraps [opera-devtools-mcp](https://github.com/operasoftware/opera-devtools-mc
 ## Quick Start
 
 ```sh
+npm install -g opera-browser-cli
+opera-browser-cli setup   # interactive wizard — run in a terminal where you can answer prompts
+opera-browser-cli open https://example.com
+```
+
+Once installed, `open` navigates to a URL and returns a structured snapshot you can act on:
+
+```sh
 $ opera-browser-cli open https://example.com
 page: {title: "Example Domain", url: "https://example.com", refs: 1}
 snapshot:
@@ -28,20 +36,30 @@ snapshot:
 ...
 ```
 
+### Opera Neon AI features
+
+With [Opera Neon](https://www.operaneon.com) and an active Opera account, you get four AI-powered commands:
+
+```sh
+opera-browser-cli chat "summarise this page"       # ask the built-in AI about the current page
+opera-browser-cli invoke-do "book a table for 2"   # let the AI perform a multi-step browsing task
+opera-browser-cli make "a todo app in vanilla JS"  # generate and open a webpage or mini-app
+opera-browser-cli research "solid-state batteries" # in-depth research across multiple sources
+```
+
+Run `opera-browser-cli setup` to connect Neon, or `opera-browser-cli doctor` to check your configuration.
+
 ## Install
 
 Prerequisites: **Node.js >= 20**, **Opera** browser ([Opera Neon](https://www.operaneon.com) recommended for AI features).
 
-### From source
-
-**Build and link `opera-browser-cli`:**
+### npm (recommended)
 
 ```sh
-# in this repo
-npm install && npm run build && npm link
+npm install -g opera-browser-cli
 ```
 
-**Run first-time setup:**
+Run first-time setup — this is an interactive wizard, so run it in a terminal where you can answer prompts:
 
 ```sh
 opera-browser-cli setup
@@ -55,6 +73,15 @@ Verify:
 opera-browser-cli --version
 opera-browser-cli open https://example.com
 ```
+
+### From source
+
+```sh
+# in this repo
+npm install && npm run build && npm link
+```
+
+Then run `opera-browser-cli setup` as above.
 
 ### Usage examples
 
