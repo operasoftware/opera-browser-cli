@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.30](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.29...opera-browser-cli-v0.1.30) (2026-05-08)
+
+
+### Features
+
+* Bundle opera-devtools-mcp as a dependency. ([4932ea8](https://github.com/operasoftware/opera-browser-cli/commit/4932ea898cb92fde1aa3031062a5b2ada9ed3975))
+
+
+### Bug Fixes
+
+* Add setup nudge. ([8f40e44](https://github.com/operasoftware/opera-browser-cli/commit/8f40e446781c1aa2791fad36217c686ac015f9e0))
+* Fix stale version in manifest. ([8be41ff](https://github.com/operasoftware/opera-browser-cli/commit/8be41fff4ea969950d337c6a347516268ffbca41))
+* Updated docs to point to Neon. ([7d47fa0](https://github.com/operasoftware/opera-browser-cli/commit/7d47fa08aee18d008989a6ae981afb496e2ee9d1))
+
 ## [0.1.29](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.28...opera-browser-cli-v0.1.29) (2026-05-05)
 
 
