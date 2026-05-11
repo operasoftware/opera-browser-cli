@@ -350,12 +350,11 @@ export function mapErrorMessage(message: string): CdpError {
       message.includes("not signed in"))
   ) {
     return new CdpError(
-      "Opera Neon: user is not signed in",
+      "Opera: user is not signed in",
       "BROWSER_ERROR",
       [
-        "Open Opera Neon and sign in to your Opera account",
-        "AI commands (chat, invoke-do, make, research) require Opera Neon with an active sign-in",
-        "Run `opera-browser-cli setup` to configure the Opera Neon executable path",
+        "Sign in to your Opera account to use this feature",
+        "Run `opera-browser-cli setup` to configure the executable path",
       ],
     );
   }

@@ -72,8 +72,9 @@ environment:
   Run \`opera-browser-cli setup\` to configure interactively.
 
 opera ai:
-  chat, invoke-do, make, and research require Opera Neon with an active sign-in.
-  Run \`opera-browser-cli setup\` to configure the Opera Neon executable path, or set
+  chat is available on any Opera browser.
+  invoke-do, make, and research require Opera Neon with an active sign-in.
+  Run \`opera-browser-cli setup\` to configure the executable path, or set
   OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
 
 gpu:
@@ -519,10 +520,9 @@ args:
 examples:
   opera-browser-cli heap ./snapshot.heapsnapshot`,
 
-  // Opera AI (requires Opera Neon with an active sign-in)
+  // Opera AI
   chat: `usage: opera-browser-cli chat <prompt>
 Send a chat message to the Opera AI.
-Requires Opera Neon with an active sign-in. Run \`opera-browser-cli setup\` to configure.
 
 args:
   <prompt>  Message to send (required)
@@ -2130,11 +2130,10 @@ function checkAiResultForSignInError(command: string, result: string): void {
       result.includes("not signed in"))
   ) {
     throw new CdpError(
-      "Opera Neon: user is not signed in",
+      "Opera: user is not signed in",
       "BROWSER_ERROR",
       [
-        `Open Opera Neon and sign in to your Opera account, then re-run \`opera-browser-cli ${command}\``,
-        "AI commands (chat, invoke-do, make, research) require an active sign-in",
+        `Re-run \`opera-browser-cli ${command}\` after signing in`,
         "Run `opera-browser-cli doctor` to inspect the current configuration",
       ],
     );
@@ -2153,12 +2152,17 @@ async function callAiTool(
       error instanceof CdpError &&
       /dispatcher was not able to dispatch|no target/i.test(error.message)
     ) {
+      const neonOnly = command !== "chat";
       throw new CdpError(
-        `${command} requires Opera Neon — the connected browser does not support Opera AI`,
+        neonOnly
+          ? `${command} requires Opera Neon — the connected browser does not support Opera AI`
+          : `${command} requires an Opera browser — the connected browser does not support Opera AI`,
         "BROWSER_ERROR",
         [
-          "Install Opera Neon from https://www.operaneon.com",
-          "Run `opera-browser-cli setup` to configure the Opera Neon executable path",
+          neonOnly
+            ? "Install Opera Neon from https://www.operaneon.com"
+            : "Install Opera from https://www.opera.com or Opera Neon from https://www.operaneon.com",
+          `Run \`opera-browser-cli setup\` to configure the${neonOnly ? " Opera Neon" : ""} executable path`,
           "Run `opera-browser-cli doctor` to inspect the current configuration",
         ],
       );
@@ -2174,7 +2178,6 @@ async function handleChat(args: string[]): Promise<string> {
       'Run `opera-browser-cli chat "What is on this page?"` to chat with Opera AI',
     ]);
   }
-  requireNeon("chat");
   const result = await callAiTool("chat", "opera_chat", { prompt });
   checkAiResultForSignInError("chat", result);
   return formatMcpResult("result", result, []);

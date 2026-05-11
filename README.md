@@ -36,18 +36,23 @@ snapshot:
 ...
 ```
 
-### Opera Neon AI features
+### Opera AI features
 
-With [Opera Neon](https://www.operaneon.com) and an active Opera account, you get four AI-powered commands:
+With any Opera browser, you can use the built-in AI chat:
 
 ```sh
 opera-browser-cli chat "summarise this page"       # ask the built-in AI about the current page
+```
+
+[Opera Neon](https://www.operaneon.com) additionally unlocks three advanced AI commands:
+
+```sh
 opera-browser-cli invoke-do "book a table for 2"   # let the AI perform a multi-step browsing task
 opera-browser-cli make "a todo app in vanilla JS"  # generate and open a webpage or mini-app
 opera-browser-cli research "solid-state batteries" # in-depth research across multiple sources
 ```
 
-Run `opera-browser-cli setup` to connect Neon, or `opera-browser-cli doctor` to check your configuration.
+Run `opera-browser-cli setup` to get started, or `opera-browser-cli doctor` to check your configuration.
 
 ## Install
 
@@ -199,14 +204,12 @@ opera-browser-cli eval "(() => { const rows = [...document.querySelectorAll('tr'
 
 ### Opera AI
 
-Requires Opera Neon with an active Opera account.
-
-| Command             | Description                                   |
-| ------------------- | --------------------------------------------- |
-| `chat <prompt>`     | Send a chat message to Opera's built-in AI    |
-| `invoke-do <prompt>`| Ask the AI to perform a complex browsing task |
-| `make <prompt>`     | Ask the AI to build a webpage or app          |
-| `research <prompt>` | Ask the AI to research a topic in depth       |
+| Command             | Description                                   | Requires       |
+| ------------------- | --------------------------------------------- | -------------- |
+| `chat <prompt>`     | Send a chat message to Opera's built-in AI    | Any Opera           |
+| `invoke-do <prompt>`| Ask the AI to perform a complex browsing task | Opera Neon     |
+| `make <prompt>`     | Ask the AI to build a webpage or app          | Opera Neon     |
+| `research <prompt>` | Ask the AI to research a topic in depth       | Opera Neon     |
 
 `research` accepts `--type local` (default), `--type one-minute`, or `--type deep`.
 
