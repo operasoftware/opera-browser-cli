@@ -13,6 +13,7 @@ import {
   getConfigFile,
   getLogFile,
   getSessionSnapshotIfRunning,
+  getLastSnapshot,
   loadConfig,
   parseConfigValue,
   stopBridge,
@@ -23,6 +24,9 @@ import {
   extractTitle,
   truncateSnapshot,
   truncateText,
+  compactSnapshot,
+  applyUrlLut,
+  resolveUrl,
 } from "./snapshot.js";
 import { getSuggestions } from "./suggestions.js";
 
@@ -90,7 +94,7 @@ tips:
 `;
 
 const COMMAND_HELP: Record<string, string> = {
-  open: `usage: opera-browser-cli open <url> [--full]
+  open: `usage: opera-browser-cli open <url> [--full] [--raw]
 Navigate to a URL and capture an accessibility snapshot.
 
 args:
@@ -98,6 +102,7 @@ args:
 
 flags:
   --full  Show complete snapshot without truncation
+  --raw   Show unprocessed MCP output (disables compact format)
 
 examples:
   opera-browser-cli open https://example.com
@@ -119,15 +124,31 @@ examples:
   opera-browser-cli screenshot ./element.png --uid @3
   opera-browser-cli screenshot ./full.png --full-page --format jpeg`,
 
-  snapshot: `usage: opera-browser-cli snapshot [--full]
+  snapshot: `usage: opera-browser-cli snapshot [--full] [--raw]
 Capture the current page accessibility snapshot.
 
 flags:
   --full  Show complete snapshot without truncation
+  --raw   Show unprocessed MCP output (disables compact format)
 
 examples:
   opera-browser-cli snapshot
-  opera-browser-cli snapshot --full`,
+  opera-browser-cli snapshot --full
+  opera-browser-cli snapshot --raw`,
+
+  url: `usage: opera-browser-cli url <$uN | @ref>
+Resolve a URL token or element ref from the last snapshot.
+
+args:
+  $uN   URL token printed in the snapshot's urls: trailer (e.g. $u3)
+  @ref  Element ref from the snapshot (e.g. @11.57)
+
+Tokens ($uN) are scoped to the last snapshot. If no snapshot is cached
+the bridge takes a fresh one automatically.
+
+examples:
+  opera-browser-cli url \\$u3
+  opera-browser-cli url @11.57`,
 
   click: `usage: opera-browser-cli click @<uid> [--full]
 Click an interactive element by its ref from the snapshot.
@@ -892,10 +913,11 @@ function readPackageVersion(): string {
   throw new Error("Could not determine opera-browser-cli package version");
 }
 
-function splitFullFlag(args: string[]): { args: string[]; full: boolean } {
+function splitFullFlag(args: string[]): { args: string[]; full: boolean; raw: boolean } {
   return {
-    args: args.filter((arg) => arg !== "--full"),
+    args: args.filter((arg) => arg !== "--full" && arg !== "--raw"),
     full: args.includes("--full"),
+    raw: args.includes("--raw"),
   };
 }
 
@@ -976,15 +998,18 @@ function parseSnapshotFromResponse(response: string): string | null {
     : trimmed.slice(0, nextHeading).trimEnd();
 }
 
-/** Format page metadata (TOON) + raw snapshot + suggestions. */
+/** Format page metadata (TOON) + snapshot + suggestions. */
 function formatPageOutput(
   snapshot: string,
   command: string,
   url?: string,
   full = false,
+  raw = false,
 ): string {
-  const title = extractTitle(snapshot);
-  const refs = countRefs(snapshot);
+  const tree = raw ? snapshot : compactSnapshot(snapshot);
+
+  const title = extractTitle(tree);
+  const refs = countRefs(tree);
 
   const blocks: string[] = [];
 
@@ -995,16 +1020,19 @@ function formatPageOutput(
   page.refs = refs;
   blocks.push(encode({ page }));
 
-  // Truncate snapshot
-  const tr = truncateSnapshot(snapshot, full);
-  let snapshotBlock = `snapshot:\n${tr.text.trimEnd()}`;
+  // Truncate snapshot, then apply URL LUT to the visible portion only.
+  // LUT runs after truncation so the trailer lists only URLs the agent can see.
+  const tr = truncateSnapshot(tree, full, raw ? 16000 : 12000);
+  const { body, trailer } = raw ? { body: tr.text, trailer: "" } : applyUrlLut(tr.text);
+  let snapshotBlock = `snapshot:\n${body.trimEnd()}`;
+  if (trailer) snapshotBlock += `\n${trailer}`;
   if (tr.truncated) {
     snapshotBlock += `\n    ... (truncated, ${tr.totalLength} chars total)`;
   }
   blocks.push(snapshotBlock);
 
   // Contextual suggestions
-  const suggestions = getSuggestions({ command, url, snapshot });
+  const suggestions = getSuggestions({ command, url, snapshot: tree });
   if (tr.truncated) {
     suggestions.push(
       `Run \`opera-browser-cli ${command}${url ? " " + url : ""} --full\` to see complete snapshot`,
@@ -1027,9 +1055,9 @@ function stripSnapshotHeader(text: string): string {
   return text.replace(/^[\s\S]*?##\s+Latest page snapshot\s*\n/, "");
 }
 
-/** Strip leading @ from uid ref. */
+/** Strip leading @ and normalise dot-form refs to underscore form for MCP ("@2.4" → "2_4"). */
 function parseUid(arg: string): string {
-  return arg.startsWith("@") ? arg.slice(1) : arg;
+  return arg.replace(/^@/, "").replace(/\./g, "_");
 }
 
 function isRecoverableOpenError(error: unknown): error is CdpError {
@@ -1062,7 +1090,7 @@ const SCROLL_FUNCTIONS: Record<string, string> = {
   bottom: "window.scrollTo(0, document.body.scrollHeight)",
 };
 
-async function handleOpen(args: string[], full: boolean): Promise<string> {
+async function handleOpen(args: string[], full: boolean, raw = false): Promise<string> {
   const url = args[0];
   if (!url) {
     throw new CdpError("Missing URL", "VALIDATION_ERROR", [
@@ -1079,12 +1107,12 @@ async function handleOpen(args: string[], full: boolean): Promise<string> {
     await callTool("new_page", { url });
   }
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "open", url, full);
+  return formatPageOutput(snapshot, "open", url, full, raw);
 }
 
-async function handleSnapshot(full: boolean): Promise<string> {
+async function handleSnapshot(full: boolean, raw = false): Promise<string> {
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "snapshot", undefined, full);
+  return formatPageOutput(snapshot, "snapshot", undefined, full, raw);
 }
 
 async function handleScreenshot(args: string[]): Promise<string> {
@@ -1120,7 +1148,7 @@ async function handleScreenshot(args: string[]): Promise<string> {
   return formatScreenshotOutput(parsed.filePath);
 }
 
-async function handleClick(args: string[], full: boolean): Promise<string> {
+async function handleClick(args: string[], full: boolean, raw = false): Promise<string> {
   const uid = args[0];
   if (!uid) {
     throw new CdpError("Missing element ref", "VALIDATION_ERROR", [
@@ -1129,10 +1157,10 @@ async function handleClick(args: string[], full: boolean): Promise<string> {
   }
 
   const snapshot = await callWithSnapshot("click", { uid: parseUid(uid) });
-  return formatPageOutput(snapshot, "click", undefined, full);
+  return formatPageOutput(snapshot, "click", undefined, full, raw);
 }
 
-async function handleFill(args: string[], full: boolean): Promise<string> {
+async function handleFill(args: string[], full: boolean, raw = false): Promise<string> {
   const uid = args[0];
   const value = args.slice(1).join(" ");
   if (!uid) {
@@ -1150,10 +1178,10 @@ async function handleFill(args: string[], full: boolean): Promise<string> {
     uid: parseUid(uid),
     value,
   });
-  return formatPageOutput(snapshot, "fill", undefined, full);
+  return formatPageOutput(snapshot, "fill", undefined, full, raw);
 }
 
-async function handlePress(args: string[], full: boolean): Promise<string> {
+async function handlePress(args: string[], full: boolean, raw = false): Promise<string> {
   const key = args[0];
   if (!key) {
     throw new CdpError("Missing key name", "VALIDATION_ERROR", [
@@ -1162,10 +1190,10 @@ async function handlePress(args: string[], full: boolean): Promise<string> {
   }
 
   const snapshot = await callWithSnapshot("press_key", { key });
-  return formatPageOutput(snapshot, "press", undefined, full);
+  return formatPageOutput(snapshot, "press", undefined, full, raw);
 }
 
-async function handleType(args: string[], full: boolean): Promise<string> {
+async function handleType(args: string[], full: boolean, raw = false): Promise<string> {
   const text = args.join(" ");
   if (!text) {
     throw new CdpError("Missing text", "VALIDATION_ERROR", [
@@ -1175,10 +1203,10 @@ async function handleType(args: string[], full: boolean): Promise<string> {
 
   await callTool("type_text", { text });
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "type", undefined, full);
+  return formatPageOutput(snapshot, "type", undefined, full, raw);
 }
 
-async function handleScroll(args: string[], full: boolean): Promise<string> {
+async function handleScroll(args: string[], full: boolean, raw = false): Promise<string> {
   const dir = (args[0] ?? "down").toLowerCase();
   const fn = SCROLL_FUNCTIONS[dir];
   if (!fn) {
@@ -1189,13 +1217,13 @@ async function handleScroll(args: string[], full: boolean): Promise<string> {
 
   await callTool("evaluate_script", { function: fn });
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "scroll", undefined, full);
+  return formatPageOutput(snapshot, "scroll", undefined, full, raw);
 }
 
-async function handleBack(full: boolean): Promise<string> {
+async function handleBack(full: boolean, raw = false): Promise<string> {
   await callTool("navigate_page", { type: "back" });
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "back", undefined, full);
+  return formatPageOutput(snapshot, "back", undefined, full, raw);
 }
 
 async function handleWait(args: string[]): Promise<string> {
@@ -1317,7 +1345,7 @@ async function handlePages(): Promise<string> {
   return renderOutput(blocks);
 }
 
-async function handleNewPage(args: string[], full: boolean): Promise<string> {
+async function handleNewPage(args: string[], full: boolean, raw = false): Promise<string> {
   const url = args.filter((a) => !a.startsWith("--"))[0];
   if (!url) {
     throw new CdpError("Missing URL", "VALIDATION_ERROR", [
@@ -1329,12 +1357,13 @@ async function handleNewPage(args: string[], full: boolean): Promise<string> {
   if (background) toolArgs.background = true;
   await callTool("new_page", toolArgs);
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "newpage", url, full);
+  return formatPageOutput(snapshot, "newpage", url, full, raw);
 }
 
 async function handleSelectPage(
   args: string[],
   full: boolean,
+  raw = false,
 ): Promise<string> {
   const id = args[0];
   if (!id) {
@@ -1350,7 +1379,7 @@ async function handleSelectPage(
   }
   await callTool("select_page", { pageId });
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "selectpage", undefined, full);
+  return formatPageOutput(snapshot, "selectpage", undefined, full, raw);
 }
 
 async function handleClosePage(args: string[]): Promise<string> {
@@ -1412,7 +1441,7 @@ async function handleResize(args: string[]): Promise<string> {
 
 // --- Interaction handlers ---
 
-async function handleHover(args: string[], full: boolean): Promise<string> {
+async function handleHover(args: string[], full: boolean, raw = false): Promise<string> {
   const uid = args[0];
   if (!uid) {
     throw new CdpError("Missing element ref", "VALIDATION_ERROR", [
@@ -1420,10 +1449,10 @@ async function handleHover(args: string[], full: boolean): Promise<string> {
     ]);
   }
   const snapshot = await callWithSnapshot("hover", { uid: parseUid(uid) });
-  return formatPageOutput(snapshot, "hover", undefined, full);
+  return formatPageOutput(snapshot, "hover", undefined, full, raw);
 }
 
-async function handleDrag(args: string[], full: boolean): Promise<string> {
+async function handleDrag(args: string[], full: boolean, raw = false): Promise<string> {
   const from = args[0];
   const to = args[1];
   if (!from || !to) {
@@ -1435,10 +1464,10 @@ async function handleDrag(args: string[], full: boolean): Promise<string> {
     from_uid: parseUid(from),
     to_uid: parseUid(to),
   });
-  return formatPageOutput(snapshot, "drag", undefined, full);
+  return formatPageOutput(snapshot, "drag", undefined, full, raw);
 }
 
-async function handleFillForm(args: string[], full: boolean): Promise<string> {
+async function handleFillForm(args: string[], full: boolean, raw = false): Promise<string> {
   const { entries } = parseFillFormArgs(args);
   if (entries.length === 0) {
     throw new CdpError("No valid field entries", "VALIDATION_ERROR", [
@@ -1446,7 +1475,7 @@ async function handleFillForm(args: string[], full: boolean): Promise<string> {
     ]);
   }
   const snapshot = await callWithSnapshot("fill_form", { elements: entries });
-  return formatPageOutput(snapshot, "fillform", undefined, full);
+  return formatPageOutput(snapshot, "fillform", undefined, full, raw);
 }
 
 async function handleDialog(args: string[]): Promise<string> {
@@ -1463,7 +1492,7 @@ async function handleDialog(args: string[]): Promise<string> {
   return encode({ dialog: action });
 }
 
-async function handleUpload(args: string[], full: boolean): Promise<string> {
+async function handleUpload(args: string[], full: boolean, raw = false): Promise<string> {
   const uid = args[0];
   const filePath = args[1];
   if (!uid) {
@@ -1480,7 +1509,7 @@ async function handleUpload(args: string[], full: boolean): Promise<string> {
     uid: parseUid(uid),
     filePath,
   });
-  return formatPageOutput(snapshot, "upload", undefined, full);
+  return formatPageOutput(snapshot, "upload", undefined, full, raw);
 }
 
 // --- Emulation handler ---
@@ -2285,7 +2314,7 @@ async function handleHome(_full: boolean): Promise<string> {
       renderHelp(help),
     ]);
   }
-  const snapshot = stripSnapshotHeader(result);
+  const snapshot = compactSnapshot(stripSnapshotHeader(result));
   const title = extractTitle(snapshot);
   const refs = countRefs(snapshot);
   const page: Record<string, unknown> = {};
@@ -2299,14 +2328,48 @@ async function handleHome(_full: boolean): Promise<string> {
   return renderOutput([encode({ page }), renderHelp(help)]);
 }
 
+async function handleUrl(args: string[]): Promise<string> {
+  const target = args[0];
+  if (!target) {
+    throw new CdpError("Missing argument", "VALIDATION_ERROR", [
+      "Run `opera-browser-cli url \\$u3` to resolve a URL token",
+      "Run `opera-browser-cli url @11.57` to resolve an element ref",
+    ]);
+  }
+
+  // Prefer the bridge's cached snapshot to avoid an extra MCP round-trip.
+  // Fall back to a fresh snapshot if the cache is cold.
+  let raw: string;
+  const cached = await getLastSnapshot();
+  if (cached) {
+    raw = cached.raw;
+  } else {
+    await ensureBridge();
+    raw = stripSnapshotHeader(await callTool("take_snapshot"));
+  }
+
+  // Re-derive the full (non-truncated) URL map so tokens match what the agent
+  // saw, regardless of the truncation applied to the original output.
+  const compact = compactSnapshot(raw);
+  const { body, urlMap } = applyUrlLut(compact);
+
+  const resolved = resolveUrl(body, urlMap, target);
+  if (resolved === null) {
+    process.stderr.write(`url: "${target}" not found in last snapshot\n`);
+    process.exitCode = 1;
+    return "";
+  }
+  return resolved;
+}
+
 type CommandFn = (args: string[]) => Promise<string>;
 
 function withFullFlag(
-  handler: (args: string[], full: boolean) => Promise<string>,
+  handler: (args: string[], full: boolean, raw?: boolean) => Promise<string>,
 ): CommandFn {
   return (args) => {
     const parsed = splitFullFlag(args);
-    return handler(parsed.args, parsed.full);
+    return handler(parsed.args, parsed.full, parsed.raw);
   };
 }
 
@@ -2318,14 +2381,15 @@ function withoutFullFlag(
 
 const COMMANDS: Record<string, CommandFn> = {
   open: withFullFlag(handleOpen),
-  snapshot: async (args) => handleSnapshot(splitFullFlag(args).full),
+  snapshot: async (args) => { const f = splitFullFlag(args); return handleSnapshot(f.full, f.raw); },
+  url: withoutFullFlag(handleUrl),
   screenshot: withoutFullFlag(handleScreenshot),
   click: withFullFlag(handleClick),
   fill: withFullFlag(handleFill),
   type: withFullFlag(handleType),
   press: withFullFlag(handlePress),
   scroll: withFullFlag(handleScroll),
-  back: async (args) => handleBack(splitFullFlag(args).full),
+  back: async (args) => { const f = splitFullFlag(args); return handleBack(f.full, f.raw); },
   wait: withoutFullFlag(handleWait),
   eval: withFullFlag(handleEval),
   run: async () => handleRun(),
