@@ -6,10 +6,12 @@ import {
   buildTransportArgs,
   extractToolText,
   getErrorMessage,
+  getLastSnapshotCache,
   handleBridgeRequest,
   isBridgeClientConnected,
   parseBridgeCallPayload,
   resolveBridgeScript,
+  resetLastSnapshotCache,
   wrapTransportForIdCapture,
   type BridgeClient,
 } from "../src/bridge.js";
@@ -383,5 +385,101 @@ describe("handleBridgeRequest streaming", () => {
 
     expect(JSON.parse(mockA.endPayload)).toEqual({ result: "result-A" });
     expect(JSON.parse(mockB.endPayload)).toEqual({ result: "result-B" });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Snapshot cache — lastSnapshot state + /last-snapshot endpoint
+// ---------------------------------------------------------------------------
+
+describe("snapshot cache", () => {
+  beforeEach(() => resetLastSnapshotCache());
+
+  const snapshotClient: BridgeClient = {
+    listTools: async () => ({ tools: [] }),
+    callTool: async () => ({
+      content: [{ type: "text", text: 'uid=1_0 RootWebArea "Page" url="https://example.com/"\n  link "Home"' }],
+    }),
+    close: async () => {},
+  };
+
+  it("cache is empty before any snapshot call", () => {
+    expect(getLastSnapshotCache()).toBeNull();
+  });
+
+  it("GET /last-snapshot returns 404 when cache is cold", async () => {
+    const req = makeMockRequest("GET", "/last-snapshot");
+    const mock = makeMockResponse();
+    await handleBridgeRequest(snapshotClient, req, mock.res);
+    expect(mock.res.statusCode).toBe(404);
+    expect(JSON.parse(mock.endPayload)).toHaveProperty("error");
+  });
+
+  it("take_snapshot call populates the cache", async () => {
+    const req = makeMockRequest("POST", "/call", JSON.stringify({ name: "take_snapshot", args: {} }));
+    const mock = makeMockResponse();
+    await handleBridgeRequest(snapshotClient, req, mock.res);
+
+    const cached = getLastSnapshotCache();
+    expect(cached).not.toBeNull();
+    expect(cached!.raw).toContain('RootWebArea "Page"');
+    expect(cached!.pageUrl).toBe("https://example.com");
+    expect(cached!.capturedAt).toBeGreaterThan(0);
+  });
+
+  it("GET /last-snapshot returns 200 with cached data after a snapshot", async () => {
+    // Populate cache
+    const postReq = makeMockRequest("POST", "/call", JSON.stringify({ name: "take_snapshot", args: {} }));
+    await handleBridgeRequest(snapshotClient, postReq, makeMockResponse().res);
+
+    // Now fetch it
+    const getReq = makeMockRequest("GET", "/last-snapshot");
+    const mock = makeMockResponse();
+    await handleBridgeRequest(snapshotClient, getReq, mock.res);
+
+    expect(mock.res.statusCode).toBe(200);
+    const data = JSON.parse(mock.endPayload);
+    expect(data.raw).toContain("RootWebArea");
+    expect(data.pageUrl).toBe("https://example.com");
+    expect(typeof data.capturedAt).toBe("number");
+  });
+
+  it("a non-snapshot tool call does not overwrite the cache", async () => {
+    // Populate with snapshot
+    const snapReq = makeMockRequest("POST", "/call", JSON.stringify({ name: "take_snapshot", args: {} }));
+    await handleBridgeRequest(snapshotClient, snapReq, makeMockResponse().res);
+    const first = getLastSnapshotCache()!.raw;
+
+    // Call a different tool
+    const clickClient: BridgeClient = {
+      listTools: async () => ({ tools: [] }),
+      callTool: async () => ({ content: [{ type: "text", text: "clicked" }] }),
+      close: async () => {},
+    };
+    const clickReq = makeMockRequest("POST", "/call", JSON.stringify({ name: "click", args: { uid: "1_1" } }));
+    await handleBridgeRequest(clickClient, clickReq, makeMockResponse().res);
+
+    expect(getLastSnapshotCache()!.raw).toBe(first);
+  });
+
+  it("second take_snapshot overwrites the cache (last write wins)", async () => {
+    let callCount = 0;
+    const twoSnapshotClient: BridgeClient = {
+      listTools: async () => ({ tools: [] }),
+      callTool: async () => {
+        callCount++;
+        return {
+          content: [{ type: "text", text: `RootWebArea "Page ${callCount}"` }],
+        };
+      },
+      close: async () => {},
+    };
+
+    const req1 = makeMockRequest("POST", "/call", JSON.stringify({ name: "take_snapshot", args: {} }));
+    const req2 = makeMockRequest("POST", "/call", JSON.stringify({ name: "take_snapshot", args: {} }));
+    await handleBridgeRequest(twoSnapshotClient, req1, makeMockResponse().res);
+    await handleBridgeRequest(twoSnapshotClient, req2, makeMockResponse().res);
+
+    expect(getLastSnapshotCache()!.raw).toContain("Page 2");
   });
 });

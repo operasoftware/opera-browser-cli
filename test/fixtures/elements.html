@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Element Snapshot Test</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    section { margin-bottom: 2rem; border: 1px solid #ccc; padding: 1rem; border-radius: 4px; }
+    h2 { margin-top: 0; }
+    fieldset { margin-bottom: 1rem; }
+    details { margin-bottom: 0.5rem; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { border: 1px solid #ccc; padding: 0.4rem 0.8rem; }
+    dialog { padding: 1.5rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<h1>Element Snapshot Test Page</h1>
+
+<!-- BUTTONS -->
+<section aria-label="Buttons">
+  <h2>Buttons</h2>
+  <button type="button">Default button</button>
+  <button type="submit">Submit button</button>
+  <button type="button" disabled>Disabled button</button>
+  <button type="button" aria-pressed="false">Toggle button</button>
+  <button type="button" aria-expanded="false" aria-controls="dropdown-menu">Dropdown trigger</button>
+  <ul id="dropdown-menu" hidden role="menu">
+    <li role="menuitem">Option A</li>
+    <li role="menuitem">Option B</li>
+    <li role="menuitem">Option C</li>
+  </ul>
+</section>
+
+<!-- LINKS -->
+<section aria-label="Links">
+  <h2>Links</h2>
+  <a href="https://example.com">External link</a>
+  <a href="/internal">Internal link</a>
+  <a href="mailto:test@example.com">Email link</a>
+  <a href="#anchor">Anchor link</a>
+</section>
+
+<!-- TEXT INPUTS -->
+<section aria-label="Text Inputs">
+  <h2>Text Inputs</h2>
+  <form>
+    <fieldset>
+      <legend>Basic inputs</legend>
+      <label>Text: <input type="text" name="text" placeholder="Enter text" /></label><br>
+      <label>Email: <input type="email" name="email" placeholder="user@example.com" /></label><br>
+      <label>Password: <input type="password" name="password" /></label><br>
+      <label>Number: <input type="number" name="qty" min="0" max="99" value="1" /></label><br>
+      <label>Tel: <input type="tel" name="phone" placeholder="+1 555 000" /></label><br>
+      <label>URL: <input type="url" name="website" placeholder="https://" /></label><br>
+      <label>Search: <input type="search" name="q" placeholder="Search..." /></label><br>
+      <label>Date: <input type="date" name="dob" /></label><br>
+      <label>Time: <input type="time" name="appt" /></label><br>
+      <label>Color: <input type="color" name="color" value="#ff6600" /></label><br>
+      <label>Range: <input type="range" name="volume" min="0" max="100" value="50" /></label><br>
+      <label>File: <input type="file" name="upload" /></label><br>
+      <label>Hidden: <input type="hidden" name="token" value="abc123" /></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Textarea</legend>
+      <label>Message:
+        <textarea name="message" rows="4" cols="40" placeholder="Write something..."></textarea>
+      </label>
+    </fieldset>
+  </form>
+</section>
+
+<!-- CHECKBOXES & RADIOS -->
+<section aria-label="Checkboxes and Radios">
+  <h2>Checkboxes &amp; Radios</h2>
+  <form>
+    <fieldset>
+      <legend>Checkboxes</legend>
+      <label><input type="checkbox" name="opt" value="a" checked> Option A (checked)</label><br>
+      <label><input type="checkbox" name="opt" value="b"> Option B</label><br>
+      <label><input type="checkbox" name="opt" value="c" disabled> Option C (disabled)</label><br>
+      <label><input type="checkbox" name="opt" value="d" indeterminate> Option D (indeterminate)</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Radio buttons</legend>
+      <label><input type="radio" name="plan" value="free" checked> Free</label><br>
+      <label><input type="radio" name="plan" value="pro"> Pro</label><br>
+      <label><input type="radio" name="plan" value="enterprise"> Enterprise</label>
+    </fieldset>
+  </form>
+</section>
+
+<!-- SELECT / DROPDOWNS -->
+<section aria-label="Selects">
+  <h2>Select / Dropdowns</h2>
+  <form>
+    <label>Single select:
+      <select name="country">
+        <option value="">-- choose --</option>
+        <optgroup label="Europe">
+          <option value="pl">Poland</option>
+          <option value="de">Germany</option>
+          <option value="fr">France</option>
+        </optgroup>
+        <optgroup label="Americas">
+          <option value="us">United States</option>
+          <option value="ca">Canada</option>
+        </optgroup>
+      </select>
+    </label>
+    <br><br>
+    <label>Multi-select:
+      <select name="tags" multiple size="4">
+        <option value="js">JavaScript</option>
+        <option value="ts" selected>TypeScript</option>
+        <option value="py">Python</option>
+        <option value="go" selected>Go</option>
+      </select>
+    </label>
+    <br><br>
+    <label>Datalist:
+      <input list="browsers" name="browser" placeholder="Pick a browser">
+      <datalist id="browsers">
+        <option value="Opera">
+        <option value="Chrome">
+        <option value="Firefox">
+        <option value="Safari">
+      </datalist>
+    </label>
+  </form>
+</section>
+
+<!-- LISTS -->
+<section aria-label="Lists">
+  <h2>Lists</h2>
+  <ul>
+    <li>Unordered item 1</li>
+    <li>Unordered item 2
+      <ul>
+        <li>Nested item A</li>
+        <li>Nested item B</li>
+      </ul>
+    </li>
+    <li>Unordered item 3</li>
+  </ul>
+
+  <ol>
+    <li>Ordered item 1</li>
+    <li>Ordered item 2</li>
+    <li>Ordered item 3</li>
+  </ol>
+
+  <dl>
+    <dt>Term A</dt><dd>Definition of term A</dd>
+    <dt>Term B</dt><dd>Definition of term B</dd>
+  </dl>
+</section>
+
+<!-- ARIA ROLES -->
+<section aria-label="ARIA Widgets">
+  <h2>ARIA Widgets</h2>
+
+  <div role="tablist" aria-label="Sample tabs">
+    <button role="tab" aria-selected="true" aria-controls="tab1-panel" id="tab1">Tab One</button>
+    <button role="tab" aria-selected="false" aria-controls="tab2-panel" id="tab2">Tab Two</button>
+    <button role="tab" aria-selected="false" aria-controls="tab3-panel" id="tab3">Tab Three</button>
+  </div>
+  <div role="tabpanel" id="tab1-panel" aria-labelledby="tab1">Content for Tab One.</div>
+  <div role="tabpanel" id="tab2-panel" aria-labelledby="tab2" hidden>Content for Tab Two.</div>
+  <div role="tabpanel" id="tab3-panel" aria-labelledby="tab3" hidden>Content for Tab Three.</div>
+
+  <br>
+  <div role="slider" aria-label="Brightness" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" tabindex="0">Brightness: 60%</div>
+
+  <br>
+  <div role="progressbar" aria-label="Upload progress" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">45%</div>
+
+  <br>
+  <div role="switch" aria-checked="true" tabindex="0">Dark mode: ON</div>
+
+  <br>
+  <div role="spinbutton" aria-label="Quantity" aria-valuenow="3" aria-valuemin="1" aria-valuemax="10" tabindex="0">3</div>
+
+  <br>
+  <nav aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href="/products">Products</a></li>
+      <li aria-current="page">Widget</li>
+    </ol>
+  </nav>
+</section>
+
+<!-- DETAILS / SUMMARY -->
+<section aria-label="Disclosure">
+  <h2>Details / Summary</h2>
+  <details>
+    <summary>Section One</summary>
+    <p>Content inside section one.</p>
+  </details>
+  <details open>
+    <summary>Section Two (open)</summary>
+    <p>Content inside section two, visible by default.</p>
+  </details>
+  <details>
+    <summary>Section Three</summary>
+    <p>Content inside section three.</p>
+  </details>
+</section>
+
+<!-- TABLE -->
+<section aria-label="Table">
+  <h2>Table</h2>
+  <table>
+    <caption>Sample Data Table</caption>
+    <thead>
+      <tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Alice</td><td>Engineer</td><td>Active</td></tr>
+      <tr><td>Bob</td><td>Designer</td><td>Away</td></tr>
+      <tr><td>Carol</td><td>Manager</td><td>Active</td></tr>
+    </tbody>
+    <tfoot>
+      <tr><td colspan="3">3 members total</td></tr>
+    </tfoot>
+  </table>
+</section>
+
+<!-- DIALOG -->
+<section aria-label="Dialog">
+  <h2>Dialog</h2>
+  <button type="button" onclick="document.getElementById('demo-dialog').showModal()">Open Dialog</button>
+  <dialog id="demo-dialog" aria-label="Demo dialog">
+    <h3>Modal Dialog</h3>
+    <p>This is a native dialog element.</p>
+    <button type="button" onclick="document.getElementById('demo-dialog').close()">Close</button>
+    <button type="button">Confirm</button>
+  </dialog>
+</section>
+
+<!-- MEDIA -->
+<section aria-label="Media">
+  <h2>Media</h2>
+  <img src="https://via.placeholder.com/200x100" alt="Placeholder image" width="200" height="100">
+  <br><br>
+  <figure>
+    <img src="https://via.placeholder.com/150x150" alt="Square placeholder">
+    <figcaption>Figure with caption</figcaption>
+  </figure>
+</section>
+
+<!-- LIVE REGIONS -->
+<section aria-label="Live Regions">
+  <h2>Live Regions</h2>
+  <div aria-live="polite" aria-label="Status">Ready.</div>
+  <div aria-live="assertive" role="alert">No errors.</div>
+  <div role="status">All systems operational.</div>
+  <button type="button" onclick="document.querySelector('[aria-live=polite]').textContent='Updated at ' + new Date().toLocaleTimeString()">Trigger update</button>
+</section>
+
+<!-- NAVIGATION -->
+<section aria-label="Navigation examples">
+  <h2>Navigation</h2>
+  <nav aria-label="Main navigation">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <nav aria-label="Pagination">
+    <a href="?page=1" aria-label="Previous page">&#8592; Prev</a>
+    <a href="?page=1" aria-current="page">1</a>
+    <a href="?page=2">2</a>
+    <a href="?page=3">3</a>
+    <a href="?page=3" aria-label="Next page">Next &#8594;</a>
+  </nav>
+</section>
+
+<p id="anchor">Anchor target at bottom of page.</p>
+
+</body>
+</html>
