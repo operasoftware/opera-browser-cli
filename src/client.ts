@@ -409,6 +409,26 @@ export async function getBridgeStatus(): Promise<BridgeStatus> {
  * Get the current page snapshot without starting the bridge.
  * Returns null if the bridge is not running or healthy.
  */
+export interface CachedSnapshot {
+  raw: string;
+  pageUrl: string | null;
+  capturedAt: number;
+}
+
+/** Retrieve the most recent snapshot the bridge has cached, without triggering a new one. */
+export async function getLastSnapshot(): Promise<CachedSnapshot | null> {
+  const pidInfo = readPidFile();
+  if (!pidInfo || !isProcessAlive(pidInfo.pid)) return null;
+  try {
+    const resp = await httpGet(pidInfo.port, "/last-snapshot", 2000);
+    const data = JSON.parse(resp) as { error?: string } & Partial<CachedSnapshot>;
+    if (data.error || !data.raw) return null;
+    return { raw: data.raw, pageUrl: data.pageUrl ?? null, capturedAt: data.capturedAt ?? 0 };
+  } catch {
+    return null;
+  }
+}
+
 export async function getSessionSnapshotIfRunning(): Promise<string | null> {
   const pidInfo = readPidFile();
   if (!pidInfo || !isProcessAlive(pidInfo.pid)) {

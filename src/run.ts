@@ -9,6 +9,7 @@ import { mkdtempSync, writeFileSync, unlinkSync, rmdirSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { CdpError } from "./client.js";
+import { compactSnapshot } from "./snapshot.js";
 
 type CallTool = (
   name: string,
@@ -47,9 +48,9 @@ function stripSnapshotHeader(text: string): string {
   return text.replace(/^[\s\S]*?##\s+Latest page snapshot\s*\n/, "");
 }
 
-/** Strip leading @ from uid ref string. */
+/** Strip leading @ and normalise dot-form refs to underscore form for MCP ("@2.4" → "2_4"). */
 function parseUid(ref: string): string {
-  return ref.startsWith("@") ? ref.slice(1) : ref;
+  return ref.replace(/^@/, "").replace(/\./g, "_");
 }
 
 /** Check if an open error is recoverable by falling back to new_page. */
@@ -63,7 +64,7 @@ function isRecoverableOpenError(error: unknown): boolean {
 
 // --- Selector detection ---
 
-const UID_RE = /^@?\d[\d_]*$/;
+const UID_RE = /^@?\d[\d_.]*$/;
 
 /** Returns true when the string looks like a @uid ref (e.g. "@12", "26_181"). */
 export function isUidRef(s: string): boolean {
@@ -163,7 +164,7 @@ export function createPageHelper(callTool: CallTool): PageHelper {
 
     async snapshot(): Promise<string> {
       const result = await callTool("take_snapshot");
-      return stripSnapshotHeader(result);
+      return compactSnapshot(stripSnapshotHeader(result));
     },
 
     async click(refOrSelector: string): Promise<void> {
