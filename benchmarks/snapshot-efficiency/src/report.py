@@ -84,8 +84,12 @@ def main() -> None:
 
     # --- Summary table ---
     lines.append("## Summary\n")
-    header = "| Condition | Runs | Pass% | Avg input tok | Avg total tok | Avg snap chars | Avg wall (s) | Avg tool calls |"
-    sep    = "|-----------|------|-------|---------------|---------------|----------------|--------------|----------------|"
+    header = (
+        "| Condition | Runs | Pass% | Avg input tok | Avg total tok | Avg snap chars | Avg wall (s) | Avg tool calls |"
+    )
+    sep = (
+        "|-----------|------|-------|---------------|---------------|----------------|--------------|----------------|"
+    )
     lines += [header, sep]
 
     ordered_cids = [c for c in CONDITION_ORDER if c in results] + [c for c in results if c not in CONDITION_ORDER]
@@ -140,7 +144,7 @@ def main() -> None:
     # --- Snapshot size distribution ---
     lines.append("## Snapshot size distribution (avg chars per snapshot call)\n")
     dist_header = "| Condition | Min | Median | Max |"
-    dist_sep    = "|-----------|-----|--------|-----|"
+    dist_sep = "|-----------|-----|--------|-----|"
     lines += [dist_header, dist_sep]
     for cid in ordered_cids:
         all_snap = []

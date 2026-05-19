@@ -26,7 +26,7 @@ class Client:
         self._reasoning_effort = reasoning_effort
 
     def call(self, input_items: list, tools: list | None = None) -> Turn:
-        response = self._api.responses.create(
+        response = self._api.responses.create(  # type: ignore[call-overload]
             model=self._model,
             reasoning={"effort": self._reasoning_effort},
             input=input_items,

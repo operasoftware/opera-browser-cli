@@ -31,6 +31,20 @@ run_benchmark.py
               └── Client.call()           → {"pass": bool, "reason": str}
 ```
 
+## Running checks
+
+```sh
+# Install dev dependencies (once)
+pip install -r requirements-dev.txt
+
+make format      # apply black + isort (modifies files)
+make lint        # ruff + flake8 (read-only)
+make typecheck   # mypy (read-only)
+make check       # format-check + lint + typecheck — no modifications, matches CI
+```
+
+Config: `pyproject.toml` for black/isort/ruff/mypy; `.flake8` for flake8 (88-char line length throughout).
+
 ## Key design decisions
 
 ### No hardcoded model defaults

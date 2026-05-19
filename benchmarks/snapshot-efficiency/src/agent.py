@@ -61,12 +61,14 @@ class AgentState:
             if tc.name in SNAPSHOT_TOOLS:
                 self.snapshot_chars.append(len(tool_results[tc.call_id]))
         for tc in turn.tool_calls:
-            self.trajectory.append({
-                "turn": turn_index,
-                "tool_calls": [{"name": tc.name, "args": tc.arguments}],
-                "tool_result": tool_results.get(tc.call_id, ""),
-                "text": turn.text,
-            })
+            self.trajectory.append(
+                {
+                    "turn": turn_index,
+                    "tool_calls": [{"name": tc.name, "args": tc.arguments}],
+                    "tool_result": tool_results.get(tc.call_id, ""),
+                    "text": turn.text,
+                }
+            )
 
     def to_result(self) -> AgentResult:
         return AgentResult(
@@ -108,11 +110,13 @@ def run_agent(
             for tc in turn.tool_calls:
                 args = json.loads(tc.arguments)
                 tool_results[tc.call_id] = tool_set.dispatch(tc.name, args)
-                inputs.append({
-                    "type": "function_call_output",
-                    "call_id": tc.call_id,
-                    "output": tool_results[tc.call_id],
-                })
+                inputs.append(
+                    {
+                        "type": "function_call_output",
+                        "call_id": tc.call_id,
+                        "output": tool_results[tc.call_id],
+                    }
+                )
 
             state.update(turn, _turn, tool_results)
         else:

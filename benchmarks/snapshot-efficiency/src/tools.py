@@ -1,7 +1,9 @@
-import subprocess
 import json
-import requests
+import subprocess
 from dataclasses import dataclass, field
+
+import requests
+
 from utils import snapshot_chars
 
 
@@ -32,6 +34,7 @@ class ToolSet:
 # ---------------------------------------------------------------------------
 # CLI-mode tool set (opera-compact, opera-raw, axi)
 # ---------------------------------------------------------------------------
+
 
 class CLIToolSet(ToolSet):
     def __init__(self, condition_id: str, cli_bin: str, raw: bool = False):
@@ -76,7 +79,7 @@ class CLIToolSet(ToolSet):
             tool_name=name,
             args=args,
             result=result,
-            snapshot_chars=snapshot_chars(result) if name in ("navigate", "snapshot", "click", "go_back") else 0,
+            snapshot_chars=(snapshot_chars(result) if name in ("navigate", "snapshot", "click", "go_back") else 0),
         )
         self.records.append(record)
         return result
@@ -127,7 +130,10 @@ class BridgeToolSet(ToolSet):
     def dispatch(self, name: str, args: dict) -> str:
         match name:
             case "navigate":
-                result = self._call("navigate_page", {"url": args.get("url", ""), "includeSnapshot": True})
+                result = self._call(
+                    "navigate_page",
+                    {"url": args.get("url", ""), "includeSnapshot": True},
+                )
             case "snapshot":
                 result = self._call("take_snapshot", {})
             case "click":
@@ -150,6 +156,7 @@ class BridgeToolSet(ToolSet):
 # ---------------------------------------------------------------------------
 # Factory
 # ---------------------------------------------------------------------------
+
 
 def make_tool_set(condition: dict) -> ToolSet:
     mode = condition["tool_mode"]
@@ -181,9 +188,7 @@ _CLI_SCHEMA: list[dict] = [
         "description": "Navigate the browser to a URL and return the page snapshot.",
         "parameters": {
             "type": "object",
-            "properties": {
-                "url": {"type": "string", "description": "Full URL to navigate to."}
-            },
+            "properties": {"url": {"type": "string", "description": "Full URL to navigate to."}},
             "required": ["url"],
         },
     },
@@ -196,11 +201,14 @@ _CLI_SCHEMA: list[dict] = [
     {
         "type": "function",
         "name": "click",
-        "description": "Click an element on the current page by its reference ID (e.g. @1.5) and return the updated snapshot.",
+        "description": "Click an element on the current page by its reference ID (e.g. @1.5) and return the updated snapshot.",  # noqa: E501
         "parameters": {
             "type": "object",
             "properties": {
-                "ref": {"type": "string", "description": "Element reference such as @1.5"}
+                "ref": {
+                    "type": "string",
+                    "description": "Element reference such as @1.5",
+                }
             },
             "required": ["ref"],
         },
