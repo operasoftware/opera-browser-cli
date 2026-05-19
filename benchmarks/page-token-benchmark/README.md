@@ -43,24 +43,24 @@ pip install -r requirements.txt
 
 ## Running
 
-All commands run from `benchmarks/` with the venv active. `PYTHONPATH=.` is required so `shared/` is importable.
+All commands run from `benchmarks/` with the venv active.
 
 ### Sanity check (1 condition, 1 URL)
 
 ```sh
-PYTHONPATH=. python page-token-benchmark/src/run_benchmark.py --conditions default --urls 0
+python page-token-benchmark/src/run_benchmark.py --conditions default --urls 0
 ```
 
 ### Single condition
 
 ```sh
-PYTHONPATH=. python page-token-benchmark/src/run_benchmark.py --conditions default
+python page-token-benchmark/src/run_benchmark.py --conditions default
 ```
 
 ### All conditions
 
 ```sh
-PYTHONPATH=. python page-token-benchmark/src/run_benchmark.py
+python page-token-benchmark/src/run_benchmark.py
 ```
 
 ### Generate report
@@ -99,7 +99,7 @@ shared/                # (at benchmarks/ level)
 ## CLI reference
 
 ```
-PYTHONPATH=. python page-token-benchmark/src/run_benchmark.py [options]
+python page-token-benchmark/src/run_benchmark.py [options]
 
   --conditions   Comma-separated condition IDs (default: all four)
   --urls         Comma-separated 0-based URL indices (default: all 50)

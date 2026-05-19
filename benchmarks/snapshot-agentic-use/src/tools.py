@@ -3,7 +3,6 @@ import subprocess
 from dataclasses import dataclass, field
 
 import requests
-
 from utils import snapshot_chars
 
 
