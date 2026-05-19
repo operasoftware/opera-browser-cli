@@ -84,10 +84,18 @@ def run_once(
     )
     grading_hint = task.get("grading", {}).get("grading_hint")
     if tool_set.all_errored:
-        verdict = {"pass": False, "reason": "all tool calls errored — tool not installed or not running"}
+        verdict = {
+            "pass": False,
+            "reason": "all tool calls errored — tool not installed or not running",
+        }
     else:
-        verdict = grade(task["prompt"], result.trajectory, judge_model, judge_reasoning_effort,
-                        grading_hint=grading_hint)
+        verdict = grade(
+            task["prompt"],
+            result.trajectory,
+            judge_model,
+            judge_reasoning_effort,
+            grading_hint=grading_hint,
+        )
 
     # per-snapshot stats
     sc = result.snapshot_chars
@@ -115,12 +123,17 @@ def run_once(
     }
 
     adir = artifact_dir(condition["id"], task_id, run_n)
-    (adir / "agent_output.json").write_text(json.dumps({
-        "trajectory": result.trajectory,
-        "input_tokens": result.input_tokens,
-        "output_tokens": result.output_tokens,
-        "snapshot_chars": result.snapshot_chars,
-    }, indent=2))
+    (adir / "agent_output.json").write_text(
+        json.dumps(
+            {
+                "trajectory": result.trajectory,
+                "input_tokens": result.input_tokens,
+                "output_tokens": result.output_tokens,
+                "snapshot_chars": result.snapshot_chars,
+            },
+            indent=2,
+        )
+    )
     (adir / "grade.json").write_text(json.dumps(verdict, indent=2))
     (adir / "result.json").write_text(json.dumps(record, indent=2))
 
@@ -129,16 +142,32 @@ def run_once(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run snapshot benchmark")
-    parser.add_argument("--conditions", default=None, help="Comma-separated condition IDs (default: all)")
+    parser.add_argument(
+        "--conditions",
+        default=None,
+        help="Comma-separated condition IDs (default: all)",
+    )
     parser.add_argument("--tasks", default=None, help="Comma-separated task IDs (default: all)")
     parser.add_argument("--repeats", type=int, default=5, help="Runs per condition×task")
     parser.add_argument("--model", default=None, help="Agent model (overrides config/models.yaml)")
-    parser.add_argument("--reasoning-effort", default=None, dest="reasoning_effort",
-                        help="Agent reasoning effort low/medium/high (overrides config/models.yaml)")
-    parser.add_argument("--judge-model", default=None, dest="judge_model",
-                        help="Judge model (overrides config/models.yaml)")
-    parser.add_argument("--judge-reasoning-effort", default=None, dest="judge_reasoning_effort",
-                        help="Judge reasoning effort low/medium/high (overrides config/models.yaml)")
+    parser.add_argument(
+        "--reasoning-effort",
+        default=None,
+        dest="reasoning_effort",
+        help="Agent reasoning effort low/medium/high (overrides config/models.yaml)",
+    )
+    parser.add_argument(
+        "--judge-model",
+        default=None,
+        dest="judge_model",
+        help="Judge model (overrides config/models.yaml)",
+    )
+    parser.add_argument(
+        "--judge-reasoning-effort",
+        default=None,
+        dest="judge_reasoning_effort",
+        help="Judge reasoning effort low/medium/high (overrides config/models.yaml)",
+    )
     args = parser.parse_args()
 
     if not os.environ.get("OPENAI_API_KEY"):

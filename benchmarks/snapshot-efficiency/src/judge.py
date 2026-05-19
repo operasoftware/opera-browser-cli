@@ -59,10 +59,12 @@ def grade(
     prompt = _build_prompt(task_prompt, trajectory, grading_hint)
     client = Client(model, reasoning_effort=reasoning_effort)
     try:
-        turn = client.call([
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt},
-        ])
+        turn = client.call(
+            [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ]
+        )
         raw = turn.text.strip()
         if raw.startswith("```"):
             raw = raw.split("```")[1].removeprefix("json")

@@ -106,6 +106,24 @@ python src/report.py
 # → results/report.md
 ```
 
+## Linting & formatting
+
+Install dev tools (separate from benchmark runtime deps):
+
+```sh
+pip install -r requirements-dev.txt
+```
+
+| Command | What it does |
+|---|---|
+| `make format` | Apply black + isort (local dev) |
+| `make lint` | ruff + flake8 |
+| `make typecheck` | mypy |
+| `make check` | All of the above, read-only — same as CI |
+
+Config lives in `pyproject.toml` (black, isort, ruff, mypy) and `.flake8`.
+All tools are configured for 120-char line length.
+
 ## Source layout
 
 ```
