@@ -1,0 +1,18 @@
+# Each condition defines the opera-browser-cli flags passed to `open <url>`.
+# The output of `open` is captured and its token count is measured.
+
+- id: default
+  description: "Compact snapshot — default opera-browser-cli output"
+  flags: []
+
+- id: raw
+  description: "Uncompressed MCP output (--raw)"
+  flags: ["--raw"]
+
+- id: full
+  description: "Full-page compact snapshot (--full)"
+  flags: ["--full"]
+
+- id: raw-full
+  description: "Uncompressed full-page snapshot (--raw --full)"
+  flags: ["--raw", "--full"]

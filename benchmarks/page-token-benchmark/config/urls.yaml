@@ -1,0 +1,62 @@
+# 50 rarely-changing, publicly accessible pages across five domains.
+# Each domain contributes exactly 10 URLs.
+
+wikipedia:
+  - https://en.wikipedia.org/wiki/Python_(programming_language)
+  - https://en.wikipedia.org/wiki/Linux
+  - https://en.wikipedia.org/wiki/Artificial_intelligence
+  - https://en.wikipedia.org/wiki/Moon
+  - https://en.wikipedia.org/wiki/World_War_II
+  - https://en.wikipedia.org/wiki/Albert_Einstein
+  - https://en.wikipedia.org/wiki/Internet
+  - https://en.wikipedia.org/wiki/Quantum_mechanics
+  - https://en.wikipedia.org/wiki/DNA
+  - https://en.wikipedia.org/wiki/Mathematics
+
+github:
+  - https://github.com/torvalds/linux
+  - https://github.com/facebook/react
+  - https://github.com/microsoft/vscode
+  - https://github.com/python/cpython
+  - https://github.com/golang/go
+  - https://github.com/rust-lang/rust
+  - https://github.com/nodejs/node
+  - https://github.com/django/django
+  - https://github.com/kubernetes/kubernetes
+  - https://github.com/anthropics/anthropic-sdk-python
+
+mdn:
+  - https://developer.mozilla.org/en-US/docs/Web/JavaScript
+  - https://developer.mozilla.org/en-US/docs/Web/CSS
+  - https://developer.mozilla.org/en-US/docs/Web/HTML
+  - https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+  - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+  - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
+  - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+  - https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API
+  - https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
+  - https://developer.mozilla.org/en-US/docs/Glossary/REST
+
+python_docs:
+  - https://docs.python.org/3/library/pathlib.html
+  - https://docs.python.org/3/library/typing.html
+  - https://docs.python.org/3/library/asyncio.html
+  - https://docs.python.org/3/library/json.html
+  - https://docs.python.org/3/tutorial/datastructures.html
+  - https://docs.python.org/3/library/subprocess.html
+  - https://docs.python.org/3/library/re.html
+  - https://docs.python.org/3/library/collections.html
+  - https://docs.python.org/3/library/functools.html
+  - https://docs.python.org/3/library/itertools.html
+
+rfc_editor:
+  - https://www.rfc-editor.org/rfc/rfc791
+  - https://www.rfc-editor.org/rfc/rfc793
+  - https://www.rfc-editor.org/rfc/rfc2616
+  - https://www.rfc-editor.org/rfc/rfc7540
+  - https://www.rfc-editor.org/rfc/rfc8446
+  - https://www.rfc-editor.org/rfc/rfc6455
+  - https://www.rfc-editor.org/rfc/rfc4122
+  - https://www.rfc-editor.org/rfc/rfc3986
+  - https://www.rfc-editor.org/rfc/rfc5321
+  - https://www.rfc-editor.org/rfc/rfc7231
