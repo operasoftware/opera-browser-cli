@@ -1,4 +1,4 @@
-# Snapshot Efficiency Benchmark
+# Snapshot Agentic Use Benchmark
 
 Measures the token cost and task-completion quality of `opera-browser-cli`'s compact snapshot output against raw MCP output and alternative browser CLI tools.
 
@@ -54,7 +54,7 @@ Both use the OpenAI Responses API (`/v1/responses`). The judge runs at lower eff
 Requirements: Python 3.11+, `opera-browser-cli` in PATH, Opera/Chrome browser open.
 
 ```sh
-cd benchmarks/snapshot-efficiency
+cd benchmarks
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
@@ -68,12 +68,12 @@ npm install -g chrome-devtools-axi
 
 ## Running
 
-All commands run from `benchmarks/snapshot-efficiency/` with the venv active.
+All commands run from `benchmarks/` with the venv active.
 
 ### Sanity check (1 run, 1 task)
 
 ```sh
-OPENAI_API_KEY=<key> python src/run_benchmark.py \
+OPENAI_API_KEY=<key> python snapshot-agentic-use/src/run_benchmark.py \
   --conditions opera-compact \
   --tasks read_static_page \
   --repeats 1
@@ -82,13 +82,13 @@ OPENAI_API_KEY=<key> python src/run_benchmark.py \
 ### Single condition
 
 ```sh
-OPENAI_API_KEY=<key> python src/run_benchmark.py --conditions opera-compact --repeats 5
+OPENAI_API_KEY=<key> python snapshot-agentic-use/src/run_benchmark.py --conditions opera-compact --repeats 5
 ```
 
 ### All conditions (skipping axi if not installed)
 
 ```sh
-OPENAI_API_KEY=<key> python src/run_benchmark.py \
+OPENAI_API_KEY=<key> python snapshot-agentic-use/src/run_benchmark.py \
   --conditions opera-compact,opera-raw,mcp-raw \
   --repeats 5
 ```
@@ -96,19 +96,19 @@ OPENAI_API_KEY=<key> python src/run_benchmark.py \
 ### Full matrix (requires chrome-devtools-axi)
 
 ```sh
-OPENAI_API_KEY=<key> python src/run_benchmark.py --repeats 5
+OPENAI_API_KEY=<key> python snapshot-agentic-use/src/run_benchmark.py --repeats 5
 ```
 
 ### Generate report
 
 ```sh
-python src/report.py
-# → results/report.md
+python snapshot-agentic-use/src/report.py
+# → snapshot-agentic-use/results/report.md
 ```
 
 ## Linting & formatting
 
-Install dev tools (separate from benchmark runtime deps):
+Dev tools are shared at the `benchmarks/` level. From `benchmarks/`:
 
 ```sh
 pip install -r requirements-dev.txt
@@ -121,7 +121,7 @@ pip install -r requirements-dev.txt
 | `make typecheck` | mypy |
 | `make check` | All of the above, read-only — same as CI |
 
-Config lives in `pyproject.toml` (black, isort, ruff, mypy) and `.flake8`.
+Config lives in `benchmarks/pyproject.toml` (black, isort, ruff, mypy) and `benchmarks/.flake8`.
 All tools are configured for 120-char line length.
 
 ## Source layout
