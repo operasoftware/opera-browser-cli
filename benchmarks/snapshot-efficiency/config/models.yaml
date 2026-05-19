@@ -1,0 +1,7 @@
+agent:
+  model: gpt-5.5
+  reasoning_effort: medium
+
+judge:
+  model: gpt-5.5
+  reasoning_effort: low
