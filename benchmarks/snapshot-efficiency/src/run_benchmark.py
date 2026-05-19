@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import shlex
 import subprocess
 import sys
 import time
@@ -52,7 +53,7 @@ def start_daemon(condition: dict) -> subprocess.Popen | None:
     if not start_cmd:
         return None
     print(f"  Starting daemon: {start_cmd}")
-    proc = subprocess.Popen(start_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    proc = subprocess.Popen(shlex.split(start_cmd), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(2)
     return proc
 
@@ -60,7 +61,7 @@ def start_daemon(condition: dict) -> subprocess.Popen | None:
 def stop_daemon(condition: dict, proc: subprocess.Popen | None) -> None:
     stop_cmd = condition.get("stop")
     if stop_cmd:
-        subprocess.run(stop_cmd, shell=True, capture_output=True)
+        subprocess.run(shlex.split(stop_cmd), capture_output=True)
     if proc:
         proc.terminate()
 
