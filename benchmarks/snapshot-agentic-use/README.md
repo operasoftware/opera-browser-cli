@@ -114,12 +114,12 @@ Dev tools are shared at the `benchmarks/` level. From `benchmarks/`:
 pip install -r requirements-dev.txt
 ```
 
-| Command | What it does |
-|---|---|
-| `make format` | Apply black + isort (local dev) |
-| `make lint` | ruff + flake8 |
-| `make typecheck` | mypy |
-| `make check` | All of the above, read-only — same as CI |
+| Command          | What it does                             |
+|------------------|------------------------------------------|
+| `make format`    | Apply black + isort (local dev)          |
+| `make lint`      | ruff + flake8                            |
+| `make typecheck` | mypy                                     |
+| `make check`     | All of the above, read-only — same as CI |
 
 Config lives in `benchmarks/pyproject.toml` (black, isort, ruff, mypy) and `benchmarks/.flake8`.
 All tools are configured for 120-char line length.
