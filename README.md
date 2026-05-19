@@ -328,6 +328,10 @@ export OPERA_CLI_MCP_BIN=opera-devtools-mcp
 export OPERA_CLI_HEADED=1
 ```
 
+## Benchmarks
+
+See [`benchmarks/snapshot-efficiency/`](benchmarks/snapshot-efficiency/README.md) — measures token cost and task-completion quality of compact snapshot output vs raw MCP and `chrome-devtools-axi`.
+
 ## Development
 
 ```sh
