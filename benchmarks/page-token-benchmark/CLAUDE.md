@@ -36,20 +36,20 @@ make check       # format-check + lint + typecheck — no modifications, matches
 
 ## Running the benchmark
 
-From `benchmarks/` with the venv active. `PYTHONPATH=.` is required so `shared.token_counter` is importable.
+From `benchmarks/` with the venv active:
 
 ```sh
-# Sanity check (one random URL, one condition)
-PYTHONPATH=. python page-token-benchmark/src/run_benchmark.py --conditions opera-compact --sample 1
+# Sanity check
+python page-token-benchmark/src/run_benchmark.py --conditions default --urls 0
 
 # All conditions, all pages
-PYTHONPATH=. python page-token-benchmark/src/run_benchmark.py
+python page-token-benchmark/src/run_benchmark.py
 ```
 
 ## Key design decisions
 
 ### Import resolution
-Always run from `benchmarks/` with `PYTHONPATH=.`. Python adds the script's directory (`page-token-benchmark/src/`) to `sys.path` automatically, enabling the `cli_runner` import. `PYTHONPATH=.` adds `benchmarks/` so `from shared.token_counter import count_tokens` resolves.
+`run_benchmark.py` inserts `benchmarks/` into `sys.path` at startup via `Path(__file__).resolve().parents[2]`, so `from shared.token_counter import count_tokens` works regardless of working directory. `cli_runner` is imported without a package prefix because Python always adds the script's own directory to `sys.path`.
 
 ### No LLM involvement
 This benchmark is purely mechanical: CLI output → tiktoken → integer. No OpenAI API key required.
