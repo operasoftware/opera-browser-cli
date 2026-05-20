@@ -114,7 +114,7 @@ OPERA_CLI_BROWSER_URL=http://127.0.0.1:9222 opera-browser-cli open https://examp
 ┌───────────────────────┐
 │  opera-browser-cli  │  CLI — parse args, format output
 └──────────┬────────────┘
-           │ HTTP (localhost:9224)
+           │ HTTP (localhost:9225)
            ▼
 ┌───────────────────────┐
 │     Bridge Server     │  Persistent process, manages MCP session
@@ -265,7 +265,7 @@ session is active or the no-session status/help block when one is not.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `OPERA_CLI_PORT` | `9224` | Bridge server port |
+| `OPERA_CLI_PORT` | `9225` | Bridge server port |
 | `OPERA_CLI_MCP_BIN` | _(bundled `opera-devtools-mcp`)_ | Override the MCP server binary |
 | `OPERA_CLI_EXECUTABLE_PATH` | _(system Chrome)_ | Custom browser binary |
 | `OPERA_CLI_BROWSER_URL` | — | Connect to an existing browser instance instead of launching one |

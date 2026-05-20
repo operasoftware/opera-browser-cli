@@ -32,7 +32,7 @@ The bridge maintains **one** MCP client connected to `opera-devtools-mcp` over s
 All HTTP requests from `opera-browser-cli` processes share that single MCP connection.
 
 ```
-Terminal A ──HTTP──▶ bridge (port 9224) ──stdio──▶ opera-devtools-mcp ──CDP──▶ Opera
+Terminal A ──HTTP──▶ bridge (port 9225) ──stdio──▶ opera-devtools-mcp ──CDP──▶ Opera
 Terminal B ──HTTP──▶  (same bridge)
 ```
 

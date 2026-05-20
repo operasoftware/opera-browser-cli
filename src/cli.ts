@@ -60,7 +60,7 @@ environment:
   OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
                                     (no shell-style quoting; flags with spaces are not supported)
                                     e.g. "--enable-gpu --ignore-gpu-blocklist"
-  OPERA_CLI_PORT          Bridge server port (default: 9224)
+  OPERA_CLI_PORT          Bridge server port (default: 9225)
   OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
                                     e.g. "http://127.0.0.1:9222"
   OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)

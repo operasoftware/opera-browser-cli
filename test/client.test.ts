@@ -14,7 +14,7 @@ describe("CdpError", () => {
 
 describe("mapErrorMessage", () => {
   it("maps bridge connectivity failures", () => {
-    const error = mapErrorMessage("connect ECONNREFUSED 127.0.0.1:9224");
+    const error = mapErrorMessage("connect ECONNREFUSED 127.0.0.1:9225");
 
     expect(error.code).toBe("BRIDGE_NOT_READY");
     expect(error.message).toContain("Bridge is not running");
