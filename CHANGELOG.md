@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.33](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.32...opera-browser-cli-v0.1.33) (2026-05-20)
+
+
+### Features
+
+* detect port conflicts with foreign MCP servers ([c8aa858](https://github.com/operasoftware/opera-browser-cli/commit/c8aa858c820c450034e32692bc666329ca3b85b0))
+
+
+### Bug Fixes
+
+* default open URL to https:// when no protocol is given ([0ff548f](https://github.com/operasoftware/opera-browser-cli/commit/0ff548f9fcec447d2efc9d4605d72adff64aeabd))
+
 ## [0.1.32](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.31...opera-browser-cli-v0.1.32) (2026-05-13)
 
 
