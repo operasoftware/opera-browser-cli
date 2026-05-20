@@ -45,7 +45,7 @@ tasks:
       Navigate to 'List of Nobel laureates in Physics' on Wikipedia and
       report the winners for the 3 most recent years listed.
     grading:
-      grading_hint: "2024: John Hopfield and Geoffrey Hinton; 2023: Pierre Agostini, Ferenc Krausz, Anne L'Huillier; 2022: Alain Aspect, John Clauser, Anton Zeilinger."
+      grading_hint: "2025: John Clarke, Michel H. Devoret and John M. Martinis, 2024: John J. Hopfield and Geoffrey Hinton; 2023: Pierre Agostini, Ferenc Krausz, Anne L'Huillier."
 
   github_issue_investigation:
     category: investigation
