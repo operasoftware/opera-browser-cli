@@ -1,5 +1,9 @@
 import argparse
 import json
+import os
+import random
+import shlex
+import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -7,8 +11,7 @@ from typing import Any
 
 import yaml
 from cli_runner import run_condition
-
-from shared.token_counter import count_tokens
+from token_counter import count_tokens
 
 CONFIG_DIR = Path(__file__).parent.parent / "config"
 

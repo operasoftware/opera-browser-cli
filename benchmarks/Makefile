@@ -1,4 +1,4 @@
-PYTHON_DIRS := shared snapshot-agentic-use/src page-token-benchmark/src
+PYTHON_DIRS := snapshot-agentic-use/src page-token-benchmark/src
 
 .PHONY: format format-check lint typecheck check
 
@@ -13,6 +13,6 @@ lint:
 
 typecheck:
 	mypy snapshot-agentic-use/src
-	mypy shared page-token-benchmark/src
+	mypy page-token-benchmark/src
 
 check: format-check lint typecheck
