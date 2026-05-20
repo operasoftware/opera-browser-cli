@@ -60,7 +60,9 @@ class CLIToolSet(ToolSet):
             return f"[error: {self.cli_bin} not found in PATH]"
 
     def dispatch(self, name: str, args: dict) -> str:
-        extra = ["--raw"] if self.raw and name in ("navigate", "snapshot", "click", "go_back") else []
+        extra = (["--raw"] if self.raw and name in ("navigate", "snapshot", "click", "go_back") else []) + (
+            ["--full"] if args.get("full") and name in ("navigate", "snapshot") else []
+        )
 
         match name:
             case "navigate":
@@ -187,7 +189,13 @@ _CLI_SCHEMA: list[dict] = [
         "description": "Navigate the browser to a URL and return the page snapshot.",
         "parameters": {
             "type": "object",
-            "properties": {"url": {"type": "string", "description": "Full URL to navigate to."}},
+            "properties": {
+                "url": {"type": "string", "description": "Full URL to navigate to."},
+                "full": {
+                    "type": "boolean",
+                    "description": "Return the full page snapshot instead of above-the-fold only.",
+                },  # noqa: E501
+            },
             "required": ["url"],
         },
     },
@@ -195,7 +203,16 @@ _CLI_SCHEMA: list[dict] = [
         "type": "function",
         "name": "snapshot",
         "description": "Return the current page's accessibility snapshot without navigating.",
-        "parameters": {"type": "object", "properties": {}, "required": []},
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "full": {
+                    "type": "boolean",
+                    "description": "Return the full page snapshot instead of above-the-fold only.",
+                },  # noqa: E501
+            },
+            "required": [],
+        },
     },
     {
         "type": "function",
