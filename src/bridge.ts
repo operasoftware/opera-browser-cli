@@ -28,7 +28,7 @@ import { dirname, join, resolve } from "node:path";
 import { homedir } from "node:os";
 
 const DEFAULT_PORT = Number.parseInt(
-  process.env.OPERA_CLI_PORT ?? "9224",
+  process.env.OPERA_CLI_PORT ?? "9225",
   10,
 );
 const STATE_DIR = join(homedir(), ".opera-browser-cli");
@@ -258,9 +258,9 @@ export async function handleBridgeRequest(
 
   if (req.method === "GET" && req.url === "/health") {
     if (await isBridgeClientConnected(client)) {
-      writeJson(res, 200, { status: "ok" });
+      writeJson(res, 200, { status: "ok", server: "opera-browser-cli" });
     } else {
-      writeJson(res, 503, { error: "Not connected" });
+      writeJson(res, 503, { status: "not-connected", server: "opera-browser-cli" });
     }
     return;
   }

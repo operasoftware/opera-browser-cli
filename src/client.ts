@@ -14,7 +14,7 @@ const STATE_DIR = join(homedir(), ".opera-browser-cli");
 const PID_FILE = join(STATE_DIR, "bridge.pid");
 const CONFIG_FILE = join(STATE_DIR, "config");
 const LOG_FILE = join(STATE_DIR, "bridge.log");
-const DEFAULT_PORT = 9224;
+const DEFAULT_PORT = 9225;
 
 export function getLogFile(): string {
   return LOG_FILE;
@@ -202,13 +202,31 @@ function httpPost(
   });
 }
 
-async function checkBridgeHealth(port: number): Promise<boolean> {
+async function isBridgeHealthy(port: number): Promise<boolean> {
   try {
-    const resp = await httpGet(port, "/health");
+    const resp = await httpGet(port, "/health", 2000);
     const data = JSON.parse(resp);
     return data.status === "ok";
   } catch {
     return false;
+  }
+}
+
+/**
+ * Check what is listening on a port.
+ * Returns "ok" if it is our bridge, "conflict" if something else responded,
+ * or "free" if nothing is listening.
+ */
+async function checkPortStatus(port: number): Promise<"ok" | "conflict" | "free"> {
+  try {
+    const resp = await httpGet(port, "/health", 2000);
+    const data = JSON.parse(resp);
+    if (data.server === "opera-browser-cli") {
+      return data.status === "ok" ? "ok" : "free";
+    }
+    return "conflict";
+  } catch {
+    return "free";
   }
 }
 
@@ -225,10 +243,10 @@ export async function ensureBridge(): Promise<number> {
     10,
   );
 
-  // Check existing bridge via PID file
+  // Check existing bridge via PID file (lenient: we trust our own PID file).
   const pidInfo = readPidFile();
   if (pidInfo && isProcessAlive(pidInfo.pid)) {
-    if (await checkBridgeHealth(pidInfo.port)) {
+    if (await isBridgeHealthy(pidInfo.port)) {
       return pidInfo.port;
     }
     try {
@@ -236,6 +254,22 @@ export async function ensureBridge(): Promise<number> {
     } catch {
       // Best effort — if shutdown fails, the startup poll below will time out.
     }
+  }
+
+  // Check for a foreign server already occupying the target port before spawning.
+  const portStatus = await checkPortStatus(port);
+  if (portStatus === "ok") {
+    // A healthy bridge is already running (no PID file or stale PID).
+    return port;
+  }
+  if (portStatus === "conflict") {
+    throw new CdpError(
+      `Port ${port} is in use by a different server (not opera-devtools-mcp). Stop it or choose a different port.`,
+      "BRIDGE_NOT_READY",
+      [
+        `Stop the process on port ${port} and try again, or set OPERA_CLI_PORT to a different port number`,
+      ],
+    );
   }
 
   // Start a new bridge
@@ -272,7 +306,7 @@ export async function ensureBridge(): Promise<number> {
   // Poll for health (max 30s — Chrome launch can be slow)
   const deadline = Date.now() + 30_000;
   while (Date.now() < deadline) {
-    if (await checkBridgeHealth(port)) {
+    if (await isBridgeHealthy(port)) {
       return port;
     }
     await sleep(500);
@@ -395,7 +429,7 @@ export async function getBridgeStatus(): Promise<BridgeStatus> {
     };
   }
   const alive = isProcessAlive(pidInfo.pid);
-  const healthy = alive ? await checkBridgeHealth(pidInfo.port) : false;
+  const healthy = alive ? await isBridgeHealthy(pidInfo.port) : false;
   return {
     pidFileExists: true,
     processAlive: alive,
@@ -414,7 +448,7 @@ export async function getSessionSnapshotIfRunning(): Promise<string | null> {
   if (!pidInfo || !isProcessAlive(pidInfo.pid)) {
     return null;
   }
-  if (!(await checkBridgeHealth(pidInfo.port))) {
+  if (!(await isBridgeHealthy(pidInfo.port))) {
     return null;
   }
   try {
