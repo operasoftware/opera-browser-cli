@@ -1062,8 +1062,13 @@ const SCROLL_FUNCTIONS: Record<string, string> = {
   bottom: "window.scrollTo(0, document.body.scrollHeight)",
 };
 
+function normalizeUrl(raw: string): string {
+  if (/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(raw)) return raw;
+  return `https://${raw}`;
+}
+
 async function handleOpen(args: string[], full: boolean): Promise<string> {
-  const url = args[0];
+  const url = args[0] ? normalizeUrl(args[0]) : undefined;
   if (!url) {
     throw new CdpError("Missing URL", "VALIDATION_ERROR", [
       "Run `opera-browser-cli open https://example.com` to navigate to a page",
