@@ -4,12 +4,16 @@ conditions:
     tool_mode: cli
     cli_bin: opera-browser-cli
     raw: false
+    env:
+      OPERA_CLI_PORT: "9224"
 
   - id: opera-raw
     description: opera-browser-cli with --raw flag (uncompressed MCP output)
     tool_mode: cli
     cli_bin: opera-browser-cli
     raw: true
+    env:
+      OPERA_CLI_PORT: "9224"
 
   - id: mcp-raw
     description: Raw take_snapshot via bridge HTTP API, no compression layer
@@ -23,3 +27,5 @@ conditions:
     raw: false
     start: "chrome-devtools-axi start"
     stop: "chrome-devtools-axi stop"
+    env:
+      CHROME_DEVTOOLS_AXI_PORT: "9225"

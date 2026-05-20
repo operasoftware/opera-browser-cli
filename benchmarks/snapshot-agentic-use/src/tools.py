@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 from dataclasses import dataclass, field
 
@@ -36,9 +37,10 @@ class ToolSet:
 
 
 class CLIToolSet(ToolSet):
-    def __init__(self, condition_id: str, cli_bin: str, raw: bool = False):
+    def __init__(self, condition_id: str, cli_bin: str, raw: bool = False, env: dict | None = None):
         self.cli_bin = cli_bin
         self.raw = raw
+        self.env = {**os.environ, **env} if env else None
         super().__init__(condition_id=condition_id, definitions=_CLI_SCHEMA)
 
     def _run(self, *args: str, timeout: int = 60) -> str:
@@ -49,6 +51,7 @@ class CLIToolSet(ToolSet):
                 capture_output=True,
                 text=True,
                 timeout=timeout,
+                env=self.env,
             )
             output = result.stdout
             if result.returncode != 0 and not output:
@@ -167,6 +170,7 @@ def make_tool_set(condition: dict) -> ToolSet:
             condition_id=cid,
             cli_bin=condition["cli_bin"],
             raw=condition.get("raw", False),
+            env=condition.get("env"),
         )
     elif mode == "bridge":
         return BridgeToolSet(
