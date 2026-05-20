@@ -6,12 +6,14 @@
   description: opera-browser-cli default compact snapshot (above-the-fold)
   tool_mode: cli
   cli_bin: opera-browser-cli
+  nav_cmd: open
   raw: false
 
 - id: opera-compact-full
   description: opera-browser-cli compact snapshot, full page (--full)
   tool_mode: cli
   cli_bin: opera-browser-cli
+  nav_cmd: open
   raw: false
   full: true
 
@@ -19,12 +21,14 @@
   description: opera-browser-cli uncompressed MCP output, above-the-fold (--raw)
   tool_mode: cli
   cli_bin: opera-browser-cli
+  nav_cmd: open
   raw: true
 
 - id: opera-raw-full
   description: opera-browser-cli uncompressed MCP output, full page (--raw --full)
   tool_mode: cli
   cli_bin: opera-browser-cli
+  nav_cmd: open
   raw: true
   full: true
 
