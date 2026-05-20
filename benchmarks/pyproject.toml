@@ -15,3 +15,4 @@ select = ["E", "F"]
 python_version = "3.11"
 ignore_missing_imports = true
 explicit_package_bases = true
+mypy_path = "."

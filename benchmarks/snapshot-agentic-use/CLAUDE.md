@@ -1,4 +1,4 @@
-# snapshot-efficiency benchmark — Claude guidance
+# snapshot-agentic-use benchmark — Claude guidance
 
 ## File roles
 
@@ -33,6 +33,8 @@ run_benchmark.py
 
 ## Running checks
 
+Dev tooling is at the `benchmarks/` level. From `benchmarks/`:
+
 ```sh
 # Install dev dependencies (once)
 pip install -r requirements-dev.txt
@@ -43,7 +45,7 @@ make typecheck   # mypy (read-only)
 make check       # format-check + lint + typecheck — no modifications, matches CI
 ```
 
-Config: `pyproject.toml` for black/isort/ruff/mypy; `.flake8` for flake8 (88-char line length throughout).
+Config: `benchmarks/pyproject.toml` for black/isort/ruff/mypy; `benchmarks/.flake8` for flake8 (120-char line length throughout).
 
 ## Key design decisions
 

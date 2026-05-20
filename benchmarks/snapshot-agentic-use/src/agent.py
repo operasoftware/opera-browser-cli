@@ -12,6 +12,8 @@ Guidelines:
 - Use `snapshot` to re-read the current page if needed
 - Use `click` on element refs (e.g. @1.5) shown in snapshots to follow links
 - Use `go_back` to return to the previous page
+- By default snapshots show only the above-the-fold view. Pass `full: true` to `navigate` or `snapshot` when
+  the information you need is not visible in the initial snapshot.
 - When you have enough information, reply with your final answer directly (no tool call)
 - Be concise and factual — only report what you observed in the page
 """
