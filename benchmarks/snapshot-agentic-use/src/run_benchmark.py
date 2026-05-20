@@ -52,7 +52,8 @@ def start_daemon(condition: dict) -> subprocess.Popen | None:
     if not start_cmd:
         return None
     print(f"  Starting daemon: {start_cmd}")
-    proc = subprocess.Popen(shlex.split(start_cmd), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    env = {**os.environ, **condition["env"]} if condition.get("env") else None
+    proc = subprocess.Popen(shlex.split(start_cmd), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env)
     time.sleep(2)
     return proc
 
