@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.34](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.33...opera-browser-cli-v0.1.34) (2026-05-20)
+
+
+### Bug Fixes
+
+* fixup! feat: detect port conflicts with foreign MCP servers ([2ae18ec](https://github.com/operasoftware/opera-browser-cli/commit/2ae18ec8160b90942dff1e72072b7c1986ca584f))
+
 ## [0.1.33](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.32...opera-browser-cli-v0.1.33) (2026-05-20)
 
 
