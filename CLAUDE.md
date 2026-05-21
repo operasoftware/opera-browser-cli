@@ -15,6 +15,10 @@ Key files:
 | `src/bridge.ts` → `runBridge()` | Entry point for the bridge process |
 | `bin/opera-browser-cli-bridge.js` | Bridge binary entrypoint (calls `runBridge`) |
 
+## Benchmarks
+
+Token-cost and agentic-quality measurements live in `benchmarks/`. See `benchmarks/CLAUDE.md` for file roles and how to run them.
+
 ## Specs directory
 
 Planned and in-progress fixes are documented as Markdown specs in `specs/`.
