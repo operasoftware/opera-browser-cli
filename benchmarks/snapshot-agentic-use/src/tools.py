@@ -6,6 +6,73 @@ from dataclasses import dataclass, field
 import requests
 from utils import snapshot_chars
 
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+
+_ERROR_PREFIXES = ("[error:", "[timeout", "[exit ", "[unknown")
+
+# Default bridge URL — matches opera-browser-cli's default port (OPERA_CLI_PORT).
+# Override via bridge_url in conditions.yaml.
+DEFAULT_BRIDGE_URL = "http://localhost:9224"
+
+# OpenAI tool schemas (same for all conditions).
+# Responses API (/v1/responses) uses flat tool format — no nested "function" key.
+_CLI_SCHEMA: list[dict] = [
+    {
+        "type": "function",
+        "name": "navigate",
+        "description": "Navigate the browser to a URL and return the page snapshot.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "url": {"type": "string", "description": "Full URL to navigate to."},
+                "full": {
+                    "type": "boolean",
+                    "description": "Return the full page snapshot instead of above-the-fold only.",
+                },  # noqa: E501
+            },
+            "required": ["url"],
+        },
+    },
+    {
+        "type": "function",
+        "name": "snapshot",
+        "description": "Return the current page's accessibility snapshot without navigating.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "full": {
+                    "type": "boolean",
+                    "description": "Return the full page snapshot instead of above-the-fold only.",
+                },  # noqa: E501
+            },
+            "required": [],
+        },
+    },
+    {
+        "type": "function",
+        "name": "click",
+        "description": "Click an element on the current page by its reference ID (e.g. @1.5) and return the updated snapshot.",  # noqa: E501
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ref": {
+                    "type": "string",
+                    "description": "Element reference such as @1.5",
+                }
+            },
+            "required": ["ref"],
+        },
+    },
+    {
+        "type": "function",
+        "name": "go_back",
+        "description": "Navigate back to the previous page and return the snapshot.",
+        "parameters": {"type": "object", "properties": {}, "required": []},
+    },
+]
+
 
 @dataclass
 class ToolCallRecord:
@@ -28,7 +95,7 @@ class ToolSet:
     @property
     def all_errored(self) -> bool:
         """True if every tool call returned an error — indicates the tool is not installed/running."""
-        return bool(self.records) and all(r.result.startswith("[error:") for r in self.records)
+        return bool(self.records) and all(r.result.startswith(_ERROR_PREFIXES) for r in self.records)
 
 
 # ---------------------------------------------------------------------------
@@ -92,10 +159,6 @@ class CLIToolSet(ToolSet):
 # ---------------------------------------------------------------------------
 # Bridge-mode tool set (mcp-raw)
 # ---------------------------------------------------------------------------
-
-# Default bridge URL — matches opera-browser-cli's default port (OPERA_CLI_PORT).
-# Override via bridge_url in conditions.yaml.
-DEFAULT_BRIDGE_URL = "http://localhost:9224"
 
 
 class BridgeToolSet(ToolSet):
@@ -179,64 +242,3 @@ def make_tool_set(condition: dict) -> ToolSet:
         )
     else:
         raise ValueError(f"Unknown tool_mode: {mode}")
-
-
-# ---------------------------------------------------------------------------
-# OpenAI tool schemas (same for all conditions)
-# Responses API (/v1/responses) uses flat tool format — no nested "function" key
-# ---------------------------------------------------------------------------
-
-_CLI_SCHEMA: list[dict] = [
-    {
-        "type": "function",
-        "name": "navigate",
-        "description": "Navigate the browser to a URL and return the page snapshot.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "url": {"type": "string", "description": "Full URL to navigate to."},
-                "full": {
-                    "type": "boolean",
-                    "description": "Return the full page snapshot instead of above-the-fold only.",
-                },  # noqa: E501
-            },
-            "required": ["url"],
-        },
-    },
-    {
-        "type": "function",
-        "name": "snapshot",
-        "description": "Return the current page's accessibility snapshot without navigating.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "full": {
-                    "type": "boolean",
-                    "description": "Return the full page snapshot instead of above-the-fold only.",
-                },  # noqa: E501
-            },
-            "required": [],
-        },
-    },
-    {
-        "type": "function",
-        "name": "click",
-        "description": "Click an element on the current page by its reference ID (e.g. @1.5) and return the updated snapshot.",  # noqa: E501
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "ref": {
-                    "type": "string",
-                    "description": "Element reference such as @1.5",
-                }
-            },
-            "required": ["ref"],
-        },
-    },
-    {
-        "type": "function",
-        "name": "go_back",
-        "description": "Navigate back to the previous page and return the snapshot.",
-        "parameters": {"type": "object", "properties": {}, "required": []},
-    },
-]

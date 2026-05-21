@@ -1,4 +1,5 @@
 import json
+import re
 
 from llm import Client
 
@@ -66,8 +67,9 @@ def grade(
             ]
         )
         raw = turn.text.strip()
-        if raw.startswith("```"):
-            raw = raw.split("```")[1].removeprefix("json")
+        m = re.search(r"```(?:json)?\s*([\s\S]+?)```", raw)
+        if m:
+            raw = m.group(1)
         return json.loads(raw)
     except json.JSONDecodeError as e:
         return {"pass": False, "reason": f"judge parse error: {e}"}

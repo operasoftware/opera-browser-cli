@@ -61,7 +61,7 @@ class AgentState:
         self.tool_call_count += len(turn.tool_calls)
         for tc in turn.tool_calls:
             if tc.name in SNAPSHOT_TOOLS:
-                self.snapshot_chars.append(len(tool_results[tc.call_id]))
+                self.snapshot_chars.append(len(tool_results.get(tc.call_id, "")))
         for tc in turn.tool_calls:
             self.trajectory.append(
                 {

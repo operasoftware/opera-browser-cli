@@ -1,3 +1,4 @@
+import os
 from dataclasses import dataclass
 
 import openai
@@ -21,6 +22,8 @@ def _to_input_item(item) -> dict:
 
 class Client:
     def __init__(self, model: str, reasoning_effort: str = "medium"):
+        if not os.environ.get("OPENAI_API_KEY"):
+            raise RuntimeError("OPENAI_API_KEY is not set")
         self._api = openai.OpenAI()
         self._model = model
         self._reasoning_effort = reasoning_effort

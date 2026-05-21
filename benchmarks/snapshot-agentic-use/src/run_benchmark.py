@@ -181,8 +181,10 @@ def main() -> None:
     judge_model = args.judge_model or models_cfg["judge"]["model"]
     judge_effort = args.judge_reasoning_effort or models_cfg["judge"]["reasoning_effort"]
 
-    selected_conditions = args.conditions.split(",") if args.conditions else list(all_conditions.keys())
-    selected_tasks = args.tasks.split(",") if args.tasks else list(all_tasks.keys())
+    selected_conditions = (
+        [c.strip() for c in args.conditions.split(",")] if args.conditions else list(all_conditions.keys())
+    )
+    selected_tasks = [t.strip() for t in args.tasks.split(",")] if args.tasks else list(all_tasks.keys())
 
     # validate
     for cid in selected_conditions:
