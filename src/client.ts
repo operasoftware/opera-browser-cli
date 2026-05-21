@@ -8,7 +8,7 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 import { request } from "node:http";
 import { AxiError } from "axi-sdk-js";
-import { resolveBridgeScript } from "./bridge.js";
+import { resolveBridgeScript, type LastSnapshotCache } from "./bridge.js";
 
 const STATE_DIR = join(homedir(), ".opera-browser-cli");
 const PID_FILE = join(STATE_DIR, "bridge.pid");
@@ -439,23 +439,15 @@ export async function getBridgeStatus(): Promise<BridgeStatus> {
   };
 }
 
-/**
- * Get the current page snapshot without starting the bridge.
- * Returns null if the bridge is not running or healthy.
- */
-export interface CachedSnapshot {
-  raw: string;
-  pageUrl: string | null;
-  capturedAt: number;
-}
+export type { LastSnapshotCache };
 
 /** Retrieve the most recent snapshot the bridge has cached, without triggering a new one. */
-export async function getLastSnapshot(): Promise<CachedSnapshot | null> {
+export async function getLastSnapshot(): Promise<LastSnapshotCache | null> {
   const pidInfo = readPidFile();
   if (!pidInfo || !isProcessAlive(pidInfo.pid)) return null;
   try {
     const resp = await httpGet(pidInfo.port, "/last-snapshot", 2000);
-    const data = JSON.parse(resp) as { error?: string } & Partial<CachedSnapshot>;
+    const data = JSON.parse(resp) as { error?: string } & Partial<LastSnapshotCache>;
     if (data.error || !data.raw) return null;
     return { raw: data.raw, pageUrl: data.pageUrl ?? null, capturedAt: data.capturedAt ?? 0 };
   } catch {

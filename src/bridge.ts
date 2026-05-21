@@ -303,15 +303,6 @@ export async function handleBridgeRequest(
     return;
   }
 
-  if (req.method === "GET" && req.url === "/last-snapshot") {
-    if (lastSnapshot === null) {
-      writeJson(res, 404, { error: "no snapshot cached" });
-    } else {
-      writeJson(res, 200, lastSnapshot);
-    }
-    return;
-  }
-
   try {
     if (req.method === "GET" && req.url === "/tools") {
       await handleToolsRequest(client, res);
