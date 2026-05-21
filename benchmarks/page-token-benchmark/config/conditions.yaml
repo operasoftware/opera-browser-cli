@@ -3,13 +3,6 @@
 # tool_mode: bridge → calls navigate_page via the bridge HTTP API
 
 - id: opera-compact
-  description: opera-browser-cli default compact snapshot (above-the-fold)
-  tool_mode: cli
-  cli_bin: opera-browser-cli
-  nav_cmd: open
-  raw: false
-
-- id: opera-compact-full
   description: opera-browser-cli compact snapshot, full page (--full)
   tool_mode: cli
   cli_bin: opera-browser-cli
@@ -18,13 +11,6 @@
   full: true
 
 - id: opera-raw
-  description: opera-browser-cli uncompressed MCP output, above-the-fold (--raw)
-  tool_mode: cli
-  cli_bin: opera-browser-cli
-  nav_cmd: open
-  raw: true
-
-- id: opera-raw-full
   description: opera-browser-cli uncompressed MCP output, full page (--raw --full)
   tool_mode: cli
   cli_bin: opera-browser-cli
@@ -38,20 +24,6 @@
   bridge_url: "http://localhost:9224"
 
 - id: axi
-  description: chrome-devtools-axi above-the-fold snapshot
-  tool_mode: cli
-  cli_bin: chrome-devtools-axi
-  nav_cmd: open
-  snapshot_cmd: snapshot
-  raw: false
-  env:
-    CHROME_DEVTOOLS_AXI_PORT: "9225"
-  start:
-    - "chrome-devtools-axi stop"
-    - "chrome-devtools-axi start"
-  stop: "chrome-devtools-axi stop"
-
-- id: axi-full
   description: chrome-devtools-axi full-page snapshot (--full)
   tool_mode: cli
   cli_bin: chrome-devtools-axi
