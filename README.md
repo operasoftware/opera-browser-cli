@@ -330,7 +330,25 @@ export OPERA_CLI_HEADED=1
 
 ## Benchmarks
 
-See [`benchmarks/snapshot-efficiency/`](benchmarks/snapshot-efficiency/README.md) — measures token cost and task-completion quality of compact snapshot output vs raw MCP and `chrome-devtools-axi`.
+See [`benchmarks/`](benchmarks/README.md) for methodology and full results.
+
+**Token cost** (50 static pages, tiktoken, above-the-fold):
+
+| Condition       | Avg tokens | Median  |
+|-----------------|------------|---------|
+| `opera-compact` | 3,729      | 3,682   |
+| `opera-raw`     | 4,931      | 4,920   |
+| `mcp-raw`       | 94,652     | 44,962  |
+
+**Agentic quality** (7 tasks × 3 repeats, LLM judge):
+
+| Condition       | Pass% | Avg input tokens |
+|-----------------|-------|------------------|
+| `opera-compact` | 100%  | 41,572           |
+| `opera-raw`     | 100%  | 90,808           |
+| `mcp-raw`       | 100%  | 199,015          |
+
+`opera-compact` saves **79%** input tokens vs the raw MCP baseline at identical 100% pass rate.
 
 ## Development
 
