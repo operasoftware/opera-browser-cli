@@ -89,7 +89,7 @@ def main() -> None:
     results_dir = Path(__file__).parent.parent / settings["output_dir"] / run_id
 
     if args.conditions:
-        wanted = set(args.conditions.split(","))
+        wanted = {c.strip() for c in args.conditions.split(",")}
         conditions = [c for c in all_conditions if c["id"] in wanted]
         missing = wanted - {c["id"] for c in conditions}
         if missing:
