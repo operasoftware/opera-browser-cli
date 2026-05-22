@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.1.35](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.34...opera-browser-cli-v0.1.35) (2026-05-22)
+
+
+### Features
+
+* Add benchmark config for snapshotting single page ([3a58b59](https://github.com/operasoftware/opera-browser-cli/commit/3a58b598c74660706303ccb43ae8bcef9c12db8c))
+* add benchmark configuration files ([a5cc1e8](https://github.com/operasoftware/opera-browser-cli/commit/a5cc1e898df1688e71ce3002a3050bbcf2385d9a))
+* add benchmark report generation ([1770e5b](https://github.com/operasoftware/opera-browser-cli/commit/1770e5b16c6d2c29d0ec7472260163bbaa203cab))
+* Add explicit --full option to agentic-use-benchmark ([6a45631](https://github.com/operasoftware/opera-browser-cli/commit/6a45631111d15bcbd5237e905f1bce9ac884752d))
+* add python package for benchmarking ([4df1d09](https://github.com/operasoftware/opera-browser-cli/commit/4df1d091cb612f373619064a158806b4db3cd9af))
+* add python package for benchmarking ([7ee028b](https://github.com/operasoftware/opera-browser-cli/commit/7ee028b7508ca92ec5e272b39ebc302993d05472))
+* compact snapshot output with URL compression ([30f0e97](https://github.com/operasoftware/opera-browser-cli/commit/30f0e97c8900b2a056104fcb9c9295e1749569b4))
+* compact snapshot output with URL compression ([2e27811](https://github.com/operasoftware/opera-browser-cli/commit/2e27811a4f6bd7f3b54b24723ad9b3f57d5d22fd))
+* Update SKILL.md after token optimization ([5aa9f2f](https://github.com/operasoftware/opera-browser-cli/commit/5aa9f2fa2dd4f729d169bace09a3b970947ca9bf))
+
+
+### Bug Fixes
+
+* Add python safety check and verbose error handling ([37b7625](https://github.com/operasoftware/opera-browser-cli/commit/37b76257affd97ce0141e212f16d517bafa72f27))
+* Error message readability fix ([3be0b73](https://github.com/operasoftware/opera-browser-cli/commit/3be0b73be1ed0dac7f1097e99cdfb518b72c24d9))
+* Explicitly request open before snapshot in every mode ([b501288](https://github.com/operasoftware/opera-browser-cli/commit/b5012882d8e245218acc560c6525f3f091e0f52d))
+* Fix linter issues after mv ([2d39628](https://github.com/operasoftware/opera-browser-cli/commit/2d39628c20906d1cea08b936bcb3c176f4ea101b))
+* Fixes from review ([440542f](https://github.com/operasoftware/opera-browser-cli/commit/440542f0242e21be54b7c9bb8e05fe046bbc4fbb))
+* Set devtools ports explicitly to avoid port collision ([be6a2fc](https://github.com/operasoftware/opera-browser-cli/commit/be6a2fc3b48633922ab688d7f2af9949cf05b535))
+* strip whitespace from --conditions split ([485aa49](https://github.com/operasoftware/opera-browser-cli/commit/485aa49d0f3ba20a11c0db3085c621a4a4eec296))
+* Update tasks for wikipedia extraction -&gt; year change from 2024 to 2025 ([6b012dd](https://github.com/operasoftware/opera-browser-cli/commit/6b012dde40bb446b494ef53c831648a9a31f7eb6))
+
 ## [0.1.34](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.33...opera-browser-cli-v0.1.34) (2026-05-20)
 
 
