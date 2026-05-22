@@ -5,6 +5,7 @@ import shlex
 import subprocess
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 
 import yaml
@@ -13,7 +14,6 @@ from judge import grade
 from tools import make_tool_set
 
 ROOT = Path(__file__).parent.parent  # benchmarks/snapshot-efficiency/
-RESULTS_DIR = ROOT / "results"
 
 
 def load_config() -> tuple[dict, dict, dict]:
@@ -27,22 +27,22 @@ def load_config() -> tuple[dict, dict, dict]:
     return tasks, conditions, models
 
 
-def artifact_dir(condition_id: str, task_id: str, run_n: int) -> Path:
-    d = RESULTS_DIR / condition_id / task_id / f"run{run_n}"
+def artifact_dir(results_dir: Path, condition_id: str, task_id: str, run_n: int) -> Path:
+    d = results_dir / condition_id / task_id / f"run{run_n}"
     d.mkdir(parents=True, exist_ok=True)
     return d
 
 
-def next_run_index(condition_id: str, task_id: str) -> int:
-    base = RESULTS_DIR / condition_id / task_id
+def next_run_index(results_dir: Path, condition_id: str, task_id: str) -> int:
+    base = results_dir / condition_id / task_id
     if not base.exists():
         return 0
     existing = [d for d in base.iterdir() if d.is_dir() and d.name.startswith("run")]
     return len(existing)
 
 
-def upsert_jsonl(condition_id: str, record: dict) -> None:
-    path = RESULTS_DIR / f"{condition_id}.jsonl"
+def upsert_jsonl(results_dir: Path, condition_id: str, record: dict) -> None:
+    path = results_dir / f"{condition_id}.jsonl"
     with open(path, "a") as f:
         f.write(json.dumps(record) + "\n")
 
@@ -67,6 +67,7 @@ def stop_daemon(condition: dict, proc: subprocess.Popen | None) -> None:
 
 
 def run_once(
+    results_dir: Path,
     condition: dict,
     task_id: str,
     task: dict,
@@ -123,7 +124,7 @@ def run_once(
         "error": result.error,
     }
 
-    adir = artifact_dir(condition["id"], task_id, run_n)
+    adir = artifact_dir(results_dir, condition["id"], task_id, run_n)
     (adir / "agent_output.json").write_text(
         json.dumps(
             {
@@ -194,7 +195,9 @@ def main() -> None:
         if tid not in all_tasks:
             sys.exit(f"Unknown task: {tid}. Available: {', '.join(all_tasks)}")
 
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    run_id = datetime.now().strftime("%y%m%d%H%M")
+    results_dir = ROOT / "results" / run_id
+    results_dir.mkdir(parents=True, exist_ok=True)
 
     total = len(selected_conditions) * len(selected_tasks) * args.repeats
     done = 0
@@ -210,11 +213,12 @@ def main() -> None:
             for tid in selected_tasks:
                 task = all_tasks[tid]
                 for repeat in range(args.repeats):
-                    run_n = next_run_index(cid, tid)
+                    run_n = next_run_index(results_dir, cid, tid)
                     done += 1
                     print(f"\n[{done}/{total}] {cid} / {tid} / run{run_n}")
                     try:
                         record = run_once(
+                            results_dir=results_dir,
                             condition=condition,
                             task_id=tid,
                             task=task,
@@ -231,7 +235,7 @@ def main() -> None:
                         print(f"  {status} | {tokens} tokens | {avg_snap} avg snap chars | {elapsed}s")
                         if record["error"]:
                             print(f"  Error: {record['error']}")
-                        upsert_jsonl(cid, record)
+                        upsert_jsonl(results_dir, cid, record)
                     except KeyboardInterrupt:
                         print("\nInterrupted.")
                         stop_daemon(condition, daemon)
@@ -241,7 +245,7 @@ def main() -> None:
         finally:
             stop_daemon(condition, daemon)
 
-    print(f"\nDone. Results in {RESULTS_DIR}/")
+    print(f"\nDone. Results in {results_dir}/")
     print("Run: python report.py")
 
 

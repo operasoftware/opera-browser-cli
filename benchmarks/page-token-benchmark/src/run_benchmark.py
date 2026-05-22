@@ -6,6 +6,7 @@ import shlex
 import subprocess
 import sys
 from dataclasses import asdict, dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -84,7 +85,8 @@ def main() -> None:
 
     settings, all_conditions, all_urls = load_config()
     tiktoken_encoding: str = args.encoding or settings["tiktoken_encoding"]
-    results_dir = Path(__file__).parent.parent / settings["output_dir"]
+    run_id = datetime.now().strftime("%y%m%d%H%M")
+    results_dir = Path(__file__).parent.parent / settings["output_dir"] / run_id
 
     if args.conditions:
         wanted = set(args.conditions.split(","))

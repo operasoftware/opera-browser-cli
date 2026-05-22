@@ -1,17 +1,23 @@
+import argparse
 import json
 import statistics
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent  # benchmarks/snapshot-efficiency/
-RESULTS_DIR = ROOT / "results"
-REPORT_PATH = RESULTS_DIR / "report.md"
+BASE_RESULTS_DIR = ROOT / "results"
+
+
+def latest_run_dir(base: Path) -> Path:
+    dirs = sorted(d for d in base.iterdir() if d.is_dir()) if base.exists() else []
+    return dirs[-1] if dirs else base
+
 
 CONDITION_ORDER = ["opera-compact", "opera-raw", "mcp-raw", "axi"]
 
 
-def load_results() -> dict[str, list[dict]]:
+def load_results(results_dir: Path) -> dict[str, list[dict]]:
     results: dict[str, list[dict]] = {}
-    for f in sorted(RESULTS_DIR.glob("*.jsonl")):
+    for f in sorted(results_dir.glob("*.jsonl")):
         cid = f.stem
         records = []
         for line in f.read_text().splitlines():
@@ -75,9 +81,15 @@ def fmt_chars(x: float) -> str:
 
 
 def main() -> None:
-    results = load_results()
+    parser = argparse.ArgumentParser(description="Snapshot benchmark report")
+    parser.add_argument("--run", help="Run directory name under results/ (default: latest)")
+    args = parser.parse_args()
+
+    results_dir = BASE_RESULTS_DIR / args.run if args.run else latest_run_dir(BASE_RESULTS_DIR)
+
+    results = load_results(results_dir)
     if not results:
-        print(f"No results found in {RESULTS_DIR}/ — run run_benchmark.py first")
+        print(f"No results found in {results_dir}/ — run run_benchmark.py first")
         return
 
     lines: list[str] = ["# Snapshot Token Efficiency Benchmark\n"]
@@ -174,10 +186,11 @@ def main() -> None:
             lines.append("")
 
     report = "\n".join(lines)
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    REPORT_PATH.write_text(report)
+    report_path = results_dir / "report.md"
+    results_dir.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(report)
     print(report)
-    print(f"\nReport written to {REPORT_PATH}")
+    print(f"\nReport written to {report_path}")
 
 
 if __name__ == "__main__":

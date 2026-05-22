@@ -1,15 +1,21 @@
+import argparse
 import json
 import statistics
 import sys
 from pathlib import Path
 from typing import Any
 
-RESULTS_DIR = Path(__file__).parent.parent / "results"
+BASE_RESULTS_DIR = Path(__file__).parent.parent / "results"
 
 
-def load_results() -> dict[str, list[dict[str, Any]]]:
+def latest_run_dir(base: Path) -> Path:
+    dirs = sorted(d for d in base.iterdir() if d.is_dir()) if base.exists() else []
+    return dirs[-1] if dirs else base
+
+
+def load_results(results_dir: Path) -> dict[str, list[dict[str, Any]]]:
     results: dict[str, list[dict[str, Any]]] = {}
-    for path in sorted(RESULTS_DIR.glob("*.jsonl")):
+    for path in sorted(results_dir.glob("*.jsonl")):
         condition_id = path.stem
         records: list[dict[str, Any]] = []
         with open(path) as f:
@@ -48,7 +54,13 @@ def fmt_pct(x: float) -> str:
 
 
 def main() -> None:
-    all_results = load_results()
+    parser = argparse.ArgumentParser(description="Page token benchmark report")
+    parser.add_argument("--run", help="Run directory name under results/ (default: latest)")
+    args = parser.parse_args()
+
+    results_dir = BASE_RESULTS_DIR / args.run if args.run else latest_run_dir(BASE_RESULTS_DIR)
+
+    all_results = load_results(results_dir)
     if not all_results:
         print("No results found. Run run_benchmark.py first.", file=sys.stderr)
         sys.exit(1)
@@ -99,7 +111,7 @@ def main() -> None:
                 lines.append(f"- `{cid}` / {r['url']}: {r['error']}")
 
     report = "\n".join(lines) + "\n"
-    out_path = RESULTS_DIR / "report.md"
+    out_path = results_dir / "report.md"
     out_path.write_text(report)
     print(report)
     print(f"Report written to {out_path}")
