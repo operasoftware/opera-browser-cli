@@ -1,0 +1,4 @@
+openai>=1.30
+pyyaml>=6.0
+requests>=2.31
+tiktoken>=0.7

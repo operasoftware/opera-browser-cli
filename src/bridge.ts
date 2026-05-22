@@ -3,9 +3,10 @@
  *
  * Spawns opera-devtools-mcp as a child process and maintains a single
  * persistent MCP session. Exposes a simple HTTP API:
- *   POST /call  { name, args }  → { result }
- *   GET  /tools                 → [{ name, description }]
- *   GET  /health                → { status: "ok" }
+ *   POST /call           { name, args }  → { result }
+ *   GET  /tools                          → [{ name, description }]
+ *   GET  /health                         → { status: "ok" }
+ *   GET  /last-snapshot                  → { raw, pageUrl, capturedAt } | 404
  *
  * Writes a PID file to ~/.opera-browser-cli/bridge.pid on startup.
  */
@@ -23,6 +24,7 @@ import {
   type ServerResponse,
 } from "node:http";
 import { existsSync, mkdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { extractPageOrigin } from "./snapshot.js";
 import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { homedir } from "node:os";
@@ -41,6 +43,26 @@ const OPERA_AI_TOOLS = new Set([
   "opera_research",
   "opera_make",
 ]);
+
+export interface LastSnapshotCache {
+  raw: string;
+  pageUrl: string | null;
+  capturedAt: number;
+}
+
+// The most recent raw snapshot text returned by take_snapshot.
+// Shared across all concurrent HTTP requests; last write wins.
+// Survives navigation — callers use pageUrl to detect drift if needed.
+let lastSnapshot: LastSnapshotCache | null = null;
+
+export function getLastSnapshotCache(): LastSnapshotCache | null {
+  return lastSnapshot;
+}
+
+/** Reset the snapshot cache — for use in tests only. */
+export function resetLastSnapshotCache(): void {
+  lastSnapshot = null;
+}
 
 export interface BridgeContentBlock {
   type: string;
@@ -233,13 +255,20 @@ async function handleCallRequest(
     return;
   }
 
-  // Non-streaming path (unchanged).
+  // Non-streaming path.
   try {
     const result = await client.callTool(
       { name: payload.name, arguments: payload.args },
       undefined,
     );
     const text = extractToolText(getToolContent(result));
+    if (payload.name === "take_snapshot") {
+      lastSnapshot = {
+        raw: text,
+        pageUrl: extractPageOrigin(text),
+        capturedAt: Date.now(),
+      };
+    }
     res.statusCode = 200;
     res.end(JSON.stringify({ result: text }));
   } catch (error) {
@@ -261,6 +290,15 @@ export async function handleBridgeRequest(
       writeJson(res, 200, { status: "ok", server: "opera-browser-cli" });
     } else {
       writeJson(res, 503, { status: "not-connected", server: "opera-browser-cli" });
+    }
+    return;
+  }
+
+  if (req.method === "GET" && req.url === "/last-snapshot") {
+    if (lastSnapshot === null) {
+      writeJson(res, 404, { error: "no snapshot cached" });
+    } else {
+      writeJson(res, 200, lastSnapshot);
     }
     return;
   }

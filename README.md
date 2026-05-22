@@ -112,7 +112,7 @@ OPERA_CLI_BROWSER_URL=http://127.0.0.1:9222 opera-browser-cli open https://examp
 
 ```
 ┌───────────────────────┐
-│  opera-browser-cli  │  CLI — parse args, format output
+│  opera-browser-cli    │  CLI — parse args, format output
 └──────────┬────────────┘
            │ HTTP (localhost:9225)
            ▼
@@ -122,7 +122,7 @@ OPERA_CLI_BROWSER_URL=http://127.0.0.1:9222 opera-browser-cli open https://examp
            │ stdio
            ▼
 ┌───────────────────────┐
-│  opera-devtools-mcp  │  Headless Chrome via DevTools Protocol
+│  opera-devtools-mcp   │  Headless Chrome via DevTools Protocol
 └───────────────────────┘
 ```
 
@@ -136,7 +136,7 @@ OPERA_CLI_BROWSER_URL=http://127.0.0.1:9222 opera-browser-cli open https://examp
 ### Navigation
 
 | Command           | Description                                  |
-| ----------------- | -------------------------------------------- |
+|-------------------|----------------------------------------------|
 | `open <url>`      | Navigate to URL and snapshot                 |
 | `snapshot`        | Capture current page state                   |
 | `screenshot <p>`  | Save a screenshot to a file                  |
@@ -156,7 +156,7 @@ opera-browser-cli eval "(() => { const rows = [...document.querySelectorAll('tr'
 ### Interaction
 
 | Command                    | Description                    |
-| -------------------------- | ------------------------------ |
+|----------------------------|--------------------------------|
 | `click @<uid>`             | Click an element by ref        |
 | `fill @<uid> <text>`       | Fill a form field              |
 | `type <text>`              | Type text at current focus     |
@@ -170,7 +170,7 @@ opera-browser-cli eval "(() => { const rows = [...document.querySelectorAll('tr'
 ### Page Management
 
 | Command           | Description                 |
-| ----------------- | --------------------------- |
+|-------------------|-----------------------------|
 | `pages`           | List all open tabs          |
 | `newpage <url>`   | Open a new tab              |
 | `selectpage <id>` | Switch to a tab by ID       |
@@ -180,13 +180,13 @@ opera-browser-cli eval "(() => { const rows = [...document.querySelectorAll('tr'
 ### Emulation
 
 | Command   | Description                     |
-| --------- | ------------------------------- |
+|-----------|---------------------------------|
 | `emulate` | Emulate device/network/viewport |
 
 ### DevTools Debugging
 
 | Command            | Description                    |
-| ------------------ | ------------------------------ |
+|--------------------|--------------------------------|
 | `console`          | List console messages          |
 | `console-get <id>` | Get a specific console message |
 | `network`          | List network requests          |
@@ -195,7 +195,7 @@ opera-browser-cli eval "(() => { const rows = [...document.querySelectorAll('tr'
 ### Performance
 
 | Command                     | Description                   |
-| --------------------------- | ----------------------------- |
+|-----------------------------|-------------------------------|
 | `lighthouse`                | Run a Lighthouse audit        |
 | `perf-start`                | Start a performance trace     |
 | `perf-stop`                 | Stop the performance trace    |
@@ -204,19 +204,19 @@ opera-browser-cli eval "(() => { const rows = [...document.querySelectorAll('tr'
 
 ### Opera AI
 
-| Command             | Description                                   | Requires       |
-| ------------------- | --------------------------------------------- | -------------- |
-| `chat <prompt>`     | Send a chat message to Opera's built-in AI    | Any Opera           |
-| `invoke-do <prompt>`| Ask the AI to perform a complex browsing task | Opera Neon     |
-| `make <prompt>`     | Ask the AI to build a webpage or app          | Opera Neon     |
-| `research <prompt>` | Ask the AI to research a topic in depth       | Opera Neon     |
+| Command              | Description                                   | Requires   |
+|----------------------|-----------------------------------------------|------------|
+| `chat <prompt>`      | Send a chat message to Opera's built-in AI    | Any Opera  |
+| `invoke-do <prompt>` | Ask the AI to perform a complex browsing task | Opera Neon |
+| `make <prompt>`      | Ask the AI to build a webpage or app          | Opera Neon |
+| `research <prompt>`  | Ask the AI to research a topic in depth       | Opera Neon |
 
 `research` accepts `--type local` (default), `--type one-minute`, or `--type deep`.
 
 ### Configuration
 
 | Command  | Description                                      |
-| -------- | ------------------------------------------------ |
+|----------|--------------------------------------------------|
 | `setup`  | Interactive first-time setup (browser path, etc) |
 | `doctor` | Check configuration and environment              |
 | `logs`   | Show bridge server logs                          |
@@ -224,7 +224,7 @@ opera-browser-cli eval "(() => { const rows = [...document.querySelectorAll('tr'
 ### Bridge
 
 | Command | Description             |
-| ------- | ----------------------- |
+|---------|-------------------------|
 | `start` | Start the bridge server |
 | `stop`  | Stop the bridge server  |
 
@@ -235,7 +235,7 @@ session is active or the no-session status/help block when one is not.
 ### Flags
 
 | Flag                        | Description                                 |
-| --------------------------- | ------------------------------------------- |
+|-----------------------------|---------------------------------------------|
 | `--help`                    | Show usage information                      |
 | `-v`, `-V`, `--version`     | Show the installed CLI version              |
 | `--full`                    | Show complete output without truncation     |
@@ -263,21 +263,21 @@ session is active or the no-session status/help block when one is not.
 
 ## Configuration
 
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `OPERA_CLI_PORT` | `9225` | Bridge server port |
-| `OPERA_CLI_MCP_BIN` | _(bundled `opera-devtools-mcp`)_ | Override the MCP server binary |
-| `OPERA_CLI_EXECUTABLE_PATH` | _(system Chrome)_ | Custom browser binary |
-| `OPERA_CLI_BROWSER_URL` | — | Connect to an existing browser instance instead of launching one |
-| `OPERA_CLI_USER_DATA_DIR` | — | Persistent Chrome profile directory (skips isolated mode) |
-| `OPERA_CLI_HEADED` | — | Set to `1` to run in headed (visible) mode |
-| `OPERA_CLI_CHROME_ARGS` | — | Extra Chrome flags, space-separated |
-| `OPERA_CLI_DISABLE_HOOKS` | — | Set to `1` to skip auto-installing session hooks |
+| Variable                    | Default                          | Purpose                                                          |
+|-----------------------------|----------------------------------|------------------------------------------------------------------|
+| `OPERA_CLI_PORT`            | `9225`                           | Bridge server port                                               |
+| `OPERA_CLI_MCP_BIN`         | _(bundled `opera-devtools-mcp`)_ | Override the MCP server binary                                   |
+| `OPERA_CLI_EXECUTABLE_PATH` | _(system Chrome)_                | Custom browser binary                                            |
+| `OPERA_CLI_BROWSER_URL`     | —                                | Connect to an existing browser instance instead of launching one |
+| `OPERA_CLI_USER_DATA_DIR`   | —                                | Persistent Chrome profile directory (skips isolated mode)        |
+| `OPERA_CLI_HEADED`          | —                                | Set to `1` to run in headed (visible) mode                       |
+| `OPERA_CLI_CHROME_ARGS`     | —                                | Extra Chrome flags, space-separated                              |
+| `OPERA_CLI_DISABLE_HOOKS`   | —                                | Set to `1` to skip auto-installing session hooks                 |
 
 State is stored in `~/.opera-browser-cli/`:
 
 | File         | Purpose                            |
-| ------------ | ---------------------------------- |
+|--------------|------------------------------------|
 | `bridge.pid` | PID and port of the running bridge |
 
 ### Session Hooks
@@ -327,6 +327,45 @@ export OPERA_CLI_MCP_BIN=opera-devtools-mcp
 ```sh
 export OPERA_CLI_HEADED=1
 ```
+
+## Benchmarks
+
+### Page Snapshot
+
+Runs snapshot command on 50 static pages (Wikipedia, GitHub, MDN, Python docs, RFC Editor) and counts output tokens via tiktoken. No LLM involved — purely mechanical measurement.
+
+**Results (50 runs each):**
+
+| Condition       | Avg tokens | Median tokens | p95 tokens |
+|-----------------|------------|---------------|------------|
+| `opera-compact` | 60.6k      | 24.3k         | 256.1k     |
+| `mcp-raw`       | 94.7k      | 45.0k         | 391.3k     |
+| `opera-raw`     | 94.9k      | 45.1k         | 381.4k     |
+| `axi`           | 98.5k      | 46.6k         | 396.9k     |
+
+`--full` variants (no char limit) are also measured; see the [detailed README](page-token-benchmark/README.md) and [results report](page-token-benchmark/results/report.md).
+
+---
+
+### Agentic Use
+
+An LLM agent completes 7 browser tasks (adapted from the [axi bench-browser benchmark](https://github.com/kunchenguid/axi/tree/main/bench-browser)) across 4 conditions. Each run is graded pass/fail by an LLM judge. Captures input tokens, snapshot size, wall time, and tool call count.
+The agent was selecting each tool with or without `--full` flag, depending on the context. 
+
+**Results (35 runs each, 5 repeats × 7 tasks):**
+
+| Condition     | Pass [%] | Avg input length [tokens] | Avg snapshot length [chars] | Avg task time [seconds] | Avg tool calls |
+|---------------|----------|---------------------------|-----------------------------|-------------------------|----------------|
+| opera-compact | 100%     | 36.3k                     | 83.1k                       | 6.8                     | 1.4            |
+| opera-raw     | 100%     | 107.5k                    | 198.1k                      | 8.5                     | 1.6            |
+| axi           | 100%     | 102.2k                    | 203.9k                      | 9.8                     | 1.5            |
+| mcp-raw       | 100%     | 179.2k                    | 218.7k                      | 9.4                     | 2.1            |
+
+> opera-compact saves **80%** total tokens vs mcp-raw baseline.
+
+See the [detailed README](snapshot-agentic-use/README.md) and [results report](snapshot-agentic-use/results/v6/report.md).
+
+---
 
 ## Development
 

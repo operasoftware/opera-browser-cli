@@ -15,6 +15,10 @@ Key files:
 | `src/bridge.ts` → `runBridge()` | Entry point for the bridge process |
 | `bin/opera-browser-cli-bridge.js` | Bridge binary entrypoint (calls `runBridge`) |
 
+## Benchmarks
+
+Token-cost and agentic-quality measurements live in `benchmarks/`. See `benchmarks/CLAUDE.md` for file roles and how to run them.
+
 ## Specs directory
 
 Planned and in-progress fixes are documented as Markdown specs in `specs/`.
@@ -23,6 +27,34 @@ Always check there before starting implementation work.
 | Spec | Status |
 |---|---|
 | [`specs/fix-parallel-streaming-routing.md`](specs/fix-parallel-streaming-routing.md) | Planned — parallel chunk routing for concurrent Opera AI calls |
+
+## Common issues
+
+### Stale bridge process after update (`BRIDGE_NOT_READY` / "different server")
+
+**Symptom:** `opera-browser-cli` commands fail with:
+```
+error: Port 9224 is in use by a different server (not opera-devtools-mcp).
+code: BRIDGE_NOT_READY
+```
+even though the bridge is running (`lsof -i :9224` shows a `node` process).
+
+**Cause:** The bridge process was started before `dist/src/bridge.js` was rebuilt. The
+running process has old code in memory; its `/health` response is missing the
+`server: "opera-browser-cli"` field that `checkPortStatus` (`client.ts`) requires to
+recognise the bridge as healthy. Without that field the port is classified as a conflict.
+
+**Fix:** Restart the bridge:
+```sh
+opera-browser-cli stop
+# next command auto-starts a fresh bridge with current code
+```
+
+If `stop` does nothing (the bridge was started without a PID file, or the PID file was
+deleted), kill it by port instead:
+```sh
+lsof -ti :9224 | xargs kill
+```
 
 ## Architecture notes
 

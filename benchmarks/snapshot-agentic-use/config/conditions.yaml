@@ -1,0 +1,31 @@
+conditions:
+  - id: opera-compact
+    description: opera-browser-cli default (compact snapshots, URL compression)
+    tool_mode: cli
+    cli_bin: opera-browser-cli
+    raw: false
+    env:
+      OPERA_CLI_PORT: "9224"
+
+  - id: opera-raw
+    description: opera-browser-cli with --raw flag (uncompressed MCP output)
+    tool_mode: cli
+    cli_bin: opera-browser-cli
+    raw: true
+    env:
+      OPERA_CLI_PORT: "9224"
+
+  - id: mcp-raw
+    description: Raw take_snapshot via bridge HTTP API, no compression layer
+    tool_mode: bridge
+    bridge_url: "http://localhost:9224"
+
+  - id: axi
+    description: chrome-devtools-axi CLI (external comparison baseline)
+    tool_mode: cli
+    cli_bin: chrome-devtools-axi
+    raw: false
+    start: "chrome-devtools-axi start"
+    stop: "chrome-devtools-axi stop"
+    env:
+      CHROME_DEVTOOLS_AXI_PORT: "9225"

@@ -1,0 +1,128 @@
+import argparse
+import json
+import statistics
+import sys
+from pathlib import Path
+from typing import Any
+
+BASE_RESULTS_DIR = Path(__file__).parent.parent / "results"
+
+
+def latest_run_dir(base: Path) -> Path:
+    dirs = sorted(d for d in base.iterdir() if d.is_dir()) if base.exists() else []
+    return dirs[-1] if dirs else base
+
+
+def load_results(results_dir: Path) -> dict[str, list[dict[str, Any]]]:
+    results: dict[str, list[dict[str, Any]]] = {}
+    for path in sorted(results_dir.glob("*.jsonl")):
+        condition_id = path.stem
+        records: list[dict[str, Any]] = []
+        with open(path) as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    records.append(json.loads(line))
+        results[condition_id] = records
+    return results
+
+
+def summarize(records: list[dict[str, Any]]) -> dict[str, Any]:
+    token_vals = [r["tokens"] for r in records if r["error"] is None]
+    char_vals = [r["chars"] for r in records if r["error"] is None]
+    errors = sum(1 for r in records if r["error"] is not None)
+    if not token_vals:
+        return {"runs": len(records), "errors": errors}
+    return {
+        "runs": len(records),
+        "errors": errors,
+        "avg_tokens": round(statistics.mean(token_vals)),
+        "median_tokens": round(statistics.median(token_vals)),
+        "p95_tokens": round(sorted(token_vals)[int(len(token_vals) * 0.95)]),
+        "avg_chars": round(statistics.mean(char_vals)),
+    }
+
+
+def fmt_k(x: Any) -> str:
+    if x is None:
+        return "—"
+    v = int(x)
+    if v < 1000:
+        return str(v)
+    k = v / 1000
+    if k >= 10:
+        return f"{k:.1f}k"
+    return f"{k:.2g}k"
+
+
+def fmt_pct(x: float) -> str:
+    return f"{x:+.1f}%"
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Page token benchmark report")
+    parser.add_argument("--run", help="Run directory name under results/ (default: latest)")
+    args = parser.parse_args()
+
+    results_dir = BASE_RESULTS_DIR / args.run if args.run else latest_run_dir(BASE_RESULTS_DIR)
+
+    all_results = load_results(results_dir)
+    jsonl_files = sorted(results_dir.glob("*.jsonl"))
+    print(f"Input: {results_dir}/ ({', '.join(f.name for f in jsonl_files)})")
+    if not all_results:
+        print("No results found. Run run_benchmark.py first.", file=sys.stderr)
+        sys.exit(1)
+
+    summaries = {cid: summarize(records) for cid, records in all_results.items()}
+    baseline_id = "default"
+    baseline_avg = summaries.get(baseline_id, {}).get("avg_tokens")
+
+    lines: list[str] = ["# Page Token Benchmark Report\n"]
+
+    # Summary table
+    lines.append("## Summary\n")
+    lines.append("| Condition | Runs | Errors | Avg tokens | Median tokens | p95 tokens | vs default |")
+    lines.append("|-----------|------|--------|------------|---------------|------------|------------|")
+    for cid, s in summaries.items():
+        avg = s.get("avg_tokens")
+        median = s.get("median_tokens")
+        p95 = s.get("p95_tokens")
+        savings = ""
+        if baseline_avg and avg and cid != baseline_id:
+            pct = (avg - baseline_avg) / baseline_avg * 100
+            savings = fmt_pct(pct)
+        lines.append(
+            f"| `{cid}` | {s['runs']} | {s['errors']} | " f"{fmt_k(avg)} | {fmt_k(median)} | {fmt_k(p95)} | {savings} |"
+        )
+
+    # Per-URL breakdown for default condition
+    if baseline_id in all_results:
+        lines.append(f"\n## Per-URL breakdown (`{baseline_id}`)\n")
+        lines.append("| URL | Tokens | Chars |")
+        lines.append("|-----|--------|-------|")
+        for r in all_results[baseline_id]:
+            url_short = r["url"].replace("https://", "")
+            err = f" ⚠ {r['error']}" if r["error"] else ""
+            lines.append(f"| {url_short} | {fmt_k(r.get('tokens'))} | {fmt_k(r.get('chars'))} |{err}")
+
+    # Errors
+    errors_by_cond = {
+        cid: [r for r in records if r["error"]]
+        for cid, records in all_results.items()
+        if any(r["error"] for r in records)
+    }
+    if errors_by_cond:
+        lines.append("\n## Errors\n")
+        for cid, err_records in errors_by_cond.items():
+            for r in err_records:
+                lines.append(f"- `{cid}` / {r['url']}: {r['error']}")
+
+    report = "\n".join(lines) + "\n"
+    out_path = results_dir / "report.md"
+    out_path.write_text(report)
+    print(report)
+    print(f"Report written to {out_path}")
+
+
+if __name__ == "__main__":
+    main()

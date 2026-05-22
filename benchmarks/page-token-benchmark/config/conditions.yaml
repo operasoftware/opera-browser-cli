@@ -1,0 +1,39 @@
+# Each condition defines how to fetch a page snapshot.
+# tool_mode: cli   → runs `<cli_bin> <nav_cmd> <url> [--raw]` as a subprocess
+# tool_mode: bridge → calls navigate_page via the bridge HTTP API
+
+- id: opera-compact
+  description: opera-browser-cli compact snapshot, full page (--full)
+  tool_mode: cli
+  cli_bin: opera-browser-cli
+  nav_cmd: open
+  raw: false
+  full: true
+
+- id: opera-raw
+  description: opera-browser-cli uncompressed MCP output, full page (--raw --full)
+  tool_mode: cli
+  cli_bin: opera-browser-cli
+  nav_cmd: open
+  raw: true
+  full: true
+
+- id: mcp-raw
+  description: Raw navigate_page via bridge HTTP API (no CLI compression layer)
+  tool_mode: bridge
+  bridge_url: "http://localhost:9224"
+
+- id: axi
+  description: chrome-devtools-axi full-page snapshot (--full)
+  tool_mode: cli
+  cli_bin: chrome-devtools-axi
+  nav_cmd: open
+  snapshot_cmd: snapshot
+  full: true
+  raw: false
+  env:
+    CHROME_DEVTOOLS_AXI_PORT: "9225"
+  start:
+    - "chrome-devtools-axi stop"
+    - "chrome-devtools-axi start"
+  stop: "chrome-devtools-axi stop"

@@ -1,0 +1,2 @@
+tiktoken_encoding: o200k_harmony  # used by GPT-5.5
+output_dir: results

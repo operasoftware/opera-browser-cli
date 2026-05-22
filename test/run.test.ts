@@ -179,16 +179,19 @@ describe("createPageHelper", () => {
     expect(result).toBe(3);
   });
 
-  it("page.snapshot strips header", async () => {
+  it("page.snapshot strips header and compacts output", async () => {
     callTool.mockResolvedValueOnce(
-      '## Latest page snapshot\nRootWebArea "Title"\n  uid=1 link "Home"',
+      '## Latest page snapshot\nuid=1_0 RootWebArea "Title"\n  uid=1_1 link "Home" url="/"',
     );
 
     const page = createPageHelper(callTool);
     const snap = await page.snapshot();
 
     expect(callTool).toHaveBeenCalledWith("take_snapshot");
-    expect(snap).toContain("RootWebArea");
+    // RootWebArea is renamed to `root` and uid= refs become @X.Y by compactSnapshot
+    expect(snap).toContain("root");
+    expect(snap).not.toContain("RootWebArea");
+    expect(snap).not.toContain("uid=");
     expect(snap).not.toContain("## Latest");
   });
 
@@ -434,15 +437,18 @@ describe("page.open fallback", () => {
 // --- 8. page.snapshot strips wrapper headers ---
 
 describe("page.snapshot header stripping", () => {
-  it("strips MCP preamble from snapshot", async () => {
+  it("strips MCP preamble from snapshot and compacts output", async () => {
     callTool.mockResolvedValueOnce(
-      'Page snapshot captured.\n\n## Latest page snapshot\n\nRootWebArea "Hi"\n  uid=1 button "OK"',
+      'Page snapshot captured.\n\n## Latest page snapshot\n\nuid=1_0 RootWebArea "Hi"\n  uid=1_1 button "OK"',
     );
 
     const page = createPageHelper(callTool);
     const snap = await page.snapshot();
 
-    expect(snap).toMatch(/^RootWebArea/);
+    // RootWebArea is renamed to `root` and uid= refs become @X.Y by compactSnapshot
+    expect(snap).toMatch(/^@1\.0 root/);
+    expect(snap).not.toContain("RootWebArea");
+    expect(snap).not.toContain("uid=");
     expect(snap).not.toContain("Latest page snapshot");
     expect(snap).not.toContain("Page snapshot captured");
   });
@@ -480,15 +486,22 @@ describe("page.eval variants", () => {
 // --- 10. isUidRef detection ---
 
 describe("isUidRef", () => {
-  it("recognizes @-prefixed numeric refs", () => {
+  it("recognizes @-prefixed numeric refs (underscore form)", () => {
     expect(isUidRef("@12")).toBe(true);
     expect(isUidRef("@1_3")).toBe(true);
     expect(isUidRef("@26_181")).toBe(true);
   });
 
+  it("recognizes @-prefixed numeric refs (compact dot form)", () => {
+    expect(isUidRef("@2.4")).toBe(true);
+    expect(isUidRef("@12.181")).toBe(true);
+    expect(isUidRef("@1.0")).toBe(true);
+  });
+
   it("recognizes bare numeric refs", () => {
     expect(isUidRef("5")).toBe(true);
     expect(isUidRef("26_181")).toBe(true);
+    expect(isUidRef("2.4")).toBe(true);
   });
 
   it("rejects CSS selectors", () => {

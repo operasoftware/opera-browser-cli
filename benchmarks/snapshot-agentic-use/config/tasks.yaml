@@ -1,0 +1,56 @@
+tasks:
+  read_static_page:
+    category: single_step
+    prompt: >
+      Navigate to https://example.com and report the main heading of the page.
+    grading:
+      grading_hint: "The main heading on example.com is 'Example Domain'."
+
+  wikipedia_fact_lookup:
+    category: single_step
+    prompt: >
+      Navigate to the Wikipedia article for the Moon
+      (https://en.wikipedia.org/wiki/Moon) and report the Moon's average
+      orbital speed from the infobox.
+    grading:
+      grading_hint: "The Moon's average orbital speed is 1.022 km/s (approximately 1.022 km/s or 2,286 mph)."
+
+  github_repo_stars:
+    category: single_step
+    prompt: >
+      Navigate to https://github.com/torvalds/linux and report the
+      approximate star count and the primary programming language.
+    grading:
+      grading_hint: "torvalds/linux has 190k+ stars and the primary language is C."
+
+  wikipedia_table_read:
+    category: single_step
+    prompt: >
+      Navigate to the Wikipedia article 'List of countries and dependencies
+      by population' and report the top 3 countries by population.
+    grading:
+      grading_hint: "The top 3 countries by population are India, China, and the United States."
+
+  wikipedia_link_follow:
+    category: multi_step
+    prompt: >
+      Navigate to the Wikipedia article for Ada Lovelace, click the link
+      to Charles Babbage, and report his birth date.
+    grading:
+      grading_hint: "Charles Babbage was born on 26 December 1791."
+
+  wikipedia_deep_extraction:
+    category: investigation
+    prompt: >
+      Navigate to 'List of Nobel laureates in Physics' on Wikipedia and
+      report the winners for the 3 most recent years listed.
+    grading:
+      grading_hint: "2025: John Clarke, Michel H. Devoret and John M. Martinis, 2024: John J. Hopfield and Geoffrey Hinton; 2023: Pierre Agostini, Ferenc Krausz, Anne L'Huillier."
+
+  github_issue_investigation:
+    category: investigation
+    prompt: >
+      Navigate to https://github.com/facebook/react/issues and report
+      the titles of the 5 most recent issues and the total open issue count.
+    grading:
+      grading_hint: "The agent must report 5 specific issue titles. The open issue count should be in the hundreds."
