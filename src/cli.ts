@@ -14,6 +14,7 @@ import {
   getLogFile,
   getSessionSnapshotIfRunning,
   getLastSnapshot,
+  getStateDir,
   loadConfig,
   parseConfigValue,
   stopBridge,
@@ -1023,7 +1024,18 @@ function formatPageOutput(
   // Truncate snapshot, then apply URL LUT to the visible portion only.
   // LUT runs after truncation so the trailer lists only URLs the agent can see.
   const tr = truncateSnapshot(tree, full, raw ? 16000 : 12000);
-  const { body, trailer } = raw ? { body: tr.text, trailer: "" } : applyUrlLut(tr.text);
+  const lutResult = raw ? { body: tr.text, trailer: "", urlMap: new Map<string, string>() } : applyUrlLut(tr.text);
+  const { body, trailer } = lutResult;
+  // Persist the urlMap so `opera-browser-cli url $uN` resolves against exactly
+  // the same token assignments the agent saw (truncated snapshot, not full).
+  try {
+    writeFileSync(
+      join(getStateDir(), "last-url-map.json"),
+      JSON.stringify(Object.fromEntries(lutResult.urlMap)),
+    );
+  } catch {
+    // Non-fatal: url command falls back to re-derivation if write fails.
+  }
   let snapshotBlock = `snapshot:\n${body.trimEnd()}`;
   if (trailer) snapshotBlock += `\n${trailer}`;
   if (tr.truncated) {
@@ -1050,9 +1062,11 @@ function stripSnapshotHeader(text: string): string {
   // Find the first line that looks like a tree node (uid= or RootWebArea)
   const lines = text.split("\n");
   const treeStart = lines.findIndex((l) => /\bRootWebArea\b|\buid=/.test(l));
-  if (treeStart > 0) return lines.slice(treeStart).join("\n");
-  // Fallback: strip known headers
-  return text.replace(/^[\s\S]*?##\s+Latest page snapshot\s*\n/, "");
+  const result = treeStart > 0
+    ? lines.slice(treeStart).join("\n")
+    : text.replace(/^[\s\S]*?##\s+Latest page snapshot\s*\n/, "");
+  // Rewrite MCP-internal tool name to the CLI command users actually run.
+  return result.replace(/Call list_pages\b/g, "Run `opera-browser-cli pages`");
 }
 
 /** Strip leading @ and normalise dot-form refs to underscore form for MCP ("@2.4" → "2_4"). */
@@ -1103,12 +1117,19 @@ async function handleOpen(args: string[], full: boolean, raw = false): Promise<s
     ]);
   }
 
+  let needNewPage = false;
   try {
-    await callTool("navigate_page", { type: "url", url });
+    const navResult = await callTool("navigate_page", { type: "url", url });
+    if (/selected page has been closed/i.test(navResult)) {
+      needNewPage = true;
+    }
   } catch (error) {
     if (!isRecoverableOpenError(error)) {
       throw error;
     }
+    needNewPage = true;
+  }
+  if (needNewPage) {
     await callTool("new_page", { url });
   }
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
@@ -2353,10 +2374,20 @@ async function handleUrl(args: string[]): Promise<string> {
     raw = stripSnapshotHeader(await callTool("take_snapshot"));
   }
 
-  // Re-derive the full (non-truncated) URL map so tokens match what the agent
-  // saw, regardless of the truncation applied to the original output.
+  // Use the urlMap persisted at render time so token IDs match exactly what the
+  // agent saw (derived from the truncated snapshot). Fall back to re-derivation
+  // on the full snapshot only if the sidecar file is missing.
+  // Use compact (no LUT applied) as the body: ref lookups find literal url="..."
+  // values there, so token-index alignment with urlMap is not needed.
   const compact = compactSnapshot(raw);
-  const { body, urlMap } = applyUrlLut(compact);
+  let urlMap: Map<string, string>;
+  try {
+    const stored = JSON.parse(readFileSync(join(getStateDir(), "last-url-map.json"), "utf-8")) as Record<string, string>;
+    urlMap = new Map(Object.entries(stored));
+  } catch {
+    ({ urlMap } = applyUrlLut(compact));
+  }
+  const body = compact;
 
   const resolved = resolveUrl(body, urlMap, target);
   if (resolved === null) {
