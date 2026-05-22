@@ -246,7 +246,7 @@ def main() -> None:
             stop_daemon(condition, daemon)
 
     print(f"\nDone. Results in {results_dir}/")
-    print("Run: python report.py")
+    print("Run: python snapshot-agentic-use/src/report.py")
 
 
 if __name__ == "__main__":

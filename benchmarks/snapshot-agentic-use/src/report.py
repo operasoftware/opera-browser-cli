@@ -66,18 +66,18 @@ def per_task_summary(records: list[dict]) -> dict[str, dict]:
     return {tid: summarize(recs) for tid, recs in sorted(by_task.items())}
 
 
-def fmt_int(x: float) -> str:
-    return f"{int(x):,}"
+def fmt_k(x: float) -> str:
+    v = int(x)
+    if v < 1000:
+        return str(v)
+    k = v / 1000
+    if k >= 10:
+        return f"{k:.1f}k"
+    return f"{k:.2g}k"
 
 
 def fmt_pct(x: float) -> str:
     return f"{x:.0f}%"
-
-
-def fmt_chars(x: float) -> str:
-    if x >= 1000:
-        return f"{x/1000:.1f}k"
-    return str(int(x))
 
 
 def main() -> None:
@@ -88,6 +88,8 @@ def main() -> None:
     results_dir = BASE_RESULTS_DIR / args.run if args.run else latest_run_dir(BASE_RESULTS_DIR)
 
     results = load_results(results_dir)
+    jsonl_files = sorted(results_dir.glob("*.jsonl"))
+    print(f"Input: {results_dir}/ ({', '.join(f.name for f in jsonl_files)})")
     if not results:
         print(f"No results found in {results_dir}/ — run run_benchmark.py first")
         return
@@ -97,10 +99,12 @@ def main() -> None:
     # --- Summary table ---
     lines.append("## Summary\n")
     header = (
-        "| Condition | Runs | Pass% | Avg input tok | Avg total tok | Avg snap chars | Avg wall (s) | Avg tool calls |"
+        "| Condition | Runs | Pass [%] | Avg input length [tokens]"
+        " | Avg total tok | Avg snapshot length [chars] | Avg task time [seconds] | Avg tool calls |"
     )
     sep = (
-        "|-----------|------|-------|---------------|---------------|----------------|--------------|----------------|"
+        "|-----------|------|----------|---------------------------|"
+        "---------------|----------------------------|-------------------------|----------------|"
     )
     lines += [header, sep]
 
@@ -113,9 +117,9 @@ def main() -> None:
             f"| {cid} "
             f"| {s['runs']} "
             f"| {fmt_pct(s['pass_rate'])} "
-            f"| {fmt_int(s['avg_input_tokens'])} "
-            f"| {fmt_int(s['avg_total_tokens'])} "
-            f"| {fmt_chars(s['avg_snap_chars'])} "
+            f"| {fmt_k(s['avg_input_tokens'])} "
+            f"| {fmt_k(s['avg_total_tokens'])} "
+            f"| {fmt_k(s['avg_snap_chars'])} "
             f"| {s['avg_wall_seconds']:.1f} "
             f"| {s['avg_tool_calls']:.1f} |"
         )
@@ -136,8 +140,8 @@ def main() -> None:
 
     for tid in all_tasks:
         lines.append(f"### {tid}\n")
-        th = "| Condition | Pass% | Avg input tok | Avg snap chars |"
-        ts = "|-----------|-------|---------------|----------------|"
+        th = "| Condition | Pass [%] | Avg input length [tokens] | Avg snapshot length [chars] |"
+        ts = "|-----------|----------|---------------------------|----------------------------|"
         lines += [th, ts]
         for cid in ordered_cids:
             task_recs = [r for r in results[cid] if r["task"] == tid]
@@ -147,8 +151,8 @@ def main() -> None:
             row = (
                 f"| {cid} "
                 f"| {fmt_pct(s['pass_rate'])} "
-                f"| {fmt_int(s['avg_input_tokens'])} "
-                f"| {fmt_chars(s['avg_snap_chars'])} |"
+                f"| {fmt_k(s['avg_input_tokens'])} "
+                f"| {fmt_k(s['avg_snap_chars'])} |"
             )
             lines.append(row)
         lines.append("")
@@ -168,9 +172,9 @@ def main() -> None:
         if all_snap:
             row = (
                 f"| {cid} "
-                f"| {fmt_chars(min(all_snap))} "
-                f"| {fmt_chars(statistics.median(all_snap))} "
-                f"| {fmt_chars(max(all_snap))} |"
+                f"| {fmt_k(min(all_snap))} "
+                f"| {fmt_k(statistics.median(all_snap))} "
+                f"| {fmt_k(max(all_snap))} |"
             )
             lines.append(row)
     lines.append("")

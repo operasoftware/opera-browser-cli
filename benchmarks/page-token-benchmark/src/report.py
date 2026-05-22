@@ -43,10 +43,16 @@ def summarize(records: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def fmt_int(x: Any) -> str:
+def fmt_k(x: Any) -> str:
     if x is None:
         return "—"
-    return f"{int(x):,}"
+    v = int(x)
+    if v < 1000:
+        return str(v)
+    k = v / 1000
+    if k >= 10:
+        return f"{k:.1f}k"
+    return f"{k:.2g}k"
 
 
 def fmt_pct(x: float) -> str:
@@ -61,6 +67,8 @@ def main() -> None:
     results_dir = BASE_RESULTS_DIR / args.run if args.run else latest_run_dir(BASE_RESULTS_DIR)
 
     all_results = load_results(results_dir)
+    jsonl_files = sorted(results_dir.glob("*.jsonl"))
+    print(f"Input: {results_dir}/ ({', '.join(f.name for f in jsonl_files)})")
     if not all_results:
         print("No results found. Run run_benchmark.py first.", file=sys.stderr)
         sys.exit(1)
@@ -84,8 +92,7 @@ def main() -> None:
             pct = (avg - baseline_avg) / baseline_avg * 100
             savings = fmt_pct(pct)
         lines.append(
-            f"| `{cid}` | {s['runs']} | {s['errors']} | "
-            f"{fmt_int(avg)} | {fmt_int(median)} | {fmt_int(p95)} | {savings} |"
+            f"| `{cid}` | {s['runs']} | {s['errors']} | " f"{fmt_k(avg)} | {fmt_k(median)} | {fmt_k(p95)} | {savings} |"
         )
 
     # Per-URL breakdown for default condition
@@ -96,7 +103,7 @@ def main() -> None:
         for r in all_results[baseline_id]:
             url_short = r["url"].replace("https://", "")
             err = f" ⚠ {r['error']}" if r["error"] else ""
-            lines.append(f"| {url_short} | {fmt_int(r.get('tokens'))} | {fmt_int(r.get('chars'))} |{err}")
+            lines.append(f"| {url_short} | {fmt_k(r.get('tokens'))} | {fmt_k(r.get('chars'))} |{err}")
 
     # Errors
     errors_by_cond = {

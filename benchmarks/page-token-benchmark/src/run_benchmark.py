@@ -122,6 +122,7 @@ def main() -> None:
                 run_lifecycle(cmd, "stop", env=cond_env)
 
     print(f"\nDone. Results in {results_dir}/")
+    print("python page-token-benchmark/src/report.py")
 
 
 if __name__ == "__main__":
