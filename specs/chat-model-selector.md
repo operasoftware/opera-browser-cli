@@ -48,17 +48,15 @@ The `*` marks the browser's reported default model.
 
 ## CDP Contract (Requirements for Browser Team)
 
-### New method: `Opera.getAvailableModels`
+Everything goes through `Opera.dispatchAction` — no new CDP methods required.
 
-Returns the list of AI models available for chat.
-
-**Request:** No parameters.
+### List models action
 
 ```json
-{ "method": "Opera.getAvailableModels" }
+{ "action": "listModels" }
 ```
 
-**Response:**
+**Response** (returned as `result` string, JSON-encoded):
 
 ```json
 {
@@ -74,11 +72,11 @@ Returns the list of AI models available for chat.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | `string` | Stable identifier used in `--model` flag and `dispatchAction` payload |
+| `id` | `string` | Stable identifier used in `--model` flag and chat payload |
 | `name` | `string` | Human-readable display name for CLI output |
 | `isDefault` | `boolean` | Exactly one model has `isDefault: true` — the browser's current default |
 
-### Extended `Opera.dispatchAction` payload for chat
+### Chat action with model selection
 
 Current (unchanged when no model specified):
 
@@ -96,7 +94,7 @@ With model selection:
 |-------|------|----------|-------------|
 | `action` | `string` | Yes | `"chat"` |
 | `prompt` | `string` | Yes | User's message |
-| `model` | `string` | No | Model ID from `getAvailableModels`. Omit to use browser default. |
+| `model` | `string` | No | Model ID from `listModels`. Omit to use browser default. |
 
 ### Error response for invalid model
 
@@ -151,8 +149,8 @@ definePageTool({
   schema: {},
   handler: async (request, response) => {
     const session = getCDPSession(request.page.pptrPage);
-    const result = await session.send('Opera.getAvailableModels');
-    response.appendResponseLine(JSON.stringify(result));
+    const result = await dispatchAction(session, { action: 'listModels' });
+    response.appendResponseLine(result);
   },
 });
 ```
