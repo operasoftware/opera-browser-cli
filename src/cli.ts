@@ -2227,13 +2227,18 @@ async function callAiTool(
 }
 
 async function handleChat(args: string[]): Promise<string> {
-  const prompt = args.join(" ");
+  const { prompt, model } = parseChatArgs(args);
   if (!prompt) {
     throw new CdpError("Missing prompt", "VALIDATION_ERROR", [
       'Run `opera-browser-cli chat "What is on this page?"` to chat with Opera AI',
+      "Use --model <id> to select a model (run `opera-browser-cli models` to list)",
     ]);
   }
-  const result = await callAiTool("chat", "opera_chat", { prompt });
+  const toolArgs: Record<string, unknown> = { prompt };
+  if (model !== undefined) {
+    toolArgs["model"] = model;
+  }
+  const result = await callAiTool("chat", "opera_chat", toolArgs);
   checkAiResultForSignInError("chat", result);
   return formatMcpResult("result", result, []);
 }
