@@ -69,6 +69,7 @@ export type ErrorCode =
   | "PAGE_CLOSED"
   | "BROWSER_ERROR"
   | "VALIDATION_ERROR"
+  | "UNSUPPORTED_OPERATION"
   | "UNKNOWN";
 
 export class CdpError extends AxiError {

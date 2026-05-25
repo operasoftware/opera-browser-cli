@@ -2332,6 +2332,32 @@ async function handleResearch(args: string[]): Promise<string> {
   return formatMcpResult("result", result, []);
 }
 
+async function handleModels(): Promise<string> {
+  let raw: string;
+  try {
+    raw = await callTool("opera_list_models", {});
+  } catch (error) {
+    if (error instanceof CdpError) {
+      throw new CdpError(
+        "Model listing not supported by connected browser. Upgrade Opera or check connection.",
+        "UNSUPPORTED_OPERATION",
+        ['Run `opera-browser-cli doctor` to check the connection'],
+      );
+    }
+    throw error;
+  }
+  const data = JSON.parse(raw) as {
+    models: Array<{ id: string; name: string; isDefault: boolean }>;
+  };
+  const lines = ["Available models:"];
+  for (const m of data.models) {
+    const marker = m.isDefault ? "* " : "  ";
+    const suffix = m.isDefault ? " (default)" : "";
+    lines.push(`  ${marker}${m.id}${suffix}`);
+  }
+  return lines.join("\n");
+}
+
 async function handleRun(): Promise<string> {
   if (process.stdin.isTTY) {
     throw new CdpError("No script provided on stdin", "VALIDATION_ERROR", [
@@ -2478,6 +2504,7 @@ const COMMANDS: Record<string, CommandFn> = {
   "invoke-do": withoutFullFlag(handleInvokeDo),
   make: withoutFullFlag(handleMake),
   research: withoutFullFlag(handleResearch),
+  models: withoutFullFlag(handleModels),
   setup: withoutFullFlag(handleSetup),
   logs: withoutFullFlag(handleLogs),
   doctor: withoutFullFlag(handleDoctor),
