@@ -2267,6 +2267,24 @@ async function handleMake(args: string[]): Promise<string> {
 const VALID_RESEARCH_TYPES = ["local", "one-minute", "deep"] as const;
 type ResearchType = (typeof VALID_RESEARCH_TYPES)[number];
 
+export function parseChatArgs(args: string[]): {
+  prompt: string;
+  model?: string;
+} {
+  let model: string | undefined;
+  const promptParts: string[] = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--model") {
+      if (i + 1 < args.length) {
+        model = args[++i];
+      }
+    } else {
+      promptParts.push(args[i]);
+    }
+  }
+  return { prompt: promptParts.join(" "), model };
+}
+
 export function parseResearchArgs(args: string[]): {
   prompt: string;
   researchType?: ResearchType;
