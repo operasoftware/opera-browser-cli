@@ -54,7 +54,8 @@ commands[41]:
   resize <w> <h>, emulate, console, console-get <id>, network,
   network-get [id], lighthouse, perf-start, perf-stop,
   perf-insight <set> <name>, heap <path>, start, stop,
-  chat <prompt>, invoke-do <prompt>, make <prompt>, research <prompt>,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
   setup, logs, doctor
 
 flags[2]:
@@ -77,7 +78,8 @@ environment:
   Run \`opera-browser-cli setup\` to configure interactively.
 
 opera ai:
-  chat is available on any Opera browser.
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
   invoke-do, make, and research require Opera Neon with an active sign-in.
   Run \`opera-browser-cli setup\` to configure the executable path, or set
   OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
@@ -543,15 +545,18 @@ examples:
   opera-browser-cli heap ./snapshot.heapsnapshot`,
 
   // Opera AI
-  chat: `usage: opera-browser-cli chat <prompt>
+  chat: `usage: opera-browser-cli chat [--model <model-id>] <prompt>
 Send a chat message to the Opera AI.
 
 args:
   <prompt>  Message to send (required)
 
+options:
+  --model <model-id>  AI model to use (run "opera-browser-cli models" to list)
+
 examples:
   opera-browser-cli chat "Hello, who are you?"
-  opera-browser-cli chat "What can you help me with?"`,
+  opera-browser-cli chat --model claude-sonnet-4 "Summarize this page"`,
 
   "invoke-do": `usage: opera-browser-cli invoke-do <prompt>
 Ask the Opera AI to perform a complex browsing task.
@@ -589,6 +594,12 @@ examples:
   opera-browser-cli research "the history of the Roman Empire"
   opera-browser-cli research "advances in CRISPR gene editing" --type deep
   opera-browser-cli research "best practices for React performance" --type one-minute`,
+
+  models: `usage: opera-browser-cli models
+List available AI models for chat.
+
+examples:
+  opera-browser-cli models`,
 
   setup: `usage: opera-browser-cli setup
 Interactive configuration wizard. Detects Opera Neon and writes settings to
