@@ -1,6 +1,7 @@
 ---
 name: opera-browser-cli
 description: Browser automation and web interaction using the opera-browser-cli tool. Use for navigating pages, clicking elements, filling forms, taking screenshots, inspecting console/network, running performance audits, and Opera AI features (chat available on any Opera browser; invoke-do, make, research require Opera Neon).
+metadata: {"openclaw": {"requires": {"bins": ["opera-browser-cli"]}}}
 ---
 
 # Skill: opera-browser-cli Browser Automation
@@ -40,6 +41,10 @@ Use `opera-browser-cli url $uN` or `opera-browser-cli url @ref` to resolve a tok
 | `--raw`  | Unprocessed MCP output (disables compact format and URL LUT) |
 
 Commands that accept these flags: `open`, `snapshot`, `click`, `fill`, `type`, `press`, `scroll`, `back`, `hover`, `drag`, `fillform`, `upload`, `newpage`, `selectpage`.
+
+## Running inside an OpenClaw container
+
+To wire this CLI into a Docker-based OpenClaw setup (Chromium sidecar, shared netns, config bootstrap), see [`openclaw/README.md`](openclaw/README.md).
 
 ## Sign-in errors
 

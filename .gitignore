@@ -6,3 +6,5 @@ dist/
 *.tar.gz
 *.png
 scripts/
+.env
+docker/.env
