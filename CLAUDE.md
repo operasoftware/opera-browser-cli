@@ -27,6 +27,7 @@ Always check there before starting implementation work.
 | Spec | Status |
 |---|---|
 | [`specs/fix-parallel-streaming-routing.md`](specs/fix-parallel-streaming-routing.md) | Planned — parallel chunk routing for concurrent Opera AI calls |
+| [`specs/chat-model-selector.md`](specs/chat-model-selector.md) | Planned — model selector for chat command |
 
 ## Common issues
 
