@@ -2357,9 +2357,18 @@ async function handleModels(): Promise<string> {
     }
     throw error;
   }
-  const data = JSON.parse(raw) as {
-    models: Array<{ id: string; name: string; isDefault: boolean }>;
-  };
+
+  let data: { models: Array<{ id: string; name: string; isDefault: boolean }> };
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    throw new CdpError(
+      raw || "Model listing returned an invalid response",
+      /Tool.*not found/i.test(raw) ? "UNSUPPORTED_OPERATION" : "UNKNOWN",
+      ['Run `opera-browser-cli doctor` to check the connection'],
+    );
+  }
+
   const lines = ["Available models:"];
   for (const m of data.models) {
     const marker = m.isDefault ? "* " : "  ";
