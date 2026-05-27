@@ -8,7 +8,8 @@ description: Browser automation and web interaction using the opera-browser-cli 
 `opera-browser-cli` controls an Opera browser session.
 
 - **Standard commands** (`open`, `click`, `fill`, `screenshot`, etc.) — work with any Opera browser session.
-- **`chat`** — available on any Opera browser.
+- **`chat`** — available on any Opera browser. Use `--model <id>` to select an AI model.
+- **`models`** — list available AI models for chat (shows IDs and which is the default).
 - **`invoke-do`, `make`, `research`** — require **Opera Neon** with an active sign-in.
 
 Run `opera-browser-cli --help` for the full command list, or `opera-browser-cli <command> --help` for per-command flags and examples.
