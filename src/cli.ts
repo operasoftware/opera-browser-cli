@@ -7,6 +7,7 @@ import { encode } from "@toon-format/toon";
 import { runAxiCli } from "axi-sdk-js";
 import {
   CdpError,
+  type ErrorCode,
   callTool,
   ensureBridge,
   getBridgeStatus,
@@ -2183,26 +2184,69 @@ function requireNeon(command: string): void {
   );
 }
 
+interface CdpResultErrorDescriptor {
+  match: (result: string) => boolean;
+  message: string | ((command: string) => string);
+  code: ErrorCode;
+  suggestions: (command: string) => string[];
+}
+
 /**
- * Opera Neon returns the "not signed in" message as text content on a
- * successful tool call (no MCP isError flag), so callTool resolves rather
- * than throws. Detect it here and convert to a CdpError so the UX matches
- * the thrown-error path.
+ * Error conditions that Opera returns as plain text content on a successful
+ * tool call (no MCP isError flag). Each descriptor is checked in order;
+ * the first match is converted to a CdpError.
  */
-function checkAiResultForSignInError(command: string, result: string): void {
-  if (
-    result.includes("User is not signed in") ||
-    (result.includes("Opera.dispatchAction") &&
-      result.includes("not signed in"))
-  ) {
-    throw new CdpError(
-      "Opera: user is not signed in",
-      "BROWSER_ERROR",
-      [
-        `Re-run \`opera-browser-cli ${command}\` after signing in`,
-        "Run `opera-browser-cli doctor` to inspect the current configuration",
-      ],
-    );
+const CDP_RESULT_ERRORS: readonly CdpResultErrorDescriptor[] = [
+  {
+    match: (r) =>
+      r.includes("User is not signed in") ||
+      (r.includes("Opera.dispatchAction") && r.includes("not signed in")),
+    message: "Opera: user is not signed in",
+    code: "BROWSER_ERROR",
+    suggestions: (cmd) => [
+      `Re-run \`opera-browser-cli ${cmd}\` after signing in`,
+      "Run `opera-browser-cli doctor` to inspect the current configuration",
+    ],
+  },
+  {
+    match: (r) => r.includes("Subscription required"),
+    message: "Opera: an active subscription is required",
+    code: "BROWSER_ERROR",
+    suggestions: (cmd) => [
+      "Check your Opera subscription at https://auth.opera.com/account/",
+      `Re-run \`opera-browser-cli ${cmd}\` after activating a subscription`,
+    ],
+  },
+  {
+    match: (r) => r.includes("User consent required"),
+    message: "Opera: user consent has not been accepted",
+    code: "BROWSER_ERROR",
+    suggestions: (cmd) => [
+      "Open Opera and accept the consent prompt before using AI features",
+      `Re-run \`opera-browser-cli ${cmd}\` after accepting consent`,
+    ],
+  },
+  {
+    match: (r) => r.includes("is only available on Opera Neon"),
+    message: (cmd) => `Opera: ${cmd} is only available on Opera Neon`,
+    code: "BROWSER_ERROR",
+    suggestions: () => [
+      "Install Opera Neon from https://www.operaneon.com",
+      "Run `opera-browser-cli setup` to configure the Opera Neon executable path",
+      "Run `opera-browser-cli doctor` to inspect the current configuration",
+    ],
+  },
+];
+
+function checkAiResultForCdpError(command: string, result: string): void {
+  for (const descriptor of CDP_RESULT_ERRORS) {
+    if (descriptor.match(result)) {
+      const message =
+        typeof descriptor.message === "function"
+          ? descriptor.message(command)
+          : descriptor.message;
+      throw new CdpError(message, descriptor.code, descriptor.suggestions(command));
+    }
   }
 }
 
@@ -2250,7 +2294,7 @@ async function handleChat(args: string[]): Promise<string> {
     toolArgs["model"] = model;
   }
   const result = await callAiTool("chat", "opera_chat", toolArgs);
-  checkAiResultForSignInError("chat", result);
+  checkAiResultForCdpError("chat", result);
   return formatMcpResult("result", result, []);
 }
 
@@ -2263,7 +2307,7 @@ async function handleInvokeDo(args: string[]): Promise<string> {
   }
   requireNeon("invoke-do");
   const result = await callAiTool("invoke-do", "opera_do", { prompt });
-  checkAiResultForSignInError("invoke-do", result);
+  checkAiResultForCdpError("invoke-do", result);
   return formatMcpResult("result", result, []);
 }
 
@@ -2276,7 +2320,7 @@ async function handleMake(args: string[]): Promise<string> {
   }
   requireNeon("make");
   const result = await callAiTool("make", "opera_make", { prompt });
-  checkAiResultForSignInError("make", result);
+  checkAiResultForCdpError("make", result);
   return formatMcpResult("result", result, []);
 }
 
@@ -2339,7 +2383,7 @@ async function handleResearch(args: string[]): Promise<string> {
   const toolArgs: Record<string, unknown> = { prompt };
   if (researchType !== undefined) toolArgs.researchType = researchType;
   const result = await callAiTool("research", "opera_research", toolArgs);
-  checkAiResultForSignInError("research", result);
+  checkAiResultForCdpError("research", result);
   return formatMcpResult("result", result, []);
 }
 
