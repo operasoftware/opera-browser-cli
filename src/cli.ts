@@ -38,6 +38,14 @@ const HOME_DESCRIPTION =
 const VERSION = readPackageVersion();
 const RAW_STDOUT_MARKER = "__OPERA_BROWSER_CLI_RAW__";
 
+
+const CdpResultErrorKey = {
+  NOT_SIGNED_IN: "[OPERA_CDP_ERR:NOT_SIGNED_IN]",
+  SUBSCRIPTION_REQUIRED: "[OPERA_CDP_ERR:SUBSCRIPTION_REQUIRED]",
+  CONSENT_REQUIRED: "[OPERA_CDP_ERR:CONSENT_REQUIRED]",
+  NEON_ONLY: "[OPERA_CDP_ERR:NEON_ONLY]",
+} as const;
+
 type CliStdout = Pick<NodeJS.WriteStream, "write">;
 
 export type MainOptions = {
@@ -2198,9 +2206,7 @@ interface CdpResultErrorDescriptor {
  */
 const CDP_RESULT_ERRORS: readonly CdpResultErrorDescriptor[] = [
   {
-    match: (r) =>
-      r.includes("User is not signed in") ||
-      (r.includes("Opera.dispatchAction") && r.includes("not signed in")),
+    match: (r) => r.includes(CdpResultErrorKey.NOT_SIGNED_IN),
     message: "Opera: user is not signed in",
     code: "BROWSER_ERROR",
     suggestions: (cmd) => [
@@ -2209,7 +2215,7 @@ const CDP_RESULT_ERRORS: readonly CdpResultErrorDescriptor[] = [
     ],
   },
   {
-    match: (r) => r.includes("Subscription required"),
+    match: (r) => r.includes(CdpResultErrorKey.SUBSCRIPTION_REQUIRED),
     message: "Opera: an active subscription is required",
     code: "BROWSER_ERROR",
     suggestions: (cmd) => [
@@ -2218,7 +2224,7 @@ const CDP_RESULT_ERRORS: readonly CdpResultErrorDescriptor[] = [
     ],
   },
   {
-    match: (r) => r.includes("User consent required"),
+    match: (r) => r.includes(CdpResultErrorKey.CONSENT_REQUIRED),
     message: "Opera: user consent has not been accepted",
     code: "BROWSER_ERROR",
     suggestions: (cmd) => [
@@ -2227,7 +2233,7 @@ const CDP_RESULT_ERRORS: readonly CdpResultErrorDescriptor[] = [
     ],
   },
   {
-    match: (r) => r.includes("is only available on Opera Neon"),
+    match: (r) => r.includes(CdpResultErrorKey.NEON_ONLY),
     message: (cmd) => `Opera: ${cmd} is only available on Opera Neon`,
     code: "BROWSER_ERROR",
     suggestions: () => [
