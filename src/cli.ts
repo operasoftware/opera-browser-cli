@@ -2394,19 +2394,10 @@ async function handleResearch(args: string[]): Promise<string> {
 }
 
 async function handleModels(): Promise<string> {
-  let raw: string;
-  try {
-    raw = await callTool("opera_list_models", {});
-  } catch (error) {
-    if (error instanceof CdpError) {
-      throw new CdpError(
-        "Model listing not supported by connected browser. Upgrade Opera or check connection.",
-        "UNSUPPORTED_OPERATION",
-        ['Run `opera-browser-cli doctor` to check the connection'],
-      );
-    }
-    throw error;
-  }
+  requireNeon("models");
+  const raw = await callTool("opera_list_models", {});
+  checkAiResultForCdpError("models", raw);
+
 
   let data: { models: Array<{ id: string; name: string; isDefault: boolean }> };
   try {
