@@ -288,6 +288,22 @@ Set `OPERA_CLI_DISABLE_HOOKS=1` to skip that auto-install behavior.
 
 Development entrypoints such as `npm run dev` and `bin/opera-browser-cli.ts` do not modify those hook files.
 
+## Docker / OpenClaw
+
+A ready-made Docker setup runs `opera-browser-cli` as a tool inside an
+[OpenClaw](https://openclaw.ai) agent gateway, with a headless Chrome sidecar handling
+the browser. No local browser or Node.js install is required on the host — Docker is
+the only prerequisite. The skill is registered automatically so OpenClaw agents can
+invoke `opera-browser-cli` commands directly.
+
+The `docker/` directory ships with the npm package:
+
+```sh
+cd "$(npm root -g)/opera-browser-cli/openclaw"
+```
+
+See [`openclaw/README.md`](openclaw/README.md) for the full setup guide.
+
 ## Local Setup (Full Stack)
 
 Both `opera-devtools-mcp` and `opera-browser-cli` need to be built and linked so they're available in PATH.

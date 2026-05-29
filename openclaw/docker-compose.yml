@@ -1,0 +1,49 @@
+services:
+  # Dedicated headless Chrome sidecar — ARM64-compatible, pre-configured for Docker.
+  # opera-browser-cli connects to it via CDP at localhost:9222 (shared network namespace).
+  chrome:
+    image: chromedp/headless-shell:latest
+    # Chrome's CDP HTTP server rejects non-IP/non-localhost Host headers.
+    # The openclaw service uses network_mode: service:chrome so it sees Chrome
+    # as localhost, bypassing that check without needing --remote-allow-origins tricks.
+    ports:
+      # Expose OpenClaw's gateway through the chrome container (openclaw shares this netns)
+      - "18789:18789"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9222' 2>/dev/null"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  openclaw:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      chrome:
+        condition: service_healthy
+    # Share chrome's network namespace so localhost:9222 IS the Chrome CDP port
+    network_mode: "service:chrome"
+    environment:
+      # localhost:9222 resolves inside chrome's netns
+      OPERA_CLI_BROWSER_URL: http://localhost:9222
+
+      # OpenClaw: skip the interactive first-run wizard
+      OPENCLAW_SKIP_ONBOARDING: "1"
+      # Disable mDNS advertising (not useful inside Docker)
+      OPENCLAW_DISABLE_BONJOUR: "1"
+
+    volumes:
+      # Persist OpenClaw config and workspace across container restarts
+      - openclaw-config:/home/node/.openclaw
+      - openclaw-auth:/home/node/.config/openclaw
+
+    shm_size: 256m
+
+    restart: unless-stopped
+
+volumes:
+  openclaw-config:
+  openclaw-auth:
