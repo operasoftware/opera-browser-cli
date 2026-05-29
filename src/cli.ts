@@ -2466,7 +2466,7 @@ function warnIfUnconfigured(argv: string[]): void {
   const cmd = argv[0];
   if (cmd !== undefined && SETUP_SKIP_COMMANDS.has(cmd)) return;
   const configFile = join(homedir(), ".opera-browser-cli", "config");
-  if (!existsSync(configFile) && !process.env.OPERA_CLI_EXECUTABLE_PATH) {
+  if (!existsSync(configFile) && !process.env.OPERA_CLI_EXECUTABLE_PATH && !process.env.OPERA_CLI_BROWSER_URL) {
     process.stderr.write(
       "hint: run `opera-browser-cli setup` to configure (first-time setup)\n",
     );

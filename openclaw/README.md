@@ -161,8 +161,10 @@ first and then `open`.
 
 **Chrome connection errors (`Failed to fetch browser webSocket URL`)**
 
-The headless-shell container may not be ready yet. Wait a few seconds and retry.
-Check its status with `docker compose ps`.
+The reference `docker-compose.yml` uses a healthcheck on the `chrome` service so
+OpenClaw only starts after Chrome's CDP port is confirmed open. If you see this error
+with a custom compose file, add the healthcheck and `condition: service_healthy` to
+your `depends_on` — see the reference `docker-compose.yml` for the exact config.
 
 **Chromium SIGTRAP / crash if using a different base image or architecture**
 

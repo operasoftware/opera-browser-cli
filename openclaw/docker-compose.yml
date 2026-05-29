@@ -10,13 +10,20 @@ services:
       # Expose OpenClaw's gateway through the chrome container (openclaw shares this netns)
       - "18789:18789"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9222' 2>/dev/null"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
 
   openclaw:
     build:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - chrome
+      chrome:
+        condition: service_healthy
     # Share chrome's network namespace so localhost:9222 IS the Chrome CDP port
     network_mode: "service:chrome"
     environment:
