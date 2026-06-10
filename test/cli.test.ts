@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { formatStopOutput, formatScreenshotOutput, getCommandHelp, parseScreenshotArgs } from "../src/cli.js";
+import { formatStopOutput, formatScreenshotOutput, getCommandHelp, parseChatArgs, parseScreenshotArgs } from "../src/cli.js";
 
 describe("formatStopOutput", () => {
   it("returns stopped status when bridge was running", () => {
@@ -79,5 +79,32 @@ describe("formatScreenshotOutput", () => {
   it("includes file path in output", () => {
     const output = formatScreenshotOutput("./shot.png");
     expect(output).toContain("./shot.png");
+  });
+});
+
+describe("parseChatArgs", () => {
+  it("parses prompt only", () => {
+    const result = parseChatArgs(["Hello", "world"]);
+    expect(result).toEqual({ prompt: "Hello world", model: undefined });
+  });
+
+  it("parses --model flag with prompt", () => {
+    const result = parseChatArgs(["--model", "gpt-4o", "What", "is", "this?"]);
+    expect(result).toEqual({ prompt: "What is this?", model: "gpt-4o" });
+  });
+
+  it("parses --model at end of args", () => {
+    const result = parseChatArgs(["Hello", "--model", "claude-sonnet-4"]);
+    expect(result).toEqual({ prompt: "Hello", model: "claude-sonnet-4" });
+  });
+
+  it("returns empty prompt when only --model is given", () => {
+    const result = parseChatArgs(["--model", "gpt-4o"]);
+    expect(result).toEqual({ prompt: "", model: "gpt-4o" });
+  });
+
+  it("ignores --model without a value", () => {
+    const result = parseChatArgs(["Hello", "--model"]);
+    expect(result).toEqual({ prompt: "Hello", model: undefined });
   });
 });

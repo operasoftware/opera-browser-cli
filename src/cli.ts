@@ -7,6 +7,7 @@ import { encode } from "@toon-format/toon";
 import { runAxiCli } from "axi-sdk-js";
 import {
   CdpError,
+  type ErrorCode,
   callTool,
   ensureBridge,
   getBridgeStatus,
@@ -37,6 +38,14 @@ const HOME_DESCRIPTION =
 const VERSION = readPackageVersion();
 const RAW_STDOUT_MARKER = "__OPERA_BROWSER_CLI_RAW__";
 
+
+const CdpResultErrorKey = {
+  NOT_SIGNED_IN: "[OPERA_CDP_ERR:NOT_SIGNED_IN]",
+  SUBSCRIPTION_REQUIRED: "[OPERA_CDP_ERR:SUBSCRIPTION_REQUIRED]",
+  CONSENT_REQUIRED: "[OPERA_CDP_ERR:CONSENT_REQUIRED]",
+  NEON_ONLY: "[OPERA_CDP_ERR:NEON_ONLY]",
+} as const;
+
 type CliStdout = Pick<NodeJS.WriteStream, "write">;
 
 export type MainOptions = {
@@ -54,7 +63,8 @@ commands[41]:
   resize <w> <h>, emulate, console, console-get <id>, network,
   network-get [id], lighthouse, perf-start, perf-stop,
   perf-insight <set> <name>, heap <path>, start, stop,
-  chat <prompt>, invoke-do <prompt>, make <prompt>, research <prompt>,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
   setup, logs, doctor
 
 flags[2]:
@@ -77,7 +87,8 @@ environment:
   Run \`opera-browser-cli setup\` to configure interactively.
 
 opera ai:
-  chat is available on any Opera browser.
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
   invoke-do, make, and research require Opera Neon with an active sign-in.
   Run \`opera-browser-cli setup\` to configure the executable path, or set
   OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
@@ -543,15 +554,18 @@ examples:
   opera-browser-cli heap ./snapshot.heapsnapshot`,
 
   // Opera AI
-  chat: `usage: opera-browser-cli chat <prompt>
+  chat: `usage: opera-browser-cli chat [--model <model-id>] <prompt>
 Send a chat message to the Opera AI.
 
 args:
   <prompt>  Message to send (required)
 
+options:
+  --model <model-id>  AI model to use (run "opera-browser-cli models" to list)
+
 examples:
   opera-browser-cli chat "Hello, who are you?"
-  opera-browser-cli chat "What can you help me with?"`,
+  opera-browser-cli chat --model claude-sonnet-4 "Summarize this page"`,
 
   "invoke-do": `usage: opera-browser-cli invoke-do <prompt>
 Ask the Opera AI to perform a complex browsing task.
@@ -589,6 +603,12 @@ examples:
   opera-browser-cli research "the history of the Roman Empire"
   opera-browser-cli research "advances in CRISPR gene editing" --type deep
   opera-browser-cli research "best practices for React performance" --type one-minute`,
+
+  models: `usage: opera-browser-cli models
+List available AI models for chat.
+
+examples:
+  opera-browser-cli models`,
 
   setup: `usage: opera-browser-cli setup
 Interactive configuration wizard. Detects Opera Neon and writes settings to
@@ -2172,26 +2192,67 @@ function requireNeon(command: string): void {
   );
 }
 
+interface CdpResultErrorDescriptor {
+  match: (result: string) => boolean;
+  message: string | ((command: string) => string);
+  code: ErrorCode;
+  suggestions: (command: string) => string[];
+}
+
 /**
- * Opera Neon returns the "not signed in" message as text content on a
- * successful tool call (no MCP isError flag), so callTool resolves rather
- * than throws. Detect it here and convert to a CdpError so the UX matches
- * the thrown-error path.
+ * Error conditions that Opera returns as plain text content on a successful
+ * tool call (no MCP isError flag). Each descriptor is checked in order;
+ * the first match is converted to a CdpError.
  */
-function checkAiResultForSignInError(command: string, result: string): void {
-  if (
-    result.includes("User is not signed in") ||
-    (result.includes("Opera.dispatchAction") &&
-      result.includes("not signed in"))
-  ) {
-    throw new CdpError(
-      "Opera: user is not signed in",
-      "BROWSER_ERROR",
-      [
-        `Re-run \`opera-browser-cli ${command}\` after signing in`,
-        "Run `opera-browser-cli doctor` to inspect the current configuration",
-      ],
-    );
+const CDP_RESULT_ERRORS: readonly CdpResultErrorDescriptor[] = [
+  {
+    match: (r) => r.includes(CdpResultErrorKey.NOT_SIGNED_IN),
+    message: "Opera: user is not signed in",
+    code: "BROWSER_ERROR",
+    suggestions: (cmd) => [
+      `Re-run \`opera-browser-cli ${cmd}\` after signing in`,
+      "Run `opera-browser-cli doctor` to inspect the current configuration",
+    ],
+  },
+  {
+    match: (r) => r.includes(CdpResultErrorKey.SUBSCRIPTION_REQUIRED),
+    message: "Opera: an active subscription is required",
+    code: "BROWSER_ERROR",
+    suggestions: (cmd) => [
+      "Check your Opera subscription at https://auth.opera.com/account/",
+      `Re-run \`opera-browser-cli ${cmd}\` after activating a subscription`,
+    ],
+  },
+  {
+    match: (r) => r.includes(CdpResultErrorKey.CONSENT_REQUIRED),
+    message: "Opera: user consent has not been accepted",
+    code: "BROWSER_ERROR",
+    suggestions: (cmd) => [
+      "Open Opera and accept the consent prompt before using AI features",
+      `Re-run \`opera-browser-cli ${cmd}\` after accepting consent`,
+    ],
+  },
+  {
+    match: (r) => r.includes(CdpResultErrorKey.NEON_ONLY),
+    message: (cmd) => `Opera: ${cmd} is only available on Opera Neon`,
+    code: "BROWSER_ERROR",
+    suggestions: () => [
+      "Install Opera Neon from https://www.operaneon.com",
+      "Run `opera-browser-cli setup` to configure the Opera Neon executable path",
+      "Run `opera-browser-cli doctor` to inspect the current configuration",
+    ],
+  },
+];
+
+function checkAiResultForCdpError(command: string, result: string): void {
+  for (const descriptor of CDP_RESULT_ERRORS) {
+    if (descriptor.match(result)) {
+      const message =
+        typeof descriptor.message === "function"
+          ? descriptor.message(command)
+          : descriptor.message;
+      throw new CdpError(message, descriptor.code, descriptor.suggestions(command));
+    }
   }
 }
 
@@ -2227,14 +2288,19 @@ async function callAiTool(
 }
 
 async function handleChat(args: string[]): Promise<string> {
-  const prompt = args.join(" ");
+  const { prompt, model } = parseChatArgs(args);
   if (!prompt) {
     throw new CdpError("Missing prompt", "VALIDATION_ERROR", [
       'Run `opera-browser-cli chat "What is on this page?"` to chat with Opera AI',
+      "Use --model <id> to select a model (run `opera-browser-cli models` to list)",
     ]);
   }
-  const result = await callAiTool("chat", "opera_chat", { prompt });
-  checkAiResultForSignInError("chat", result);
+  const toolArgs: Record<string, unknown> = { prompt };
+  if (model !== undefined) {
+    toolArgs["model"] = model;
+  }
+  const result = await callAiTool("chat", "opera_chat", toolArgs);
+  checkAiResultForCdpError("chat", result);
   return formatMcpResult("result", result, []);
 }
 
@@ -2247,7 +2313,7 @@ async function handleInvokeDo(args: string[]): Promise<string> {
   }
   requireNeon("invoke-do");
   const result = await callAiTool("invoke-do", "opera_do", { prompt });
-  checkAiResultForSignInError("invoke-do", result);
+  checkAiResultForCdpError("invoke-do", result);
   return formatMcpResult("result", result, []);
 }
 
@@ -2260,12 +2326,30 @@ async function handleMake(args: string[]): Promise<string> {
   }
   requireNeon("make");
   const result = await callAiTool("make", "opera_make", { prompt });
-  checkAiResultForSignInError("make", result);
+  checkAiResultForCdpError("make", result);
   return formatMcpResult("result", result, []);
 }
 
 const VALID_RESEARCH_TYPES = ["local", "one-minute", "deep"] as const;
 type ResearchType = (typeof VALID_RESEARCH_TYPES)[number];
+
+export function parseChatArgs(args: string[]): {
+  prompt: string;
+  model?: string;
+} {
+  let model: string | undefined;
+  const promptParts: string[] = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--model") {
+      if (i + 1 < args.length) {
+        model = args[++i];
+      }
+    } else {
+      promptParts.push(args[i]);
+    }
+  }
+  return { prompt: promptParts.join(" "), model };
+}
 
 export function parseResearchArgs(args: string[]): {
   prompt: string;
@@ -2305,8 +2389,34 @@ async function handleResearch(args: string[]): Promise<string> {
   const toolArgs: Record<string, unknown> = { prompt };
   if (researchType !== undefined) toolArgs.researchType = researchType;
   const result = await callAiTool("research", "opera_research", toolArgs);
-  checkAiResultForSignInError("research", result);
+  checkAiResultForCdpError("research", result);
   return formatMcpResult("result", result, []);
+}
+
+async function handleModels(): Promise<string> {
+  requireNeon("models");
+  const raw = await callTool("opera_list_models", {});
+  checkAiResultForCdpError("models", raw);
+
+
+  let data: { models: Array<{ id: string; name: string; isDefault: boolean }> };
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    throw new CdpError(
+      raw || "Model listing returned an invalid response",
+      /Tool.*not found/i.test(raw) ? "UNSUPPORTED_OPERATION" : "UNKNOWN",
+      ['Run `opera-browser-cli doctor` to check the connection'],
+    );
+  }
+
+  const lines = ["Available models:"];
+  for (const m of data.models) {
+    const marker = m.isDefault ? "* " : "  ";
+    const suffix = m.isDefault ? " (default)" : "";
+    lines.push(`  ${marker}${m.id}${suffix}`);
+  }
+  return lines.join("\n");
 }
 
 async function handleRun(): Promise<string> {
@@ -2455,6 +2565,7 @@ const COMMANDS: Record<string, CommandFn> = {
   "invoke-do": withoutFullFlag(handleInvokeDo),
   make: withoutFullFlag(handleMake),
   research: withoutFullFlag(handleResearch),
+  models: withoutFullFlag(handleModels),
   setup: withoutFullFlag(handleSetup),
   logs: withoutFullFlag(handleLogs),
   doctor: withoutFullFlag(handleDoctor),
