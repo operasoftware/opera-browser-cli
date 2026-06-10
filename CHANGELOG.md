@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.36](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.35...opera-browser-cli-v0.1.36) (2026-06-10)
+
+
+### Features
+
+* chat model selector ([b018f3a](https://github.com/operasoftware/opera-browser-cli/commit/b018f3a27c19a38db1be88cf52a423f2edb5cb35))
+* **cli:** add models command for listing available AI models ([09481c6](https://github.com/operasoftware/opera-browser-cli/commit/09481c60d840d6ab9276881e0bcb5f0c9e12980f))
+* **cli:** add parseChatArgs for --model flag ([10c1b4f](https://github.com/operasoftware/opera-browser-cli/commit/10c1b4fa5a47b41246edb79041848c2304c12428))
+* **cli:** wire --model flag into handleChat ([d322270](https://github.com/operasoftware/opera-browser-cli/commit/d322270d89c3332599b0fe761ecaac38539c2485))
+* enhance transport arguments for external extension loading ([2892cce](https://github.com/operasoftware/opera-browser-cli/commit/2892cce9db480f4d05088044b2a486f86a19d9fa))
+* enhance transport arguments for external extension loading ([6c68952](https://github.com/operasoftware/opera-browser-cli/commit/6c689524fd97f6eac0d17a1d0c027a1a43410d46))
+
+
+### Bug Fixes
+
+* **cli:** improve error handling for model listing response ([e6918a5](https://github.com/operasoftware/opera-browser-cli/commit/e6918a579cfdec28f832c401b3c1fd09fef571d9))
+* suppress setup hint and ensure Chrome readiness in Docker setup ([48675b1](https://github.com/operasoftware/opera-browser-cli/commit/48675b1b312410cba837a816239cfbe31b63f445))
+
 ## [0.1.35](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.34...opera-browser-cli-v0.1.35) (2026-05-22)
 
 
