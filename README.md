@@ -5,7 +5,7 @@
 `opera-browser-cli` is a fork of [chrome-devtools-axi](https://github.com/kunchenguid/chrome-devtools-axi).
 It wraps [opera-devtools-mcp](https://github.com/operasoftware/opera-devtools-mcp) with an [AXI](https://axi.md)-compliant CLI.
 
-- **Token-efficient** — TOON-encoded output cuts token usage ~40% vs raw JSON
+- **Token-efficient** — compact page snapshots cut token usage up to 80% vs raw MCP; TOON encoding reduces metadata overhead further (`opera-compact` in [benchmarks](#benchmarks))
 - **Combined operations** — one command navigates, captures, and suggests next steps
 - **Contextual suggestions** — every response includes actionable next-step hints
 
