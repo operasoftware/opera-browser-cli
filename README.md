@@ -272,7 +272,7 @@ session is active or the no-session status/help block when one is not.
 | `OPERA_CLI_USER_DATA_DIR`   | —                                | Persistent Chrome profile directory (skips isolated mode)        |
 | `OPERA_CLI_HEADED`          | —                                | Set to `1` to run in headed (visible) mode                       |
 | `OPERA_CLI_CHROME_ARGS`     | —                                | Extra Chrome flags, space-separated                              |
-| `OPERA_CLI_DISABLE_HOOKS`   | —                                | Set to `1` to skip auto-installing session hooks                 |
+| `OPERA_CLI_ENABLE_HOOKS`    | —                                | Set to `1` to auto-install session hooks on startup              |
 
 State is stored in `~/.opera-browser-cli/`:
 
@@ -282,9 +282,7 @@ State is stored in `~/.opera-browser-cli/`:
 
 ### Session Hooks
 
-On supported agents, the packaged CLI also installs a `SessionStart` hook in `~/.claude/settings.json` and `~/.codex/hooks.json`, and enables `codex_hooks` in `~/.codex/config.toml`.
-
-Set `OPERA_CLI_DISABLE_HOOKS=1` to skip that auto-install behavior.
+Session hooks are opt-in. Set `OPERA_CLI_ENABLE_HOOKS=1` to have the packaged CLI auto-install a `SessionStart` hook in `~/.claude/settings.json` and `~/.codex/hooks.json` (and enable `codex_hooks` in `~/.codex/config.toml`) on supported agents.
 
 Development entrypoints such as `npm run dev` and `bin/opera-browser-cli.ts` do not modify those hook files.
 

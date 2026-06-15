@@ -81,7 +81,7 @@ environment:
   OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
                                     e.g. "/path/to/.chrome-profile"
   OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
-  OPERA_CLI_DISABLE_HOOKS Set to 1 to skip auto-installing session hooks
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
 
   Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
   Run \`opera-browser-cli setup\` to configure interactively.
@@ -2038,13 +2038,8 @@ async function runDoctorChecks(): Promise<DoctorCheck[]> {
   const codexHooks = join(home, ".codex", "hooks.json");
   const claudeHas = fileContainsMarker(claudeSettings, "opera-browser-cli");
   const codexHas = fileContainsMarker(codexHooks, "opera-browser-cli");
-  if (!claudeHas && !codexHas) {
-    checks.push({
-      name: "hooks",
-      status: "warn",
-      detail: "no opera-browser-cli session hook found in .claude or .codex configs",
-    });
-  } else {
+  const hooksEnabled = process.env.OPERA_CLI_ENABLE_HOOKS === "1";
+  if (claudeHas || codexHas) {
     const installed: string[] = [];
     if (claudeHas) installed.push("claude");
     if (codexHas) installed.push("codex");
@@ -2052,6 +2047,18 @@ async function runDoctorChecks(): Promise<DoctorCheck[]> {
       name: "hooks",
       status: "ok",
       detail: `installed for ${installed.join(", ")}`,
+    });
+  } else if (hooksEnabled) {
+    checks.push({
+      name: "hooks",
+      status: "warn",
+      detail: "OPERA_CLI_ENABLE_HOOKS=1 but no session hook found in .claude or .codex configs",
+    });
+  } else {
+    checks.push({
+      name: "hooks",
+      status: "ok",
+      detail: "opt-in (set OPERA_CLI_ENABLE_HOOKS=1 to enable)",
     });
   }
 
@@ -2109,7 +2116,7 @@ async function handleDoctor(_args: string[]): Promise<string> {
   }
   if (checks.some((c) => c.name === "hooks" && c.status !== "ok")) {
     help.push(
-      "Reinstall opera-browser-cli to register session hooks, or set OPERA_CLI_DISABLE_HOOKS=1 to silence",
+      "Run any command with OPERA_CLI_ENABLE_HOOKS=1 to install session hooks",
     );
   }
 
@@ -2601,9 +2608,7 @@ export async function main(
     description: HOME_DESCRIPTION,
     version: VERSION,
     topLevelHelp: TOP_HELP,
-    ...(process.env.OPERA_CLI_DISABLE_HOOKS === "1"
-      ? { hooks: false }
-      : {}),
+    hooks: process.env.OPERA_CLI_ENABLE_HOOKS === "1" ? undefined : false,
     home: async (args) => handleHome(homeFull || splitFullFlag(args).full),
     commands: COMMANDS,
     getCommandHelp,
