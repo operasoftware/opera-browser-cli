@@ -24,6 +24,7 @@ import {
   type ServerResponse,
 } from "node:http";
 import { existsSync, mkdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { randomBytes, timingSafeEqual } from "node:crypto";
 import { extractPageOrigin } from "./snapshot.js";
 import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
@@ -103,9 +104,19 @@ export async function isBridgeClientConnected(
   }
 }
 
-function writePidFile(port: number): void {
+function writePidFile(port: number, token: string): void {
   mkdirSync(STATE_DIR, { recursive: true });
-  writeFileSync(PID_FILE, JSON.stringify({ pid: process.pid, port }));
+  // Unlink first: writeFileSync's `mode` only applies on create, so overwriting
+  // a stale file would keep its looser perms and expose the token.
+  try {
+    unlinkSync(PID_FILE);
+  } catch {
+    // Didn't exist — fine
+  }
+  // 0600: only the owning user may read the auth token.
+  writeFileSync(PID_FILE, JSON.stringify({ pid: process.pid, port, token }), {
+    mode: 0o600,
+  });
 }
 
 function removePidFile(): void {
@@ -185,6 +196,94 @@ function writeJson(
 ): void {
   res.statusCode = statusCode;
   res.end(JSON.stringify(payload));
+}
+
+// ---------------------------------------------------------------------------
+// Access control — the bridge can run arbitrary in-browser script, so a loopback
+// bind is not enough. Each request is verified on:
+//   - Host: loopback only — rejects requests arriving under another hostname (DNS rebinding).
+//   - Origin: absent or loopback only — rejects browser cross-site calls (which always carry one).
+//   - Bearer token: required on every route except /health — gates local non-browser callers.
+// ---------------------------------------------------------------------------
+
+const LOOPBACK_HOSTNAMES = new Set(["127.0.0.1", "localhost", "[::1]", "::1"]);
+
+/** True when a Host/Origin host component (with optional port) is loopback. */
+export function isLoopbackHost(hostHeader: string | undefined): boolean {
+  if (!hostHeader) return false;
+  let hostname: string;
+  if (hostHeader.startsWith("[")) {
+    // IPv6 literal, e.g. "[::1]:9225" → keep the bracketed form.
+    const end = hostHeader.indexOf("]");
+    hostname = end === -1 ? hostHeader : hostHeader.slice(0, end + 1);
+  } else {
+    hostname = hostHeader.split(":")[0];
+  }
+  return LOOPBACK_HOSTNAMES.has(hostname);
+}
+
+/** Browsers always attach Origin; the CLI never does. Absent = trusted; present = must be loopback. */
+export function isAllowedOrigin(originHeader: string | undefined): boolean {
+  if (originHeader === undefined) return true;
+  try {
+    return isLoopbackHost(new URL(originHeader).host);
+  } catch {
+    return false;
+  }
+}
+
+function timingSafeStrEqual(a: string, b: string): boolean {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) return false;
+  return timingSafeEqual(bufA, bufB);
+}
+
+/** Extract the token from an `Authorization: Bearer <token>` header. */
+export function extractBearerToken(
+  authHeader: string | undefined,
+): string | null {
+  if (!authHeader) return null;
+  const match = /^Bearer\s+(.+)$/i.exec(authHeader.trim());
+  return match ? match[1] : null;
+}
+
+export interface BridgeAccessResult {
+  ok: boolean;
+  status?: number;
+  error?: string;
+}
+
+/**
+ * Gate on a loopback Host and an absent-or-loopback Origin; protected routes
+ * also require the bearer token (null token skips the check, for tests).
+ */
+export function checkRequestAccess(
+  req: IncomingMessage,
+  token: string | null,
+  requireToken: boolean,
+): BridgeAccessResult {
+  if (!isLoopbackHost(req.headers.host)) {
+    return { ok: false, status: 403, error: "forbidden: invalid Host header" };
+  }
+  if (!isAllowedOrigin(req.headers.origin)) {
+    return {
+      ok: false,
+      status: 403,
+      error: "forbidden: cross-origin request rejected",
+    };
+  }
+  if (requireToken && token) {
+    const provided = extractBearerToken(req.headers.authorization);
+    if (!provided || !timingSafeStrEqual(provided, token)) {
+      return { ok: false, status: 401, error: "unauthorized" };
+    }
+  }
+  return { ok: true };
+}
+
+export function generateBridgeToken(): string {
+  return randomBytes(32).toString("hex");
 }
 
 async function handleToolsRequest(
@@ -282,15 +381,31 @@ export async function handleBridgeRequest(
   req: IncomingMessage,
   res: ServerResponse,
   captureNextId?: () => Promise<string>,
+  token: string | null = null,
 ): Promise<void> {
   res.setHeader("Content-Type", "application/json");
 
+  // Host/Origin guard runs on every route, including /health.
+  const baseAccess = checkRequestAccess(req, token, false);
+  if (!baseAccess.ok) {
+    writeJson(res, baseAccess.status ?? 403, { error: baseAccess.error });
+    return;
+  }
+
+  // /health is token-free so the CLI can detect a running bridge before it knows the token.
   if (req.method === "GET" && req.url === "/health") {
     if (await isBridgeClientConnected(client)) {
       writeJson(res, 200, { status: "ok", server: "opera-browser-cli" });
     } else {
       writeJson(res, 503, { status: "not-connected", server: "opera-browser-cli" });
     }
+    return;
+  }
+
+  // Every remaining route exposes browser state or automation — require the token.
+  const tokenAccess = checkRequestAccess(req, token, true);
+  if (!tokenAccess.ok) {
+    writeJson(res, tokenAccess.status ?? 401, { error: tokenAccess.error });
     return;
   }
 
@@ -324,9 +439,10 @@ export async function handleBridgeRequest(
 export function createBridgeServer(
   client: BridgeClient,
   captureNextId?: () => Promise<string>,
+  token: string | null = null,
 ): Server {
   return createServer((req, res) => {
-    void handleBridgeRequest(client, req, res, captureNextId);
+    void handleBridgeRequest(client, req, res, captureNextId, token);
   });
 }
 
@@ -511,9 +627,10 @@ export async function runBridge(port = DEFAULT_PORT): Promise<void> {
   await client.connect(transport);
   logBridgeMessage("Connected to opera-devtools-mcp");
 
-  const server = createBridgeServer(client, captureNextId);
+  const token = generateBridgeToken();
+  const server = createBridgeServer(client, captureNextId, token);
   server.listen(port, "127.0.0.1", () => {
-    writePidFile(port);
+    writePidFile(port, token);
     logBridgeMessage(`Listening on http://127.0.0.1:${port}`);
     writeReadySignal();
   });

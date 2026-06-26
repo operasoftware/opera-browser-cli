@@ -86,6 +86,7 @@ export class CdpError extends AxiError {
 interface PidInfo {
   pid: number;
   port: number;
+  token?: string;
 }
 
 function readPidFile(): PidInfo | null {
@@ -101,6 +102,11 @@ function readPidFile(): PidInfo | null {
   }
 }
 
+/** Read the bridge's per-instance auth token from the PID file, if present. */
+function readBridgeToken(): string | null {
+  return readPidFile()?.token ?? null;
+}
+
 function isProcessAlive(pid: number): boolean {
   try {
     process.kill(pid, 0);
@@ -114,10 +120,18 @@ function httpGet(
   port: number,
   path: string,
   timeoutMs = 2000,
+  token?: string | null,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const req = request(
-      { hostname: "127.0.0.1", port, path, method: "GET", timeout: timeoutMs },
+      {
+        hostname: "127.0.0.1",
+        port,
+        path,
+        method: "GET",
+        timeout: timeoutMs,
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      },
       (res) => {
         let data = "";
         res.on("data", (chunk) => (data += chunk));
@@ -139,6 +153,7 @@ function httpPost(
   body: unknown,
   timeoutMs = 120_000,
   onLog?: (message: string) => void,
+  token?: string | null,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const payload = JSON.stringify(body);
@@ -152,6 +167,7 @@ function httpPost(
         headers: {
           "Content-Type": "application/json",
           "Content-Length": Buffer.byteLength(payload),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       },
       (res) => {
@@ -342,7 +358,8 @@ export async function callTool(
     : undefined;
 
   try {
-    const resp = await httpPost(port, "/call", { name, args }, timeoutMs, onLog);
+    const token = readBridgeToken();
+    const resp = await httpPost(port, "/call", { name, args }, timeoutMs, onLog, token);
     const data = JSON.parse(resp);
     if (data.error) {
       throw new Error(data.error);
@@ -447,7 +464,7 @@ export async function getLastSnapshot(): Promise<LastSnapshotCache | null> {
   const pidInfo = readPidFile();
   if (!pidInfo || !isProcessAlive(pidInfo.pid)) return null;
   try {
-    const resp = await httpGet(pidInfo.port, "/last-snapshot", 2000);
+    const resp = await httpGet(pidInfo.port, "/last-snapshot", 2000, pidInfo.token);
     const data = JSON.parse(resp) as { error?: string } & Partial<LastSnapshotCache>;
     if (data.error || !data.raw) return null;
     return { raw: data.raw, pageUrl: data.pageUrl ?? null, capturedAt: data.capturedAt ?? 0 };
@@ -470,6 +487,8 @@ export async function getSessionSnapshotIfRunning(): Promise<string | null> {
       "/call",
       { name: "take_snapshot", args: {} },
       5000,
+      undefined,
+      pidInfo.token,
     );
     const data = JSON.parse(resp);
     if (data.error) return null;

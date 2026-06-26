@@ -4,11 +4,16 @@ import type { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdi
 import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
 import {
   buildTransportArgs,
+  checkRequestAccess,
+  extractBearerToken,
   extractToolText,
+  generateBridgeToken,
   getErrorMessage,
   getLastSnapshotCache,
   handleBridgeRequest,
+  isAllowedOrigin,
   isBridgeClientConnected,
+  isLoopbackHost,
   parseBridgeCallPayload,
   resolveBridgeScript,
   resetLastSnapshotCache,
@@ -212,10 +217,16 @@ function makeMockTransport() {
   return transport;
 }
 
-function makeMockRequest(method: string, url: string, body = ""): IncomingMessage {
+function makeMockRequest(
+  method: string,
+  url: string,
+  body = "",
+  headers: Record<string, string> = { host: "127.0.0.1:9225" },
+): IncomingMessage {
   return {
     method,
     url,
+    headers,
     [Symbol.asyncIterator]: async function* () { yield body; },
   } as unknown as IncomingMessage;
 }
@@ -307,6 +318,187 @@ describe("wrapTransportForIdCapture", () => {
 
     expect(sentMessages).toHaveLength(1);
     expect(sentMessages[0]).toBe(msg);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Access control — Host / Origin guard + bearer token
+// ---------------------------------------------------------------------------
+
+describe("isLoopbackHost", () => {
+  it("accepts loopback hostnames with or without a port", () => {
+    expect(isLoopbackHost("127.0.0.1:9225")).toBe(true);
+    expect(isLoopbackHost("localhost:9225")).toBe(true);
+    expect(isLoopbackHost("127.0.0.1")).toBe(true);
+    expect(isLoopbackHost("[::1]:9225")).toBe(true);
+  });
+
+  it("rejects non-loopback and missing hosts", () => {
+    expect(isLoopbackHost("mario.evil.example:9225")).toBe(false);
+    expect(isLoopbackHost("127.0.0.1.evil.example")).toBe(false);
+    expect(isLoopbackHost(undefined)).toBe(false);
+    expect(isLoopbackHost("")).toBe(false);
+  });
+});
+
+describe("isAllowedOrigin", () => {
+  it("allows an absent Origin (non-browser caller)", () => {
+    expect(isAllowedOrigin(undefined)).toBe(true);
+  });
+
+  it("allows loopback origins", () => {
+    expect(isAllowedOrigin("http://localhost:9225")).toBe(true);
+    expect(isAllowedOrigin("http://127.0.0.1:5173")).toBe(true);
+  });
+
+  it("rejects web origins and the null origin", () => {
+    expect(isAllowedOrigin("https://mario.evil.example")).toBe(false);
+    expect(isAllowedOrigin("null")).toBe(false);
+  });
+});
+
+describe("extractBearerToken", () => {
+  it("parses a Bearer token case-insensitively", () => {
+    expect(extractBearerToken("Bearer abc123")).toBe("abc123");
+    expect(extractBearerToken("bearer abc123")).toBe("abc123");
+  });
+
+  it("returns null for missing or malformed headers", () => {
+    expect(extractBearerToken(undefined)).toBeNull();
+    expect(extractBearerToken("Basic abc123")).toBeNull();
+  });
+});
+
+describe("checkRequestAccess", () => {
+  const reqWith = (headers: Record<string, string>) =>
+    ({ headers } as unknown as IncomingMessage);
+
+  it("rejects a forged (non-loopback) Host header", () => {
+    const result = checkRequestAccess(
+      reqWith({ host: "mario.evil.example:9225" }),
+      null,
+      false,
+    );
+    expect(result.ok).toBe(false);
+    expect(result.status).toBe(403);
+  });
+
+  it("rejects a cross-origin request even with a loopback Host", () => {
+    const result = checkRequestAccess(
+      reqWith({ host: "127.0.0.1:9225", origin: "https://mario.evil.example" }),
+      null,
+      false,
+    );
+    expect(result.ok).toBe(false);
+    expect(result.status).toBe(403);
+  });
+
+  it("requires a valid bearer token on protected routes", () => {
+    const headers = { host: "127.0.0.1:9225" };
+    expect(checkRequestAccess(reqWith(headers), "secret", true).status).toBe(401);
+    expect(
+      checkRequestAccess(
+        reqWith({ ...headers, authorization: "Bearer wrong" }),
+        "secret",
+        true,
+      ).status,
+    ).toBe(401);
+    expect(
+      checkRequestAccess(
+        reqWith({ ...headers, authorization: "Bearer secret" }),
+        "secret",
+        true,
+      ).ok,
+    ).toBe(true);
+  });
+
+  it("accepts a loopback request with no Origin and no token required", () => {
+    expect(
+      checkRequestAccess(reqWith({ host: "127.0.0.1:9225" }), null, false).ok,
+    ).toBe(true);
+  });
+});
+
+describe("generateBridgeToken", () => {
+  it("produces a 64-char hex token that differs each call", () => {
+    const a = generateBridgeToken();
+    const b = generateBridgeToken();
+    expect(a).toMatch(/^[0-9a-f]{64}$/);
+    expect(a).not.toBe(b);
+  });
+});
+
+describe("handleBridgeRequest access control", () => {
+  const okClient: BridgeClient = {
+    listTools: async () => ({ tools: [{ name: "click", description: "" }] }),
+    callTool: async () => ({ content: [{ type: "text", text: "ok" }] }),
+    close: async () => {},
+  };
+
+  it("rejects a forged-Host /call with 403 before dispatching", async () => {
+    let called = false;
+    const spyClient: BridgeClient = {
+      ...okClient,
+      callTool: async () => { called = true; return { content: [] }; },
+    };
+    const req = makeMockRequest(
+      "POST",
+      "/call",
+      JSON.stringify({ name: "list_pages", args: {} }),
+      { host: "mario.evil.example:9225" },
+    );
+    const mock = makeMockResponse();
+    await handleBridgeRequest(spyClient, req, mock.res, undefined, "secret");
+    expect(mock.res.statusCode).toBe(403);
+    expect(called).toBe(false);
+  });
+
+  it("rejects a cross-origin /call with 403", async () => {
+    const req = makeMockRequest(
+      "POST",
+      "/call",
+      JSON.stringify({ name: "list_pages", args: {} }),
+      { host: "127.0.0.1:9225", origin: "https://mario.evil.example" },
+    );
+    const mock = makeMockResponse();
+    await handleBridgeRequest(okClient, req, mock.res, undefined, "secret");
+    expect(mock.res.statusCode).toBe(403);
+  });
+
+  it("rejects /call without the bearer token (401)", async () => {
+    const req = makeMockRequest(
+      "POST",
+      "/call",
+      JSON.stringify({ name: "list_pages", args: {} }),
+      { host: "127.0.0.1:9225" },
+    );
+    const mock = makeMockResponse();
+    await handleBridgeRequest(okClient, req, mock.res, undefined, "secret");
+    expect(mock.res.statusCode).toBe(401);
+  });
+
+  it("accepts /call with a valid bearer token", async () => {
+    const req = makeMockRequest(
+      "POST",
+      "/call",
+      JSON.stringify({ name: "list_pages", args: {} }),
+      { host: "127.0.0.1:9225", authorization: "Bearer secret" },
+    );
+    const mock = makeMockResponse();
+    await handleBridgeRequest(okClient, req, mock.res, undefined, "secret");
+    expect(JSON.parse(mock.endPayload)).toEqual({ result: "ok" });
+  });
+
+  it("serves /health without a token but still enforces the Host guard", async () => {
+    const good = makeMockRequest("GET", "/health", "", { host: "127.0.0.1:9225" });
+    const goodMock = makeMockResponse();
+    await handleBridgeRequest(okClient, good, goodMock.res, undefined, "secret");
+    expect(goodMock.res.statusCode).toBe(200);
+
+    const bad = makeMockRequest("GET", "/health", "", { host: "evil.example" });
+    const badMock = makeMockResponse();
+    await handleBridgeRequest(okClient, bad, badMock.res, undefined, "secret");
+    expect(badMock.res.statusCode).toBe(403);
   });
 });
 
