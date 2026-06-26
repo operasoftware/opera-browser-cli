@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.40](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.39...opera-browser-cli-v0.1.40) (2026-06-26)
+
+
+### Bug Fixes
+
+* **bridge:** add Host/Origin guard + per-instance bearer token to HTTP bridge ([a864cac](https://github.com/operasoftware/opera-browser-cli/commit/a864cac95b59a0809909ddd1411ec5225338b4fb))
+
 ## [0.1.36](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.35...opera-browser-cli-v0.1.36) (2026-06-10)
 
 
