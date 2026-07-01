@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1010 336" width="1010" height="336">
+<text x="48" y="46" fill="#d6d6d6" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13" letter-spacing="1.5">AVG SNAPSHOT LENGTH (k chars)</text>
+<text x="48" y="101" fill="#33a86f" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">opera-compact</text>
+<rect x="168" y="87.0" width="250" height="18" rx="3" fill="#c9c9c9"/>
+<rect x="168" y="87.0" width="81.5" height="18" rx="3" fill="#33a86f"/>
+<text x="430" y="101" fill="#d7d7d7" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">83.1k</text>
+<text x="48" y="159" fill="#b5b5b5" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">opera-raw</text>
+<rect x="168" y="145.0" width="250" height="18" rx="3" fill="#c9c9c9"/>
+<rect x="168" y="145.0" width="194.2" height="18" rx="3" fill="#8c8c8c"/>
+<text x="430" y="159" fill="#d7d7d7" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">198.1k</text>
+<text x="48" y="217" fill="#b5b5b5" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">axi</text>
+<rect x="168" y="203.0" width="250" height="18" rx="3" fill="#c9c9c9"/>
+<rect x="168" y="203.0" width="199.9" height="18" rx="3" fill="#8c8c8c"/>
+<text x="430" y="217" fill="#d7d7d7" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">203.9k</text>
+<text x="48" y="275" fill="#b5b5b5" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">mcp-raw</text>
+<rect x="168" y="261.0" width="250" height="18" rx="3" fill="#c9c9c9"/>
+<rect x="168" y="261.0" width="214.4" height="18" rx="3" fill="#8c8c8c"/>
+<text x="430" y="275" fill="#d7d7d7" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">218.7k</text>
+<text x="560" y="46" fill="#d6d6d6" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13" letter-spacing="1.5">AVG TOOL CALLS</text>
+<text x="560" y="101" fill="#33a86f" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">opera-compact</text>
+<rect x="680" y="87.0" width="250" height="18" rx="3" fill="#c9c9c9"/>
+<rect x="680" y="87.0" width="142.9" height="18" rx="3" fill="#33a86f"/>
+<text x="942" y="101" fill="#d7d7d7" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">1.4</text>
+<text x="560" y="159" fill="#b5b5b5" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">axi</text>
+<rect x="680" y="145.0" width="250" height="18" rx="3" fill="#c9c9c9"/>
+<rect x="680" y="145.0" width="153.1" height="18" rx="3" fill="#8c8c8c"/>
+<text x="942" y="159" fill="#d7d7d7" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">1.5</text>
+<text x="560" y="217" fill="#b5b5b5" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">opera-raw</text>
+<rect x="680" y="203.0" width="250" height="18" rx="3" fill="#c9c9c9"/>
+<rect x="680" y="203.0" width="163.3" height="18" rx="3" fill="#8c8c8c"/>
+<text x="942" y="217" fill="#d7d7d7" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">1.6</text>
+<text x="560" y="275" fill="#b5b5b5" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">mcp-raw</text>
+<rect x="680" y="261.0" width="250" height="18" rx="3" fill="#c9c9c9"/>
+<rect x="680" y="261.0" width="214.3" height="18" rx="3" fill="#8c8c8c"/>
+<text x="942" y="275" fill="#d7d7d7" font-family="'DejaVu Sans Mono','Menlo','Consolas',monospace" font-size="13">2.1</text>
+</svg>

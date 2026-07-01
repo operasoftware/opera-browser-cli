@@ -5,6 +5,7 @@ dist/
 *.swp
 *.tar.gz
 *.png
+!docs/images/*.png
 scripts/
 .env
 docker/.env
