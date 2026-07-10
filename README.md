@@ -368,12 +368,12 @@ The agent was selecting each tool with or without `--full` flag, depending on th
 
 **Results (35 runs each, 5 repeats × 7 tasks):**
 
-| Condition       | Pass [%] | Avg input length [tokens] | Avg snapshot length [chars] | Avg task time [seconds] | Avg tool calls |
-|-----------------|----------|---------------------------|-----------------------------|-------------------------|----------------|
-| `opera-compact` | 100%     | 36.3k                     | 83.1k                       | 6.8                     | 1.4            |
-| `opera-raw `    | 100%     | 107.5k                    | 198.1k                      | 8.5                     | 1.6            |
-| `axi`           | 100%     | 102.2k                    | 203.9k                      | 9.8                     | 1.5            |
-| `mcp-raw`       | 100%     | 179.2k                    | 218.7k                      | 9.4                     | 2.1            |
+| Condition            | Pass [%] | Avg input length [tokens] | Avg snapshot length [chars] | Avg task time [seconds] | Avg tool calls |
+|----------------------|----------|---------------------------|-----------------------------|-------------------------|----------------|
+| `opera-compact`      | 100%     | 36.3k                     | 83.1k                       | 6.8                     | 1.4            |
+| `opera-raw `         | 100%     | 107.5k                    | 198.1k                      | 8.5                     | 1.6            |
+| `axi`                | 100%     | 102.2k                    | 203.9k                      | 9.8                     | 1.5            |
+| `mcp-raw`            | 100%     | 179.2k                    | 218.7k                      | 9.4                     | 2.1            |
 
 > opera-compact saves **80%** total tokens vs mcp-raw baseline.
 
