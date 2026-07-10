@@ -353,9 +353,9 @@ Runs snapshot command on 50 static pages (Wikipedia, GitHub, MDN, Python docs, R
 | Condition       | Avg tokens | Median tokens | p95 tokens |
 |-----------------|------------|---------------|------------|
 | `opera-compact` | 60.6k      | 24.3k         | 256.1k     |
-| `mcp-raw`       | 94.7k      | 45.0k         | 391.3k     |
 | `opera-raw`     | 94.9k      | 45.1k         | 381.4k     |
 | `axi`           | 98.5k      | 46.6k         | 396.9k     |
+| `mcp-raw`       | 94.7k      | 45.0k         | 391.3k     |
 
 `--full` variants (no char limit) are also measured; see the [detailed README](page-token-benchmark/README.md) and [results report](page-token-benchmark/results/report.md).
 
@@ -368,12 +368,12 @@ The agent was selecting each tool with or without `--full` flag, depending on th
 
 **Results (35 runs each, 5 repeats × 7 tasks):**
 
-| Condition     | Pass [%] | Avg input length [tokens] | Avg snapshot length [chars] | Avg task time [seconds] | Avg tool calls |
-|---------------|----------|---------------------------|-----------------------------|-------------------------|----------------|
-| opera-compact | 100%     | 36.3k                     | 83.1k                       | 6.8                     | 1.4            |
-| opera-raw     | 100%     | 107.5k                    | 198.1k                      | 8.5                     | 1.6            |
-| axi           | 100%     | 102.2k                    | 203.9k                      | 9.8                     | 1.5            |
-| mcp-raw       | 100%     | 179.2k                    | 218.7k                      | 9.4                     | 2.1            |
+| Condition       | Pass [%] | Avg input length [tokens] | Avg snapshot length [chars] | Avg task time [seconds] | Avg tool calls |
+|-----------------|----------|---------------------------|-----------------------------|-------------------------|----------------|
+| `opera-compact` | 100%     | 36.3k                     | 83.1k                       | 6.8                     | 1.4            |
+| `opera-raw `    | 100%     | 107.5k                    | 198.1k                      | 8.5                     | 1.6            |
+| `axi`           | 100%     | 102.2k                    | 203.9k                      | 9.8                     | 1.5            |
+| `mcp-raw`       | 100%     | 179.2k                    | 218.7k                      | 9.4                     | 2.1            |
 
 > opera-compact saves **80%** total tokens vs mcp-raw baseline.
 
