@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.37](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.36...opera-browser-cli-v0.1.37) (2026-08-05)
+
+
+### Bug Fixes
+
+* **bridge:** add Host/Origin guard + bearer token to HTTP bridge ([109c042](https://github.com/operasoftware/opera-browser-cli/commit/109c0421e28e9b83b832bfc7b6c30ac34c1a2699))
+* **bridge:** add Host/Origin guard + bearer token to HTTP bridge ([a864cac](https://github.com/operasoftware/opera-browser-cli/commit/a864cac95b59a0809909ddd1411ec5225338b4fb))
+* exclude openclaw/.env from npm package ([0ab08c2](https://github.com/operasoftware/opera-browser-cli/commit/0ab08c29eb61fbf66548d318b8287e2f1175f189))
+
 ## [0.1.40](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.39...opera-browser-cli-v0.1.40) (2026-06-26)
 
 
