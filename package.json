@@ -23,6 +23,7 @@
   "files": [
     "dist",
     "openclaw",
+    "!openclaw/.env",
     "LICENSE",
     "README.md",
     "SKILL.md"
