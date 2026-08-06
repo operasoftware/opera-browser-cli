@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.43](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.42...opera-browser-cli-v0.1.43) (2026-08-06)
+
+
+### Features
+
+* install skill to Claude, Codex, and generic agent skill dirs on setup ([5e155ef](https://github.com/operasoftware/opera-browser-cli/commit/5e155ef))
+
 ## [0.1.42](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.41...opera-browser-cli-v0.1.42) (2026-08-06)
 
 
