@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.42](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.41...opera-browser-cli-v0.1.42) (2026-08-06)
+
+
+### Bug Fixes
+
+* do not truncate Neon AI tool output (chat, do, make, research) ([5a853f1](https://github.com/operasoftware/opera-browser-cli/commit/5a853f1ca05c7f89c1b2dbfbe4c1910c0326c9c7))
+
 ## [0.1.37](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.36...opera-browser-cli-v0.1.37) (2026-08-05)
 
 
