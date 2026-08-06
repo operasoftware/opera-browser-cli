@@ -696,9 +696,10 @@ export function formatMcpResult(
   label: string,
   text: string,
   suggestions: string[],
+  full = false,
 ): string {
   const blocks: string[] = [];
-  const tr = truncateSnapshot(text, false, 2000);
+  const tr = truncateSnapshot(text, full, 2000);
   blocks.push(`${label}:\n${tr.text.trimEnd()}`);
   if (tr.truncated) {
     blocks[0] += `\n    ... (truncated, ${tr.totalLength} chars total)`;
@@ -2308,7 +2309,7 @@ async function handleChat(args: string[]): Promise<string> {
   }
   const result = await callAiTool("chat", "opera_chat", toolArgs);
   checkAiResultForCdpError("chat", result);
-  return formatMcpResult("result", result, []);
+  return formatMcpResult("result", result, [], true);
 }
 
 async function handleInvokeDo(args: string[]): Promise<string> {
@@ -2321,7 +2322,7 @@ async function handleInvokeDo(args: string[]): Promise<string> {
   requireNeon("invoke-do");
   const result = await callAiTool("invoke-do", "opera_do", { prompt });
   checkAiResultForCdpError("invoke-do", result);
-  return formatMcpResult("result", result, []);
+  return formatMcpResult("result", result, [], true);
 }
 
 async function handleMake(args: string[]): Promise<string> {
@@ -2334,7 +2335,7 @@ async function handleMake(args: string[]): Promise<string> {
   requireNeon("make");
   const result = await callAiTool("make", "opera_make", { prompt });
   checkAiResultForCdpError("make", result);
-  return formatMcpResult("result", result, []);
+  return formatMcpResult("result", result, [], true);
 }
 
 const VALID_RESEARCH_TYPES = ["local", "one-minute", "deep"] as const;
@@ -2397,7 +2398,7 @@ async function handleResearch(args: string[]): Promise<string> {
   if (researchType !== undefined) toolArgs.researchType = researchType;
   const result = await callAiTool("research", "opera_research", toolArgs);
   checkAiResultForCdpError("research", result);
-  return formatMcpResult("result", result, []);
+  return formatMcpResult("result", result, [], true);
 }
 
 async function handleModels(): Promise<string> {
