@@ -1907,18 +1907,26 @@ async function handleSetup(_args: string[]): Promise<string> {
 
   process.stdout.write(`\nSaved to ${configFile}\n`);
 
-  // Install SKILL.md as the Claude Code skill
+  // Install SKILL.md as the Claude Code and Codex skills, plus the generic
+  // ~/.agents/skills path that cross-agent tools scan.
   const here = dirname(fileURLToPath(import.meta.url));
   const skillSrc = [join(here, "..", "SKILL.md"), join(here, "..", "..", "SKILL.md")].find(
     (p) => existsSync(p),
   );
-  const skillDst = join(homedir(), ".claude", "skills", "opera-browser-cli", "SKILL.md");
+  const skillRoots = [
+    { agent: "Claude", dir: join(homedir(), ".claude", "skills") },
+    { agent: "Codex", dir: join(homedir(), ".codex", "skills") },
+    { agent: "generic", dir: join(homedir(), ".agents", "skills") },
+  ];
   if (skillSrc) {
-    mkdirSync(dirname(skillDst), { recursive: true });
-    copyFileSync(skillSrc, skillDst);
-    process.stdout.write(`Installed Claude skill -> ${skillDst}\n`);
+    for (const { agent, dir } of skillRoots) {
+      const skillDst = join(dir, "opera-browser-cli", "SKILL.md");
+      mkdirSync(dirname(skillDst), { recursive: true });
+      copyFileSync(skillSrc, skillDst);
+      process.stdout.write(`Installed ${agent} skill -> ${skillDst}\n`);
+    }
   } else {
-    process.stdout.write("SKILL.md not found — skipping Claude skill install\n");
+    process.stdout.write("SKILL.md not found — skipping skill install\n");
   }
 
   return renderOutput([
