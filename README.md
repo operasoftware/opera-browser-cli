@@ -70,7 +70,7 @@ Run first-time setup — this is an interactive wizard, so run it in a terminal 
 opera-browser-cli setup
 ```
 
-This detects Opera installations, lets you pick one, saves configuration to `~/.opera-browser-cli/config`, and installs the skill to `~/.claude/skills/opera-browser-cli/SKILL.md` (Claude Code), `~/.codex/skills/opera-browser-cli/SKILL.md` (Codex), and `~/.agents/skills/opera-browser-cli/SKILL.md` (generic cross-agent path).
+This detects Opera installations, lets you pick one, saves configuration to `~/.opera-browser-cli/config`, and installs the skill to `~/.claude/skills/opera-browser-cli/SKILL.md` (Claude Code) and `~/.agents/skills/opera-browser-cli/SKILL.md` (generic cross-agent path used by Codex and other agents).
 
 Verify:
 
