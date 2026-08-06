@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.44](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.43...opera-browser-cli-v0.1.44) (2026-08-06)
+
+
+### Miscellaneous Chores
+
+* install skill via generic ~/.agents path instead of codex dir ([5fb4da7](https://github.com/operasoftware/opera-browser-cli/commit/5fb4da739e4c8b5cf4f2a05f6746156b7e3c0ff0))
+
 ## [0.1.43](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.42...opera-browser-cli-v0.1.43) (2026-08-06)
 
 
