@@ -479,7 +479,8 @@ export function buildTransportArgs(): string[] {
       args.push("--ignore-default-chrome-arg=--password-store=basic");
       args.push("--ignore-default-chrome-arg=--disable-extensions");
       args.push("--ignore-default-chrome-arg=--disable-component-extensions-with-background-pages");
-      args.push("--show-component-extension-options");
+      // Load the Opera AI component extension with the persistent profile (0.2.6+).
+      args.push("--chrome-arg=--show-component-extension-options");
       // Allow external extension loader and download services
       args.push("--ignore-default-chrome-arg=--disable-default-apps");
       args.push("--ignore-default-chrome-arg=--disable-background-networking");
