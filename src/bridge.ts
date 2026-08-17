@@ -29,6 +29,12 @@ import { extractPageOrigin } from "./snapshot.js";
 import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { homedir } from "node:os";
+import {
+  BRIDGE_SERVER_NAME,
+  computeBootMinute,
+  type BridgeHealth,
+} from "./identity.js";
+import { getPackageVersion } from "./version.js";
 
 const DEFAULT_PORT = Number.parseInt(
   process.env.OPERA_CLI_PORT ?? "9225",
@@ -104,6 +110,10 @@ export async function isBridgeClientConnected(
   }
 }
 
+/** Wall-clock start of this bridge process — part of its identity. */
+const STARTED_AT = Date.now();
+const BOOT_MINUTE = computeBootMinute();
+
 function writePidFile(port: number, token: string): void {
   mkdirSync(STATE_DIR, { recursive: true });
   // Unlink first: writeFileSync's `mode` only applies on create, so overwriting
@@ -114,9 +124,20 @@ function writePidFile(port: number, token: string): void {
     // Didn't exist — fine
   }
   // 0600: only the owning user may read the auth token.
-  writeFileSync(PID_FILE, JSON.stringify({ pid: process.pid, port, token }), {
-    mode: 0o600,
-  });
+  // version/startedAt/bootMinute let a CLI process verify this file describes
+  // *our* bridge on *this* boot before it ever signals the PID.
+  writeFileSync(
+    PID_FILE,
+    JSON.stringify({
+      pid: process.pid,
+      port,
+      token,
+      version: getPackageVersion(),
+      startedAt: STARTED_AT,
+      bootMinute: BOOT_MINUTE,
+    }),
+    { mode: 0o600 },
+  );
 }
 
 function removePidFile(): void {
@@ -180,6 +201,51 @@ export function resolveBridgeScript(importMetaDir: string): string {
   );
   const sourceScript = builtScript.replace(/\.js$/, ".ts");
   return existsSync(sourceScript) ? sourceScript : builtScript;
+}
+
+export type BridgeLauncher =
+  | { ok: true; command: string; args: string[] }
+  | { ok: false; reason: string };
+
+/** Locate the tsx CLI entrypoint without going through `npx`. */
+function resolveTsxCli(): string | null {
+  try {
+    const require = createRequire(import.meta.url);
+    const pkgPath = require.resolve("tsx/package.json");
+    const cli = join(dirname(pkgPath), "dist", "cli.mjs");
+    return existsSync(cli) ? cli : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Decide how to launch the bridge process.
+ *
+ * Prefers the built JavaScript. The TypeScript entrypoint is used only in a
+ * source checkout (or under OPERA_CLI_DEV=1), and only when tsx is already
+ * installed — never via `npx`, which blocks on an install prompt when the
+ * package is uncached and would hang invisibly behind a redirected stdio.
+ */
+export function resolveBridgeLauncher(
+  importMetaDir: string,
+  execPath: string = process.execPath,
+): BridgeLauncher {
+  const builtScript = resolve(
+    importMetaDir,
+    "../bin/opera-browser-cli-bridge.js",
+  );
+  const sourceScript = builtScript.replace(/\.js$/, ".ts");
+  const preferSource =
+    process.env.OPERA_CLI_DEV === "1" || !existsSync(builtScript);
+
+  if (preferSource && existsSync(sourceScript)) {
+    const tsx = resolveTsxCli();
+    if (tsx === null) return { ok: false, reason: "tsx-not-installed" };
+    return { ok: true, command: execPath, args: [tsx, sourceScript] };
+  }
+  if (!existsSync(builtScript)) return { ok: false, reason: "bridge-not-built" };
+  return { ok: true, command: execPath, args: [builtScript] };
 }
 async function readRequestBody(req: IncomingMessage): Promise<string> {
   let body = "";
@@ -284,6 +350,18 @@ export function checkRequestAccess(
 
 export function generateBridgeToken(): string {
   return randomBytes(32).toString("hex");
+}
+
+export function buildHealth(connected: boolean): BridgeHealth {
+  return {
+    status: connected ? "ok" : "not-connected",
+    server: BRIDGE_SERVER_NAME,
+    version: getPackageVersion(),
+    pid: process.pid,
+    startedAt: STARTED_AT,
+    bootMinute: BOOT_MINUTE,
+    browser: { connected },
+  };
 }
 
 async function handleToolsRequest(
@@ -392,13 +470,12 @@ export async function handleBridgeRequest(
     return;
   }
 
-  // /health is token-free so the CLI can detect a running bridge before it knows the token.
+  // /health is token-free so the CLI can detect a running bridge before it knows
+  // the token. It carries the full identity (version, pid, boot) so the caller
+  // can tell a usable bridge from a stale-version one from a foreign server.
   if (req.method === "GET" && req.url === "/health") {
-    if (await isBridgeClientConnected(client)) {
-      writeJson(res, 200, { status: "ok", server: "opera-browser-cli" });
-    } else {
-      writeJson(res, 503, { status: "not-connected", server: "opera-browser-cli" });
-    }
+    const connected = await isBridgeClientConnected(client);
+    writeJson(res, connected ? 200 : 503, buildHealth(connected));
     return;
   }
 
@@ -436,12 +513,28 @@ export async function handleBridgeRequest(
   writeJson(res, 404, { error: "not found" });
 }
 
+/**
+ * Build the HTTP server.
+ *
+ * `resolve` is called per request rather than the client being captured up
+ * front, so the port can be bound before the MCP connection exists. Until it
+ * returns a client every route answers 503 with a well-formed health body —
+ * which is exactly what a caller probing /health during startup should see.
+ */
 export function createBridgeServer(
-  client: BridgeClient,
-  captureNextId?: () => Promise<string>,
+  resolve: () => {
+    client: BridgeClient | null;
+    captureNextId?: () => Promise<string>;
+  },
   token: string | null = null,
 ): Server {
   return createServer((req, res) => {
+    const { client, captureNextId } = resolve();
+    if (client === null) {
+      res.setHeader("Content-Type", "application/json");
+      writeJson(res, 503, buildHealth(false));
+      return;
+    }
     void handleBridgeRequest(client, req, res, captureNextId, token);
   });
 }
@@ -450,8 +543,47 @@ function logBridgeMessage(message: string): void {
   process.stderr.write(`[opera-browser-cli] ${message}\n`);
 }
 
+// ---------------------------------------------------------------------------
+// Startup handshake
+//
+// The parent spawns us with stdout on a pipe and reads exactly one line:
+//   READY            — listening, MCP connected, PID file written
+//   FAILED <reason>  — fatal, with a machine-readable reason
+//
+// Without this the parent can only poll /health blind, which costs a full
+// timeout window even when we died in milliseconds. stderr goes to the log
+// file, so stdout carries nothing but this handshake.
+// ---------------------------------------------------------------------------
+
+/** Exit code signalling "port taken, try the next one" (EX_TEMPFAIL). */
+export const EXIT_PORT_IN_USE = 75;
+
 function writeReadySignal(): void {
   process.stdout.write("READY\n");
+}
+
+function writeFailedSignal(reason: string, detail?: string): void {
+  process.stdout.write(`FAILED ${reason}${detail ? ` ${detail}` : ""}\n`);
+}
+
+/**
+ * Whether to launch a visible browser.
+ *
+ * Headless is the safe default for a tool — it is the only thing that works on
+ * a server with no display. But a configured Opera binary means the user wants
+ * *their* browser, and every Opera AI feature needs a window: sign-in and
+ * consent cannot be completed headlessly, so a headless AI command fails on a
+ * state the user has no way to fix.
+ *
+ * So: headed when an Opera executable is configured, headless otherwise, and
+ * OPERA_CLI_HEADED=0 or =1 overrides either way. A machine with no Opera
+ * installed — CI, Docker, a plain-Chrome setup — keeps the old behaviour.
+ */
+export function shouldRunHeaded(): boolean {
+  const explicit = process.env.OPERA_CLI_HEADED;
+  if (explicit === "1") return true;
+  if (explicit === "0") return false;
+  return Boolean(process.env.OPERA_CLI_EXECUTABLE_PATH);
 }
 
 export function buildTransportArgs(): string[] {
@@ -487,7 +619,7 @@ export function buildTransportArgs(): string[] {
     } else {
       args.push("--isolated");
     }
-    if (process.env.OPERA_CLI_HEADED !== "1") {
+    if (!shouldRunHeaded()) {
       args.push("--headless");
     }
   }
@@ -500,6 +632,45 @@ export function buildTransportArgs(): string[] {
   }
 
   return args;
+}
+
+export interface McpBinStatus {
+  bin: string;
+  found: boolean;
+  source: "env" | "dependency" | "path";
+}
+
+/** Look a bare command up on PATH, the way a shell would. */
+function existsOnPath(command: string): boolean {
+  const pathVar = process.env.PATH ?? "";
+  const separator = process.platform === "win32" ? ";" : ":";
+  const extensions =
+    process.platform === "win32"
+      ? (process.env.PATHEXT ?? ".EXE;.CMD;.BAT").split(";")
+      : [""];
+  for (const entry of pathVar.split(separator)) {
+    if (!entry) continue;
+    for (const ext of extensions) {
+      if (existsSync(join(entry, command + ext))) return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Where opera-devtools-mcp is coming from, and whether it is actually there.
+ * Used by `doctor` so a missing MCP server is named before it costs a failed
+ * bridge start.
+ */
+export function resolveMcpBinStatus(): McpBinStatus {
+  const bin = resolveOperaMcpBin();
+  if (process.env.OPERA_CLI_MCP_BIN) {
+    return { bin, found: existsSync(bin) || existsOnPath(bin), source: "env" };
+  }
+  if (bin === "opera-devtools-mcp") {
+    return { bin, found: existsOnPath(bin), source: "path" };
+  }
+  return { bin, found: existsSync(bin), source: "dependency" };
 }
 
 function resolveOperaMcpBin(): string {
@@ -622,19 +793,71 @@ async function closeServer(server: Server): Promise<void> {
 }
 
 export async function runBridge(port = DEFAULT_PORT): Promise<void> {
+  // The parent destroys its end of the stdout pipe once the handshake is read.
+  // We never write to stdout again, but guard anyway so a stray write can never
+  // take the bridge down with an EPIPE.
+  process.stdout.on("error", () => {});
+
+  // Bind the port before anything expensive happens. Connecting to MCP first
+  // would launch an entire browser only to throw it away when the listen
+  // fails — so losing a start race would cost a browser launch and leave an
+  // orphaned child. Binding first makes losing the race free.
+  let client: BridgeClient | null = null;
+  let captureNextId: (() => Promise<string>) | undefined;
+  const token = generateBridgeToken();
+  const server = createBridgeServer(() => ({ client, captureNextId }), token);
+
+  // Without an error handler this is an uncaught exception: the bridge dies
+  // with a stack trace in the log and the parent waits out the whole startup
+  // timeout. EADDRINUSE is routine — we lost a start race, or the port was
+  // taken between the parent's probe and our listen — so exit with a code the
+  // parent can read as "try the next port".
+  server.on("error", (error: NodeJS.ErrnoException) => {
+    if (error.code === "EADDRINUSE") {
+      writeFailedSignal("port-in-use", String(port));
+      logBridgeMessage(`Port ${port} already in use`);
+      process.exit(EXIT_PORT_IN_USE);
+    }
+    writeFailedSignal("listen-failed", getErrorMessage(error));
+    logBridgeMessage(`Listen failed: ${getErrorMessage(error)}`);
+    process.exit(1);
+  });
+
+  await new Promise<void>((resolve) => {
+    server.listen(port, "127.0.0.1", resolve);
+  });
+  logBridgeMessage(`Listening on http://127.0.0.1:${port}`);
+
   const transport = createTransport();
-  const captureNextId = wrapTransportForIdCapture(transport);
-  const client = createBridgeClient();
-  await client.connect(transport);
+  captureNextId = wrapTransportForIdCapture(transport);
+  const mcpClient = createBridgeClient();
+  try {
+    await mcpClient.connect(transport);
+  } catch (error) {
+    // Almost always a missing or broken opera-devtools-mcp. Name it now rather
+    // than letting the parent time out with nothing to report.
+    writeFailedSignal("mcp-connect", getErrorMessage(error));
+    logBridgeMessage(
+      `Failed to connect to opera-devtools-mcp: ${getErrorMessage(error)}`,
+    );
+    process.exit(1);
+  }
+  client = mcpClient;
   logBridgeMessage("Connected to opera-devtools-mcp");
 
-  const token = generateBridgeToken();
-  const server = createBridgeServer(client, captureNextId, token);
-  server.listen(port, "127.0.0.1", () => {
+  try {
     writePidFile(port, token);
-    logBridgeMessage(`Listening on http://127.0.0.1:${port}`);
-    writeReadySignal();
-  });
+  } catch (error) {
+    // Typically a state dir left root-owned by an earlier `sudo` run. This used
+    // to throw uncaught from inside the listen callback, killing the bridge
+    // *after* it had bound the port.
+    writeFailedSignal("state-dir-unwritable", STATE_DIR);
+    logBridgeMessage(
+      `Cannot write ${PID_FILE}: ${getErrorMessage(error)} — check ownership of ${STATE_DIR}`,
+    );
+    process.exit(1);
+  }
+  writeReadySignal();
 
   let shuttingDown = false;
   const shutdown = async () => {
@@ -642,7 +865,7 @@ export async function runBridge(port = DEFAULT_PORT): Promise<void> {
     shuttingDown = true;
     removePidFile();
     await closeServer(server);
-    await client.close();
+    await mcpClient.close();
     await transport.close();
     process.exit(0);
   };

@@ -16,10 +16,19 @@ vi.mock("../src/client.js", () => ({
     }
   },
   callTool,
+  candidatePorts: vi.fn(() => [9225]),
   ensureBridge: vi.fn(),
+  findUsableBridge: vi.fn(async () => null),
   getSessionSnapshotIfRunning: vi.fn(),
   loadConfig: vi.fn(),
   stopBridge: vi.fn(),
+}));
+
+// Command dispatch is what these tests cover; first-run configuration has its
+// own suite, and stubbing it here keeps the real ~/.opera-browser-cli untouched.
+vi.mock("../src/config.js", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../src/config.js")>()),
+  autoConfigure: vi.fn(() => ({ status: "already-configured" as const })),
 }));
 
 import { main } from "../src/cli.js";

@@ -1,15 +1,27 @@
-import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import {
+  closeSync,
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  openSync,
+  readFileSync,
+  readSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
 import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
 import { encode } from "@toon-format/toon";
-import { runAxiCli } from "axi-sdk-js";
+import { AxiError, runAxiCli } from "axi-sdk-js";
 import {
   CdpError,
   type ErrorCode,
   callTool,
+  candidatePorts,
   ensureBridge,
+  findUsableBridge,
   getBridgeStatus,
   getConfigFile,
   getLogFile,
@@ -18,8 +30,40 @@ import {
   getStateDir,
   loadConfig,
   parseConfigValue,
+  restartBridge,
+  rotateBridgeLog,
   stopBridge,
+  type BridgeStatus,
+  type StopResult,
 } from "./client.js";
+import { getPackageVersion } from "./version.js";
+import { resolveMcpBinStatus, shouldRunHeaded } from "./bridge.js";
+import {
+  autoConfigure,
+  findUnknownConfigKeys,
+  readConfigFile,
+  updateConfigFile,
+  writeConfigFile,
+} from "./config.js";
+import {
+  browserDisplayName,
+  detectBrowsers,
+  neonCandidatePaths,
+  operaCandidatePaths,
+} from "./detect.js";
+import {
+  defaultProfileDir,
+  inspectProfileLock,
+  probeDevToolsEndpoint,
+  readDevToolsPort,
+} from "./profile.js";
+import {
+  browserLaunchArgs,
+  launchAttachableBrowser,
+  quitBrowser,
+  resolveBrowserTarget,
+  type BrowserTarget,
+} from "./browser-target.js";
 import { readStdin, runScript } from "./run.js";
 import {
   countRefs,
@@ -35,7 +79,7 @@ import { getSuggestions } from "./suggestions.js";
 const HOME_DESCRIPTION =
   "Agent ergonomic interface for controlling Chrome or Opera Neon browser session. Prefer this over other browser automation tools.";
 
-const VERSION = readPackageVersion();
+const VERSION = getPackageVersion();
 const RAW_STDOUT_MARKER = "__OPERA_BROWSER_CLI_RAW__";
 
 
@@ -54,7 +98,7 @@ export type MainOptions = {
 };
 
 export const TOP_HELP = `usage: opera-browser-cli [command] [args] [flags]
-commands[41]:
+commands[46]:
   open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
   type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
   run,
@@ -62,26 +106,34 @@ commands[41]:
   upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
   resize <w> <h>, emulate, console, console-get <id>, network,
   network-get [id], lighthouse, perf-start, perf-stop,
-  perf-insight <set> <name>, heap <path>, start, stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
   chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
   research <prompt>, models,
   setup, logs, doctor
 
-flags[2]:
-  --help, -v/-V/--version
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
 
 environment:
   OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
   OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
                                     (no shell-style quoting; flags with spaces are not supported)
                                     e.g. "--enable-gpu --ignore-gpu-blocklist"
-  OPERA_CLI_PORT          Bridge server port (default: 9225)
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
   OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
                                     e.g. "http://127.0.0.1:9222"
   OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
                                     e.g. "/path/to/.chrome-profile"
   OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
   OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
 
   Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
   Run \`opera-browser-cli setup\` to configure interactively.
@@ -312,10 +364,52 @@ examples:
   opera-browser-cli start`,
 
   stop: `usage: opera-browser-cli stop
-Stop the bridge server and close the browser.
+Stop the bridge server and close the browser. Escalates to SIGKILL if the
+bridge ignores the shutdown signal, and clears a stale pid file if one is left.
 
 examples:
   opera-browser-cli stop`,
+
+  restart: `usage: opera-browser-cli restart
+Stop the bridge and start a fresh one. Rarely needed — the bridge restarts
+itself on version skew or a dropped connection — but useful after changing
+configuration, or to force a clean state.
+
+examples:
+  opera-browser-cli restart`,
+
+  attach: `usage: opera-browser-cli attach [--port <n>] [--clear]
+Connect to a browser that is already running, instead of launching one.
+
+The browser must have been started with a debugging port — that flag cannot be
+added to a browser that is already open. Run \`opera-browser-cli launch-args\`
+for the flags. With no --port, the port recorded by the configured profile is
+used, which is usually what you want.
+
+Saves OPERA_CLI_BROWSER_URL to ~/.opera-browser-cli/config.
+
+flags:
+  --port <n>  DevTools debugging port to connect to
+  --clear     Stop attaching; go back to a CLI-launched browser
+
+examples:
+  opera-browser-cli attach
+  opera-browser-cli attach --port 9222
+  opera-browser-cli attach --clear`,
+
+  "launch-args": `usage: opera-browser-cli launch-args
+Print the command to start Opera so opera-browser-cli can attach to it, keeping
+your real profile and all its logins.
+
+examples:
+  opera-browser-cli launch-args`,
+
+  status: `usage: opera-browser-cli status
+Report bridge state without starting one: pid, port, and the running version
+against the installed version.
+
+examples:
+  opera-browser-cli status`,
 
   // Page management
   pages: `usage: opera-browser-cli pages
@@ -630,13 +724,35 @@ examples:
   opera-browser-cli logs
   opera-browser-cli logs --lines 200`,
 
-  doctor: `usage: opera-browser-cli doctor
+  doctor: `usage: opera-browser-cli doctor [--fix]
 Diagnose opera-browser-cli configuration: bridge status, config file, Opera Neon
-executable, session hooks, and log file. Each check is reported as ok, warn,
-or fail with actionable hints.
+executable, MCP server, browser profile, session hooks, and log file. Each check
+is reported as ok, warn, or fail with actionable hints.
+
+--fix repairs what can be repaired mechanically — a stale pid file, an unhealthy
+bridge, a missing config, an oversized log. Anything needing a decision (an
+install, a config edit) is reported, not done for you.
+
+flags:
+  --fix  Apply repairs, then re-run the checks
 
 examples:
-  opera-browser-cli doctor`,
+  opera-browser-cli doctor
+  opera-browser-cli doctor --fix`,
+
+  login: `usage: opera-browser-cli login [--check]
+Sign in to your Opera account, which Opera AI commands require.
+
+Opens the account page in a visible browser window and waits for you to finish,
+then confirms Opera AI answers. Sign-in state is only observable by asking Opera
+AI something, so the check costs one small AI call and is never run implicitly.
+
+flags:
+  --check  Only verify the current state; do not open the sign-in page
+
+examples:
+  opera-browser-cli login
+  opera-browser-cli login --check`,
 };
 
 export function getCommandHelp(command: string): string | null {
@@ -913,26 +1029,40 @@ function renderOutput(blocks: string[]): string {
   return blocks.filter(Boolean).join("\n");
 }
 
-function readPackageVersion(): string {
-  const here = dirname(fileURLToPath(import.meta.url));
+/**
+ * Exit codes, so a caller can branch on *why* something failed without parsing
+ * the message. Documented in README.md and SKILL.md — treat as a contract.
+ *
+ *   2 fix the command    3 environment not ready    4 ask the user
+ *   5 retry later        6 page state moved; re-snapshot
+ */
+export const EXIT_CODES: Record<ErrorCode, number> = {
+  VALIDATION_ERROR: 2,
+  UNSUPPORTED_OPERATION: 2,
+  BRIDGE_NOT_READY: 3,
+  BROWSER_ERROR: 3,
+  AUTH_REQUIRED: 4,
+  TIMEOUT: 5,
+  REF_NOT_FOUND: 6,
+  PAGE_CLOSED: 6,
+  UNKNOWN: 1,
+};
 
-  for (const candidate of [
-    join(here, "..", "package.json"),
-    join(here, "..", "..", "package.json"),
-  ]) {
-    if (!existsSync(candidate)) {
-      continue;
-    }
-
-    const parsed = JSON.parse(readFileSync(candidate, "utf-8")) as {
-      version?: unknown;
-    };
-    if (typeof parsed.version === "string" && parsed.version.length > 0) {
-      return parsed.version;
-    }
+export function exitCodeForCdpError(error: unknown): number {
+  if (error instanceof AxiError) {
+    return EXIT_CODES[error.code as ErrorCode] ?? 1;
   }
+  return 1;
+}
 
-  throw new Error("Could not determine opera-browser-cli package version");
+export function formatCliError(error: unknown): { output: string; exitCode: number } {
+  const code = error instanceof AxiError ? error.code : "UNKNOWN";
+  const message = error instanceof Error ? error.message : String(error);
+  const suggestions = error instanceof AxiError ? error.suggestions : [];
+  return {
+    output: renderError(message, code, suggestions),
+    exitCode: exitCodeForCdpError(error),
+  };
 }
 
 function splitFullFlag(args: string[]): { args: string[]; full: boolean; raw: boolean } {
@@ -1362,13 +1492,76 @@ async function handleStart(): Promise<string> {
   return encode({ status: "ready", port });
 }
 
-export function formatStopOutput(wasStopped: boolean): string {
-  return encode({ status: wasStopped ? "stopped" : "stopped (no-op)" });
+export function formatStopOutput(result: StopResult): string {
+  const status = result.stopped
+    ? result.forced
+      ? "stopped (forced)"
+      : "stopped"
+    : result.stale
+      ? "stopped (stale pid file removed)"
+      : "stopped (no-op)";
+  const payload: Record<string, unknown> = { status };
+  if (result.pid != null) payload.pid = result.pid;
+  if (result.port != null) payload.port = result.port;
+  return encode(payload);
 }
 
 async function handleStop(): Promise<string> {
-  const wasStopped = await stopBridge();
-  return formatStopOutput(wasStopped);
+  return formatStopOutput(await stopBridge());
+}
+
+async function handleRestart(): Promise<string> {
+  const port = await restartBridge();
+  return encode({ status: "ready", port, version: VERSION });
+}
+
+export function formatStatusOutput(status: BridgeStatus): string {
+  if (!status.pidFileExists && !status.processAlive) {
+    return renderOutput([
+      encode({ bridge: "not running", version: status.expectedVersion }),
+      renderHelp(["Run `opera-browser-cli open <url>` — the bridge starts automatically"]),
+    ]);
+  }
+  if (status.versionSkew) {
+    return renderOutput([
+      encode({
+        bridge: "running (stale version)",
+        pid: status.pid,
+        port: status.port,
+        running: status.runningVersion,
+        expected: status.expectedVersion,
+      }),
+      renderHelp([
+        "The next command restarts it automatically",
+        "Run `opera-browser-cli restart` to do it now",
+      ]),
+    ]);
+  }
+  if (status.stalePidFile) {
+    return renderOutput([
+      encode({ bridge: "not running", stale_pid: status.pid }),
+      renderHelp(["Run `opera-browser-cli stop` to clean up the stale pid file"]),
+    ]);
+  }
+  if (!status.healthy) {
+    return renderOutput([
+      encode({ bridge: "unhealthy", pid: status.pid, port: status.port }),
+      renderHelp([
+        "Run `opera-browser-cli restart` to bring it back",
+        "Run `opera-browser-cli logs` to see why",
+      ]),
+    ]);
+  }
+  return encode({
+    bridge: "ready",
+    pid: status.pid,
+    port: status.port,
+    version: status.runningVersion,
+  });
+}
+
+async function handleStatus(): Promise<string> {
+  return formatStatusOutput(await getBridgeStatus());
 }
 
 // --- Page management handlers ---
@@ -1671,102 +1864,132 @@ async function handleHeap(args: string[]): Promise<string> {
  * matching profile (Neon vs Neon Developer).
  */
 function defaultNeonProfileDir(neonPath: string | undefined): string | null {
-  const home = homedir();
-  let candidate: string;
-  if (process.platform === "darwin") {
-    const isDeveloper = neonPath?.includes("Opera Neon Developer.app") ?? false;
-    const bundle = isDeveloper
-      ? "com.operasoftware.OperaNeonDeveloper"
-      : "com.operasoftware.OperaNeon";
-    candidate = `${home}/Library/Application Support/${bundle}`;
-  } else if (process.platform === "win32") {
-    const appData = process.env.APPDATA ?? `${home}\\AppData\\Roaming`;
-    const isDeveloper = neonPath?.includes("Developer") ?? false;
-    candidate = isDeveloper
-      ? `${appData}\\Opera Software\\Opera Neon Developer`
-      : `${appData}\\Opera Software\\Opera Neon`;
-  } else {
-    return null;
-  }
-  return existsSync(candidate) ? candidate : null;
+  return defaultProfileDir(neonPath, homedir());
 }
 
-function neonCandidatePaths(): string[] {
-  const home = homedir();
-  if (process.platform === "darwin") {
-    return [
-      "/Applications/Opera Neon.app/Contents/MacOS/Opera",
-      "/Applications/Opera Neon Developer.app/Contents/MacOS/Opera",
-      `${home}/Applications/Opera Neon.app/Contents/MacOS/Opera`,
-      `${home}/Applications/Opera Neon Developer.app/Contents/MacOS/Opera`,
-    ];
-  }
-  if (process.platform === "win32") {
-    const localAppData = process.env.LOCALAPPDATA ?? `${home}\\AppData\\Local`;
-    const programFiles = process.env.PROGRAMFILES ?? "C:\\Program Files";
-    return [
-      `${localAppData}\\Programs\\Opera Neon\\opera.exe`,
-      `${programFiles}\\Opera Neon\\opera.exe`,
-      `${localAppData}\\Programs\\Opera Neon Developer\\opera.exe`,
-      `${programFiles}\\Opera Neon Developer\\opera.exe`,
-    ];
-  }
-  // Opera Neon does not ship for Linux.
-  return [];
+export interface SetupArgs {
+  interactive: boolean;
+  executable: string | undefined;
+  profile: string | undefined;
+  headed: boolean | undefined;
 }
 
-function operaCandidatePaths(): string[] {
-  const home = homedir();
-  if (process.platform === "darwin") {
-    return [
-      "/Applications/Opera GX.app/Contents/MacOS/Opera",
-      "/Applications/Opera.app/Contents/MacOS/Opera",
-      `${home}/Applications/Opera GX.app/Contents/MacOS/Opera`,
-      `${home}/Applications/Opera.app/Contents/MacOS/Opera`,
-    ];
-  }
-  if (process.platform === "win32") {
-    const localAppData = process.env.LOCALAPPDATA ?? `${home}\\AppData\\Local`;
-    const programFiles = process.env.PROGRAMFILES ?? "C:\\Program Files";
-    return [
-      `${localAppData}\\Programs\\Opera GX\\opera.exe`,
-      `${localAppData}\\Programs\\Opera\\opera.exe`,
-      `${programFiles}\\Opera GX\\opera.exe`,
-      `${programFiles}\\Opera\\opera.exe`,
-    ];
-  }
-  return [];
-}
+export function parseSetupArgs(args: string[]): SetupArgs {
+  let interactive = true;
+  let executable: string | undefined;
+  let profile: string | undefined;
+  let headed: boolean | undefined;
 
-function browserDisplayName(binPath: string): string {
-  if (binPath.includes("Neon Developer")) return "Opera Neon Developer";
-  if (binPath.includes("Neon")) return "Opera Neon";
-  if (binPath.includes("GX")) return "Opera GX";
-  return "Opera";
-}
-
-async function handleSetup(_args: string[]): Promise<string> {
-  if (!process.stdin.isTTY) {
-    throw new CdpError(
-      "setup requires an interactive terminal",
-      "VALIDATION_ERROR",
-      ["Run `opera-browser-cli setup` directly in your shell, not through an agent"],
-    );
-  }
-
-  const stateDir = join(homedir(), ".opera-browser-cli");
-  const configFile = join(stateDir, "config");
-
-  const existing: Record<string, string> = {};
-  if (existsSync(configFile)) {
-    for (const line of readFileSync(configFile, "utf-8").split("\n")) {
-      const t = line.trim();
-      if (!t || t.startsWith("#")) continue;
-      const eq = t.indexOf("=");
-      if (eq === -1) continue;
-      existing[t.slice(0, eq).trim()] = parseConfigValue(t.slice(eq + 1).trim());
+  for (let i = 0; i < args.length; i++) {
+    switch (args[i]) {
+      case "--non-interactive":
+      case "--yes":
+      case "-y":
+        interactive = false;
+        break;
+      case "--executable":
+        if (i + 1 < args.length) {
+          executable = args[++i];
+          interactive = false;
+        }
+        break;
+      case "--profile":
+        if (i + 1 < args.length) {
+          profile = args[++i];
+          interactive = false;
+        }
+        break;
+      case "--headed":
+        headed = true;
+        interactive = false;
+        break;
+      case "--headless":
+        headed = false;
+        interactive = false;
+        break;
     }
   }
+  return { interactive, executable, profile, headed };
+}
+
+/** Install SKILL.md for Claude Code and the generic cross-agent path. */
+function installSkillFiles(report: (line: string) => void): void {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const skillSrc = [join(here, "..", "SKILL.md"), join(here, "..", "..", "SKILL.md")].find(
+    (p) => existsSync(p),
+  );
+  if (!skillSrc) {
+    report("SKILL.md not found — skipping skill install");
+    return;
+  }
+  for (const { agent, dir } of [
+    { agent: "Claude", dir: join(homedir(), ".claude", "skills") },
+    { agent: "generic", dir: join(homedir(), ".agents", "skills") },
+  ]) {
+    const skillDst = join(dir, "opera-browser-cli", "SKILL.md");
+    mkdirSync(dirname(skillDst), { recursive: true });
+    copyFileSync(skillSrc, skillDst);
+    report(`Installed ${agent} skill -> ${skillDst}`);
+  }
+}
+
+/**
+ * Configure without prompting: detection plus whatever the flags override.
+ *
+ * `setup` used to refuse outright without a TTY, which ruled out exactly the
+ * callers that most need it — agents, provisioning scripts, containers.
+ */
+function setupNonInteractive(parsed: SetupArgs): string {
+  const config = readConfigFile();
+
+  const executable =
+    parsed.executable ??
+    config.OPERA_CLI_EXECUTABLE_PATH ??
+    detectBrowsers(process.platform, homedir())[0]?.path;
+  if (executable) config.OPERA_CLI_EXECUTABLE_PATH = executable;
+
+  const headed = parsed.headed ?? (config.OPERA_CLI_HEADED === "1" || Boolean(executable));
+  if (headed) config.OPERA_CLI_HEADED = "1";
+  else delete config.OPERA_CLI_HEADED;
+
+  if (parsed.profile === "skip") {
+    delete config.OPERA_CLI_USER_DATA_DIR;
+  } else {
+    const profile =
+      parsed.profile ??
+      config.OPERA_CLI_USER_DATA_DIR ??
+      defaultProfileDir(executable, homedir()) ??
+      join(getStateDir(), "profile");
+    config.OPERA_CLI_USER_DATA_DIR = profile;
+  }
+
+  writeConfigFile(config);
+  const notes: string[] = [];
+  installSkillFiles((line) => notes.push(line));
+
+  const help = ["Run `opera-browser-cli open https://example.com` to start browsing"];
+  if (!executable) {
+    help.unshift(
+      "No Opera installation found — set OPERA_CLI_EXECUTABLE_PATH or pass --executable <path>",
+    );
+  }
+  return renderOutput([
+    encode({ config: getConfigFile(), settings: config }),
+    notes.join("\n"),
+    renderHelp(help),
+  ]);
+}
+
+async function handleSetup(args: string[]): Promise<string> {
+  const parsed = parseSetupArgs(args);
+  // No terminal to prompt in is a reason to fall back, not to fail.
+  if (!parsed.interactive || !process.stdin.isTTY) {
+    return setupNonInteractive(parsed);
+  }
+
+  const stateDir = getStateDir();
+  const configFile = getConfigFile();
+  const existing = readConfigFile();
 
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   const ask = (q: string): Promise<string> =>
@@ -1778,8 +2001,12 @@ async function handleSetup(_args: string[]): Promise<string> {
     process.stdout.write("opera-browser-cli setup\n\n");
 
     // 1. Browser executable path
-    const detectedNeons = neonCandidatePaths().filter((p) => existsSync(p));
-    const detectedOpera = operaCandidatePaths().find((p) => existsSync(p));
+    const detectedNeons = neonCandidatePaths(process.platform, homedir()).filter(
+      (p) => existsSync(p),
+    );
+    const detectedOpera = operaCandidatePaths(process.platform, homedir()).find(
+      (p) => existsSync(p),
+    );
     const currentExec = existing["OPERA_CLI_EXECUTABLE_PATH"];
 
     if (detectedNeons.length > 0) {
@@ -1895,38 +2122,9 @@ async function handleSetup(_args: string[]): Promise<string> {
     rl.close();
   }
 
-  // Write config
-  mkdirSync(stateDir, { recursive: true });
-  const lines = [
-    "# opera-browser-cli configuration — auto-loaded on every run",
-    "# Values here are used as defaults when the env var is not already set.",
-    "",
-    ...Object.entries(config).map(([k, v]) => `${k}="${v.replace(/"/g, '\\"')}"`),
-  ];
-  writeFileSync(configFile, lines.join("\n") + "\n");
-
+  writeConfigFile(config);
   process.stdout.write(`\nSaved to ${configFile}\n`);
-
-  // Install SKILL.md as the Claude Code skill, plus the generic
-  // ~/.agents/skills path that cross-agent tools (Codex, etc.) scan.
-  const here = dirname(fileURLToPath(import.meta.url));
-  const skillSrc = [join(here, "..", "SKILL.md"), join(here, "..", "..", "SKILL.md")].find(
-    (p) => existsSync(p),
-  );
-  const skillRoots = [
-    { agent: "Claude", dir: join(homedir(), ".claude", "skills") },
-    { agent: "generic", dir: join(homedir(), ".agents", "skills") },
-  ];
-  if (skillSrc) {
-    for (const { agent, dir } of skillRoots) {
-      const skillDst = join(dir, "opera-browser-cli", "SKILL.md");
-      mkdirSync(dirname(skillDst), { recursive: true });
-      copyFileSync(skillSrc, skillDst);
-      process.stdout.write(`Installed ${agent} skill -> ${skillDst}\n`);
-    }
-  } else {
-    process.stdout.write("SKILL.md not found — skipping skill install\n");
-  }
+  installSkillFiles((line) => process.stdout.write(line + "\n"));
 
   return renderOutput([
     encode({ config: configFile, settings: config }),
@@ -1934,6 +2132,90 @@ async function handleSetup(_args: string[]): Promise<string> {
       "Run `opera-browser-cli --help` to see all commands",
       "Run `opera-browser-cli setup` again to reconfigure",
       "Run `opera-browser-cli open https://example.com` to start browsing",
+    ]),
+  ]);
+}
+
+// --- Attach ---
+
+export function parseAttachArgs(args: string[]): { port: number | null; clear: boolean } {
+  let port: number | null = null;
+  let clear = false;
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--port" && i + 1 < args.length) {
+      const parsed = Number.parseInt(args[++i] ?? "", 10);
+      if (Number.isInteger(parsed) && parsed > 0) port = parsed;
+    } else if (args[i] === "--clear") {
+      clear = true;
+    }
+  }
+  return { port, clear };
+}
+
+async function handleAttach(args: string[]): Promise<string> {
+  const { port, clear } = parseAttachArgs(args);
+
+  if (clear) {
+    updateConfigFile({ OPERA_CLI_BROWSER_URL: null });
+    return renderOutput([
+      encode({ attach: "cleared" }),
+      renderHelp(["opera-browser-cli will launch its own browser from now on"]),
+    ]);
+  }
+
+  // With no explicit port, look for one the configured profile advertised.
+  const userDataDir = process.env.OPERA_CLI_USER_DATA_DIR;
+  const resolved = port ?? (userDataDir ? readDevToolsPort(userDataDir) : null);
+  if (resolved === null) {
+    throw new CdpError(
+      "No debugging port given, and none found for the configured profile",
+      "VALIDATION_ERROR",
+      [
+        "Run `opera-browser-cli attach --port <n>` if you know the port",
+        "Run `opera-browser-cli launch-args` to start Opera with a debugging port",
+      ],
+    );
+  }
+
+  const identity = await probeDevToolsEndpoint(resolved);
+  if (identity === null) {
+    throw new CdpError(
+      `Nothing is answering DevTools on port ${resolved}`,
+      "BROWSER_ERROR",
+      [
+        "Check the browser is running and was started with --remote-debugging-port",
+        "Run `opera-browser-cli launch-args` for the exact flags",
+      ],
+    );
+  }
+
+  const url = `http://127.0.0.1:${resolved}`;
+  updateConfigFile({ OPERA_CLI_BROWSER_URL: url });
+
+  const help = ["Run `opera-browser-cli attach --clear` to go back to a CLI-launched browser"];
+  if (!identity.isOpera) {
+    help.unshift(`Note: ${identity.browser} is not an Opera browser — Opera AI commands will not work`);
+  }
+  return renderOutput([
+    encode({ attach: url, browser: identity.browser }),
+    renderHelp(help),
+  ]);
+}
+
+function handleLaunchArgs(): string {
+  const execPath = process.env.OPERA_CLI_EXECUTABLE_PATH;
+  const userDataDir = process.env.OPERA_CLI_USER_DATA_DIR;
+  const args = browserLaunchArgs(userDataDir);
+  const binary = execPath ?? "/Applications/Opera Neon.app/Contents/MacOS/Opera";
+  const command = [JSON.stringify(binary), ...args.map((a) => JSON.stringify(a))].join(" ");
+
+  return renderOutput([
+    encode({ launch: "start Opera with these flags, then run `opera-browser-cli attach`" }),
+    `command:\n  ${command}`,
+    renderHelp([
+      "The port is chosen by the browser and recorded in DevToolsActivePort",
+      "opera-browser-cli finds it automatically — `attach` is only needed for a different profile",
+      "A debugging port lets any local process drive this browser; close it when done",
     ]),
   ]);
 }
@@ -1966,29 +2248,35 @@ async function runDoctorChecks(): Promise<DoctorCheck[]> {
 
   // Bridge
   const bridge = await getBridgeStatus();
-  if (!bridge.pidFileExists) {
+  if (!bridge.pidFileExists && !bridge.processAlive) {
     checks.push({
       name: "bridge",
       status: "warn",
       detail: "not running (will auto-start on first command)",
     });
-  } else if (!bridge.processAlive) {
+  } else if (bridge.stalePidFile) {
     checks.push({
       name: "bridge",
-      status: "fail",
-      detail: `pid ${bridge.pid} in pid file but process is dead`,
+      status: "warn",
+      detail: `stale pid file (pid ${bridge.pid} is not a running bridge) — cleared on next start`,
+    });
+  } else if (bridge.versionSkew) {
+    checks.push({
+      name: "bridge",
+      status: "warn",
+      detail: `running ${bridge.runningVersion}, installed ${bridge.expectedVersion} — restarts automatically on next command`,
     });
   } else if (!bridge.healthy) {
     checks.push({
       name: "bridge",
       status: "fail",
-      detail: `pid ${bridge.pid} alive on port ${bridge.port} but /health did not respond`,
+      detail: `pid ${bridge.pid} on port ${bridge.port} is not serving a healthy /health`,
     });
   } else {
     checks.push({
       name: "bridge",
       status: "ok",
-      detail: `running, pid ${bridge.pid}, port ${bridge.port}`,
+      detail: `running ${bridge.runningVersion}, pid ${bridge.pid}, port ${bridge.port}`,
     });
   }
 
@@ -2001,14 +2289,27 @@ async function runDoctorChecks(): Promise<DoctorCheck[]> {
       detail: `${configFile} not found — run \`opera-browser-cli setup\``,
     });
   } else {
-    const lines = readFileSync(configFile, "utf-8")
-      .split("\n")
-      .filter((l) => l.trim() && !l.trim().startsWith("#"));
-    checks.push({
-      name: "config",
-      status: "ok",
-      detail: `${configFile} (${lines.length} var${lines.length === 1 ? "" : "s"} set)`,
-    });
+    const config = readConfigFile();
+    const count = Object.keys(config).length;
+    const unknown = findUnknownConfigKeys(config);
+    if (unknown.length > 0) {
+      // A typo'd key is silently ignored at load time and looks perfectly
+      // correct in the file, so it has to be called out here or never.
+      const described = unknown
+        .map((u) => (u.suggestion ? `${u.key} (did you mean ${u.suggestion}?)` : u.key))
+        .join(", ");
+      checks.push({
+        name: "config",
+        status: "warn",
+        detail: `${configFile} — unrecognised key${unknown.length === 1 ? "" : "s"}: ${described}`,
+      });
+    } else {
+      checks.push({
+        name: "config",
+        status: "ok",
+        detail: `${configFile} (${count} var${count === 1 ? "" : "s"} set)`,
+      });
+    }
   }
 
   // Opera Neon executable
@@ -2038,6 +2339,70 @@ async function runDoctorChecks(): Promise<DoctorCheck[]> {
       status: "ok",
       detail: execPath,
     });
+  }
+
+  // opera-devtools-mcp — the bridge cannot start without it
+  const mcp = resolveMcpBinStatus();
+  checks.push(
+    mcp.found
+      ? { name: "mcp", status: "ok", detail: `${mcp.bin} (${mcp.source})` }
+      : {
+          name: "mcp",
+          status: "fail",
+          detail: `opera-devtools-mcp not found at ${mcp.bin} (${mcp.source})`,
+        },
+  );
+
+  // Browser target — launch, or attach to something already running
+  if (browserUrl) {
+    const attachPort = Number.parseInt(new URL(browserUrl).port, 10);
+    const identity = Number.isFinite(attachPort)
+      ? await probeDevToolsEndpoint(attachPort)
+      : null;
+    checks.push(
+      identity
+        ? { name: "browser", status: "ok", detail: `attached to ${identity.browser}` }
+        : {
+            name: "browser",
+            status: "fail",
+            detail: `OPERA_CLI_BROWSER_URL=${browserUrl} is not answering`,
+          },
+    );
+  }
+
+  // Profile lock — the usual reason a launch silently fails
+  const profileDir = process.env.OPERA_CLI_USER_DATA_DIR;
+  if (!profileDir) {
+    checks.push({
+      name: "profile",
+      status: "ok",
+      detail: "isolated (no persistent profile configured)",
+    });
+  } else if (!existsSync(profileDir)) {
+    checks.push({
+      name: "profile",
+      status: "ok",
+      detail: `${profileDir} (will be created on first launch)`,
+    });
+  } else {
+    const lock = inspectProfileLock(profileDir);
+    const attachable = readDevToolsPort(profileDir);
+    const live = attachable !== null ? await probeDevToolsEndpoint(attachable) : null;
+    if (lock.state === "free") {
+      checks.push({ name: "profile", status: "ok", detail: `${profileDir} (free)` });
+    } else if (live) {
+      checks.push({
+        name: "profile",
+        status: "ok",
+        detail: `in use by ${live.browser}, attachable on port ${attachable}`,
+      });
+    } else {
+      checks.push({
+        name: "profile",
+        status: "warn",
+        detail: `in use${lock.pid ? ` by pid ${lock.pid}` : ""} with no debugging port — a separate profile will be used`,
+      });
+    }
   }
 
   // Session hooks
@@ -2098,7 +2463,61 @@ async function runDoctorChecks(): Promise<DoctorCheck[]> {
   return checks;
 }
 
-async function handleDoctor(_args: string[]): Promise<string> {
+/**
+ * Repair what can be repaired mechanically. Anything needing a decision — an
+ * install, a config edit — is reported, never done on the user's behalf.
+ */
+async function runDoctorFixes(checks: DoctorCheck[]): Promise<string[]> {
+  const done: string[] = [];
+
+  const bridge = checks.find((c) => c.name === "bridge");
+  if (bridge && bridge.status !== "ok") {
+    if (bridge.detail.includes("stale pid file")) {
+      await stopBridge();
+      done.push("cleared the stale pid file");
+    } else if (bridge.detail.includes("not running")) {
+      // Nothing broken — it starts on demand.
+    } else {
+      await restartBridge();
+      done.push("restarted the bridge");
+    }
+  }
+
+  if (checks.some((c) => c.name === "config" && c.detail.includes("not found"))) {
+    const result = autoConfigure();
+    if (result.status === "configured") {
+      done.push(`wrote a config for ${result.browser.name}`);
+    }
+  }
+
+  const logs = checks.find((c) => c.name === "logs");
+  if (logs && /\d+(\.\d+)? MB/.test(logs.detail)) {
+    const size = Number.parseFloat(logs.detail.match(/([\d.]+) MB/)?.[1] ?? "0");
+    if (size >= 5 && rotateBridgeLog()) done.push("rotated the bridge log");
+  }
+
+  return done;
+}
+
+async function handleDoctor(args: string[]): Promise<string> {
+  if (args.includes("--fix")) {
+    const applied = await runDoctorFixes(await runDoctorChecks());
+    const after = await runDoctorChecks();
+    const summary = {
+      fixed: applied.length,
+      ok: after.filter((c) => c.status === "ok").length,
+      warn: after.filter((c) => c.status === "warn").length,
+      fail: after.filter((c) => c.status === "fail").length,
+    };
+    return renderOutput([
+      encode({ doctor: summary }),
+      applied.length > 0
+        ? `fixed[${applied.length}]:\n${applied.map((f) => `  ${f}`).join("\n")}`
+        : "fixed: nothing needed repairing",
+      `checks[${after.length}]:\n${after.map((c) => `  ${c.name}: ${c.status} (${c.detail})`).join("\n")}`,
+    ]);
+  }
+
   const checks = await runDoctorChecks();
   const summary = {
     ok: checks.filter((c) => c.status === "ok").length,
@@ -2119,13 +2538,26 @@ async function handleDoctor(_args: string[]): Promise<string> {
     );
   }
   if (checks.some((c) => c.name === "bridge" && c.status === "fail")) {
-    help.push("Run `opera-browser-cli stop` then any command to restart the bridge");
+    help.push("Run `opera-browser-cli restart` to bring the bridge back");
     help.push("Run `opera-browser-cli logs` to see why the bridge is unhealthy");
   }
   if (checks.some((c) => c.name === "hooks" && c.status !== "ok")) {
     help.push(
       "Run any command with OPERA_CLI_ENABLE_HOOKS=1 to install session hooks",
     );
+  }
+  if (checks.some((c) => c.name === "mcp" && c.status !== "ok")) {
+    help.push(
+      "Install the MCP server: `npm install -g opera-devtools-mcp`, or set OPERA_CLI_MCP_BIN",
+    );
+  }
+  if (checks.some((c) => c.name === "profile" && c.status === "warn")) {
+    help.push(
+      "Run `opera-browser-cli launch-args` to restart Opera so the CLI can attach to your real profile",
+    );
+  }
+  if (checks.some((c) => c.name === "browser" && c.status === "fail")) {
+    help.push("Run `opera-browser-cli attach --clear` to stop attaching to a dead endpoint");
   }
 
   return renderOutput([
@@ -2139,19 +2571,73 @@ async function handleDoctor(_args: string[]): Promise<string> {
 
 const LOGS_DEFAULT_LINES = 50;
 
-function parseLogsArgs(args: string[]): { lines: number } {
+export function parseLogsArgs(args: string[]): {
+  lines: number;
+  follow: boolean;
+  errorsOnly: boolean;
+} {
   let lines = LOGS_DEFAULT_LINES;
+  let follow = false;
+  let errorsOnly = false;
   for (let i = 0; i < args.length; i++) {
     if ((args[i] === "-n" || args[i] === "--lines") && i + 1 < args.length) {
       const parsed = parseInt(args[++i] ?? "", 10);
       if (Number.isFinite(parsed) && parsed > 0) lines = parsed;
+    } else if (args[i] === "-f" || args[i] === "--follow") {
+      follow = true;
+    } else if (args[i] === "--errors") {
+      errorsOnly = true;
     }
   }
-  return { lines };
+  return { lines, follow, errorsOnly };
+}
+
+/** The lines worth looking at when something has gone wrong. */
+const LOG_ERROR_PATTERN =
+  /error|failed|fatal|exception|refused|denied|timeout|timed out|in use|EADDRINUSE|ECONNREFUSED|EACCES|not found|unauthorized|cannot/i;
+
+export function filterLogLines(lines: string[], errorsOnly: boolean): string[] {
+  return errorsOnly ? lines.filter((l) => LOG_ERROR_PATTERN.test(l)) : lines;
+}
+
+/** Stream appended log output until interrupted. */
+async function followLog(errorsOnly: boolean): Promise<void> {
+  const logFile = getLogFile();
+  let offset = existsSync(logFile) ? statSync(logFile).size : 0;
+  let stop = false;
+  const onSigint = (): void => {
+    stop = true;
+  };
+  process.on("SIGINT", onSigint);
+  try {
+    while (!stop) {
+      await new Promise((r) => setTimeout(r, 500));
+      if (!existsSync(logFile)) continue;
+      const size = statSync(logFile).size;
+      // A rotation shrinks the file; start over from the top of the new one.
+      if (size < offset) offset = 0;
+      if (size === offset) continue;
+      const fd = openSync(logFile, "r");
+      try {
+        const buffer = Buffer.alloc(size - offset);
+        readSync(fd, buffer, 0, buffer.length, offset);
+        offset = size;
+        const fresh = filterLogLines(
+          buffer.toString("utf-8").split("\n").filter(Boolean),
+          errorsOnly,
+        );
+        if (fresh.length > 0) process.stdout.write(fresh.join("\n") + "\n");
+      } finally {
+        closeSync(fd);
+      }
+    }
+  } finally {
+    process.off("SIGINT", onSigint);
+  }
 }
 
 async function handleLogs(args: string[]): Promise<string> {
-  const { lines } = parseLogsArgs(args);
+  const { lines, follow, errorsOnly } = parseLogsArgs(args);
   const logFile = getLogFile();
   if (!existsSync(logFile)) {
     return renderOutput([
@@ -2167,13 +2653,32 @@ async function handleLogs(args: string[]): Promise<string> {
   if (allLines.length > 0 && allLines[allLines.length - 1] === "") {
     allLines.pop();
   }
-  const tail = allLines.slice(-lines);
+  const matched = filterLogLines(allLines, errorsOnly);
+  const tail = matched.slice(-lines);
+
+  if (follow) {
+    process.stdout.write(
+      renderOutput([
+        encode({ path: logFile, following: true, errors_only: errorsOnly }),
+        tail.join("\n"),
+      ]) + "\n",
+    );
+    await followLog(errorsOnly);
+    return "";
+  }
+
   return renderOutput([
-    encode({ path: logFile, lines: tail.length, total: allLines.length }),
+    encode({
+      path: logFile,
+      lines: tail.length,
+      total: allLines.length,
+      ...(errorsOnly ? { matched: matched.length } : {}),
+    }),
     tail.join("\n"),
     renderHelp([
       `Run \`opera-browser-cli logs --lines <N>\` to show more (default ${LOGS_DEFAULT_LINES})`,
-      `Tail live: \`tail -f ${logFile}\``,
+      "Run `opera-browser-cli logs --errors` to show only failure lines",
+      "Run `opera-browser-cli logs --follow` to stream new output",
     ]),
   ]);
 }
@@ -2188,23 +2693,164 @@ async function handleLogs(args: string[]): Promise<string> {
  * Skipped when OPERA_CLI_BROWSER_URL is set — the user manages the browser
  * themselves and presumably knows it's Opera Neon.
  */
-function requireNeon(command: string): void {
-  if (process.env.OPERA_CLI_BROWSER_URL) return;
-  const execPath = process.env.OPERA_CLI_EXECUTABLE_PATH;
-  if (execPath && existsSync(execPath)) return;
+export type BrowserKind = "neon" | "opera" | "other" | "unknown";
 
-  const reason = execPath
-    ? `OPERA_CLI_EXECUTABLE_PATH points at "${execPath}" which does not exist`
-    : "OPERA_CLI_EXECUTABLE_PATH is not set — opera-browser-cli would launch vanilla Chrome, which has no Opera AI";
-  throw new CdpError(
-    `${command} requires Opera Neon — ${reason}`,
-    "VALIDATION_ERROR",
-    [
-      "Run `opera-browser-cli setup` to detect and configure Opera Neon",
-      "Or set OPERA_CLI_EXECUTABLE_PATH to your Opera Neon binary",
+/**
+ * What kind of browser we are about to drive.
+ *
+ * The old check only asked whether the configured path existed, which cannot
+ * tell Neon from Opera from Chrome — so it passed in exactly the two cases that
+ * fail: a plain Opera (no invoke-do/make/research) and a non-Opera browser
+ * (no Opera AI at all). Attached browsers report their real identity; launched
+ * ones are identified by their build, which is how Opera names its binaries.
+ */
+export function classifyBrowser(
+  executablePath: string | undefined,
+  attachedBrowser?: string | undefined,
+): BrowserKind {
+  if (attachedBrowser) {
+    if (/neon/i.test(attachedBrowser)) return "neon";
+    if (/opera|opr\//i.test(attachedBrowser)) return "opera";
+    return "other";
+  }
+  if (!executablePath) return "unknown";
+  if (/neon/i.test(executablePath)) return "neon";
+  if (/opera/i.test(executablePath)) return "opera";
+  return "other";
+}
+
+const NEON_ONLY_HELP = [
+  "Install Opera Neon from https://www.operaneon.com",
+  "Run `opera-browser-cli setup` to point at it",
+  "Run `opera-browser-cli doctor` to inspect the current configuration",
+];
+
+/**
+ * Fail fast for commands that need Opera Neon, so we do not pay a browser
+ * launch to surface a confusing protocol error.
+ */
+function requireNeon(command: string): void {
+  // An explicitly attached browser is identified for real by `doctor`; here we
+  // trust the user to know what they pointed us at.
+  if (process.env.OPERA_CLI_BROWSER_URL) return;
+
+  const execPath = process.env.OPERA_CLI_EXECUTABLE_PATH;
+  if (execPath && !existsSync(execPath)) {
+    throw new CdpError(
+      `${command} requires Opera Neon, and OPERA_CLI_EXECUTABLE_PATH points at "${execPath}", which does not exist`,
+      "VALIDATION_ERROR",
+      NEON_ONLY_HELP,
+    );
+  }
+
+  switch (classifyBrowser(execPath)) {
+    case "neon":
+      return;
+    case "opera":
+      throw new CdpError(
+        `${command} is only available on Opera Neon — the configured browser is a standard Opera build`,
+        "UNSUPPORTED_OPERATION",
+        ["`opera-browser-cli chat` works on this browser", ...NEON_ONLY_HELP],
+      );
+    case "other":
+      throw new CdpError(
+        `${command} requires Opera Neon — the configured browser is not an Opera build`,
+        "VALIDATION_ERROR",
+        NEON_ONLY_HELP,
+      );
+    default:
+      throw new CdpError(
+        `${command} requires Opera Neon — no browser is configured, so a plain Chrome would be launched`,
+        "VALIDATION_ERROR",
+        NEON_ONLY_HELP,
+      );
+  }
+}
+
+// --- Login ---
+
+const OPERA_ACCOUNT_URL = "https://auth.opera.com/account/";
+
+/**
+ * Ask Opera AI something trivial purely to find out whether it will answer.
+ *
+ * There is no cheaper signal: sign-in, subscription, and consent state are only
+ * observable through the reply to a real call. So this is never run implicitly
+ * — only when the user asks to check.
+ */
+async function probeOperaAuth(): Promise<{ ok: boolean; detail: string }> {
+  try {
+    const result = await callTool("opera_chat", { prompt: "ping" });
+    for (const descriptor of CDP_RESULT_ERRORS) {
+      if (descriptor.match(result)) {
+        return {
+          ok: false,
+          detail:
+            typeof descriptor.message === "function"
+              ? descriptor.message("login")
+              : descriptor.message,
+        };
+      }
+    }
+    return { ok: true, detail: "Opera AI responded" };
+  } catch (error) {
+    return { ok: false, detail: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+async function handleLogin(args: string[]): Promise<string> {
+  const checkOnly = args.includes("--check");
+
+  if (!checkOnly) {
+    if (!shouldRunHeaded()) {
+      throw new CdpError(
+        "Signing in needs a visible browser window, and this session is headless",
+        "VALIDATION_ERROR",
+        [
+          "Run `OPERA_CLI_HEADED=1 opera-browser-cli login`",
+          "Or run `opera-browser-cli setup --headed` to make it the default",
+        ],
+      );
+    }
+    await callTool("new_page", { url: OPERA_ACCOUNT_URL });
+
+    if (!process.stdin.isTTY) {
+      // No way to wait for the user, and probing now would just report the
+      // state they have not had a chance to change yet.
+      return renderOutput([
+        encode({ login: "sign-in page opened", url: OPERA_ACCOUNT_URL }),
+        renderHelp([
+          "Complete sign-in in the browser window",
+          "Run `opera-browser-cli login --check` to confirm it worked",
+        ]),
+      ]);
+    }
+
+    const rl = createInterface({ input: process.stdin, output: process.stdout });
+    try {
+      await new Promise<string>((resolve) =>
+        rl.question(
+          `\nSign in at ${OPERA_ACCOUNT_URL} in the browser window, then press Enter: `,
+          resolve,
+        ),
+      );
+    } finally {
+      rl.close();
+    }
+  }
+
+  const probe = await probeOperaAuth();
+  if (!probe.ok) {
+    throw new CdpError(`Opera AI is not available: ${probe.detail}`, "AUTH_REQUIRED", [
+      "Run `opera-browser-cli login` to sign in",
+      "Check your subscription at https://auth.opera.com/account/",
       "Run `opera-browser-cli doctor` to inspect the current configuration",
-    ],
-  );
+    ]);
+  }
+  return renderOutput([
+    encode({ login: "signed in", detail: probe.detail }),
+    renderHelp(['Run `opera-browser-cli chat "summarise this page"` to use Opera AI']),
+  ]);
 }
 
 interface CdpResultErrorDescriptor {
@@ -2223,16 +2869,16 @@ const CDP_RESULT_ERRORS: readonly CdpResultErrorDescriptor[] = [
   {
     match: (r) => r.includes(CdpResultErrorKey.NOT_SIGNED_IN),
     message: "Opera: user is not signed in",
-    code: "BROWSER_ERROR",
+    code: "AUTH_REQUIRED",
     suggestions: (cmd) => [
-      `Re-run \`opera-browser-cli ${cmd}\` after signing in`,
-      "Run `opera-browser-cli doctor` to inspect the current configuration",
+      "Run `opera-browser-cli login` to sign in to your Opera account",
+      `Re-run \`opera-browser-cli ${cmd}\` afterwards`,
     ],
   },
   {
     match: (r) => r.includes(CdpResultErrorKey.SUBSCRIPTION_REQUIRED),
     message: "Opera: an active subscription is required",
-    code: "BROWSER_ERROR",
+    code: "AUTH_REQUIRED",
     suggestions: (cmd) => [
       "Check your Opera subscription at https://auth.opera.com/account/",
       `Re-run \`opera-browser-cli ${cmd}\` after activating a subscription`,
@@ -2241,21 +2887,17 @@ const CDP_RESULT_ERRORS: readonly CdpResultErrorDescriptor[] = [
   {
     match: (r) => r.includes(CdpResultErrorKey.CONSENT_REQUIRED),
     message: "Opera: user consent has not been accepted",
-    code: "BROWSER_ERROR",
+    code: "AUTH_REQUIRED",
     suggestions: (cmd) => [
-      "Open Opera and accept the consent prompt before using AI features",
+      "Run `opera-browser-cli login` — the consent prompt appears on first use",
       `Re-run \`opera-browser-cli ${cmd}\` after accepting consent`,
     ],
   },
   {
     match: (r) => r.includes(CdpResultErrorKey.NEON_ONLY),
     message: (cmd) => `Opera: ${cmd} is only available on Opera Neon`,
-    code: "BROWSER_ERROR",
-    suggestions: () => [
-      "Install Opera Neon from https://www.operaneon.com",
-      "Run `opera-browser-cli setup` to configure the Opera Neon executable path",
-      "Run `opera-browser-cli doctor` to inspect the current configuration",
-    ],
+    code: "UNSUPPORTED_OPERATION",
+    suggestions: () => NEON_ONLY_HELP,
   },
 ];
 
@@ -2576,6 +3218,11 @@ const COMMANDS: Record<string, CommandFn> = {
   heap: withoutFullFlag(handleHeap),
   start: async () => handleStart(),
   stop: async () => handleStop(),
+  restart: async () => handleRestart(),
+  status: async () => handleStatus(),
+  attach: withoutFullFlag(handleAttach),
+  "launch-args": async () => handleLaunchArgs(),
+  login: withoutFullFlag(handleLogin),
   chat: withoutFullFlag(handleChat),
   "invoke-do": withoutFullFlag(handleInvokeDo),
   make: withoutFullFlag(handleMake),
@@ -2586,17 +3233,182 @@ const COMMANDS: Record<string, CommandFn> = {
   doctor: withoutFullFlag(handleDoctor),
 };
 
-const SETUP_SKIP_COMMANDS = new Set(["setup", "doctor", "logs", "--help", "-h", "--version", "-v", "-V"]);
+// --- Browser conflict preflight ---
 
-function warnIfUnconfigured(argv: string[]): void {
-  const cmd = argv[0];
-  if (cmd !== undefined && SETUP_SKIP_COMMANDS.has(cmd)) return;
-  const configFile = join(homedir(), ".opera-browser-cli", "config");
-  if (!existsSync(configFile) && !process.env.OPERA_CLI_EXECUTABLE_PATH && !process.env.OPERA_CLI_BROWSER_URL) {
+/** Commands that never touch a browser, so never need a target resolved. */
+const BROWSER_SKIP_COMMANDS = new Set([
+  "setup",
+  "doctor",
+  "logs",
+  "status",
+  "stop",
+  "attach",
+  "launch-args",
+  "models",
+  "--help",
+  "-h",
+  "--version",
+  "-v",
+  "-V",
+]);
+
+function separateProfileDir(): string {
+  return join(getStateDir(), "profile");
+}
+
+/**
+ * Resolve a profile conflict: the user's browser is holding the profile and we
+ * cannot reach it.
+ *
+ * Restarting somebody's browser is not a decision to make on their behalf, so
+ * it happens only on an explicit yes — a TTY prompt, or `--takeover` for
+ * scripted callers. Everything else falls back to a separate profile, which
+ * always works and costs only a sign-in.
+ */
+async function resolveBrowserConflict(
+  target: Extract<BrowserTarget, { mode: "conflict" }>,
+  takeover: boolean,
+): Promise<void> {
+  const canPrompt = Boolean(process.stdin.isTTY && process.stdout.isTTY);
+
+  let choice: "takeover" | "separate" = "separate";
+  if (takeover) {
+    choice = "takeover";
+  } else if (canPrompt) {
+    const rl = createInterface({ input: process.stdin, output: process.stdout });
+    try {
+      process.stdout.write(
+        `\nOpera is already running on the profile opera-browser-cli is configured to use:\n  ${target.userDataDir}\n\n` +
+          "A browser can only be automated if it was started with a debugging port,\n" +
+          "and that flag cannot be added to a browser that is already open.\n\n" +
+          "  [1] Restart Opera now so the CLI can drive it (tabs are restored)\n" +
+          "  [2] Use a separate profile instead (you will need to sign in there)\n\n" +
+          "Restarting opens a local debugging port for as long as that browser runs.\n",
+      );
+      const answer = (await new Promise<string>((resolve) =>
+        rl.question("Select [1/2] (default 2): ", resolve),
+      ))
+        .trim()
+        .toLowerCase();
+      if (answer === "1" || answer === "y") choice = "takeover";
+    } finally {
+      rl.close();
+    }
+  }
+
+  if (choice === "separate") {
+    const dir = separateProfileDir();
+    process.env.OPERA_CLI_USER_DATA_DIR = dir;
     process.stderr.write(
-      "hint: run `opera-browser-cli setup` to configure (first-time setup)\n",
+      `note: Opera is running on the configured profile; using ${dir} for this run.\n` +
+        "      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.\n",
+    );
+    return;
+  }
+
+  const quit = await quitBrowser(target.lock, target.userDataDir);
+  if (!quit.ok) {
+    throw new CdpError(
+      quit.reason === "no-pid"
+        ? "Could not identify the process holding the profile, so it was not signalled."
+        : "Opera did not shut down within 20s.",
+      "BROWSER_ERROR",
+      [
+        "Quit Opera yourself, then re-run the command",
+        "Or run `opera-browser-cli launch-args` to restart it with a debugging port",
+      ],
     );
   }
+
+  const launched = await launchAttachableBrowser(
+    process.env.OPERA_CLI_EXECUTABLE_PATH,
+    target.userDataDir,
+  );
+  if (!launched.ok || !launched.url) {
+    throw new CdpError(
+      `Opera was stopped but could not be restarted (${launched.reason ?? "unknown"}).`,
+      "BROWSER_ERROR",
+      [
+        "Start Opera yourself, then re-run the command",
+        "Run `opera-browser-cli launch-args` for the flags that let the CLI attach",
+        "Run `opera-browser-cli doctor` to check the configured executable path",
+      ],
+    );
+  }
+  process.env.OPERA_CLI_BROWSER_URL = launched.url;
+  process.stderr.write(`note: restarted Opera and attached at ${launched.url}\n`);
+}
+
+/**
+ * Work out which browser this command should drive, before the bridge starts.
+ *
+ * Runs in the CLI rather than the bridge because resolving a conflict may need
+ * to ask the user something, and the bridge is detached with no terminal.
+ */
+async function preflightBrowser(argv: string[], takeover: boolean): Promise<void> {
+  const cmd = argv[0];
+  if (cmd === undefined || BROWSER_SKIP_COMMANDS.has(cmd)) return;
+  // Explicitly pointed at a browser, or using an isolated profile that nothing
+  // else can hold: either way there is no conflict possible.
+  if (process.env.OPERA_CLI_BROWSER_URL) return;
+  if (!process.env.OPERA_CLI_USER_DATA_DIR) return;
+  // A running bridge already owns a browser — the question is settled.
+  if ((await findUsableBridge(candidatePorts())) !== null) return;
+
+  const target = await resolveBrowserTarget({
+    browserUrl: process.env.OPERA_CLI_BROWSER_URL,
+    userDataDir: process.env.OPERA_CLI_USER_DATA_DIR,
+    executablePath: process.env.OPERA_CLI_EXECUTABLE_PATH,
+  });
+
+  if (target.mode === "attach") {
+    process.env.OPERA_CLI_BROWSER_URL = target.url;
+    return;
+  }
+  if (target.mode === "managed") return;
+
+  await resolveBrowserConflict(target, takeover);
+}
+
+const SETUP_SKIP_COMMANDS = new Set(["setup", "logs", "--help", "-h", "--version", "-v", "-V"]);
+
+/**
+ * Configure a machine that has never been configured, in place, without asking.
+ *
+ * This replaces a stderr hint that told the user to go and run `setup` and then
+ * carried on into a broken configuration anyway. Detection is unambiguous on
+ * the platforms Opera ships for, so there is nothing to ask; and doing it here
+ * rather than in `setup` means it works identically under an agent, which is
+ * how most of these commands are actually run.
+ */
+function ensureConfigured(argv: string[]): void {
+  const cmd = argv[0];
+  if (cmd !== undefined && SETUP_SKIP_COMMANDS.has(cmd)) return;
+
+  const result = autoConfigure();
+  if (result.status === "configured") {
+    process.stderr.write(
+      `configured: ${result.browser.name} (${result.browser.isNeon ? "Opera AI available" : "chat only — install Opera Neon for invoke-do/make/research"}) ` +
+        "— run `opera-browser-cli setup` to change\n",
+    );
+    return;
+  }
+  if (result.status === "no-browser" && cmd !== "doctor") {
+    process.stderr.write(
+      "hint: no Opera installation found — run `opera-browser-cli setup`, or set OPERA_CLI_EXECUTABLE_PATH\n",
+    );
+  }
+}
+
+export function extractTakeoverFlag(argv: string[]): {
+  argv: string[];
+  takeover: boolean;
+} {
+  return {
+    argv: argv.filter((arg) => arg !== "--takeover"),
+    takeover:
+      argv.includes("--takeover") || process.env.OPERA_CLI_TAKEOVER === "1",
+  };
 }
 
 export async function main(
@@ -2604,10 +3416,18 @@ export async function main(
 ): Promise<void> {
   loadConfig();
   const normalized = normalizeMainOptions(options);
-  const requestedArgv = resolveArgv(normalized.argv);
-  warnIfUnconfigured(requestedArgv);
+  const rawArgv = resolveArgv(normalized.argv);
+  const { argv: requestedArgv, takeover } = extractTakeoverFlag(rawArgv);
+  ensureConfigured(requestedArgv);
+  await preflightBrowser(requestedArgv, takeover);
   const homeFull = shouldRenderFullHome(requestedArgv);
-  const argv = homeFull ? [] : normalized.argv;
+  // Only hand axi an explicit argv when we have one to give: either the caller
+  // supplied it, or we stripped --takeover out of it. Otherwise let axi read
+  // process.argv itself, which is the documented behaviour.
+  const stripped = requestedArgv.length !== rawArgv.length;
+  const passthroughArgv =
+    normalized.argv !== undefined || stripped ? requestedArgv : undefined;
+  const argv = homeFull ? [] : passthroughArgv;
   const stdout = wrapStdout(normalized.stdout, argv);
 
   await runAxiCli({
@@ -2621,5 +3441,6 @@ export async function main(
     commands: COMMANDS,
     getCommandHelp,
     renderUnknownCommand,
+    formatError: formatCliError,
   });
 }

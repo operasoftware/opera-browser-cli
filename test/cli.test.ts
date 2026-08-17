@@ -1,16 +1,95 @@
 import { describe, it, expect } from "vitest";
-import { formatStopOutput, formatScreenshotOutput, getCommandHelp, parseChatArgs, parseScreenshotArgs } from "../src/cli.js";
+import {
+  extractTakeoverFlag,
+  formatStopOutput,
+  formatScreenshotOutput,
+  getCommandHelp,
+  parseChatArgs,
+  parseScreenshotArgs,
+  parseSetupArgs,
+} from "../src/cli.js";
 
 describe("formatStopOutput", () => {
+  const base = { stopped: false, stale: false, forced: false, pid: null, port: null };
+
   it("returns stopped status when bridge was running", () => {
-    const output = formatStopOutput(true);
+    const output = formatStopOutput({ ...base, stopped: true, pid: 42, port: 9225 });
     expect(output).toContain("stopped");
     expect(output).not.toContain("no-op");
+    expect(output).toContain("42");
+    expect(output).toContain("9225");
   });
 
   it("returns no-op status when bridge was not running", () => {
-    const output = formatStopOutput(false);
+    const output = formatStopOutput(base);
     expect(output).toContain("no-op");
+  });
+
+  it("reports a forced kill distinctly", () => {
+    const output = formatStopOutput({ ...base, stopped: true, forced: true, pid: 42 });
+    expect(output).toContain("forced");
+  });
+
+  it("reports a cleared stale pid file", () => {
+    const output = formatStopOutput({ ...base, stale: true, pid: 42 });
+    expect(output).toContain("stale");
+    expect(output).not.toContain("no-op");
+  });
+});
+
+describe("parseSetupArgs", () => {
+  it("defaults to the interactive wizard", () => {
+    expect(parseSetupArgs([])).toMatchObject({ interactive: true });
+  });
+
+  it("accepts the non-interactive flags", () => {
+    expect(parseSetupArgs(["--non-interactive"]).interactive).toBe(false);
+    expect(parseSetupArgs(["-y"]).interactive).toBe(false);
+    expect(parseSetupArgs(["--yes"]).interactive).toBe(false);
+  });
+
+  it("treats any explicit setting as non-interactive", () => {
+    // Passing a value means the caller already knows what they want; stopping
+    // to ask would defeat the point in a provisioning script.
+    expect(parseSetupArgs(["--executable", "/x/opera"])).toMatchObject({
+      interactive: false,
+      executable: "/x/opera",
+    });
+    expect(parseSetupArgs(["--profile", "skip"])).toMatchObject({
+      interactive: false,
+      profile: "skip",
+    });
+    expect(parseSetupArgs(["--headless"])).toMatchObject({
+      interactive: false,
+      headed: false,
+    });
+    expect(parseSetupArgs(["--headed"])).toMatchObject({
+      interactive: false,
+      headed: true,
+    });
+  });
+
+  it("ignores a flag with no value rather than consuming the next one", () => {
+    expect(parseSetupArgs(["--executable"])).toMatchObject({
+      interactive: true,
+      executable: undefined,
+    });
+  });
+});
+
+describe("extractTakeoverFlag", () => {
+  it("strips the flag so it never reaches command parsing", () => {
+    expect(extractTakeoverFlag(["open", "https://x", "--takeover"])).toEqual({
+      argv: ["open", "https://x"],
+      takeover: true,
+    });
+  });
+
+  it("leaves other args untouched", () => {
+    expect(extractTakeoverFlag(["open", "https://x"])).toEqual({
+      argv: ["open", "https://x"],
+      takeover: false,
+    });
   });
 });
 

@@ -1,4 +1,7 @@
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
@@ -15,6 +18,7 @@ import {
   isBridgeClientConnected,
   isLoopbackHost,
   parseBridgeCallPayload,
+  resolveBridgeLauncher,
   resolveBridgeScript,
   resetLastSnapshotCache,
   wrapTransportForIdCapture,
@@ -62,6 +66,70 @@ describe("getErrorMessage", () => {
 describe("resolveBridgeScript", () => {
   it("prefers the TypeScript bridge entrypoint in the repo checkout", () => {
     expect(resolveBridgeScript(import.meta.dirname)).toMatch(/bin\/opera-browser-cli-bridge\.ts$/);
+  });
+});
+
+describe("resolveBridgeLauncher", () => {
+  let dir: string;
+
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), "obc-launcher-"));
+    mkdirSync(join(dir, "bin"), { recursive: true });
+    mkdirSync(join(dir, "src"), { recursive: true });
+  });
+
+  afterEach(() => {
+    delete process.env.OPERA_CLI_DEV;
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("prefers the built JavaScript entrypoint", () => {
+    writeFileSync(join(dir, "bin", "opera-browser-cli-bridge.js"), "");
+    writeFileSync(join(dir, "bin", "opera-browser-cli-bridge.ts"), "");
+
+    const launcher = resolveBridgeLauncher(join(dir, "src"), "/usr/bin/node");
+
+    expect(launcher).toMatchObject({ ok: true, command: "/usr/bin/node" });
+    expect(launcher.ok && launcher.args[0]).toMatch(/bridge\.js$/);
+  });
+
+  it("uses the TypeScript entrypoint in a source checkout", () => {
+    // No built output — this is someone running from a clone.
+    writeFileSync(join(dir, "bin", "opera-browser-cli-bridge.ts"), "");
+
+    const launcher = resolveBridgeLauncher(join(dir, "src"), "/usr/bin/node");
+
+    // tsx is a devDependency of this repo, so it resolves here.
+    expect(launcher).toMatchObject({ ok: true });
+    expect(launcher.ok && launcher.args[0]).toMatch(/tsx/);
+    expect(launcher.ok && launcher.args[1]).toMatch(/bridge\.ts$/);
+  });
+
+  it("never shells out to npx", () => {
+    writeFileSync(join(dir, "bin", "opera-browser-cli-bridge.ts"), "");
+
+    const launcher = resolveBridgeLauncher(join(dir, "src"), "/usr/bin/node");
+
+    // npx blocks on an install prompt when the package is uncached, which
+    // behind a redirected stdio looks exactly like a hang.
+    expect(launcher.ok && launcher.command).not.toMatch(/npx/);
+    expect(launcher.ok && launcher.args.join(" ")).not.toMatch(/npx/);
+  });
+
+  it("reports an unbuilt package rather than spawning nothing", () => {
+    const launcher = resolveBridgeLauncher(join(dir, "src"), "/usr/bin/node");
+
+    expect(launcher).toEqual({ ok: false, reason: "bridge-not-built" });
+  });
+
+  it("honours OPERA_CLI_DEV=1 over a present build", () => {
+    writeFileSync(join(dir, "bin", "opera-browser-cli-bridge.js"), "");
+    writeFileSync(join(dir, "bin", "opera-browser-cli-bridge.ts"), "");
+    process.env.OPERA_CLI_DEV = "1";
+
+    const launcher = resolveBridgeLauncher(join(dir, "src"), "/usr/bin/node");
+
+    expect(launcher.ok && launcher.args[1]).toMatch(/bridge\.ts$/);
   });
 });
 
@@ -169,7 +237,21 @@ describe("buildTransportArgs", () => {
     const args = buildTransportArgs();
     expect(args).toContain("--executablePath=/Applications/Opera Neon.app/Contents/MacOS/Opera");
     expect(args).toContain("--isolated");
-    expect(args).toContain("--headless");
+    // A configured Opera means headed: sign-in and consent — and so every
+    // Opera AI feature — cannot be completed in a headless window.
+    expect(args).not.toContain("--headless");
+  });
+
+  it("stays headless when OPERA_CLI_HEADED=0 overrides a configured browser", () => {
+    process.env.OPERA_CLI_EXECUTABLE_PATH = "/Applications/Opera Neon.app/Contents/MacOS/Opera";
+    process.env.OPERA_CLI_HEADED = "0";
+    expect(buildTransportArgs()).toContain("--headless");
+  });
+
+  it("stays headless when no browser is configured", () => {
+    // CI, Docker, and plain-Chrome setups have no display; the old default
+    // has to survive for them.
+    expect(buildTransportArgs()).toContain("--headless");
   });
 
   it("omits --executablePath when OPERA_CLI_BROWSER_URL is also set", () => {

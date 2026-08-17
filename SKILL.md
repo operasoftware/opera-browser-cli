@@ -47,6 +47,24 @@ Commands that accept these flags: `open`, `snapshot`, `click`, `fill`, `type`, `
 
 To wire this CLI into a Docker-based OpenClaw setup (Chromium sidecar, shared netns, config bootstrap), see [`openclaw/README.md`](openclaw/README.md).
 
+## Exit codes
+
+Branch on the exit code rather than parsing messages:
+
+| Code | Meaning | What to do |
+|---|---|---|
+| 0 | Success | — |
+| 2 | Bad arguments, or the browser cannot do this | Fix the command; do not retry as-is |
+| 3 | Environment not ready after auto-recovery | Run `opera-browser-cli doctor` |
+| 4 | Sign-in, subscription, or consent needed | Ask the user — you cannot fix this |
+| 5 | Timed out | Retry |
+| 6 | Stale element ref or closed page | Re-run `snapshot`, then retry with fresh refs |
+| 1 | Anything else | Report it |
+
+## Recovery is automatic
+
+The bridge restarts itself on version skew, a crash, or a dropped connection, and falls back to another port if one is taken. Do not run `stop`/`restart` speculatively — just re-run the command. The exception is the Opera AI tools (`invoke-do`, `make`, `research`, `chat`): if one reports the connection dropped mid-call, it was **not** retried, because it may already have acted. Ask before re-running it.
+
 ## Sign-in errors
 
-If you hit `Opera: user is not signed in` on an AI command, suggest signing in to their Opera account. Run `opera-browser-cli setup` or `opera-browser-cli doctor` to configure or diagnose.
+If an AI command fails with `AUTH_REQUIRED` (exit code 4) — not signed in, no subscription, or consent pending — tell the user to run `opera-browser-cli login`, which opens the Opera account page in a visible window. `opera-browser-cli login --check` verifies the current state. Run `opera-browser-cli doctor` to diagnose anything else.

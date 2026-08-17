@@ -13,9 +13,12 @@ It wraps [opera-devtools-mcp](https://github.com/operasoftware/opera-devtools-mc
 
 ```sh
 npm install -g opera-browser-cli
-opera-browser-cli setup   # interactive wizard — run in a terminal where you can answer prompts
 opera-browser-cli open https://example.com
 ```
+
+That is the whole setup. The first command detects your Opera installation,
+writes `~/.opera-browser-cli/config`, and gets on with it. Run
+`opera-browser-cli setup` only when you want to change what it chose.
 
 Once installed, `open` navigates to a URL and returns a structured snapshot you can act on:
 
@@ -64,20 +67,29 @@ Prerequisites: **Node.js >= 20**, **Opera** browser ([Opera Neon](https://www.op
 npm install -g opera-browser-cli
 ```
 
-Run first-time setup — this is an interactive wizard, so run it in a terminal where you can answer prompts:
-
-```sh
-opera-browser-cli setup
-```
-
-This detects Opera installations, lets you pick one, saves configuration to `~/.opera-browser-cli/config`, and installs the skill to `~/.claude/skills/opera-browser-cli/SKILL.md` (Claude Code) and `~/.agents/skills/opera-browser-cli/SKILL.md` (generic cross-agent path used by Codex and other agents).
-
-Verify:
+No setup step is required. The first command you run detects your Opera
+installation, writes `~/.opera-browser-cli/config`, and continues:
 
 ```sh
 opera-browser-cli --version
 opera-browser-cli open https://example.com
 ```
+
+`setup` exists for when you want to change that choice — pick a different
+browser or profile, or install the agent skill files:
+
+```sh
+opera-browser-cli setup             # interactive wizard
+opera-browser-cli setup -y          # detect and accept, no prompts
+opera-browser-cli setup --executable "/Applications/Opera Neon.app/Contents/MacOS/Opera" \
+                        --profile skip --headless
+```
+
+It saves to `~/.opera-browser-cli/config` and installs the skill to
+`~/.claude/skills/opera-browser-cli/SKILL.md` (Claude Code) and
+`~/.agents/skills/opera-browser-cli/SKILL.md` (generic cross-agent path used by
+Codex and other agents). The non-interactive form needs no terminal, so agents
+and provisioning scripts can run it too.
 
 ### From source
 
@@ -86,7 +98,7 @@ opera-browser-cli open https://example.com
 npm install && npm run build && npm link
 ```
 
-Then run `opera-browser-cli setup` as above.
+Then just run a command — configuration happens on first use.
 
 ### Usage examples
 
@@ -127,7 +139,7 @@ OPERA_CLI_BROWSER_URL=http://127.0.0.1:9222 opera-browser-cli open https://examp
 ```
 
 - **Persistent bridge** — a detached process keeps the MCP session alive across commands, so Chrome doesn't restart every invocation
-- **Auto-lifecycle** — the bridge starts on first command and writes a PID file to `~/.opera-browser-cli/bridge.pid`
+- **Auto-lifecycle** — the bridge starts on first command, writes a PID file to `~/.opera-browser-cli/bridge.pid`, and restarts itself on version skew or a dropped connection
 - **Snapshot parsing** — accessibility tree snapshots are extracted and analyzed for interactive elements (`uid=` refs)
 - **TOON encoding** — structured metadata uses [TOON format](https://www.npmjs.com/package/@toon-format/toon) for compact, token-efficient output
 
@@ -219,14 +231,83 @@ opera-browser-cli eval "(() => { const rows = [...document.querySelectorAll('tr'
 |----------|--------------------------------------------------|
 | `setup`  | Interactive first-time setup (browser path, etc) |
 | `doctor` | Check configuration and environment              |
+| `doctor --fix` | Repair what can be repaired mechanically   |
+| `login` | Sign in to your Opera account (needed for AI)    |
 | `logs`   | Show bridge server logs                          |
+
+### Using your real Opera profile
+
+By default the CLI launches its own browser. To drive **your** Opera — with your
+logins, your session — the browser has to have been started with a debugging
+port. That flag cannot be added to a browser that is already open, so there are
+two ways in:
+
+```sh
+opera-browser-cli launch-args   # prints the command to start Opera with a port
+```
+
+Start Opera that way once, and every later command finds it automatically — the
+port is recorded in `DevToolsActivePort` inside the profile, so nothing needs
+configuring. Or let the CLI do it for you:
+
+```sh
+opera-browser-cli open example.com    # detects the conflict, offers to restart Opera
+opera-browser-cli open example.com --takeover   # skip the prompt (scripts, agents)
+```
+
+If Opera is already running on the configured profile and has no debugging port,
+the CLI asks whether to restart it (tabs are restored). Without a terminal to ask
+in, it quietly uses a separate profile instead — an agent will never quit your
+browser on its own. Restarting is always SIGTERM, never SIGKILL: a forced kill
+risks a corrupted profile.
+
+```sh
+opera-browser-cli attach --port 9222   # connect to a specific endpoint
+opera-browser-cli attach --clear       # go back to a CLI-launched browser
+```
+
+> **Note:** a debugging port has no authentication of its own — the CLI's bearer
+> token protects the bridge, not the browser. Any local process can drive a
+> browser with an open port, and this one is signed into everything you are. The
+> CLI lets the browser pick a random port rather than a predictable 9222, binds
+> it to loopback, and never passes `--remote-allow-origins`, which is what stops
+> a web page from driving it. Close the browser when you are done.
 
 ### Bridge
 
-| Command | Description             |
-|---------|-------------------------|
-| `start` | Start the bridge server |
-| `stop`  | Stop the bridge server  |
+| Command   | Description                                                        |
+|-----------|--------------------------------------------------------------------|
+| `start`   | Start the bridge server                                            |
+| `stop`    | Stop the bridge server (escalates to SIGKILL; clears a stale PID)  |
+| `restart` | Stop and start again — forces a clean state                        |
+| `status`  | Report bridge pid, port, and running version without starting one  |
+
+You should rarely need any of these. The bridge starts on first use, and repairs
+itself without being asked:
+
+- **Upgraded package** — a bridge running pre-upgrade code is detected by version
+  and replaced on the next command.
+- **Crashed or killed bridge** — the next command restarts it and retries. Opera AI
+  commands are the exception: they are never silently re-run, since they may already
+  have acted on the page.
+- **Port in use** — the next port in the range is used instead of failing.
+- **Several commands at once** — a start lock means exactly one bridge comes up.
+- **Stale PID file** — cleared automatically, and never signalled if the PID could
+  belong to an unrelated process from before a reboot.
+
+### Exit codes
+
+Scripts and agents can branch on why a command failed without parsing messages:
+
+| Code | Meaning | Caller action |
+|---|---|---|
+| 0 | Success | — |
+| 1 | Unknown / internal | Report |
+| 2 | Bad arguments, or unsupported on this browser | Fix the command |
+| 3 | Environment not ready after auto-recovery | Run `doctor` |
+| 4 | Sign-in, subscription, or consent required | Ask the user |
+| 5 | Timed out | Retry |
+| 6 | Stale element ref or closed page | Re-snapshot, then retry |
 
 Running with no command shows the CLI home view. It prepends `bin` and
 `description` metadata, then includes the current snapshot when a browser
@@ -265,14 +346,15 @@ session is active or the no-session status/help block when one is not.
 
 | Variable                    | Default                          | Purpose                                                          |
 |-----------------------------|----------------------------------|------------------------------------------------------------------|
-| `OPERA_CLI_PORT`            | `9225`                           | Bridge server port                                               |
+| `OPERA_CLI_PORT`            | `9225`                           | Base bridge port; the next 9 are tried if it is occupied         |
 | `OPERA_CLI_MCP_BIN`         | _(bundled `opera-devtools-mcp`)_ | Override the MCP server binary                                   |
 | `OPERA_CLI_EXECUTABLE_PATH` | _(system Chrome)_                | Custom browser binary                                            |
 | `OPERA_CLI_BROWSER_URL`     | —                                | Connect to an existing browser instance instead of launching one |
 | `OPERA_CLI_USER_DATA_DIR`   | —                                | Persistent Chrome profile directory (skips isolated mode)        |
-| `OPERA_CLI_HEADED`          | —                                | Set to `1` to run in headed (visible) mode                       |
+| `OPERA_CLI_HEADED`          | `1` when an Opera binary is configured | `1` headed, `0` headless. Opera AI needs a window to sign in |
 | `OPERA_CLI_CHROME_ARGS`     | —                                | Extra Chrome flags, space-separated                              |
 | `OPERA_CLI_ENABLE_HOOKS`    | —                                | Set to `1` to auto-install session hooks on startup              |
+| `OPERA_CLI_TAKEOVER`        | —                                | Set to `1` to restart a running Opera without asking             |
 
 State is stored in `~/.opera-browser-cli/`:
 
