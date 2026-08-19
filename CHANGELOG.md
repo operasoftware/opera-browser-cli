@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.46](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.45...opera-browser-cli-v0.1.46) (2026-08-19)
+
+
+### Bug Fixes
+
+* harden the CLI so browser automation works without manual recovery ([12d57ac](https://github.com/operasoftware/opera-browser-cli/commit/12d57ac41fbe9090c00880d92de779f74f6562c2))
+* harden bridge self-healing on dead browsers and condense the skill ([fded5e6](https://github.com/operasoftware/opera-browser-cli/commit/fded5e60ac3404cba807868648091f69b9e51a81))
+* make `open` fail loudly rather than return a fake zero-ref page when the browser is unreachable ([a9fd83f](https://github.com/operasoftware/opera-browser-cli/commit/a9fd83fa74b10ee4178c8e70c7789ae4ad1b10f9))
+
 ## [0.1.45](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.44...opera-browser-cli-v0.1.45) (2026-08-19)
 
 
