@@ -29,6 +29,9 @@ describe("exit codes", () => {
       TIMEOUT: 5,
       REF_NOT_FOUND: 6,
       PAGE_CLOSED: 6,
+      EXTENSION_NOT_FOUND: 3,
+      NOT_FOUND: 2,
+      SERVER_DISCONNECTED: 3,
       UNKNOWN: 1,
     };
 

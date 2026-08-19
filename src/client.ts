@@ -121,6 +121,9 @@ export type ErrorCode =
   | "AUTH_REQUIRED"
   | "VALIDATION_ERROR"
   | "UNSUPPORTED_OPERATION"
+  | "EXTENSION_NOT_FOUND"
+  | "NOT_FOUND"
+  | "SERVER_DISCONNECTED"
   | "UNKNOWN";
 
 export class CdpError extends AxiError {
@@ -884,6 +887,7 @@ const OPERA_AI_TOOLS = new Set([
   "opera_do",
   "opera_research",
   "opera_make",
+  "opera_call_mcp_tool",
 ]);
 
 /**
@@ -1102,6 +1106,34 @@ export function mapErrorMessage(message: string): CdpError {
       "Run `opera-browser-cli doctor` to inspect the current configuration",
     ]);
   }
+  if (message.includes("MCP Hub extension not available")) {
+    return new CdpError(
+      "MCP Hub extension not loaded. Load it in opera://extensions.",
+      "EXTENSION_NOT_FOUND",
+      ["Visit opera://extensions", "Load the MCP Hub extension (unpacked)"],
+    );
+  }
+
+  // MCP-specific errors: guarded by MCP context to avoid false matches on generic server/not found.
+  // The extension surfaces these as raw strings from thrown hub errors.
+  if (
+    (message.includes("MCP") || message.includes("opera_list_mcp")) &&
+    message.includes("not found")
+  ) {
+    return new CdpError(message, "NOT_FOUND", [
+      "Run 'opera-browser-cli mcp-servers' to see available servers.",
+    ]);
+  }
+
+  if (
+    (message.includes("MCP") || message.includes("opera_list_mcp")) &&
+    message.includes("not connected")
+  ) {
+    return new CdpError(message, "SERVER_DISCONNECTED", [
+      "Connect the server in the MCP Hub sidepanel.",
+    ]);
+  }
+
   // Try to parse JSON error
   try {
     const parsed = JSON.parse(message);

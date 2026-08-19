@@ -98,7 +98,7 @@ export type MainOptions = {
 };
 
 export const TOP_HELP = `usage: opera-browser-cli [command] [args] [flags]
-commands[46]:
+commands[49]:
   open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
   type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
   run,
@@ -110,6 +110,7 @@ commands[46]:
   attach, launch-args, login,
   chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
   research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
   setup, logs, doctor
 
 exit codes:
@@ -141,7 +142,7 @@ environment:
 opera ai:
   chat is available on any Opera browser. Use --model to select a model.
   Run "models" to list available models.
-  invoke-do, make, and research require Opera Neon with an active sign-in.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
   Run \`opera-browser-cli setup\` to configure the executable path, or set
   OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
 
@@ -724,6 +725,37 @@ examples:
   opera-browser-cli logs
   opera-browser-cli logs --lines 200`,
 
+  // MCP Hub
+  "mcp-servers": `usage: opera-browser-cli mcp-servers
+List MCP servers registered in the browser.
+Shows connection status and transport info for each server.
+Requires Opera Neon.
+
+examples:
+  opera-browser-cli mcp-servers`,
+
+  "mcp-tools": `usage: opera-browser-cli mcp-tools --server <name>
+List tools exposed by a specific MCP server.
+Requires Opera Neon.
+
+flags:
+  --server <name>  MCP server name (from mcp-servers)
+
+examples:
+  opera-browser-cli mcp-tools --server my-server`,
+
+  "mcp-call": `usage: opera-browser-cli mcp-call --server <name> --tool <name> [--params '{...}']
+Execute a tool on a specific MCP server.
+Requires Opera Neon.
+
+flags:
+  --server <name>    MCP server name (from mcp-servers)
+  --tool <name>      Tool name to execute
+  --params '{...}'   JSON parameters to pass to the tool
+
+examples:
+  opera-browser-cli mcp-call --server my-server --tool echo --params '{"text":"hello"}'`,
+
   doctor: `usage: opera-browser-cli doctor [--fix]
 Diagnose opera-browser-cli configuration: bridge status, config file, Opera Neon
 executable, MCP server, browser profile, session hooks, and log file. Each check
@@ -1045,6 +1077,9 @@ export const EXIT_CODES: Record<ErrorCode, number> = {
   TIMEOUT: 5,
   REF_NOT_FOUND: 6,
   PAGE_CLOSED: 6,
+  EXTENSION_NOT_FOUND: 3,
+  NOT_FOUND: 2,
+  SERVER_DISCONNECTED: 3,
   UNKNOWN: 1,
 };
 
@@ -3141,6 +3176,182 @@ async function handleModels(): Promise<string> {
   return lines.join("\n");
 }
 
+// --- MCP Hub handlers ---
+
+function parseServerArg(args: string[]): { server?: string } {
+  const serverIdx = args.indexOf("--server");
+  if (serverIdx === -1 || serverIdx + 1 >= args.length) return {};
+  return { server: args[serverIdx + 1] };
+}
+
+function parseMcpCallArgs(args: string[]): {
+  server?: string;
+  tool?: string;
+  params?: string;
+} {
+  let server: string | undefined;
+  let tool: string | undefined;
+  let params: string | undefined;
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--server" && i + 1 < args.length) server = args[++i];
+    else if (args[i] === "--tool" && i + 1 < args.length) tool = args[++i];
+    else if (args[i] === "--params" && i + 1 < args.length) params = args[++i];
+  }
+  return { server, tool, params };
+}
+
+/**
+ * Check if the raw result from a tool call is an error message from the tool handler
+ * (e.g., "Opera.dispatchAction(...) failed with error: ...") and throw a meaningful
+ * CdpError if so. Returns the parsed data if the result is valid JSON.
+ */
+function parseMcpResultOrThrow<T>(result: string, label: string): T {
+  if (!result || !result.trim()) {
+    throw new CdpError(
+      `${label} is not available on this browser version.`,
+      "UNSUPPORTED_OPERATION",
+      [
+        'Run `opera-browser-cli doctor` to check the connection',
+        'Ensure you are using Opera Neon with MCP Hub support',
+      ],
+    );
+  }
+  // CDP error codes (consent, subscription, sign-in, etc.) mean the
+  // feature is not available on this browser — treat as unsupported.
+  if (/\[OPERA_CDP_ERR:/.test(result)) {
+    throw new CdpError(
+      `${label} is not available on this browser version.`,
+      "UNSUPPORTED_OPERATION",
+      [
+        'Run `opera-browser-cli doctor` to check the connection',
+        'Ensure you are using Opera Neon with MCP Hub support',
+      ],
+    );
+  }
+  try {
+    return JSON.parse(result) as T;
+  } catch {
+    throw new CdpError(
+      result || `${label} returned an invalid response`,
+      "UNKNOWN",
+      ['Run `opera-browser-cli doctor` to check the connection'],
+    );
+  }
+}
+
+function formatMcpToolResult(resultJson: string): string {
+  if (!resultJson || !resultJson.trim()) {
+    return "(empty result \u2014 the MCP tool may not be available on this browser version)";
+  }
+  let result: { content?: Array<{ type: string; text?: string }>; isError?: boolean };
+  try {
+    result = JSON.parse(resultJson);
+  } catch {
+    return resultJson;
+  }
+  const lines: string[] = [];
+  if (result.content && result.content.length > 0) {
+    for (const block of result.content) {
+      if (block.type === "text") {
+        lines.push(block.text ?? "");
+      } else {
+        lines.push(JSON.stringify(block));
+      }
+    }
+  }
+  if (result.isError) {
+    if (lines.length === 0) {
+      lines.push("Error: (no details provided)");
+    } else {
+      lines.unshift("Error:");
+    }
+  }
+  return lines.length > 0 ? lines.join("\n") : "(empty result)";
+}
+
+async function handleMcpServers(args: string[]): Promise<string> {
+  const result = await callTool("opera_list_mcp_servers", {});
+  const data = parseMcpResultOrThrow<{ servers?: Array<{ name: string; connection: { type: string }; transportInfo: { type: string; url?: string; extensionId?: string } }> }>(result, "MCP servers");
+
+  const servers = data.servers ?? [];
+  if (servers.length === 0) {
+    return "No MCP servers registered. Load the MCP extension in opera://extensions and register a server.";
+  }
+
+  const lines: string[] = ["MCP Servers:"];
+  for (const server of servers) {
+    const status = server.connection?.type ?? "unknown";
+    const transport = server.transportInfo;
+    const location = transport?.url ?? transport?.extensionId ?? "\u2014";
+    lines.push(`  ${server.name} (${status})`);
+    lines.push(`    transport: ${transport?.type ?? "?"} \u2014 ${location}`);
+  }
+  lines.push("");
+  lines.push("Run 'opera-browser-cli mcp-tools --server <name>' to list tools for one server.");
+  return lines.join("\n");
+}
+
+async function handleMcpTools(args: string[]): Promise<string> {
+  const parsed = parseServerArg(args);
+  if (!parsed.server) {
+    throw new CdpError("Missing --server", "VALIDATION_ERROR", [
+      "Run 'opera-browser-cli mcp-servers' to see available servers.",
+    ]);
+  }
+  const result = await callTool("opera_list_mcp_tools", { server: parsed.server });
+  const data = parseMcpResultOrThrow<{ tools?: Array<{ tool: { name: string; description?: string } }> }>(result, "MCP tools");
+  const tools = data.tools ?? [];
+  if (tools.length === 0) {
+    return `No tools reported for '${parsed.server}'. The server may be disconnected.`;
+  }
+  const lines: string[] = [`Tools from ${parsed.server}:`];
+  for (const t of tools) {
+    const name = t.tool?.name ?? "(unnamed)";
+    lines.push(`  ${name.padEnd(20)} \u2014 ${t.tool?.description ?? ""}`);
+  }
+  return lines.join("\n");
+}
+
+async function handleMcpCall(args: string[]): Promise<string> {
+  const parsed = parseMcpCallArgs(args);
+  if (!parsed.server || !parsed.tool) {
+    throw new CdpError("Missing --server or --tool", "VALIDATION_ERROR", [
+      "Usage: opera-browser-cli mcp-call --server <name> --tool <name> --params '{...}'",
+    ]);
+  }
+  let params: Record<string, unknown> = {};
+  if (parsed.params) {
+    try {
+      params = JSON.parse(parsed.params);
+    } catch {
+      throw new CdpError(
+        `--params must be valid JSON. Got: ${parsed.params}`,
+        "VALIDATION_ERROR",
+        ["Example: --params '{\"key\":\"value\"}'"],
+      );
+    }
+  }
+  const callArgs: Record<string, unknown> = {
+    server: parsed.server,
+    tool: parsed.tool,
+  };
+  if (parsed.params) {
+    callArgs['parameters'] = params;
+  }
+  const result = await callTool("opera_call_mcp_tool", callArgs);
+  if (!result || !result.trim() || /\[OPERA_CDP_ERR:/.test(result)) {
+    throw new CdpError(
+      "MCP tool execution is not available on this browser version.",
+      "UNSUPPORTED_OPERATION",
+      [
+        'Run `opera-browser-cli doctor` to check the connection',
+        'Ensure you are using Opera Neon with MCP Hub support',
+      ],
+    );
+  }
+  return formatMcpToolResult(result);
+}
+
 async function handleRun(): Promise<string> {
   if (process.stdin.isTTY) {
     throw new CdpError("No script provided on stdin", "VALIDATION_ERROR", [
@@ -3293,6 +3504,9 @@ const COMMANDS: Record<string, CommandFn> = {
   make: withoutFullFlag(handleMake),
   research: withoutFullFlag(handleResearch),
   models: withoutFullFlag(handleModels),
+  "mcp-servers": withoutFullFlag(handleMcpServers),
+  "mcp-tools": withoutFullFlag(handleMcpTools),
+  "mcp-call": withoutFullFlag(handleMcpCall),
   setup: withoutFullFlag(handleSetup),
   logs: withoutFullFlag(handleLogs),
   doctor: withoutFullFlag(handleDoctor),

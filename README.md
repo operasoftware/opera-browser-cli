@@ -214,6 +214,14 @@ opera-browser-cli eval "(() => { const rows = [...document.querySelectorAll('tr'
 | `perf-insight <set> <name>` | Analyze a performance insight |
 | `heap <path>`               | Capture a heap snapshot       |
 
+### MCP Hub
+
+| Command                                       | Description                                           | Requires         |
+|-----------------------------------------------|-------------------------------------------------------|------------------|
+| `mcp-servers`                                 | List MCP servers registered in the browser            | Opera Neon       |
+| `mcp-tools --server <name>`                   | List tools exposed by a specific MCP server           | Opera Neon       |
+| `mcp-call --server <name> --tool <name>`      | Execute a tool on an MCP server                       | Opera Neon       |
+
 ### Opera AI
 
 | Command              | Description                                   | Requires   |

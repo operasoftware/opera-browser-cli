@@ -12,6 +12,9 @@ metadata: {"openclaw": {"requires": {"bins": ["opera-browser-cli"]}}}
 - **`chat`** — available on any Opera browser. Use `--model <id>` to select an AI model.
 - **`models`** — list available AI models for chat (shows IDs and which is the default).
 - **`invoke-do`, `make`, `research`** — require **Opera Neon** with an active sign-in.
+- **`mcp-servers`** — list MCP servers registered in the browser (requires Opera Neon).
+- **`mcp-tools --server <name>`** — list tools exposed by a specific MCP server (requires Opera Neon).
+- **`mcp-call --server <name> --tool <name> [--params '{...}']`** — execute a tool on an MCP server (requires Opera Neon).
 
 Run `opera-browser-cli --help` for the full command list, or `opera-browser-cli <command> --help` for per-command flags and examples.
 

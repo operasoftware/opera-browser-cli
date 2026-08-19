@@ -110,9 +110,11 @@ Terminal B ──HTTP──▶  (same bridge)
 
 ### Streaming (Opera AI tools)
 
-`opera_do`, `opera_chat`, `opera_make`, `opera_research` are streamed: the bridge
-keeps the HTTP response open and flushes `{"log": "..."}` lines as MCP
-`notifications/message` arrive, then ends the response with `{"result": "..."}`.
+`opera_do`, `opera_chat`, `opera_make`, `opera_research`, `opera_call_mcp_tool`
+are streamed: the bridge keeps the HTTP response open and flushes `{"log": "..."}`
+lines as MCP `notifications/message` arrive, then ends the response with
+`{"result": "..."}`. `opera_call_mcp_tool` streams when the underlying MCP tool
+emits progress events.
 
 The client (`client.ts → httpPost`) reads those lines and calls `onLog(msg)` which
 writes to stderr so the user sees progress in real time.
