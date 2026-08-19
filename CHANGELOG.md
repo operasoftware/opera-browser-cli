@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.47](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.46...opera-browser-cli-v0.1.47) (2026-08-19)
+
+
+### Features
+
+* add MCP Hub CLI commands (mcp-servers, mcp-tools, mcp-call) ([9ec776d](https://github.com/operasoftware/opera-browser-cli/commit/9ec776d480864151f06f70d95a559678831bbc08))
+* add MCP Hub CLI commands (mcp-servers, mcp-tools, mcp-call) ([d77dd84](https://github.com/operasoftware/opera-browser-cli/commit/d77dd843c672ec1de3deee91c928b137c4744195))
+
 ## [0.1.46](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.45...opera-browser-cli-v0.1.46) (2026-08-19)
 
 
