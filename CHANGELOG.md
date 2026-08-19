@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.48](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.47...opera-browser-cli-v0.1.48) (2026-08-19)
+
+
+### Bug Fixes
+
+* require opera-devtools-mcp 0.4.0 for MCP Hub support ([7e4cfb5](https://github.com/operasoftware/opera-browser-cli/commit/7e4cfb501ad0437b130ddece20f746998002a409))
+* require opera-devtools-mcp 0.4.0 for MCP Hub support ([17a4c70](https://github.com/operasoftware/opera-browser-cli/commit/17a4c70cab07fe9186b04f24efe49c981dc3faed))
+
 ## [0.1.47](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.46...opera-browser-cli-v0.1.47) (2026-08-19)
 
 
