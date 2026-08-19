@@ -19,6 +19,7 @@ import type { TransportSendOptions } from "@modelcontextprotocol/sdk/shared/tran
 import { LoggingMessageNotificationSchema } from "@modelcontextprotocol/sdk/types.js";
 import {
   createServer,
+  request,
   type IncomingMessage,
   type Server,
   type ServerResponse,
@@ -108,6 +109,61 @@ export async function isBridgeClientConnected(
   } catch {
     return false;
   }
+}
+
+/**
+ * "Usable" health for the bridge: the MCP server is up AND, when the bridge is
+ * in attach mode, the browser at the attach URL is actually reachable.
+ *
+ * In attach mode devtools-mcp stays connected over stdio even when the browser
+ * it points at is gone (it reaches for the browser lazily on a tool call), so
+ * MCP liveness alone cannot tell that a bridge is wedged on a dead URL. Probing
+ * the attach endpoint directly keeps `/health` honest, which lets the CLI stop
+ * reusing a wedged bridge and rebuild it against the current target.
+ */
+export async function isBridgeHealthConnected(
+  client: BridgeClient,
+): Promise<boolean> {
+  if (!(await isBridgeClientConnected(client))) return false;
+  const browserUrl = process.env.OPERA_CLI_BROWSER_URL;
+  if (browserUrl) {
+    return await probeHttp(`${browserUrl}/json/version`, 800);
+  }
+  return true;
+}
+
+/** GET a URL, answering whether it looks like a live CDP endpoint. */
+function probeHttp(url: string, timeoutMs: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    let req;
+    try {
+      req = request(url, { method: "GET", timeout: timeoutMs }, (res) => {
+        let body = "";
+        res.setEncoding("utf-8");
+        res.on("data", (chunk) => (body += chunk));
+        res.on("end", () => {
+          try {
+            resolve(
+              typeof (JSON.parse(body) as { Browser?: unknown }).Browser ===
+                "string",
+            );
+          } catch {
+            resolve(false);
+          }
+        });
+      });
+    } catch {
+      // Malformed browser URL — treat as unreachable, never crash the health ping.
+      resolve(false);
+      return;
+    }
+    req.on("error", () => resolve(false));
+    req.on("timeout", () => {
+      req.destroy();
+      resolve(false);
+    });
+    req.end();
+  });
 }
 
 /** Wall-clock start of this bridge process — part of its identity. */
@@ -474,7 +530,7 @@ export async function handleBridgeRequest(
   // the token. It carries the full identity (version, pid, boot) so the caller
   // can tell a usable bridge from a stale-version one from a foreign server.
   if (req.method === "GET" && req.url === "/health") {
-    const connected = await isBridgeClientConnected(client);
+    const connected = await isBridgeHealthConnected(client);
     writeJson(res, connected ? 200 : 503, buildHealth(connected));
     return;
   }

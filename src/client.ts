@@ -956,48 +956,104 @@ async function callToolOnce(
  * Call an MCP tool via the bridge. Returns the text result.
  *
  * A connection lost mid-call is recovered once: the bridge is restarted and the
- * call replayed. The Opera AI tools are exempt — they are reported instead, so
- * the user decides whether to pay for a second run.
+ * call replayed. The Opera AI tools are exempt from *that* recovery — they are
+ * reported instead, so the user decides whether to pay for a second run.
+ *
+ * A second, distinct failure is also repaired: the bridge answers, but the
+ * browser it was told to drive is unreachable (a dead attach URL, or a managed
+ * launch that never produced a browser). devtools-mcp reports that as a tool
+ * *result*, not an error, so it would otherwise look like success. We rebuild
+ * the bridge against the current target and retry once — safe for every tool,
+ * because nothing could have acted on a browser that was never reached.
  */
 export async function callTool(
   name: string,
   args: Record<string, unknown> = {},
 ): Promise<string> {
+  let result: string;
   try {
-    return await callToolOnce(name, args, {});
+    result = await callToolOnce(name, args, {});
   } catch (error) {
-    const message = errorMessageOf(error);
+    return recoverFailedCall(name, args, error);
+  }
 
-    // A page-state race is worth one immediate retry against the same bridge —
-    // no restart, no user-visible failure.
-    if (isTransientPageFailure(message) && !NON_REPLAYABLE_TOOLS.has(name)) {
-      await sleep(250);
-      try {
-        return await callToolOnce(name, args, {});
-      } catch (retryError) {
-        throw mapErrorMessage(errorMessageOf(retryError));
-      }
-    }
-
-    if (!isTransportFailure(message)) throw mapErrorMessage(message);
-
-    if (NON_REPLAYABLE_TOOLS.has(name)) {
-      throw new CdpError(
-        `The bridge connection dropped while running ${name}, and the command was not retried automatically because it may already have taken effect.`,
-        "BRIDGE_NOT_READY",
-        [
-          "Re-run the command — the bridge restarts automatically",
-          "Run `opera-browser-cli logs` to see why the bridge dropped",
-        ],
-      );
-    }
-
+  // The bridge answered, but the browser it was told to drive is unreachable
+  // (a dead attach URL, or a managed launch that never produced a browser).
+  // Rebuild the bridge against the current target and retry once — safe for
+  // every tool, because nothing could have acted on a browser that was never
+  // reached. A persistent failure is a real error, not a fake success.
+  if (isBrowserUnreachableResult(result)) {
     try {
-      return await callToolOnce(name, args, { forceRestart: true });
+      const recovered = await callToolOnce(name, args, { forceRestart: true });
+      if (!isBrowserUnreachableResult(recovered)) return recovered;
+    } catch (retryError) {
+      return recoverFailedCall(name, args, retryError);
+    }
+    throw browserUnreachableError();
+  }
+
+  return result;
+}
+
+/**
+ * Handle an exception thrown by the bridge: recover what is worth recovering
+ * (transient page races, dropped transport), and map the rest to an error code.
+ */
+async function recoverFailedCall(
+  name: string,
+  args: Record<string, unknown>,
+  error: unknown,
+): Promise<string> {
+  const message = errorMessageOf(error);
+
+  // A page-state race is worth one immediate retry against the same bridge —
+  // no restart, no user-visible failure.
+  if (isTransientPageFailure(message) && !NON_REPLAYABLE_TOOLS.has(name)) {
+    await sleep(250);
+    try {
+      return await callToolOnce(name, args, {});
     } catch (retryError) {
       throw mapErrorMessage(errorMessageOf(retryError));
     }
   }
+
+  if (!isTransportFailure(message)) throw mapErrorMessage(message);
+
+  if (NON_REPLAYABLE_TOOLS.has(name)) {
+    throw new CdpError(
+      `The bridge connection dropped while running ${name}, and the command was not retried automatically because it may already have taken effect.`,
+      "BRIDGE_NOT_READY",
+      [
+        "Re-run the command — the bridge restarts automatically",
+        "Run `opera-browser-cli logs` to see why the bridge dropped",
+      ],
+    );
+  }
+
+  try {
+    return await callToolOnce(name, args, { forceRestart: true });
+  } catch (retryError) {
+    throw mapErrorMessage(errorMessageOf(retryError));
+  }
+}
+
+/** devtools-mcp's "I have no browser to talk to" result text. */
+function isBrowserUnreachableResult(result: string): boolean {
+  return /could not connect to chrome|failed to fetch browser websocket url/i.test(
+    result,
+  );
+}
+
+function browserUnreachableError(): CdpError {
+  return new CdpError(
+    "The browser is not reachable. It may be running without a debugging port, or the bridge is pointing at a browser that has closed.",
+    "BROWSER_ERROR",
+    [
+      "Run `opera-browser-cli doctor` to check the profile and bridge state",
+      "Restart the running browser with a debug port: `opera-browser-cli open <url> --takeover`",
+      "Or use a separate profile (no flag) if the browser cannot be restarted",
+    ],
+  );
 }
 
 export function mapErrorMessage(message: string): CdpError {

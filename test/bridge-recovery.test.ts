@@ -7,6 +7,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { createServer } from "node:http";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -99,6 +100,73 @@ describe("recovery from a dropped bridge", () => {
     setTimeout(() => void crashBridge(), 500);
 
     await expect(call).rejects.toThrow(/not retried automatically/);
+  }, 90_000);
+
+  it("treats an unreachable browser target as a real failure, not a fake success", async () => {
+    // The wedge: the bridge answers (stdio up) but the browser it was told to
+    // drive is dead. Previously the CLI handed back the "Could not connect to
+    // Chrome" text as if it were a successful result.
+    const unreachable = join(HERE, "fixtures", "stub-mcp-unreachable.js");
+    vi.stubEnv("OPERA_CLI_MCP_BIN", unreachable);
+    vi.resetModules();
+    client = await import("../src/client.js");
+
+    await expect(client.callTool("take_snapshot", {})).rejects.toMatchObject({
+      code: "BROWSER_ERROR",
+    });
+  }, 90_000);
+
+  it("recovers from an unreachable browser when the rebuilt bridge reaches one", async () => {
+    // First bridge points at a dead browser. Mid-test we repoint the env at a
+    // healthy stub, so the recovery rebuild picks a working target and succeeds.
+    const unreachable = join(HERE, "fixtures", "stub-mcp-unreachable.js");
+    vi.stubEnv("OPERA_CLI_MCP_BIN", unreachable);
+    vi.resetModules();
+    client = await import("../src/client.js");
+
+    // Ensure the wedged bridge exists up front.
+    await client.ensureBridge();
+    // Repoint to the healthy stub for the recovery rebuild.
+    vi.stubEnv("OPERA_CLI_MCP_BIN", STUB_MCP);
+    vi.resetModules();
+    client = await import("../src/client.js");
+
+    const result = await client.callTool("take_snapshot", {});
+    expect(result).toBe("stub:take_snapshot");
+  }, 90_000);
+
+  it("reports a bridge as unusable when its attach target is unreachable", async () => {
+    // A fake CDP endpoint that /health should probe. With it live the bridge is
+    // usable; once it goes away, the CLI must stop reusing the bridge (the
+    // agent-side wedge) and report it unhealthy.
+    const cdp = createServer((req, res) => {
+      if (req.url === "/json/version") {
+        res.setHeader("content-type", "application/json");
+        res.end(JSON.stringify({ Browser: "Opera/121.0.0.0" }));
+      } else {
+        res.end("{}");
+      }
+    });
+    await new Promise<void>((resolve) =>
+      cdp.listen(0, "127.0.0.1", () => resolve()),
+    );
+    const browserPort = (cdp.address() as { port: number }).port;
+
+    vi.stubEnv("OPERA_CLI_BROWSER_URL", `http://127.0.0.1:${browserPort}`);
+    vi.resetModules();
+    client = await import("../src/client.js");
+
+    await client.ensureBridge();
+    // Live target → the bridge is usable and reused.
+    expect(await client.findUsableBridge(client.candidatePorts())).not.toBeNull();
+
+    // Kill the browser target. The bridge's MCP-over-stdio link is still up, so
+    // only the reachability probe can tell that it is wedged.
+    await new Promise<void>((resolve) => cdp.close(() => resolve()));
+    await new Promise((r) => setTimeout(r, 400));
+
+    expect(await client.findUsableBridge(client.candidatePorts())).toBeNull();
+    expect((await client.getBridgeStatus()).healthy).toBe(false);
   }, 90_000);
 
   it("tells the user to re-run rather than leaving them guessing", async () => {

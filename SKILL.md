@@ -1,6 +1,6 @@
 ---
 name: opera-browser-cli
-description: Browser automation and web interaction using the opera-browser-cli tool. Use for navigating pages, clicking elements, filling forms, taking screenshots, inspecting console/network, running performance audits, and Opera AI features (chat available on any Opera browser; invoke-do, make, research require Opera Neon).
+description: Browser automation and web interaction using the opera-browser-cli tool. Use for navigating pages, clicking elements, filling forms, taking screenshots, inspecting console/network, running performance audits, and Opera AI features (chat available on any Opera browser; invoke-do, make, research require Opera Neon). When a browser is already running without automation enabled, this tool can restart it with a debug port (takeover) or use a separate profile — ask the user which they prefer. 
 metadata: {"openclaw": {"requires": {"bins": ["opera-browser-cli"]}}}
 ---
 
@@ -64,6 +64,17 @@ Branch on the exit code rather than parsing messages:
 ## Recovery is automatic
 
 The bridge restarts itself on version skew, a crash, or a dropped connection, and falls back to another port if one is taken. Do not run `stop`/`restart` speculatively — just re-run the command. The exception is the Opera AI tools (`invoke-do`, `make`, `research`, `chat`): if one reports the connection dropped mid-call, it was **not** retried, because it may already have acted. Ask before re-running it.
+
+## When the browser can't be automated
+
+The CLI only drives a browser started with a debug port. If the user's Opera is already open **without** one, the CLI can't attach to that window — `open`/AI then fail with **"Could not connect to Chrome"**. Run `opera-browser-cli doctor` (it reports the profile state); the bridge self-heals, so don't restart it blindly.
+
+**Always ask the user** — restarting their browser is their call, not a judgement you infer:
+> "Your Opera is open but wasn't started with automation. May I restart it with a debug port (tabs restored)? Or should I use a separate profile (you'd sign in there)?"
+
+- **They approve restart** → run with `--takeover` (or `OPERA_CLI_TAKEOVER=1`). Restarts with a debug port, restores tabs, attaches — drives the real browser thereafter.
+- **They decline** → no flag → separate profile at `~/.opera-browser-cli/profile` (they sign in there; AI may then return exit `4` — surface it).
+- `opera-browser-cli launch-args` prints the flags to start Opera attachable so a restart is never needed later.
 
 ## Sign-in errors
 

@@ -517,6 +517,23 @@ describe("handleBridgeRequest access control", () => {
     close: async () => {},
   };
 
+  const savedEnv: Record<string, string | undefined> = {};
+  beforeEach(() => {
+    // /health's reachability probe keys off OPERA_CLI_BROWSER_URL; keep this
+    // access-control suite hermetic against env leaked by other tests.
+    for (const key of [
+      "OPERA_CLI_BROWSER_URL",
+      "OPERA_CLI_USER_DATA_DIR",
+      "OPERA_CLI_EXECUTABLE_PATH",
+    ]) {
+      savedEnv[key] = process.env[key];
+      delete process.env[key];
+    }
+  });
+  afterEach(() => {
+    for (const key of Object.keys(savedEnv)) process.env[key] = savedEnv[key];
+  });
+
   it("rejects a forged-Host /call with 403 before dispatching", async () => {
     let called = false;
     const spyClient: BridgeClient = {

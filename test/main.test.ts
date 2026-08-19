@@ -121,4 +121,48 @@ describe("main", () => {
     );
     expect(process.exitCode).toBeUndefined();
   });
+
+  it("fails loudly (exit 3) instead of a fake refs:0 page when the browser is unreachable", async () => {
+    const write = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
+
+    // Every tool returns the bridge's "browser dead" message: the bridge is up
+    // but its Chrome target (dead URL / no debug port) cannot be reached.
+    callTool.mockResolvedValue(
+      "Could not connect to Chrome. Check if Chrome is running.",
+    );
+
+    await main(["open", "https://example.org"]);
+
+    expect(process.exitCode).toBe(3); // BROWSER_ERROR
+    const out = String(write.mock.calls[0]?.[0] ?? "");
+    expect(out).toContain("The browser is not reachable");
+    expect(out).toContain("--takeover");
+  });
+
+  it("forces a new page when navigate reports success but no page is live (takeover)", async () => {
+    const write = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
+
+    // navigate_page returns success, but take_snapshot shows no page is
+    // selected — the shape of a freshly restarted browser whose session has not
+    // yet produced a tab. The CLI must fall back to new_page.
+    callTool
+      .mockResolvedValueOnce("") // navigate_page
+      .mockResolvedValueOnce("No page selected") // take_snapshot
+      .mockResolvedValueOnce("") // new_page
+      .mockResolvedValueOnce('RootWebArea "G"\n  uid=1 link "About"'); // take_snapshot
+
+    await main(["open", "https://google.com"]);
+
+    const names = callTool.mock.calls.map((c) => c[0]);
+    expect(names).toContain("new_page");
+    expect(names).toContain("take_snapshot");
+    expect(String(write.mock.calls[0]?.[0])).toContain(
+      'url: "https://google.com"',
+    );
+    expect(process.exitCode).toBeUndefined();
+  });
 });

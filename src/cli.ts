@@ -1260,6 +1260,22 @@ function normalizeUrl(raw: string): string {
   return `https://${raw}`;
 }
 
+/** A real page snapshot (vs. "No page selected"). */
+function hasLivePage(snapshot: string): boolean {
+  return /\bRootWebArea\b/.test(snapshot);
+}
+
+/** The bridge is up but its browser target is dead/unreachable. */
+function isBrowserConnectionFailure(snapshot: string): boolean {
+  return /could not connect to chrome|failed to fetch browser websocket url/i.test(
+    snapshot,
+  );
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function handleOpen(args: string[], full: boolean, raw = false): Promise<string> {
   const url = args[0] ? normalizeUrl(args[0]) : undefined;
   if (!url) {
@@ -1268,23 +1284,57 @@ async function handleOpen(args: string[], full: boolean, raw = false): Promise<s
     ]);
   }
 
-  let needNewPage = false;
+  // navigate_page reports success even when no page is actually selected — for
+  // example right after a takeover relaunch, the debug port answers before the
+  // restored session has a tab. So verify a page is really live and fall back
+  // to new_page, retrying briefly to ride out the attach race.
+  let snapshot: string | null = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const createPage = await openOrCreatePage(url);
+    snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
+    if (hasLivePage(snapshot)) break;
+    // No page is live yet. If we already tried a new page, wait for the browser
+    // to settle and try again; otherwise force one now.
+    if (!createPage) {
+      await callTool("new_page", { url });
+      snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
+      if (hasLivePage(snapshot)) break;
+    }
+    await sleep(300);
+  }
+
+  // Never report a fake success when the browser target is dead: the bridge
+  // being up does not mean its inner Chrome is reachable (e.g. Opera is running
+  // without a debug port, or the bridge points at a browser that closed). Fail
+  // loudly with the takeover path rather than emitting a refs:0 page.
+  if (snapshot && isBrowserConnectionFailure(snapshot)) {
+    throw new CdpError(
+      "The browser is not reachable — Opera may be running without a debug port, or the bridge is pointing at a browser that has closed.",
+      "BROWSER_ERROR",
+      [
+        "Run `opera-browser-cli doctor` to check the profile and bridge state",
+        "Restart the running browser with a debug port: `opera-browser-cli open <url> --takeover`",
+        "Or use a separate profile (no flag) if the browser cannot be restarted",
+      ],
+    );
+  }
+  return formatPageOutput(snapshot ?? "", "open", url, full, raw);
+}
+
+/** Navigate the current page, creating one when there is nothing to navigate. */
+async function openOrCreatePage(url: string): Promise<boolean> {
   try {
     const navResult = await callTool("navigate_page", { type: "url", url });
     if (/selected page has been closed/i.test(navResult)) {
-      needNewPage = true;
+      await callTool("new_page", { url });
+      return true;
     }
+    return false;
   } catch (error) {
-    if (!isRecoverableOpenError(error)) {
-      throw error;
-    }
-    needNewPage = true;
-  }
-  if (needNewPage) {
+    if (!isRecoverableOpenError(error)) throw error;
     await callTool("new_page", { url });
+    return true;
   }
-  const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "open", url, full, raw);
 }
 
 async function handleSnapshot(full: boolean, raw = false): Promise<string> {
@@ -3344,16 +3394,22 @@ async function resolveBrowserConflict(
  *
  * Runs in the CLI rather than the bridge because resolving a conflict may need
  * to ask the user something, and the bridge is detached with no terminal.
+ *
+ * This runs even when a bridge is already alive. A bridge fixes its browser
+ * (attach URL, profile, flags) at startup, so a healthy bridge is only "the
+ * question is settled" while it is still driving the right browser. The case
+ * that must never be silently skipped is a conflict: the user's own Opera is
+ * running on the configured profile without a debug port. That used to be
+ * bypassed whenever any bridge was running, so the restart prompt never fired
+ * and the CLI kept driving a stale headless / separate-profile browser.
  */
-async function preflightBrowser(argv: string[], takeover: boolean): Promise<void> {
+export async function preflightBrowser(argv: string[], takeover: boolean): Promise<void> {
   const cmd = argv[0];
   if (cmd === undefined || BROWSER_SKIP_COMMANDS.has(cmd)) return;
   // Explicitly pointed at a browser, or using an isolated profile that nothing
   // else can hold: either way there is no conflict possible.
   if (process.env.OPERA_CLI_BROWSER_URL) return;
   if (!process.env.OPERA_CLI_USER_DATA_DIR) return;
-  // A running bridge already owns a browser — the question is settled.
-  if ((await findUsableBridge(candidatePorts())) !== null) return;
 
   const target = await resolveBrowserTarget({
     browserUrl: process.env.OPERA_CLI_BROWSER_URL,
@@ -3362,12 +3418,34 @@ async function preflightBrowser(argv: string[], takeover: boolean): Promise<void
   });
 
   if (target.mode === "attach") {
+    // A live debug port on the configured profile. Set the attach URL so any
+    // freshly-started bridge (including a recovery rebuild) attaches to it.
+    // This is inert when a healthy bridge is already driving this browser —
+    // ensureBridge reuses it and the env is only read at bridge startup.
     process.env.OPERA_CLI_BROWSER_URL = target.url;
     return;
   }
   if (target.mode === "managed") return;
 
+  // Conflict: a browser is holding the configured profile with no debug port.
+  // Settle it even when a bridge is running — this is the case that used to be
+  // silently skipped, leaving the user on a headless / separate-profile browser.
   await resolveBrowserConflict(target, takeover);
+
+  // Takeover relaunched the user's browser with a debug port and set a fresh
+  // BROWSER_URL, which an already-running bridge (it fixed its browser at
+  // startup) would not reflect — so replace it. The separate-profile fallback
+  // is different: a bridge that is already running was started on that separate
+  // profile, so it should be reused, not reset (which would relaunch its
+  // browser on every command). Only a takeover needs the bridge rebuilt.
+  if (process.env.OPERA_CLI_BROWSER_URL) {
+    if ((await findUsableBridge(candidatePorts())) !== null) {
+      process.stderr.write(
+        "note: browser selection changed; resetting the running bridge.\n",
+      );
+      await restartBridge();
+    }
+  }
 }
 
 const SETUP_SKIP_COMMANDS = new Set(["setup", "logs", "--help", "-h", "--version", "-v", "-V"]);
