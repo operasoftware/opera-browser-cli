@@ -1,6 +1,6 @@
 ---
 name: opera-browser-cli
-description: Browser automation and web interaction using the opera-browser-cli tool. Use for navigating pages, clicking elements, filling forms, taking screenshots, inspecting console/network, running performance audits, and Opera AI features (chat available on any Opera browser; invoke-do, make, research require Opera Neon). When a browser is already running without automation enabled, this tool can restart it with a debug port (takeover) or use a separate profile — ask the user which they prefer. 
+description: Browser automation and web interaction using the opera-browser-cli tool. Use for navigating pages, clicking elements, filling forms, taking screenshots, inspecting console/network, running performance audits, and Opera AI features (chat available on any Opera browser; invoke-do, make, research require Opera Neon). When a browser is already running without automation enabled, this tool can restart it with a debug port (takeover) or use a separate profile — ask the user which they prefer.
 metadata: {"openclaw": {"requires": {"bins": ["opera-browser-cli"]}}}
 ---
 

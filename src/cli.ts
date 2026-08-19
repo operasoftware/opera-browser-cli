@@ -1307,7 +1307,7 @@ async function handleOpen(args: string[], full: boolean, raw = false): Promise<s
   // being up does not mean its inner Chrome is reachable (e.g. Opera is running
   // without a debug port, or the bridge points at a browser that closed). Fail
   // loudly with the takeover path rather than emitting a refs:0 page.
-  if (snapshot && isBrowserConnectionFailure(snapshot)) {
+  if (!snapshot || isBrowserConnectionFailure(snapshot)) {
     throw new CdpError(
       "The browser is not reachable — Opera may be running without a debug port, or the bridge is pointing at a browser that has closed.",
       "BROWSER_ERROR",
@@ -1318,7 +1318,22 @@ async function handleOpen(args: string[], full: boolean, raw = false): Promise<s
       ],
     );
   }
-  return formatPageOutput(snapshot ?? "", "open", url, full, raw);
+  // All retries exhausted but no page is actually live: navigate_page can
+  // report success while no tab exists (e.g. a takeover relaunch whose restored
+  // session never produced one). Never hand back a non-live snapshot as if it
+  // were a navigated page.
+  if (!hasLivePage(snapshot)) {
+    throw new CdpError(
+      "The browser did not produce a page to navigate to after several attempts.",
+      "BROWSER_ERROR",
+      [
+        "Run `opera-browser-cli doctor` to check the profile and bridge state",
+        "Restart the running browser: `opera-browser-cli open <url> --takeover`",
+        "Or use a separate profile (no flag) if the browser cannot be restarted",
+      ],
+    );
+  }
+  return formatPageOutput(snapshot, "open", url, full, raw);
 }
 
 /** Navigate the current page, creating one when there is nothing to navigate. */

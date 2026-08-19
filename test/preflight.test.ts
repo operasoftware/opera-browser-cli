@@ -39,7 +39,26 @@ vi.mock("../src/config.js", async (importOriginal) => ({
   autoConfigure: vi.fn(() => ({ status: "already-configured" as const })),
 }));
 
+// Default to the real implementations (the first two tests rely on real
+// profile-lock detection); the takeover test overrides them per-test and
+// afterEach restores the originals.
+vi.mock("../src/browser-target.js", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../src/browser-target.js")>();
+  return {
+    ...actual,
+    quitBrowser: vi.fn(actual.quitBrowser),
+    launchAttachableBrowser: vi.fn(actual.launchAttachableBrowser),
+    resolveBrowserTarget: vi.fn(actual.resolveBrowserTarget),
+  };
+});
+
 import { preflightBrowser } from "../src/cli.js";
+import {
+  launchAttachableBrowser,
+  quitBrowser,
+  resolveBrowserTarget,
+} from "../src/browser-target.js";
 
 describe("preflightBrowser reconciles even when a bridge is running", () => {
   let profile: string;
@@ -58,6 +77,9 @@ describe("preflightBrowser reconciles even when a bridge is running", () => {
 
   afterEach(() => {
     vi.clearAllMocks();
+    vi.mocked(resolveBrowserTarget).mockRestore();
+    vi.mocked(quitBrowser).mockRestore();
+    vi.mocked(launchAttachableBrowser).mockRestore();
     delete process.env.OPERA_CLI_USER_DATA_DIR;
     delete process.env.OPERA_CLI_BROWSER_URL;
     delete process.env.OPERA_CLI_EXECUTABLE_PATH;
@@ -100,5 +122,43 @@ describe("preflightBrowser reconciles even when a bridge is running", () => {
     }
 
     expect(mocks.restartBridge).not.toHaveBeenCalled();
+  });
+
+  it("restarts a running bridge after a takeover relaunches the browser", async () => {
+    // A bridge is already running on some browser.
+    mocks.findUsableBridge.mockResolvedValue(9225);
+
+    // Takeover quits the profile-holder and relaunches it with a debug port.
+    const launchedUrl = `http://127.0.0.1:59999`;
+    vi.mocked(quitBrowser).mockResolvedValue({ ok: true });
+    vi.mocked(launchAttachableBrowser).mockResolvedValue({
+      ok: true,
+      url: launchedUrl,
+    });
+    vi.mocked(resolveBrowserTarget).mockResolvedValue({
+      mode: "conflict",
+      userDataDir: process.env.OPERA_CLI_USER_DATA_DIR as string,
+      lock: { pid: process.pid, state: "locked" as const },
+    });
+
+    const writes: string[] = [];
+    const note = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation((s: unknown) => {
+        writes.push(String(s));
+        return true;
+      });
+    try {
+      await preflightBrowser(["open", "https://x"], true);
+    } finally {
+      note.mockRestore();
+    }
+
+    // The relaunch set a fresh BROWSER_URL, which the already-running bridge
+    // (it fixed its browser at startup) does not reflect — so it must be
+    // replaced, not silently reused to keep driving the old browser.
+    expect(mocks.restartBridge).toHaveBeenCalled();
+    expect(process.env.OPERA_CLI_BROWSER_URL).toBe(launchedUrl);
+    expect(writes.join("\n")).toContain("browser selection changed");
   });
 });
