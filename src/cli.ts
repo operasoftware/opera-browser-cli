@@ -30,6 +30,7 @@ import {
   getSessionSnapshotIfRunning,
   getLastSnapshot,
   getStateDir,
+  getSessionStateDir,
   loadConfig,
   parseConfigValue,
   restartBridge,
@@ -79,6 +80,8 @@ import {
   extractSubtree,
   rootLineOf,
   windowSnapshot,
+  factorRefPrefix,
+  expandRelativeRef,
 } from "./snapshot.js";
 import { getSuggestions } from "./suggestions.js";
 
@@ -317,6 +320,32 @@ args:
 examples:
   opera-browser-cli wait 2000
   opera-browser-cli wait "Submit"`,
+
+  find: `usage: opera-browser-cli find <text> [--role <role>] [--next]
+Search the page snapshot and list matching lines (grep for the DOM), without
+printing the whole snapshot.
+
+args:
+  <text>    Substring to match (case-insensitive)
+  --role    Only match lines with this role (link, button, textbox, ...)
+  --next    Continue a match list truncated by the previous find
+
+examples:
+  opera-browser-cli find "sign in"
+  opera-browser-cli find --role link
+  opera-browser-cli find "price" --next`,
+
+  chain: `usage: opera-browser-cli chain '<step>; <step>; ...'
+Run several actions in one command with a one-line ack each and a single
+snapshot/diff at the end. N actions, 1 snapshot.
+
+steps (separated by ';'):
+  open <url> | click @<ref> | fill @<ref> "<text>" | type <text>
+  | press <key> | hover @<ref> | scroll <dir> | wait <ms>
+
+examples:
+  opera-browser-cli chain 'click @1.3; fill @1.4 "hello"; press Enter'
+  opera-browser-cli chain 'open https://example.com; wait 500; scroll down'`,
 
   eval: `usage: opera-browser-cli eval <js>
 Evaluate a JavaScript expression in the page context and return the result.
@@ -1096,6 +1125,7 @@ export const EXIT_CODES: Record<ErrorCode, number> = {
   EXTENSION_NOT_FOUND: 3,
   NOT_FOUND: 2,
   SERVER_DISCONNECTED: 3,
+  EXPECT_FAILED: 3,
   UNKNOWN: 1,
 };
 
@@ -1116,12 +1146,39 @@ export function formatCliError(error: unknown): { output: string; exitCode: numb
   };
 }
 
-function splitFullFlag(args: string[]): { args: string[]; full: boolean; raw: boolean } {
-  return {
-    args: args.filter((arg) => arg !== "--full" && arg !== "--raw"),
-    full: args.includes("--full"),
-    raw: args.includes("--raw"),
-  };
+// Per-invocation action-output modifiers (D4). The CLI runs one command per
+// process, so module-level flags set by the arg parser are safe.
+let actionQuiet = false;
+let actionExpect: string | null = null;
+let actionExpectTimeoutMs: number | null = null;
+let actionForce = false;
+
+// B-6: default poll window for --expect. Only paid on a miss — the immediate
+// check below (same snapshot the action already took) still resolves in zero
+// extra time when the text is already there.
+const EXPECT_DEFAULT_TIMEOUT_MS = 2000;
+
+export function splitFullFlag(args: string[]): { args: string[]; full: boolean; raw: boolean } {
+  const rest: string[] = [];
+  let full = false;
+  let raw = false;
+  actionQuiet = false;
+  actionExpect = null;
+  actionExpectTimeoutMs = null;
+  actionForce = false;
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (a === "--full") full = true;
+    else if (a === "--raw") raw = true;
+    else if (a === "--quiet") actionQuiet = true;
+    else if (a === "--expect") actionExpect = args[++i] ?? null;
+    else if (a === "--expect-timeout") {
+      const n = Number(args[++i]);
+      actionExpectTimeoutMs = Number.isFinite(n) ? Math.trunc(n) : null;
+    } else if (a === "--force") actionForce = true;
+    else rest.push(a);
+  }
+  return { args: rest, full, raw };
 }
 
 function trimSingleTrailingNewline(text: string): string {
@@ -1211,8 +1268,9 @@ function parseSnapshotFromResponse(response: string): string | null {
 // ---------------------------------------------------------------------------
 
 interface SnapshotState {
-  sig: string;    // signature of the compacted tree the offset refers to
-  offset: number; // chars of the compacted tree already shown
+  prefix: string | null; // dominant ref prefix factored out of the last snapshot
+  sig: string;           // signature of the text the offset refers to
+  offset: number;        // chars of the compacted tree already shown
 }
 
 const SNAPSHOT_STATE_FILE = "snapshot-state.json";
@@ -1230,7 +1288,7 @@ function snapshotSig(text: string): string {
 
 function writeSnapshotState(state: SnapshotState): void {
   try {
-    writeFileSync(join(getStateDir(), SNAPSHOT_STATE_FILE), JSON.stringify(state));
+    writeFileSync(join(getSessionStateDir(), SNAPSHOT_STATE_FILE), JSON.stringify(state));
   } catch {
     // Non-fatal: --next just restarts from the top next time.
   }
@@ -1239,7 +1297,7 @@ function writeSnapshotState(state: SnapshotState): void {
 function readSnapshotState(): SnapshotState | null {
   try {
     return JSON.parse(
-      readFileSync(join(getStateDir(), SNAPSHOT_STATE_FILE), "utf-8"),
+      readFileSync(join(getSessionStateDir(), SNAPSHOT_STATE_FILE), "utf-8"),
     ) as SnapshotState;
   } catch {
     return null;
@@ -1249,12 +1307,12 @@ function readSnapshotState(): SnapshotState | null {
 /** Rotate the last full compacted tree to prev, then store the new one. */
 function writeLastTree(tree: string): void {
   try {
-    renameSync(join(getStateDir(), LAST_TREE_FILE), join(getStateDir(), PREV_TREE_FILE));
+    renameSync(join(getSessionStateDir(), LAST_TREE_FILE), join(getSessionStateDir(), PREV_TREE_FILE));
   } catch {
     // No previous baseline — nothing to rotate.
   }
   try {
-    writeFileSync(join(getStateDir(), LAST_TREE_FILE), tree);
+    writeFileSync(join(getSessionStateDir(), LAST_TREE_FILE), tree);
   } catch {
     // Non-fatal: next action falls back to a full snapshot.
   }
@@ -1262,7 +1320,7 @@ function writeLastTree(tree: string): void {
 
 function readPrevTree(): string | null {
   try {
-    return readFileSync(join(getStateDir(), PREV_TREE_FILE), "utf-8");
+    return readFileSync(join(getSessionStateDir(), PREV_TREE_FILE), "utf-8");
   } catch {
     return null;
   }
@@ -1270,7 +1328,7 @@ function readPrevTree(): string | null {
 
 function readLastTree(): string | null {
   try {
-    return readFileSync(join(getStateDir(), LAST_TREE_FILE), "utf-8");
+    return readFileSync(join(getSessionStateDir(), LAST_TREE_FILE), "utf-8");
   } catch {
     return null;
   }
@@ -1286,11 +1344,12 @@ const DIFF_RATIO_LIMIT = 0.4;
  * `snapshot --next` stay consistent with the post-action page.
  */
 function refreshPageStateForDiff(tree: string): void {
-  const tr = truncateSnapshot(tree, false, 12000);
+  const factored = factorRefPrefix(tree);
+  const tr = truncateSnapshot(factored.body, false, 12000);
   const { urlMap } = applyUrlLut(tr.text);
   try {
     writeFileSync(
-      join(getStateDir(), "last-url-map.json"),
+      join(getSessionStateDir(), "last-url-map.json"),
       JSON.stringify(Object.fromEntries(urlMap)),
     );
   } catch {
@@ -1298,13 +1357,14 @@ function refreshPageStateForDiff(tree: string): void {
   }
   const priorOffset = readSnapshotState()?.offset;
   writeSnapshotState({
-    sig: snapshotSig(tree),
+    prefix: factored.prefix,
+    sig: snapshotSig(factored.body),
     offset:
       priorOffset !== undefined
-        ? Math.min(priorOffset, tree.length)
+        ? Math.min(priorOffset, factored.body.length)
         : tr.truncated
           ? tr.text.length
-          : tree.length,
+          : factored.body.length,
   });
 }
 
@@ -1321,6 +1381,38 @@ async function formatActionOutput(
   full: boolean,
   raw: boolean,
 ): Promise<string> {
+  // --expect: verification-only response — one matching line or a structured failure
+  if (actionExpect !== null) {
+    let tree = compactSnapshot(snapshot);
+    writeLastTree(tree);
+    const needle = actionExpect.toLowerCase();
+    let hit = tree.split("\n").find((l) => l.toLowerCase().includes(needle));
+    if (!hit) {
+      // A single sample is a timing coin flip on pages that update after a
+      // network round trip. Poll via the MCP wait_for tool (which already
+      // implements exactly this) instead of a second poll loop, then recheck.
+      try {
+        await callTool("wait_for", {
+          text: [actionExpect],
+          timeout: actionExpectTimeoutMs ?? EXPECT_DEFAULT_TIMEOUT_MS,
+        });
+        tree = compactSnapshot(stripSnapshotHeader(await callTool("take_snapshot")));
+        writeLastTree(tree);
+        hit = tree.split("\n").find((l) => l.toLowerCase().includes(needle));
+      } catch {
+        // wait_for timed out (or errored) — fall through to EXPECT_FAILED below.
+      }
+    }
+    if (hit) return renderOutput([`expect: found "${actionExpect}"\n  ${hit.trim()}`]);
+    throw new CdpError(`expect: "${actionExpect}" not found on page`, "EXPECT_FAILED", [
+      "Run `opera-browser-cli snapshot` to inspect the page",
+    ]);
+  }
+  // --quiet: acknowledge only; the snapshot still refreshes the diff baseline
+  if (actionQuiet) {
+    writeLastTree(compactSnapshot(snapshot));
+    return renderOutput(["ok"]);
+  }
   if (full || raw) return formatPageOutput(snapshot, command, url, full, raw);
 
   const tree = compactSnapshot(snapshot);
@@ -1370,25 +1462,31 @@ function formatPageOutput(
   const title = extractTitle(tree);
   const refs = countRefs(tree);
 
+  // Factor the dominant ref prefix (@8.324 → @.324); declared once as `snap:`
+  // in the page metadata so relative refs are unambiguous to the caller.
+  const factored = raw ? { body: tree, prefix: null } : factorRefPrefix(tree);
+  const display = factored.body;
+
   const blocks: string[] = [];
 
   // Page metadata as TOON
   const page: Record<string, unknown> = {};
   if (title) page.title = title;
   if (url) page.url = url;
+  if (factored.prefix) page.snap = factored.prefix;
   page.refs = refs;
   blocks.push(encode({ page }));
 
   // Truncate snapshot, then apply URL LUT to the visible portion only.
   // LUT runs after truncation so the trailer lists only URLs the agent can see.
-  const tr = truncateSnapshot(tree, full, raw ? 16000 : 12000);
+  const tr = truncateSnapshot(display, full, raw ? 16000 : 12000);
   const lutResult = raw ? { body: tr.text, trailer: "", urlMap: new Map<string, string>() } : applyUrlLut(tr.text);
   const { body, trailer } = lutResult;
   // Persist the urlMap so `opera-browser-cli url $uN` resolves against exactly
   // the same token assignments the agent saw (truncated snapshot, not full).
   try {
     writeFileSync(
-      join(getStateDir(), "last-url-map.json"),
+      join(getSessionStateDir(), "last-url-map.json"),
       JSON.stringify(Object.fromEntries(lutResult.urlMap)),
     );
   } catch {
@@ -1398,8 +1496,9 @@ function formatPageOutput(
   // output stopped (sig lets it detect the page changed and restart from the top).
   if (!raw) {
     writeSnapshotState({
-      sig: snapshotSig(tree),
-      offset: tr.truncated ? tr.text.length : tree.length,
+      prefix: factored.prefix,
+      sig: snapshotSig(display),
+      offset: tr.truncated ? tr.text.length : display.length,
     });
   }
   let snapshotBlock = `snapshot:\n${body.trimEnd()}`;
@@ -1410,10 +1509,10 @@ function formatPageOutput(
   blocks.push(snapshotBlock);
 
   // Contextual suggestions
-  const suggestions = getSuggestions({ command, url, snapshot: tree });
+  const suggestions = getSuggestions({ command, url, snapshot: display });
   if (tr.truncated) {
     suggestions.push(
-      `Run \`opera-browser-cli snapshot --next\` to keep reading, or \`opera-browser-cli ${command}${url ? " " + url : ""} --full\` for the whole page`,
+      `Run \`opera-browser-cli find \"text\"\` to jump straight to a match, \`snapshot --next\` to keep reading, or \`opera-browser-cli ${command}${url ? " " + url : ""} --full\` for the whole page`,
     );
   }
   if (suggestions.length > 0) {
@@ -1435,9 +1534,17 @@ function stripSnapshotHeader(text: string): string {
   return result.replace(/Call list_pages\b/g, "Run `opera-browser-cli pages`");
 }
 
-/** Strip leading @ and normalise dot-form refs to underscore form for MCP ("@2.4" → "2_4"). */
+/**
+ * Strip leading @ and normalise dot-form refs to underscore form for MCP
+ * ("@2.4" → "2_4"). Relative refs from a prefix-factored snapshot ("@.324")
+ * expand against the stored snapshot prefix first.
+ */
 function parseUid(arg: string): string {
-  return arg.replace(/^@/, "").replace(/\./g, "_");
+  let bare = arg.replace(/^@/, "");
+  if (bare.startsWith(".")) {
+    bare = expandRelativeRef(bare, readSnapshotState()?.prefix ?? null);
+  }
+  return bare.replace(/\./g, "_");
 }
 
 function isRecoverableOpenError(error: unknown): error is CdpError {
@@ -1574,7 +1681,7 @@ async function handleSnapshot(
 ): Promise<string> {
   if (args[0] === "--next") return handleSnapshotNext();
 
-  const force = args.includes("--force");
+  const force = actionForce;
   const target = args.find((a) => !a.startsWith("--"));
 
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
@@ -1584,11 +1691,12 @@ async function handleSnapshot(
   if (!target) {
     if (!full && !raw && !force) {
       const tree = compactSnapshot(snapshot);
+      const { body: display } = factorRefPrefix(tree);
       const state = readSnapshotState();
-      if (state && state.sig === snapshotSig(tree)) {
+      if (state && state.sig === snapshotSig(display)) {
         writeLastTree(tree);
         const title = extractTitle(tree);
-        const fullyShown = state.offset >= tree.length;
+        const fullyShown = state.offset >= display.length;
         return renderOutput([
           `snapshot: unchanged since last shown${title ? ` — "${title}"` : ""} (${countRefs(tree)} refs)`,
           renderHelp([
@@ -1611,7 +1719,9 @@ async function handleSnapshot(
     ]);
   }
   const compact = compactSnapshot(snapshot);
-  const sub = extractSubtree(compact, target);
+  // Relative refs (@.324) expand against the prefix of the last shown snapshot.
+  const expanded = expandRelativeRef(target, readSnapshotState()?.prefix ?? null);
+  const sub = extractSubtree(compact, expanded);
   if (sub == null) {
     throw new CdpError(`Ref not found on current page: ${target}`, "VALIDATION_ERROR", [
       "The page may have changed — run `opera-browser-cli snapshot` to get fresh refs",
@@ -1623,7 +1733,7 @@ async function handleSnapshot(
     : applyUrlLut(tr.text);
   try {
     writeFileSync(
-      join(getStateDir(), "last-url-map.json"),
+      join(getSessionStateDir(), "last-url-map.json"),
       JSON.stringify(Object.fromEntries(lutResult.urlMap)),
     );
   } catch {
@@ -1645,24 +1755,25 @@ async function handleSnapshotNext(): Promise<string> {
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
   const tree = compactSnapshot(snapshot);
   writeLastTree(tree);
-  const sig = snapshotSig(tree);
+  const { body: display, prefix } = factorRefPrefix(tree);
+  const sig = snapshotSig(display);
 
   const state = readSnapshotState();
   const offset = state && state.sig === sig ? state.offset : 0;
-  if (offset >= tree.length) {
+  if (offset >= display.length) {
     return renderOutput([
       "snapshot: end reached — the whole snapshot has been shown",
       renderHelp(["Run `opera-browser-cli snapshot` to restart from the top"]),
     ]);
   }
 
-  const win = windowSnapshot(tree, offset, 12000);
-  writeSnapshotState({ sig, offset: win.end });
+  const win = windowSnapshot(display, offset, 12000);
+  writeSnapshotState({ prefix, sig, offset: win.end });
 
   const { body, trailer, urlMap } = applyUrlLut(win.text);
   try {
     writeFileSync(
-      join(getStateDir(), "last-url-map.json"),
+      join(getSessionStateDir(), "last-url-map.json"),
       JSON.stringify(Object.fromEntries(urlMap)),
     );
   } catch {
@@ -3710,7 +3821,7 @@ async function handleUrl(args: string[]): Promise<string> {
   const compact = compactSnapshot(raw);
   let urlMap: Map<string, string>;
   try {
-    const stored = JSON.parse(readFileSync(join(getStateDir(), "last-url-map.json"), "utf-8")) as Record<string, string>;
+    const stored = JSON.parse(readFileSync(join(getSessionStateDir(), "last-url-map.json"), "utf-8")) as Record<string, string>;
     urlMap = new Map(Object.entries(stored));
   } catch {
     ({ urlMap } = applyUrlLut(compact));
@@ -3724,6 +3835,274 @@ async function handleUrl(args: string[]): Promise<string> {
     return "";
   }
   return resolved;
+}
+
+// --- find (D5): grep the page instead of reading a whole snapshot ---
+
+const FIND_MAX_MATCHES = 20;
+const FIND_STATE_FILE = "find-state.json";
+
+// B-9: mirrors SnapshotState — a persisted cursor so `find --next` can resume
+// a truncated match list instead of dead-ending at "... (N more)". Restarts
+// from the top if the page changed underneath it (sig mismatch), same as
+// `snapshot --next`.
+interface FindState {
+  query: string; // original-case query text ("" when --role-only)
+  role: string | null;
+  sig: string; // signature of the compacted tree the matches were found in
+  shown: number; // matches already shown
+}
+
+function writeFindState(state: FindState): void {
+  try {
+    writeFileSync(join(getSessionStateDir(), FIND_STATE_FILE), JSON.stringify(state));
+  } catch {
+    // Non-fatal: `find --next` just restarts the search from the top.
+  }
+}
+
+function readFindState(): FindState | null {
+  try {
+    return JSON.parse(
+      readFileSync(join(getSessionStateDir(), FIND_STATE_FILE), "utf-8"),
+    ) as FindState;
+  } catch {
+    return null;
+  }
+}
+
+/** Short ancestor breadcrumb for a matched line: labeled/landmark ancestors, max 3. */
+export function findBreadcrumb(lines: string[], index: number): string {
+  const crumbs: string[] = [];
+  let indent = lines[index].match(/^\s*/)![0].length;
+  for (let i = index - 1; i >= 0 && crumbs.length < 3 && indent > 0; i--) {
+    const ws = lines[i].match(/^\s*/)![0].length;
+    if (!lines[i].trim() || ws >= indent) continue;
+    indent = ws;
+    const m = lines[i].match(/^\s*(?:@\S+ )?(\w+|#+)(?: "([^"]{1,40})")?/);
+    if (!m) continue;
+    // Skip anonymous structural rows; keep labeled nodes and landmarks
+    if (m[2]) crumbs.unshift(`${m[1]} "${m[2]}"`);
+    else if (/^(?:nav|main|banner|footer|aside|form|search|dialog|list|table)$/.test(m[1]))
+      crumbs.unshift(m[1]);
+  }
+  return crumbs.length ? crumbs.join(" > ") + " > " : "";
+}
+
+/** Every matching, breadcrumb-prefixed line — the full result set, before paging. */
+function collectFindMatches(tree: string, query: string, role: string | null): string[] {
+  const lines = tree.split("\n");
+  const matches: string[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (query && !lines[i].toLowerCase().includes(query)) continue;
+    if (role) {
+      const rm = lines[i].match(/^\s*(?:@\S+ )?(\w+)/);
+      if (!rm || rm[1] !== role) continue;
+    }
+    matches.push(`  ${findBreadcrumb(lines, i)}${lines[i].trim()}`);
+  }
+  return matches;
+}
+
+async function handleFind(args: string[]): Promise<string> {
+  if (args[0] === "--next") return handleFindNext();
+
+  let role: string | null = null;
+  const rest: string[] = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--role") role = args[++i] ?? null;
+    else rest.push(args[i]);
+  }
+  const queryText = rest.join(" ");
+  const query = queryText.toLowerCase();
+  if (!query && !role) {
+    throw new CdpError("Missing search text", "VALIDATION_ERROR", [
+      'Run `opera-browser-cli find "sign in"` to search the current page',
+      "Add `--role link` (or button, textbox, ...) to filter by role",
+    ]);
+  }
+
+  const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
+  const tree = compactSnapshot(snapshot);
+  writeLastTree(tree);
+  const matches = collectFindMatches(tree, query, role);
+  const total = matches.length;
+
+  const header = `find${role ? `[${role}]` : ""}: ${total} match${total === 1 ? "" : "es"}${queryText ? ` for "${queryText}"` : ""}`;
+  if (total === 0) {
+    return renderOutput([header, renderHelp(["Run `opera-browser-cli snapshot` to see the page"])]);
+  }
+
+  const shown = matches.slice(0, FIND_MAX_MATCHES);
+  writeFindState({ query: queryText, role, sig: snapshotSig(tree), shown: shown.length });
+  let block = [header, ...shown].join("\n");
+  if (total > FIND_MAX_MATCHES)
+    block += `\n  ... (${total - FIND_MAX_MATCHES} more — run \`opera-browser-cli find --next\` to continue)`;
+  return renderOutput([block]);
+}
+
+/**
+ * `find --next` — continue a truncated match list from where the last find
+ * left off, the same offset/sig-cursor shape as `snapshot --next`.
+ */
+async function handleFindNext(): Promise<string> {
+  const state = readFindState();
+  if (!state) {
+    throw new CdpError("No find to continue", "VALIDATION_ERROR", [
+      'Run `opera-browser-cli find "text"` first',
+    ]);
+  }
+
+  const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
+  const tree = compactSnapshot(snapshot);
+  writeLastTree(tree);
+  const sig = snapshotSig(tree);
+  const matches = collectFindMatches(tree, state.query.toLowerCase(), state.role);
+  const total = matches.length;
+  // Page changed since the last find — old offsets don't mean anything
+  // against new content, so start over rather than skip or crash.
+  const offset = sig === state.sig ? state.shown : 0;
+
+  if (total === 0 || offset >= total) {
+    return renderOutput([
+      "find: end reached — all matches shown",
+      renderHelp(['Run `opera-browser-cli find "text"` to search again']),
+    ]);
+  }
+
+  const page = matches.slice(offset, offset + FIND_MAX_MATCHES);
+  writeFindState({ ...state, sig, shown: offset + page.length });
+  const header = `find${state.role ? `[${state.role}]` : ""}: matches ${offset + 1}-${offset + page.length} of ${total}${state.query ? ` for "${state.query}"` : ""}`;
+  let block = [header, ...page].join("\n");
+  if (offset + page.length < total)
+    block += `\n  ... (${total - offset - page.length} more — run \`opera-browser-cli find --next\` to continue)`;
+  return renderOutput([block]);
+}
+
+// --- chain (D4): several actions, one final snapshot/diff ---
+
+/** Quote-aware tokenizer for chain steps: `fill @.3 "two words"` → 3 tokens. */
+export function tokenizeStep(step: string): string[] {
+  const out: string[] = [];
+  const re = /"([^"]*)"|'([^']*)'|(\S+)/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(step)) !== null) out.push(m[1] ?? m[2] ?? m[3]);
+  return out;
+}
+
+/**
+ * B-5: split chain steps on ';' outside quotes. Splitting the raw string first
+ * (the old behavior) cut a step like `fill @.7 "hello; world"` in two before
+ * tokenizeStep ever saw the quotes — this walks the string itself so a quoted
+ * ';' can't end a step. An unbalanced quote just runs to the end of the input
+ * as one step rather than throwing.
+ */
+export function splitChainSteps(input: string): string[] {
+  const steps: string[] = [];
+  let cur = "";
+  let quote: string | null = null;
+  for (const ch of input) {
+    if (quote) {
+      if (ch === quote) quote = null;
+      cur += ch;
+    } else if (ch === '"' || ch === "'") {
+      quote = ch;
+      cur += ch;
+    } else if (ch === ";") {
+      steps.push(cur);
+      cur = "";
+    } else {
+      cur += ch;
+    }
+  }
+  steps.push(cur);
+  return steps.map((s) => s.trim()).filter(Boolean);
+}
+
+/** Execute one chain step against MCP without producing any snapshot output. */
+async function execChainStep(cmd: string, rest: string[]): Promise<void> {
+  switch (cmd) {
+    case "open":
+      if (!rest[0]) throw new CdpError("open: missing URL", "VALIDATION_ERROR");
+      try {
+        await callTool("navigate_page", { type: "url", url: rest[0] });
+      } catch (error) {
+        if (!isRecoverableOpenError(error)) throw error;
+        await callTool("new_page", { url: rest[0] });
+      }
+      return;
+    case "click":
+      if (!rest[0]) throw new CdpError("click: missing @ref", "VALIDATION_ERROR");
+      await callTool("click", { uid: parseUid(rest[0]) });
+      return;
+    case "fill":
+      if (!rest[0] || rest[1] === undefined)
+        throw new CdpError("fill: need @ref and text", "VALIDATION_ERROR");
+      await callTool("fill", { uid: parseUid(rest[0]), value: rest.slice(1).join(" ") });
+      return;
+    case "type":
+      await callTool("type_text", { text: rest.join(" ") });
+      return;
+    case "press":
+      if (!rest[0]) throw new CdpError("press: missing key", "VALIDATION_ERROR");
+      await callTool("press_key", { key: rest[0] });
+      return;
+    case "hover":
+      if (!rest[0]) throw new CdpError("hover: missing @ref", "VALIDATION_ERROR");
+      await callTool("hover", { uid: parseUid(rest[0]) });
+      return;
+    case "scroll": {
+      const fn = SCROLL_FUNCTIONS[(rest[0] ?? "down").toLowerCase()];
+      if (!fn) throw new CdpError(`scroll: unknown direction ${rest[0]}`, "VALIDATION_ERROR");
+      await callTool("evaluate_script", { function: fn });
+      return;
+    }
+    case "wait": {
+      const ms = parseInt(rest[0] ?? "", 10);
+      if (Number.isNaN(ms)) throw new CdpError("wait: missing milliseconds", "VALIDATION_ERROR");
+      await callTool("evaluate_script", { function: `new Promise(r => setTimeout(r, ${ms}))` });
+      return;
+    }
+    default:
+      throw new CdpError(
+        `chain: unsupported step \"${cmd}\" (allowed: open, click, fill, type, press, hover, scroll, wait)`,
+        "VALIDATION_ERROR",
+      );
+  }
+}
+
+/**
+ * `chain 'click @.3; fill @.7 "x"; press Enter'` — run several actions with a
+ * one-line ack each and a single snapshot/diff at the end. N actions, 1 snapshot.
+ */
+async function handleChain(args: string[]): Promise<string> {
+  const steps = splitChainSteps(args.join(" "));
+  if (steps.length === 0) {
+    throw new CdpError("Missing chain steps", "VALIDATION_ERROR", [
+      "Run `opera-browser-cli chain 'click @.3; fill @.7 \"text\"; press Enter'`",
+    ]);
+  }
+
+  const acks: string[] = [];
+  let failed = false;
+  for (let i = 0; i < steps.length; i++) {
+    const [cmd, ...rest] = tokenizeStep(steps[i]);
+    try {
+      await execChainStep(cmd, rest);
+      acks.push(`ok ${i + 1}/${steps.length}: ${steps[i]}`);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      acks.push(`FAILED ${i + 1}/${steps.length}: ${steps[i]} — ${msg}`);
+      if (i < steps.length - 1) acks.push(`(${steps.length - i - 1} remaining steps skipped)`);
+      failed = true;
+      break;
+    }
+  }
+
+  const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
+  const tail = await formatActionOutput(snapshot, "chain", undefined, false, false);
+  const status = failed ? "chain (stopped on error):" : "chain:";
+  return `${status}\n${acks.map((a) => `  ${a}`).join("\n")}\n\n${tail}`;
 }
 
 type CommandFn = (args: string[]) => Promise<string>;
@@ -3817,6 +4196,8 @@ const COMMANDS: Record<string, CommandFn> = {
   scroll: withStaleRefRecovery(withFullFlag(handleScroll)),
   back: withStaleRefRecovery(async (args) => { const f = splitFullFlag(args); return handleBack(f.full, f.raw); }),
   wait: withoutFullFlag(handleWait),
+  find: withoutFullFlag(handleFind),
+  chain: withoutFullFlag(handleChain),
   eval: withFullFlag(handleEval),
   run: async () => handleRun(),
   hover: withStaleRefRecovery(withFullFlag(handleHover)),

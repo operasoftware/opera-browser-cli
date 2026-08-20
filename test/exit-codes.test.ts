@@ -32,6 +32,7 @@ describe("exit codes", () => {
       EXTENSION_NOT_FOUND: 3,
       NOT_FOUND: 2,
       SERVER_DISCONNECTED: 3,
+      EXPECT_FAILED: 3,
       UNKNOWN: 1,
     };
 

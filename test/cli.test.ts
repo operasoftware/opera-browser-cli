@@ -8,6 +8,10 @@ import {
   parseScreenshotArgs,
   parseSetupArgs,
   UID_NOT_FOUND_RE,
+  findBreadcrumb,
+  tokenizeStep,
+  splitChainSteps,
+  splitFullFlag,
 } from "../src/cli.js";
 
 describe("formatStopOutput", () => {
@@ -195,5 +199,35 @@ describe("UID_NOT_FOUND_RE", () => {
     expect(UID_NOT_FOUND_RE.test("uid \"2_4\" not found")).toBe(true);
     expect(UID_NOT_FOUND_RE.exec("uid 2_4 not found")?.[1]).toBe("2_4");
     expect(UID_NOT_FOUND_RE.test("some other error")).toBe(false);
+  });
+});
+
+describe("findBreadcrumb", () => {
+  it("builds a short ancestor breadcrumb for a matched line", () => {
+    const lines = ['root "Page"','  @1.0 nav','    @1.1 link "Home"','  @2.0 main','    @2.1 button "Go"'];
+    expect(findBreadcrumb(lines, 4)).toContain('main');
+    expect(findBreadcrumb(lines, 4)).toContain('root "Page"');
+  });
+});
+
+describe("tokenizeStep / splitChainSteps", () => {
+  it("keeps quoted text together and splits steps on unquoted ';'", () => {
+    expect(tokenizeStep('fill @.3 "two words"')).toEqual(['fill','@.3','two words']);
+    expect(splitChainSteps('click @.3; fill @.7 "a; b"; press Enter')).toEqual([
+      'click @.3','fill @.7 "a; b"','press Enter',
+    ]);
+  });
+});
+
+describe("splitFullFlag", () => {
+  it("strips flags and consumes action-modifier values", () => {
+    const r = splitFullFlag(['click', '@1.2', '--quiet', '--full']);
+    expect(r.args).toEqual(['click', '@1.2']);
+    expect(r.full).toBe(true);
+  });
+
+  it("pulls --expect/--expect-timeout values out of args", () => {
+    const r = splitFullFlag(['fill', '@1', '--expect', 'Submit', '--expect-timeout', '5000']);
+    expect(r.args).toEqual(['fill', '@1']);
   });
 });

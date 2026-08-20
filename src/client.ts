@@ -73,6 +73,32 @@ export function getStateDir(): string {
   return STATE_DIR;
 }
 
+/** Keep session ids to path-safe characters — they become a directory name. */
+function sanitizeSessionId(raw: string): string {
+  return raw.replace(/[^A-Za-z0-9_.-]/g, "_").slice(0, 128) || "default";
+}
+
+/**
+ * Directory for the per-page state files (last-tree.txt, prev-tree.txt,
+ * snapshot-state.json, last-url-map.json). When OPERA_CLI_SESSION is set,
+ * scopes them under a subdirectory so concurrent sessions don't overwrite each
+ * other's diff baseline and --next cursor (B-3). Unset — the common case, since
+ * agent harnesses typically spawn a fresh shell per invocation — keeps
+ * everything at the directory root exactly as before.
+ */
+export function getSessionStateDir(): string {
+  const session = process.env.OPERA_CLI_SESSION;
+  const base = getStateDir();
+  if (!session) return base;
+  const dir = join(base, "sessions", sanitizeSessionId(session));
+  try {
+    mkdirSync(dir, { recursive: true });
+  } catch {
+    // Best-effort — callers already tolerate write failures under this directory.
+  }
+  return dir;
+}
+
 export function getConfigFile(): string {
   return CONFIG_FILE;
 }
@@ -124,6 +150,8 @@ export type ErrorCode =
   | "EXTENSION_NOT_FOUND"
   | "NOT_FOUND"
   | "SERVER_DISCONNECTED"
+  /** An --expect verification did not find its text on the page. */
+  | "EXPECT_FAILED"
   | "UNKNOWN";
 
 export class CdpError extends AxiError {
