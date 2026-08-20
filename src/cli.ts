@@ -6,9 +6,11 @@ import {
   openSync,
   readFileSync,
   readSync,
+  renameSync,
   statSync,
   writeFileSync,
 } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
 import { createInterface } from "node:readline";
@@ -73,6 +75,10 @@ import {
   compactSnapshot,
   applyUrlLut,
   resolveUrl,
+  diffSnapshots,
+  extractSubtree,
+  rootLineOf,
+  windowSnapshot,
 } from "./snapshot.js";
 import { getSuggestions } from "./suggestions.js";
 
@@ -189,17 +195,27 @@ examples:
   opera-browser-cli screenshot ./element.png --uid @3
   opera-browser-cli screenshot ./full.png --full-page --format jpeg`,
 
-  snapshot: `usage: opera-browser-cli snapshot [--full] [--raw]
-Capture the current page accessibility snapshot.
+  snapshot: `usage: opera-browser-cli snapshot [--full] [--raw] [--next] [--force] [@ref]
+Capture the current page accessibility snapshot. When the page is unchanged
+since it was last shown, prints a short "unchanged" notice; use --force to
+reprint. --next continues a long snapshot from where it left off, and @ref
+expands one element's subtree.
 
 flags:
-  --full  Show complete snapshot without truncation
-  --raw   Show unprocessed MCP output (disables compact format)
+  --full   Show complete snapshot without truncation
+  --raw    Show unprocessed MCP output (disables compact format)
+  --next   Continue reading from where the last snapshot stopped
+  --force  Reprint even when the page is unchanged since last shown
+
+args:
+  @ref     Show only that element's subtree (expands collapsed landmarks)
 
 examples:
   opera-browser-cli snapshot
   opera-browser-cli snapshot --full
-  opera-browser-cli snapshot --raw`,
+  opera-browser-cli snapshot --raw
+  opera-browser-cli snapshot --next
+  opera-browser-cli snapshot @2.4`,
 
   url: `usage: opera-browser-cli url <$uN | @ref>
 Resolve a URL token or element ref from the last snapshot.
@@ -1185,6 +1201,160 @@ function parseSnapshotFromResponse(response: string): string | null {
     : trimmed.slice(0, nextHeading).trimEnd();
 }
 
+// ---------------------------------------------------------------------------
+// Snapshot session state (windowing D1, unchanged short-circuit D7, post-action
+// diffs D3, stale-ref hints D2b)
+//
+// Persisted next to last-url-map.json in the state dir, so `snapshot --next`, the
+// "unchanged since last shown" short-circuit, and the action diff baseline all
+// survive across CLI invocations against the same page.
+// ---------------------------------------------------------------------------
+
+interface SnapshotState {
+  sig: string;    // signature of the compacted tree the offset refers to
+  offset: number; // chars of the compacted tree already shown
+}
+
+const SNAPSHOT_STATE_FILE = "snapshot-state.json";
+const LAST_TREE_FILE = "last-tree.txt";
+const PREV_TREE_FILE = "prev-tree.txt";
+
+/**
+ * Identity for a compacted tree: same page + unchanged content ⇒ same sig.
+ * Hashes the full text (C-3) — a same-length edit past char 80 (a price, a
+ * counter, a status swap) must not be called "unchanged".
+ */
+function snapshotSig(text: string): string {
+  return `sha256:${createHash("sha256").update(text).digest("hex")}`;
+}
+
+function writeSnapshotState(state: SnapshotState): void {
+  try {
+    writeFileSync(join(getStateDir(), SNAPSHOT_STATE_FILE), JSON.stringify(state));
+  } catch {
+    // Non-fatal: --next just restarts from the top next time.
+  }
+}
+
+function readSnapshotState(): SnapshotState | null {
+  try {
+    return JSON.parse(
+      readFileSync(join(getStateDir(), SNAPSHOT_STATE_FILE), "utf-8"),
+    ) as SnapshotState;
+  } catch {
+    return null;
+  }
+}
+
+/** Rotate the last full compacted tree to prev, then store the new one. */
+function writeLastTree(tree: string): void {
+  try {
+    renameSync(join(getStateDir(), LAST_TREE_FILE), join(getStateDir(), PREV_TREE_FILE));
+  } catch {
+    // No previous baseline — nothing to rotate.
+  }
+  try {
+    writeFileSync(join(getStateDir(), LAST_TREE_FILE), tree);
+  } catch {
+    // Non-fatal: next action falls back to a full snapshot.
+  }
+}
+
+function readPrevTree(): string | null {
+  try {
+    return readFileSync(join(getStateDir(), PREV_TREE_FILE), "utf-8");
+  } catch {
+    return null;
+  }
+}
+
+function readLastTree(): string | null {
+  try {
+    return readFileSync(join(getStateDir(), LAST_TREE_FILE), "utf-8");
+  } catch {
+    return null;
+  }
+}
+
+// Above this share of changed lines a diff is no longer cheaper or clearer
+// than a fresh snapshot.
+const DIFF_RATIO_LIMIT = 0.4;
+
+/**
+ * After writing a diff (not a full page), keep last-url-map.json and
+ * snapshot-state.json describing the page as it now is so `url $uN` and
+ * `snapshot --next` stay consistent with the post-action page.
+ */
+function refreshPageStateForDiff(tree: string): void {
+  const tr = truncateSnapshot(tree, false, 12000);
+  const { urlMap } = applyUrlLut(tr.text);
+  try {
+    writeFileSync(
+      join(getStateDir(), "last-url-map.json"),
+      JSON.stringify(Object.fromEntries(urlMap)),
+    );
+  } catch {
+    // Non-fatal: url command falls back to re-derivation if write fails.
+  }
+  const priorOffset = readSnapshotState()?.offset;
+  writeSnapshotState({
+    sig: snapshotSig(tree),
+    offset:
+      priorOffset !== undefined
+        ? Math.min(priorOffset, tree.length)
+        : tr.truncated
+          ? tr.text.length
+          : tree.length,
+  });
+}
+
+/**
+ * Post-action output (D3): when the document is unchanged and the delta is
+ * small, return a diff against the previous snapshot instead of re-sending the
+ * whole page. Falls back to a full snapshot on navigation (root line changed),
+ * missing baseline, or a large delta. `--full`/`--raw` bypass.
+ */
+async function formatActionOutput(
+  snapshot: string,
+  command: string,
+  url: string | undefined,
+  full: boolean,
+  raw: boolean,
+): Promise<string> {
+  if (full || raw) return formatPageOutput(snapshot, command, url, full, raw);
+
+  const tree = compactSnapshot(snapshot);
+  const old = readLastTree();
+  if (!old || rootLineOf(old) !== rootLineOf(tree)) {
+    return formatPageOutput(snapshot, command, url, full, raw);
+  }
+  const diff = diffSnapshots(old, tree);
+  if (diff.changeRatio > DIFF_RATIO_LIMIT) {
+    return formatPageOutput(snapshot, command, url, full, raw);
+  }
+  writeLastTree(tree);
+  refreshPageStateForDiff(tree);
+
+  const suggestions = getSuggestions({ command, snapshot: tree });
+  suggestions.push("Run `opera-browser-cli snapshot` for the full page state");
+
+  const total = diff.added.length + diff.removed.length + diff.changed.length;
+  if (total === 0) {
+    return renderOutput(["diff: no visible change", renderHelp(suggestions)]);
+  }
+
+  const lines: string[] = [
+    `diff: {changed: ${diff.changed.length}, added: ${diff.added.length}, removed: ${diff.removed.length}}`,
+  ];
+  for (const c of diff.changed) lines.push(`~ ${c.after.trim()} (was: ${c.before.trim()})`);
+  for (const l of diff.added) if (l.trim()) lines.push(`+ ${l.trim()}`);
+  for (const l of diff.removed) if (l.trim()) lines.push(`- ${l.trim()}`);
+  const tr = truncateSnapshot(lines.join("\n"), false, 12000);
+  let block = tr.text;
+  if (tr.truncated) block += `\n    ... (truncated, ${tr.totalLength} chars total)`;
+  return renderOutput([block, renderHelp(suggestions)]);
+}
+
 /** Format page metadata (TOON) + snapshot + suggestions. */
 function formatPageOutput(
   snapshot: string,
@@ -1194,6 +1364,8 @@ function formatPageOutput(
   raw = false,
 ): string {
   const tree = raw ? snapshot : compactSnapshot(snapshot);
+  // Refresh the post-action diff baseline: a full snapshot is the new reference.
+  if (!raw) writeLastTree(tree);
 
   const title = extractTitle(tree);
   const refs = countRefs(tree);
@@ -1222,6 +1394,14 @@ function formatPageOutput(
   } catch {
     // Non-fatal: url command falls back to re-derivation if write fails.
   }
+  // Persist the window cursor so `snapshot --next` continues exactly where this
+  // output stopped (sig lets it detect the page changed and restart from the top).
+  if (!raw) {
+    writeSnapshotState({
+      sig: snapshotSig(tree),
+      offset: tr.truncated ? tr.text.length : tree.length,
+    });
+  }
   let snapshotBlock = `snapshot:\n${body.trimEnd()}`;
   if (trailer) snapshotBlock += `\n${trailer}`;
   if (tr.truncated) {
@@ -1233,7 +1413,7 @@ function formatPageOutput(
   const suggestions = getSuggestions({ command, url, snapshot: tree });
   if (tr.truncated) {
     suggestions.push(
-      `Run \`opera-browser-cli ${command}${url ? " " + url : ""} --full\` to see complete snapshot`,
+      `Run \`opera-browser-cli snapshot --next\` to keep reading, or \`opera-browser-cli ${command}${url ? " " + url : ""} --full\` for the whole page`,
     );
   }
   if (suggestions.length > 0) {
@@ -1387,9 +1567,114 @@ async function openOrCreatePage(url: string): Promise<boolean> {
   }
 }
 
-async function handleSnapshot(full: boolean, raw = false): Promise<string> {
+async function handleSnapshot(
+  args: string[],
+  full = false,
+  raw = false,
+): Promise<string> {
+  if (args[0] === "--next") return handleSnapshotNext();
+
+  const force = args.includes("--force");
+  const target = args.find((a) => !a.startsWith("--"));
+
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "snapshot", undefined, full, raw);
+
+  // Whole page: identical re-prints are exactly the tokens prompt caching can't
+  // save (D7). When the page hasn't changed since it was last shown, say so.
+  if (!target) {
+    if (!full && !raw && !force) {
+      const tree = compactSnapshot(snapshot);
+      const state = readSnapshotState();
+      if (state && state.sig === snapshotSig(tree)) {
+        writeLastTree(tree);
+        const title = extractTitle(tree);
+        const fullyShown = state.offset >= tree.length;
+        return renderOutput([
+          `snapshot: unchanged since last shown${title ? ` — "${title}"` : ""} (${countRefs(tree)} refs)`,
+          renderHelp([
+            "Run `opera-browser-cli snapshot --force` to reprint it",
+            ...(fullyShown
+              ? []
+              : ["Run `opera-browser-cli snapshot --next` to continue reading"]),
+          ]),
+        ]);
+      }
+    }
+    return formatPageOutput(snapshot, "snapshot", undefined, full, raw);
+  }
+
+  // Subtree mode: `snapshot @2.4` returns one node's subtree in full detail —
+  // the expansion path for collapsed landmarks and a zoom for any node.
+  if (!/^@?[\d._]+$/.test(target)) {
+    throw new CdpError(`Invalid ref: ${target}`, "VALIDATION_ERROR", [
+      "Run `opera-browser-cli snapshot @2.4` to show one element's subtree",
+    ]);
+  }
+  const compact = compactSnapshot(snapshot);
+  const sub = extractSubtree(compact, target);
+  if (sub == null) {
+    throw new CdpError(`Ref not found on current page: ${target}`, "VALIDATION_ERROR", [
+      "The page may have changed — run `opera-browser-cli snapshot` to get fresh refs",
+    ]);
+  }
+  const tr = truncateSnapshot(sub, full, 12000);
+  const lutResult = raw
+    ? { body: tr.text, trailer: "", urlMap: new Map<string, string>() }
+    : applyUrlLut(tr.text);
+  try {
+    writeFileSync(
+      join(getStateDir(), "last-url-map.json"),
+      JSON.stringify(Object.fromEntries(lutResult.urlMap)),
+    );
+  } catch {
+    // Non-fatal: url command falls back to re-derivation if write fails.
+  }
+  let block = `snapshot[@${target.replace(/^@/, "")}]:\n${lutResult.body.trimEnd()}`;
+  if (lutResult.trailer) block += `\n${lutResult.trailer}`;
+  if (tr.truncated) block += `\n    ... (truncated, ${tr.totalLength} chars total)`;
+  return renderOutput([block]);
+}
+
+/**
+ * `snapshot --next` — the next window of the current page's compacted tree.
+ * The cursor persists in the state dir; any full-page output resets it to the
+ * end of what was shown, so --next always continues from there. If the page
+ * changed since (signature mismatch), the window restarts from the top.
+ */
+async function handleSnapshotNext(): Promise<string> {
+  const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
+  const tree = compactSnapshot(snapshot);
+  writeLastTree(tree);
+  const sig = snapshotSig(tree);
+
+  const state = readSnapshotState();
+  const offset = state && state.sig === sig ? state.offset : 0;
+  if (offset >= tree.length) {
+    return renderOutput([
+      "snapshot: end reached — the whole snapshot has been shown",
+      renderHelp(["Run `opera-browser-cli snapshot` to restart from the top"]),
+    ]);
+  }
+
+  const win = windowSnapshot(tree, offset, 12000);
+  writeSnapshotState({ sig, offset: win.end });
+
+  const { body, trailer, urlMap } = applyUrlLut(win.text);
+  try {
+    writeFileSync(
+      join(getStateDir(), "last-url-map.json"),
+      JSON.stringify(Object.fromEntries(urlMap)),
+    );
+  } catch {
+    // Non-fatal: url command falls back to re-derivation if write fails.
+  }
+
+  let block = `snapshot[${win.start}-${win.end} of ${win.totalLength}]:\n${body.trimEnd()}`;
+  if (trailer) block += `\n${trailer}`;
+  block += win.atEnd
+    ? "\n    ... (end of snapshot)"
+    : "\n    ... (continues — run `opera-browser-cli snapshot --next`)";
+  return renderOutput([block]);
 }
 
 async function handleScreenshot(args: string[]): Promise<string> {
@@ -1434,7 +1719,7 @@ async function handleClick(args: string[], full: boolean, raw = false): Promise<
   }
 
   const snapshot = await callWithSnapshot("click", { uid: parseUid(uid) });
-  return formatPageOutput(snapshot, "click", undefined, full, raw);
+  return formatActionOutput(snapshot, "click", undefined, full, raw);
 }
 
 async function handleFill(args: string[], full: boolean, raw = false): Promise<string> {
@@ -1455,7 +1740,7 @@ async function handleFill(args: string[], full: boolean, raw = false): Promise<s
     uid: parseUid(uid),
     value,
   });
-  return formatPageOutput(snapshot, "fill", undefined, full, raw);
+  return formatActionOutput(snapshot, "fill", undefined, full, raw);
 }
 
 async function handlePress(args: string[], full: boolean, raw = false): Promise<string> {
@@ -1467,7 +1752,7 @@ async function handlePress(args: string[], full: boolean, raw = false): Promise<
   }
 
   const snapshot = await callWithSnapshot("press_key", { key });
-  return formatPageOutput(snapshot, "press", undefined, full, raw);
+  return formatActionOutput(snapshot, "press", undefined, full, raw);
 }
 
 async function handleType(args: string[], full: boolean, raw = false): Promise<string> {
@@ -1480,7 +1765,7 @@ async function handleType(args: string[], full: boolean, raw = false): Promise<s
 
   await callTool("type_text", { text });
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "type", undefined, full, raw);
+  return formatActionOutput(snapshot, "type", undefined, full, raw);
 }
 
 async function handleScroll(args: string[], full: boolean, raw = false): Promise<string> {
@@ -1494,13 +1779,13 @@ async function handleScroll(args: string[], full: boolean, raw = false): Promise
 
   await callTool("evaluate_script", { function: fn });
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "scroll", undefined, full, raw);
+  return formatActionOutput(snapshot, "scroll", undefined, full, raw);
 }
 
 async function handleBack(full: boolean, raw = false): Promise<string> {
   await callTool("navigate_page", { type: "back" });
   const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
-  return formatPageOutput(snapshot, "back", undefined, full, raw);
+  return formatActionOutput(snapshot, "back", undefined, full, raw);
 }
 
 async function handleWait(args: string[]): Promise<string> {
@@ -1789,7 +2074,7 @@ async function handleHover(args: string[], full: boolean, raw = false): Promise<
     ]);
   }
   const snapshot = await callWithSnapshot("hover", { uid: parseUid(uid) });
-  return formatPageOutput(snapshot, "hover", undefined, full, raw);
+  return formatActionOutput(snapshot, "hover", undefined, full, raw);
 }
 
 async function handleDrag(args: string[], full: boolean, raw = false): Promise<string> {
@@ -1804,7 +2089,7 @@ async function handleDrag(args: string[], full: boolean, raw = false): Promise<s
     from_uid: parseUid(from),
     to_uid: parseUid(to),
   });
-  return formatPageOutput(snapshot, "drag", undefined, full, raw);
+  return formatActionOutput(snapshot, "drag", undefined, full, raw);
 }
 
 async function handleFillForm(args: string[], full: boolean, raw = false): Promise<string> {
@@ -1815,7 +2100,7 @@ async function handleFillForm(args: string[], full: boolean, raw = false): Promi
     ]);
   }
   const snapshot = await callWithSnapshot("fill_form", { elements: entries });
-  return formatPageOutput(snapshot, "fillform", undefined, full, raw);
+  return formatActionOutput(snapshot, "fillform", undefined, full, raw);
 }
 
 async function handleDialog(args: string[]): Promise<string> {
@@ -1849,7 +2134,7 @@ async function handleUpload(args: string[], full: boolean, raw = false): Promise
     uid: parseUid(uid),
     filePath,
   });
-  return formatPageOutput(snapshot, "upload", undefined, full, raw);
+  return formatActionOutput(snapshot, "upload", undefined, full, raw);
 }
 
 // --- Emulation handler ---
@@ -3458,25 +3743,87 @@ function withoutFullFlag(
   return (args) => handler(splitFullFlag(args).args);
 }
 
+// --- D2b: stale-ref recovery hint ---
+
+export const UID_NOT_FOUND_RE = /uid "?([\d_]+)?"? not found/i;
+
+/**
+ * When an action fails because its ref no longer exists, look the old node up
+ * in the persisted last tree and point at the closest current match — saving
+ * the agent a full re-snapshot to re-find the element.
+ */
+async function nearestRefSuggestion(staleUid: string): Promise<string | null> {
+  try {
+    const display = staleUid.replace(/_/g, ".");
+    const escaped = display.replace(/\./g, "\\.");
+    const lineRe = new RegExp(`^\\s*@${escaped}\\s`);
+    // The ref may have died in the latest navigation — check the rotated
+    // previous baseline when the current one doesn't know it.
+    const oldLine = [readLastTree(), readPrevTree()]
+      .flatMap((t) => (t ? t.split("\n") : []))
+      .find((l) => lineRe.test(l));
+    const om = oldLine?.match(/^\s*@\S+ (\w+) "([^"]*)"/);
+    if (!om) return null;
+    const [, role, label] = om;
+
+    const snapshot = stripSnapshotHeader(await callTool("take_snapshot"));
+    const tree = compactSnapshot(snapshot);
+    writeLastTree(tree);
+    const lines = tree.split("\n");
+    const exact = lines.find(
+      (l) => /^\s*@[\d.]+ /.test(l) && l.includes(` ${role} "${label}"`),
+    );
+    const near =
+      exact ??
+      (label
+        ? lines.find((l) => /^\s*@[\d.]+ /.test(l) && l.includes(label.slice(0, 40)))
+        : undefined);
+    if (!near) return null;
+    return `Ref @${display} is stale; nearest current match: ${near.trim()}`;
+  } catch {
+    return null;
+  }
+}
+
+function withStaleRefRecovery(fn: CommandFn): CommandFn {
+  return async (args) => {
+    try {
+      return await fn(args);
+    } catch (error) {
+      if (error instanceof CdpError) {
+        const m = error.message.match(UID_NOT_FOUND_RE);
+        if (m) {
+          const hint = await nearestRefSuggestion(m[1]);
+          if (hint) error.suggestions.unshift(hint);
+        }
+      }
+      throw error;
+    }
+  };
+}
+
 const COMMANDS: Record<string, CommandFn> = {
   open: withFullFlag(handleOpen),
-  snapshot: async (args) => { const f = splitFullFlag(args); return handleSnapshot(f.full, f.raw); },
+  snapshot: withStaleRefRecovery(async (args) => {
+    const f = splitFullFlag(args);
+    return handleSnapshot(f.args, f.full, f.raw);
+  }),
   url: withoutFullFlag(handleUrl),
   screenshot: withoutFullFlag(handleScreenshot),
-  click: withFullFlag(handleClick),
-  fill: withFullFlag(handleFill),
-  type: withFullFlag(handleType),
-  press: withFullFlag(handlePress),
-  scroll: withFullFlag(handleScroll),
-  back: async (args) => { const f = splitFullFlag(args); return handleBack(f.full, f.raw); },
+  click: withStaleRefRecovery(withFullFlag(handleClick)),
+  fill: withStaleRefRecovery(withFullFlag(handleFill)),
+  type: withStaleRefRecovery(withFullFlag(handleType)),
+  press: withStaleRefRecovery(withFullFlag(handlePress)),
+  scroll: withStaleRefRecovery(withFullFlag(handleScroll)),
+  back: withStaleRefRecovery(async (args) => { const f = splitFullFlag(args); return handleBack(f.full, f.raw); }),
   wait: withoutFullFlag(handleWait),
   eval: withFullFlag(handleEval),
   run: async () => handleRun(),
-  hover: withFullFlag(handleHover),
-  drag: withFullFlag(handleDrag),
-  fillform: withFullFlag(handleFillForm),
+  hover: withStaleRefRecovery(withFullFlag(handleHover)),
+  drag: withStaleRefRecovery(withFullFlag(handleDrag)),
+  fillform: withStaleRefRecovery(withFullFlag(handleFillForm)),
   dialog: withoutFullFlag(handleDialog),
-  upload: withFullFlag(handleUpload),
+  upload: withStaleRefRecovery(withFullFlag(handleUpload)),
   pages: async () => handlePages(),
   newpage: withFullFlag(handleNewPage),
   selectpage: withFullFlag(handleSelectPage),

@@ -7,6 +7,7 @@ import {
   parseChatArgs,
   parseScreenshotArgs,
   parseSetupArgs,
+  UID_NOT_FOUND_RE,
 } from "../src/cli.js";
 
 describe("formatStopOutput", () => {
@@ -185,5 +186,14 @@ describe("parseChatArgs", () => {
   it("ignores --model without a value", () => {
     const result = parseChatArgs(["Hello", "--model"]);
     expect(result).toEqual({ prompt: "Hello", model: undefined });
+  });
+});
+
+describe("UID_NOT_FOUND_RE", () => {
+  it("matches MCP ref-not-found messages in uid and dot form", () => {
+    expect(UID_NOT_FOUND_RE.test("Element uid 2_4 not found")).toBe(true);
+    expect(UID_NOT_FOUND_RE.test("uid \"2_4\" not found")).toBe(true);
+    expect(UID_NOT_FOUND_RE.exec("uid 2_4 not found")?.[1]).toBe("2_4");
+    expect(UID_NOT_FOUND_RE.test("some other error")).toBe(false);
   });
 });
