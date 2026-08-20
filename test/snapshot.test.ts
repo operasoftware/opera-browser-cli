@@ -18,6 +18,8 @@ import {
   diffSnapshots,
   rootLineOf,
   windowSnapshot,
+  factorRefPrefix,
+  expandRelativeRef,
 
 } from "../src/snapshot.js";
 
@@ -869,5 +871,26 @@ describe("windowSnapshot", () => {
     expect(w.end).toBeGreaterThan(0);
     expect(w.atEnd).toBe(false);
     expect(windowSnapshot(text, 0, 1_000_000).atEnd).toBe(true);
+  });
+});
+
+describe("factorRefPrefix / expandRelativeRef", () => {
+  it("factors the dominant prefix and leaves minority refs intact", () => {
+    const tree = 'root "Page"\n  @8.1 link "A"\n  @8.2 link "B"\n  @2.9 button "C"';
+    const r = factorRefPrefix(tree);
+    expect(r.prefix).toBe("8");
+    expect(r.body).toContain("@.1");
+    expect(r.body).toContain("@.2");
+    expect(r.body).toContain("@2.9"); // minority stays full
+  });
+  it("does not factor a single occurrence", () => {
+    const r = factorRefPrefix('root "Page"\n  @8.1 link "A"');
+    expect(r.prefix).toBeNull();
+    expect(r.body).toBe('root "Page"\n  @8.1 link "A"');
+  });
+  it("expands a relative ref using the stored prefix", () => {
+    expect(expandRelativeRef(".324", "8")).toBe("8.324");
+    expect(expandRelativeRef("8.324", "8")).toBe("8.324"); // already full
+    expect(expandRelativeRef(".324", null)).toBe("324");
   });
 });

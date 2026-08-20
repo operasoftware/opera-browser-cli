@@ -692,3 +692,50 @@ export function windowSnapshot(
 
   return { text: text.slice(start, end), start, end, totalLength, atEnd };
 }
+
+// --- Ref prefix factoring (S2) ---
+
+export interface RefPrefixResult {
+  body: string;
+  prefix: string | null; // null when nothing was factored
+}
+
+/**
+ * Factor the dominant ref prefix out of a compacted tree: `@8.324` → `@.324`
+ * for the most common prefix (declared once by the caller, e.g. `snap: 8` in
+ * page metadata). Minority prefixes — nodes first seen in an older capture —
+ * stay in full form. The leading dot marks a relative ref, so it can never be
+ * confused with a full ref or a legacy single-number uid.
+ */
+export function factorRefPrefix(text: string): RefPrefixResult {
+  const counts = new Map<string, number>();
+  const re = /(?:^|[\s([])@(\d+)\.\d/gm;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    counts.set(m[1], (counts.get(m[1]) ?? 0) + 1);
+  }
+
+  let prefix: string | null = null;
+  let best = 0;
+  for (const [p, c] of counts) {
+    if (c > best) {
+      best = c;
+      prefix = p;
+    }
+  }
+  // A single occurrence saves fewer bytes than the metadata line costs
+  if (!prefix || best < 2) return { body: text, prefix: null };
+
+  const body = text.replace(
+    new RegExp(`(^|[\\s([])@${prefix}\\.(?=\\d)`, "gm"),
+    "$1@.",
+  );
+  return { body, prefix };
+}
+
+/** Expand a possibly-relative display ref (".324") using the snapshot prefix. */
+export function expandRelativeRef(ref: string, prefix: string | null): string {
+  const bare = ref.replace(/^@/, "");
+  if (!bare.startsWith(".")) return bare;
+  return prefix ? `${prefix}.${bare.slice(1)}` : bare.slice(1);
+}
