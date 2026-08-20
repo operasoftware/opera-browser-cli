@@ -1,7 +1,7 @@
 # benchmarks — Claude guidance
 
-Two benchmarks measure the token cost of `opera-browser-cli` snapshot output. Both live under
-`benchmarks/` and share the dev-tooling setup at that level.
+Three benchmarks measure the cost and agentic quality of `opera-browser-cli` snapshot output.
+All live under `benchmarks/` and share the dev-tooling setup at that level.
 
 ---
 
@@ -120,6 +120,39 @@ python snapshot-agentic-use/src/report.py
   lives in `_CLI_SCHEMA` (module-level constant in `tools.py`), evaluated once at import.
 
 ---
+
+## `agentic-v3` — cross-version agentic comparison (Claude Code subagents)
+
+Six real-world tasks x three builds (`main`, `d9a1f4f`, `HEAD`) x one fresh Haiku agent
+each, run sequentially against a live browser; plus a post-fix `v4` re-run and a two-task
+Sonnet addendum. Unlike `snapshot-agentic-use` this suite
+uses no Python driver and no OpenAI key: the agents are Claude Code subagents, and
+measurement comes from a logging shim plus the subagent transcripts.
+
+### File roles
+
+| File | Role |
+|---|---|
+| `agentic-v3/suite.md` | Task set, pinned expected answers, agent prompt, controls. |
+| `agentic-v3/results-2026-08-01.md` | v1/v2/v3 comparison: results tables and findings. |
+| `agentic-v3/results-2026-08-02-postfix.md` | Post-fix re-run (v4) + the Sonnet chain addendum. |
+| `agentic-v3/results-2026-08-02-n3-sonnet.md` | **Definitive**: n=3 Sonnet, v1 vs v2 vs v4 (54 runs). |
+| `agentic-v3/harness/_shim.zsh` | Wraps a condition binary; logs argv/exit/bytes/duration + full output. |
+| `agentic-v3/harness/gen.zsh` | `gen.zsh <cond> <task>` -> per-cell logging wrapper path. |
+| `agentic-v3/harness/runctl.zsh` | `switch <cond>` (restart that build's bridge) / `reset <cond>` (clear state). |
+| `agentic-v3/harness/analyze.py` | Joins shim TSVs with subagent transcripts -> cost tables. |
+| `agentic-v3/harness/analyze3.py` | Same, for the n=3 matrix: per-repeat totals, sd, per-task means. |
+| `agentic-v3/logs/*.tsv` | One row per CLI call, per (condition, task) cell. |
+
+### Key design decisions
+
+- **Two instruments, no self-report** - shim bytes measure what the CLI emitted; the
+  transcripts measure what actually entered the agent's context. They disagree when the
+  client truncates oversized tool output, and that disagreement is itself a finding.
+- **Sequential only** - CLI session state is one machine-global directory, so parallel
+  agents corrupt each other's diff baselines (see `docs/compact-v3-review.md`, B-3).
+- **`eval` is forbidden in graded runs** - otherwise agents skip snapshots entirely and
+  the suite measures nothing (finding A-1).
 
 ## Shared dev tooling
 
