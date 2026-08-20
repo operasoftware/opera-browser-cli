@@ -1,0 +1,18 @@
+rfc-deep-read	On https://www.rfc-editor.org/rfc/rfc9110.html, find the section that defines the 404 status code. Report its section number and its exact title.
+rfc-header-semantics	On https://www.rfc-editor.org/rfc/rfc9110.html, find the definition of the "Accept" header. Report the section number that defines it and explain, in one sentence, what the header does.
+rfc-cache-conditions	On https://www.rfc-editor.org/rfc/rfc9111.html, find the "Cache-Control: no-store" directive and state its operating rule (what a recipient MUST NOT do when it applies).
+html-spec-dialog	On https://html.spec.whatwg.org/multipage/interactive-elements.html, find the description of the showModal() method for the dialog element and state the effect of calling it.
+mdn-fetch-abort	On https://developer.mozilla.org/en-US/docs/Web/API/AbortController, find how to cancel a fetch() request and state the mechanism used (which object/option you must pass).
+python-exception-chain	On https://docs.python.org/3/reference/simple_stmts.html, find the "raise" statement's "raise ... from ..." syntax and describe its purpose in one sentence.
+kubernetes-probe-types	On https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/, state the three probe types the page documents.
+postgres-index-types	On https://www.postgresql.org/docs/current/indexes-types.html, list the available index types and identify the one the docs say is suitable for full-text search.
+openssl-cipher-option	On https://docs.openssl.org/3.3/man1/openssl-enc/, explain what the -cipher option does (which algorithm the command will use).
+wcag-focus-order	On https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html, find the criterion number for "Focus Order" and its conformance level (A, AA, or AAA).
+spa-todomvc	Open https://demo.playwright.dev/todomvc and do this in order: add three todos named "alpha", "beta", "gamma" (type each name into the input and press Enter); then mark "beta" as completed by clicking its checkbox; then click the "Active" filter link. Report (a) the exact "items left" counter text and (b) which todo names are listed under the Active filter.
+web-form	Open https://www.selenium.dev/selenium/web/web-form.html, fill the "Text input" field with "Jan Kowalski" and the "Password" field with "secret1", then click the Submit button. Report the heading and the message text shown on the page you land on.
+table-extract	On https://en.wikipedia.org/wiki/List_of_chemical_elements, report the atomic number, the chemical symbol, and the standard atomic weight of Tungsten.
+table-airport-codes	On https://en.wikipedia.org/wiki/List_of_airports_in_Iceland, for Keflavík Airport report its IATA code, city, and country.
+wiki-journey	Starting from https://en.wikipedia.org/wiki/Moon, navigate to the "Giant-impact hypothesis" article by following a link on the Moon page (do not type its URL directly), then report approximately how long ago the giant impact is estimated to have occurred.
+shop-navigate	Open https://books.toscrape.com/, navigate to the "Travel" category by clicking its link, and report (a) how many results the category shows and (b) the title and price of the cheapest book in it.
+wiki-science-chain	Starting from https://en.wikipedia.org/wiki/Photosynthesis, follow the link to the "Calvin cycle" article, and report the main product that stage of photosynthesis produces.
+shop-category-product	On https://books.toscrape.com/, navigate from the catalogue into a category, open a product, and report its price and availability.

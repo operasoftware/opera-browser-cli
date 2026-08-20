@@ -154,6 +154,24 @@ measurement comes from a logging shim plus the subagent transcripts.
 - **`eval` is forbidden in graded runs** - otherwise agents skip snapshots entirely and
   the suite measures nothing (finding A-1).
 
+## `agentic-dataset` — 51-task category corpus (A–E)
+
+Larger corpus derived from `Dataset benchmark for agents.md`: 51 tasks across five
+categories (A deep search & doc reading, B SPA interaction, C forms & post-submit
+navigation, D tabular extraction, E cross-page link navigation), each run by a fresh
+agent. Same harness as `agentic-v3`; conditions are `head` (this branch) vs `main`
+(upstream). Tasks are **tiered**: the 18 `tasks-tier1.tsv` tasks run against live public
+sites; the 33 T2 tasks need local fixtures (not yet shipped).
+
+| File | Role |
+|---|---|
+| `agentic-dataset/suite.md` | Category tables, tiering, pinned answers, controls, prompt. |
+| `agentic-dataset/tasks.tsv` | All 51 tasks (slug<TAB>prompt) — canonical cell identity. |
+| `agentic-dataset/tasks-tier1.tsv` | The 18 runnable-now (public site) tasks. |
+| `agentic-dataset/pin/answers.json` | Pinned expected answers for grading (null = ungraded). |
+| `agentic-dataset/harness/grade.py` | `grade.py <arm>` -> pass/fail broken out by category A–E. |
+| `agentic-dataset/harness/*` | Same shim/gen/runctl/run-matrix/analyze as `agentic-v3`. |
+
 ## Shared dev tooling
 
 From `benchmarks/`:

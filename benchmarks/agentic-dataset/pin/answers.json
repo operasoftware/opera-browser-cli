@@ -1,0 +1,20 @@
+{
+  "rfc-deep-read": "15.5.5",
+  "rfc-header-semantics": "12.5.1",
+  "rfc-cache-conditions": "no-store",
+  "html-spec-dialog": "showModal",
+  "mdn-fetch-abort": "AbortController",
+  "python-exception-chain": "raise",
+  "kubernetes-probe-types": "liveness",
+  "postgres-index-types": "GIN",
+  "openssl-cipher-option": "-cipher",
+  "wcag-focus-order": "2.4.3",
+  "spa-todomvc": "2 items left",
+  "web-form": "Form submitted",
+  "table-extract": "183.84",
+  "table-airport-codes": null,
+  "wiki-journey": "4.5 billion",
+  "shop-navigate": "The Road to Little Dribbling",
+  "wiki-science-chain": "glyceraldehyde",
+  "shop-category-product": null
+}

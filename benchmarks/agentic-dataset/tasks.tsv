@@ -1,0 +1,51 @@
+rfc-deep-read	On https://www.rfc-editor.org/rfc/rfc9110.html, find the section that defines the 404 status code. Report its section number and its exact title.
+rfc-header-semantics	On https://www.rfc-editor.org/rfc/rfc9110.html, find the definition of the "Accept" header. Report the section number that defines it and explain, in one sentence, what the header does.
+rfc-cache-conditions	On https://www.rfc-editor.org/rfc/rfc9111.html, find the "Cache-Control: no-store" directive and state its operating rule (what a recipient MUST NOT do when it applies).
+html-spec-dialog	On https://html.spec.whatwg.org/multipage/interactive-elements.html, find the description of the showModal() method for the dialog element and state the effect of calling it.
+mdn-fetch-abort	On https://developer.mozilla.org/en-US/docs/Web/API/AbortController, find how to cancel a fetch() request and state the mechanism used (which object/option you must pass).
+python-exception-chain	On https://docs.python.org/3/reference/simple_stmts.html, find the "raise" statement's "raise ... from ..." syntax and describe its purpose in one sentence.
+kubernetes-probe-types	On https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/, state the three probe types the page documents.
+postgres-index-types	On https://www.postgresql.org/docs/current/indexes-types.html, list the available index types and identify the one the docs say is suitable for full-text search.
+openssl-cipher-option	On https://docs.openssl.org/3.3/man1/openssl-enc/, explain what the -cipher option does (which algorithm the command will use).
+wcag-focus-order	On https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html, find the criterion number for "Focus Order" and its conformance level (A, AA, or AAA).
+spa-todomvc	Open https://demo.playwright.dev/todomvc and do this in order: add three todos named "alpha", "beta", "gamma" (type each name into the input and press Enter); then mark "beta" as completed by clicking its checkbox; then click the "Active" filter link. Report (a) the exact "items left" counter text and (b) which todo names are listed under the Active filter.
+spa-todo-edit-filter	On the local TodoMVC demo reachable at the URL given by the harness, add four tasks, rename one, complete two, and display the active tasks only. Report the exact "items left" counter and the names shown under Active.
+spa-kanban-move-card	On the local Kanban demo, create a card in "To Do", move it to "In Progress", and set its priority to High. Report the card's new column and priority.
+spa-shopping-cart	On the local demo shop, add two products to the cart, change one product's quantity to 3, and remove the other. Report the final cart line items and total.
+spa-tabs-persistence	On the local settings app, open the "Notifications" tab, select two notification channels, then return to the "Profile" tab. Report whether the two channels are still selected when you return.
+spa-search-sort	On the local product catalogue, search for a given phrase, sort the results by ascending price, and report the first result's name and price.
+spa-pagination	On the local paginated application, go to page 3, open an item's details, and return to the list. Report which page and item you are on.
+spa-notification-settings	On the local settings panel, disable email notifications, enable push notifications, save the changes, and report the confirmation message shown.
+spa-modal-confirmation	On the local project-management app, open the deletion modal for the specified project, cancel it the first time, then confirm the deletion. Report what finally happens.
+spa-validation-inline	On the local React/Vue form, enter an invalid email address, read the error message shown, correct it, and submit the form. Report the error text and the final outcome.
+web-form	Open https://www.selenium.dev/selenium/web/web-form.html, fill the "Text input" field with "Jan Kowalski" and the "Password" field with "secret1", then click the Submit button. Report the heading and the message text shown on the page you land on.
+form-registration-success	On the local registration form (Selenium demo), fill in valid data and read the success message shown after submission. Report the success message.
+form-required-field-error	On the local contact form, submit without a subject, read the error message, then add a subject and submit again. Report the first error and the final outcome.
+form-address-select	On the local delivery form, fill in an address, choose a region, and select courier delivery. Report the delivery method chosen.
+form-date-range	On the local reservation form, set a start and an end date, submit, and report the number of days in the range.
+form-upload-metadata	On the local test application, attach the provided non-confidential sample file, enter a title, and submit. Report the confirmation shown.
+form-password-confirmation	On the local password-change page, enter two different passwords, read the error, then correct the confirmation and complete the change. Report the error and the final outcome.
+form-multistep-checkout	On the local test checkout (no real payment), enter customer details, delivery details, and a test payment method, then report the order summary shown.
+form-consent-checkboxes	On the local newsletter registration form, select the terms acceptance box, leave the marketing consent box unchecked, and submit. Report which consents were accepted.
+form-search-redirect	On the local demo search engine, search for a phrase, submit, and report the number of results and the first result shown.
+table-extract	On https://en.wikipedia.org/wiki/List_of_chemical_elements, report the atomic number, the chemical symbol, and the standard atomic weight of Tungsten.
+table-country-population	On the Wikipedia or local statistics page, for Japan report its population, capital, and ISO country code.
+table-currency-rates	On the local currency-exchange table, provide the EUR, USD, and CHF exchange rates against PLN.
+table-software-releases	On the project documentation's releases table, for the specified version report its release date and support status.
+table-movie-ratings	On the local movie catalogue table, for the year 2019 find the highest-rated film and report its title, rating, and director.
+table-airport-codes	On https://en.wikipedia.org/wiki/List_of_airports_in_Iceland, for Keflavík Airport report its IATA code, city, and country.
+table-nutrition-values	On the test nutrition table, for oatmeal report its calories, protein, and fibre per serving (not per 100 g).
+table-financial-summary	On the local quarterly-results table, for Q2 of the specified year report revenue, cost, and gross margin.
+table-university-rankings	On the public/local university ranking table, for the specified university report its rank, country, and score.
+table-train-timetable	On the local train timetable, for the specified train number report its departure station, arrival station, and platform.
+wiki-journey	Starting from https://en.wikipedia.org/wiki/Moon, navigate to the "Giant-impact hypothesis" article by following a link on the Moon page (do not type its URL directly), then report approximately how long ago the giant impact is estimated to have occurred.
+shop-navigate	Open https://books.toscrape.com/, navigate to the "Travel" category by clicking its link, and report (a) how many results the category shows and (b) the title and price of the cheapest book in it.
+wiki-science-chain	Starting from https://en.wikipedia.org/wiki/Photosynthesis, follow the link to the "Calvin cycle" article, and report the main product that stage of photosynthesis produces.
+docs-api-reference	From the main documentation of the given API, navigate to the method reference and report the required parameter it takes.
+shop-category-product	On https://books.toscrape.com/, navigate from the catalogue into a category, open a product, and report its price and availability.
+news-article-source	On the local test news site, open the specified article, then click a source link cited in its text. Report the page you land on.
+knowledge-base-article	On the local product help centre, open the password-reset article and report the first step of the procedure.
+repository-readme-guide	In the local documentation repository, from the README navigate to the installation instructions and report the system requirements.
+travel-destination-details	On the local travel catalogue, navigate from a destination through a city to an attraction and report its opening hours.
+course-module-lesson	On the local learning platform, navigate from the course list to a module and a lesson, and report the lesson's duration and topic.
+government-service-procedure	On the local public-services portal, select a procedure, open its details, and identify the required document.

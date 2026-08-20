@@ -16,3 +16,6 @@ benchmarks/snapshot-agentic-use/results/
 benchmarks/agentic-v3/results/open/
 benchmarks/agentic-v3/results/strict/
 benchmarks/agentic-v3/logs/
+benchmarks/agentic-dataset/results/open/
+benchmarks/agentic-dataset/results/strict/
+benchmarks/agentic-dataset/logs/
