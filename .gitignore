@@ -9,3 +9,10 @@ dist/
 scripts/
 .env
 docker/.env
+__pycache__/
+*.pyc
+benchmarks/page-token-benchmark/results/
+benchmarks/snapshot-agentic-use/results/
+benchmarks/agentic-v3/results/open/
+benchmarks/agentic-v3/results/strict/
+benchmarks/agentic-v3/logs/
