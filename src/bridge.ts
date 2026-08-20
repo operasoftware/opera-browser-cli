@@ -496,6 +496,13 @@ async function handleCallRequest(
       undefined,
     );
     const text = extractToolText(getToolContent(result));
+    // MCP tool failures come back as isError results, not exceptions — surface
+    // them as errors so callers (chain acks, --expect, exit codes) see failures.
+    if ((result as { isError?: boolean }).isError) {
+      res.statusCode = 500;
+      res.end(JSON.stringify({ error: text || "Tool call failed" }));
+      return;
+    }
     if (payload.name === "take_snapshot") {
       lastSnapshot = {
         raw: text,
