@@ -494,3 +494,201 @@ export function resolveUrl(
   if (hit[2] !== undefined) return urlMap.get(hit[2]) ?? null;
   return null;
 }
+
+// --- Snapshot windowing & post-action diffs (D1/D3) ---
+
+// Chrome chrome-landmark roles that are safe to collapse to a one-line summary
+// once their subtree gets large, so the output cap is spent on main content.
+const COLLAPSIBLE_LANDMARKS = new Set(["nav", "banner", "footer", "aside"]);
+const COLLAPSE_MIN_LINES = 10;
+
+/**
+ * Collapse nav/banner/footer/aside subtrees to a single summary line each,
+ * naming how to re-expand. Runs on compacted tree text; callers should only
+ * invoke it when the tree exceeds the output cap. Each summary line reports
+ * the subtree's size and link count plus the `snapshot @ref` escape hatch.
+ */
+export function collapseLandmarks(
+  text: string,
+  minLines = COLLAPSE_MIN_LINES,
+): string {
+  const lines = text.split("\n");
+  const out: string[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const m = lines[i].match(/^(\s*)(?:@(\S+) )?(\w+)( "([^"]*)")?/);
+    const role = m?.[3];
+    if (!m || !role || !COLLAPSIBLE_LANDMARKS.has(role)) {
+      out.push(lines[i]);
+      continue;
+    }
+
+    const indent = m[1].length;
+    let end = i + 1;
+    while (end < lines.length) {
+      const ws = lines[end].match(/^\s*/)![0].length;
+      if (lines[end].trim() && ws <= indent) break;
+      end++;
+    }
+
+    const subtree = lines.slice(i + 1, end);
+    if (subtree.length < minLines) {
+      out.push(lines[i]);
+      continue;
+    }
+
+    const links = subtree.filter((l) => /^\s*@\S+ link /.test(l)).length;
+    const ref = m[2];
+    const label = m[5] ? ` "${m[5]}"` : "";
+    const refPart = ref ? `@${ref} ` : "";
+    const expand = ref ? ` — snapshot @${ref} to expand` : " — use --full to expand";
+    out.push(
+      `${m[1]}${refPart}${role}${label} [collapsed: ${subtree.length} lines, ${links} links${expand}]`,
+    );
+    i = end - 1;
+  }
+
+  return out.join("\n");
+}
+
+/**
+ * Extract one node's subtree from compacted tree text by ref, dedented to the
+ * target node's level. Accepts "@2.4", "2.4", or "2_4". Returns null when the
+ * ref isn't present.
+ */
+export function extractSubtree(text: string, ref: string): string | null {
+  const display = refToDisplay(ref.replace(/^@/, ""));
+  const escaped = display.replace(/\./g, "\\.");
+  const lines = text.split("\n");
+  const start = lines.findIndex((l) =>
+    new RegExp(`^\\s*@${escaped}\\s`).test(l),
+  );
+  if (start < 0) return null;
+
+  const baseIndent = lines[start].match(/^\s*/)![0].length;
+  const collected = [lines[start]];
+  for (let i = start + 1; i < lines.length; i++) {
+    const ws = lines[i].match(/^\s*/)![0].length;
+    if (lines[i].trim() && ws <= baseIndent) break;
+    collected.push(lines[i]);
+  }
+
+  return collected
+    .map((l) =>
+      l.startsWith(" ")
+        ? l.slice(Math.min(baseIndent, l.match(/^\s*/)![0].length))
+        : l,
+    )
+    .join("\n");
+}
+
+export interface SnapshotDiff {
+  added: string[];
+  removed: string[];
+  changed: { before: string; after: string }[];
+  /** (added + removed + changed) / new tree line count — callers fall back to a
+   *  full snapshot above a threshold, where a diff stops being cheaper. */
+  changeRatio: number;
+}
+
+const REF_LINE_RE = /^\s*@([\d.]+)\s/;
+
+/**
+ * Diff two compacted trees (multiset of lines, order-preserving). Because refs
+ * are stable across captures, a removed and an added line sharing a ref are the
+ * same node with changed content and are paired as `changed`. Moved-only lines
+ * cancel out entirely. Runs on full (uncollapsed) compact trees so changes
+ * outside the last visible window still surface.
+ */
+export function diffSnapshots(oldTree: string, newTree: string): SnapshotDiff {
+  const oldLines = oldTree.split("\n");
+  const newLines = newTree.split("\n");
+
+  const oldCounts = new Map<string, number>();
+  for (const l of oldLines) oldCounts.set(l, (oldCounts.get(l) ?? 0) + 1);
+
+  const added: string[] = [];
+  for (const l of newLines) {
+    const c = oldCounts.get(l) ?? 0;
+    if (c > 0) oldCounts.set(l, c - 1);
+    else added.push(l);
+  }
+  const removed: string[] = [];
+  const newCounts = new Map<string, number>();
+  for (const l of newLines) newCounts.set(l, (newCounts.get(l) ?? 0) + 1);
+  for (const l of oldLines) {
+    const c = newCounts.get(l) ?? 0;
+    if (c > 0) newCounts.set(l, c - 1);
+    else removed.push(l);
+  }
+
+  // Pair removed/added lines that share a ref → changed node
+  const removedByRef = new Map<string, number>(); // ref → index into removed
+  removed.forEach((l, i) => {
+    const r = l.match(REF_LINE_RE)?.[1];
+    if (r && !removedByRef.has(r)) removedByRef.set(r, i);
+  });
+  const changed: { before: string; after: string }[] = [];
+  const keptAdded: string[] = [];
+  const consumedRemoved = new Set<number>();
+  for (const l of added) {
+    const r = l.match(REF_LINE_RE)?.[1];
+    const idx = r !== undefined ? removedByRef.get(r) : undefined;
+    if (idx !== undefined && !consumedRemoved.has(idx)) {
+      consumedRemoved.add(idx);
+      changed.push({ before: removed[idx], after: l });
+    } else {
+      keptAdded.push(l);
+    }
+  }
+  const keptRemoved = removed.filter((_, i) => !consumedRemoved.has(i));
+
+  const changes = keptAdded.length + keptRemoved.length + changed.length;
+  return {
+    added: keptAdded,
+    removed: keptRemoved,
+    changed,
+    changeRatio: changes / Math.max(newLines.length, 1),
+  };
+}
+
+/** The root line of a compact tree (title + cleaned URL) — identity of the document. */
+export function rootLineOf(tree: string): string | null {
+  const m = tree.match(/^\s*(?:@\S+\s+)?root\b[^\n]*$/m);
+  return m ? m[0].trim() : null;
+}
+
+export interface SnapshotWindow {
+  text: string;
+  start: number;
+  end: number;
+  totalLength: number;
+  atEnd: boolean;
+}
+
+/**
+ * Return the window of `text` starting at char `offset`, at most `limit` chars,
+ * cut at line boundaries. Drives `snapshot --next`: sequential reading of a
+ * long snapshot without ever paying for `--full`.
+ */
+export function windowSnapshot(
+  text: string,
+  offset: number,
+  limit = 12000,
+): SnapshotWindow {
+  const totalLength = text.length;
+  let start = Math.max(0, Math.min(offset, totalLength));
+  while (start < totalLength && text[start] === "\n") start++;
+
+  let end = start + limit;
+  let atEnd = false;
+  if (end >= totalLength) {
+    end = totalLength;
+    atEnd = true;
+  } else {
+    const cut = text.lastIndexOf("\n", end);
+    if (cut > start) end = cut;
+  }
+
+  return { text: text.slice(start, end), start, end, totalLength, atEnd };
+}

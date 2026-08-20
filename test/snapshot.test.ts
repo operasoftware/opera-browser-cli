@@ -13,6 +13,12 @@ import {
   extractPageOrigin,
   applyUrlLut,
   resolveUrl,
+  collapseLandmarks,
+  extractSubtree,
+  diffSnapshots,
+  rootLineOf,
+  windowSnapshot,
+
 } from "../src/snapshot.js";
 
 describe("countRefs", () => {
@@ -789,5 +795,79 @@ describe("resolveUrl", () => {
   it("returns null when the ref does not exist in the body", () => {
     const body = `@1.0 root "Page"`;
     expect(resolveUrl(body, new Map(), "@9.9")).toBeNull();
+  });
+});
+
+describe("collapseLandmarks", () => {
+  it("collapses a large nav subtree into a summary line naming the expand ref", () => {
+    const lines = [`root "Page"`, "  @1.0 nav"];
+    for (let i = 1; i <= 12; i++) lines.push(`    @1.${i} link "Item ${i}"`);
+    const out = collapseLandmarks(lines.join("\n"));
+    expect(out.split("\n")).toContain(
+      '  @1.0 nav [collapsed: 12 lines, 12 links — snapshot @1.0 to expand]',
+    );
+  });
+
+  it("leaves small subtrees untouched", () => {
+    const tree = 'root "Page"\n  @1.0 nav\n    @1.1 link "Home"';
+    expect(collapseLandmarks(tree)).toBe(tree);
+  });
+});
+
+describe("extractSubtree", () => {
+  it("extracts and dedents a node's subtree by ref", () => {
+    const tree = 'root "Page"\n  @1.0 nav\n    @1.0.1 link "Home"\n  @2.0 main';
+    const sub = extractSubtree(tree, "1.0");
+    expect(sub).toContain('@1.0 nav');
+    expect(sub).toContain('@1.0.1 link "Home"');
+    expect(sub).not.toContain('@2.0 main');
+  });
+
+  it("returns null for a missing ref", () => {
+    expect(extractSubtree('root "Page"', "9.9")).toBeNull();
+  });
+});
+
+describe("diffSnapshots", () => {
+  it("pairs same-ref lines as changed, and reports added/removed", () => {
+    const oldT = 'root "Page"\n  @1.1 button "Submit"\n  @1.2 link "Old"';
+    const newT = 'root "Page"\n  @1.1 button "Go"\n  @1.3 link "New"';
+    const d = diffSnapshots(oldT, newT);
+    expect(d.changed).toEqual([{ before: '  @1.1 button "Submit"', after: '  @1.1 button "Go"' }]);
+    expect(d.added).toEqual(['  @1.3 link "New"']);
+    expect(d.removed).toEqual(['  @1.2 link "Old"']);
+  });
+
+  it("is empty for identical trees", () => {
+    const t = 'root "Page"\n  @1.1 button "Go"';
+    const d = diffSnapshots(t, t);
+    expect(d.added).toHaveLength(0);
+    expect(d.removed).toHaveLength(0);
+    expect(d.changed).toHaveLength(0);
+    expect(d.changeRatio).toBe(0);
+  });
+});
+
+describe("rootLineOf", () => {
+  it("returns the root/title line as document identity", () => {
+    expect(rootLineOf('root "Home"\n  @1.1 button "Go"')).toBe('root "Home"');
+  });
+  it("returns null when there is no root line", () => {
+    expect(rootLineOf('  @1.1 button "Go"')).toBeNull();
+  });
+});
+
+describe("windowSnapshot", () => {
+  it("cuts at line boundaries and reports positions", () => {
+    const lines: string[] = [];
+    for (let i = 0; i < 100; i++) lines.push(`line ${i}-${"x".repeat(60)}`);
+    const text = lines.join("\n"); // ~7000 chars
+    const w = windowSnapshot(text, 0, 3000);
+    expect(w.start).toBe(0);
+    expect(w.text.endsWith("\n")).toBe(false);
+    expect(w.text.length).toBeLessThanOrEqual(3000);
+    expect(w.end).toBeGreaterThan(0);
+    expect(w.atEnd).toBe(false);
+    expect(windowSnapshot(text, 0, 1_000_000).atEnd).toBe(true);
   });
 });
