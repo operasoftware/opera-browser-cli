@@ -80,11 +80,12 @@ def main():
     rows = []
     for path in results:
         base = os.path.basename(path)[:-5]  # <cond>-<slug>-r<n>
-        # "<cond>-<slug>-r<n>" — condition may contain no dashes in our defaults
-        parts = base.split("-")
-        # slug is the last two segments before "r<n>"? slugs are single words, cond single word
-        cond = parts[0]
-        slug = parts[1]
+        # <cond> is single-word; <slug> may contain dashes and ends in -r<n>.
+        m = re.fullmatch(r"([^-]+)-(.*)-r\d+", base)
+        if not m:
+            continue
+        cond = m.group(1)
+        slug = m.group(2)
         answer = ANSWERS.get(slug)
         data = json.load(open(path))
         got = answer_from(data)

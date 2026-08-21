@@ -69,12 +69,12 @@ Environment overrides (same as agentic-v3):
 |---|---|---|
 | `BENCH_MODEL` | `sonnet` | any model string `claude --model` accepts |
 | `BENCH_MAX_TURNS` | `40` | bounds a runaway cell |
-| `BENCH_TASKS_FILE` | `harness/tasks.tsv` | point at `../tasks-tier1.tsv` to run only T1 |
+| `BENCH_TASKS_FILE` | `tasks.tsv` | point at `../tasks-tier1.tsv` to run only T1 |
 
 **Smoke-test first.** One cell proves browser + bridge + driver:
 
 ```sh
-head -1 ./tasks-tier1.tsv > /tmp/one.tsv
+head -1 ../tasks-tier1.tsv > /tmp/one.tsv
 BENCH_TASKS_FILE=/tmp/one.tsv ./run-matrix.zsh open 1 head
 ```
 

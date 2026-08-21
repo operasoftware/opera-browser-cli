@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 TASKS = [
     line.split("\t")[0]
-    for line in (ROOT / "harness" / "tasks.tsv").read_text().splitlines()
+    for line in (ROOT / "tasks.tsv").read_text().splitlines()
     if line.strip()
 ]
 TAG = {"open": "e", "strict": "s"}

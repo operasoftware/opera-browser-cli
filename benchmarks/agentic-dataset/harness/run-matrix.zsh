@@ -31,14 +31,14 @@ TAG=$([[ $ARM == open ]] && echo e || echo s)
 
 mkdir -p $ROOT/results/$ARM $ROOT/logs
 typeset -a SLUGS TEXTS
-TASKS_FILE=${BENCH_TASKS_FILE:-$HERE/tasks.tsv}
+TASKS_FILE=${BENCH_TASKS_FILE:-$ROOT/tasks.tsv}
 while IFS=$'\t' read -r slug text; do SLUGS+=$slug; TEXTS+=$text; done < $TASKS_FILE
 # Cell identity comes from the position in the CANONICAL task list, never from
 # the (possibly filtered) file being run — otherwise re-running one task writes
 # into another task's log.
 typeset -A CANON
 ci=0
-while IFS=$'\t' read -r s _rest; do (( ci++ )); CANON[$s]=$ci; done < $HERE/tasks.tsv
+while IFS=$'\t' read -r s _rest; do (( ci++ )); CANON[$s]=$ci; done < $ROOT/tasks.tsv
 
 # The `eval` clause is the only difference between arms.
 NO_EVAL='- Do not use the CLI'"'"'s `eval` command (or any other JavaScript execution) to read page content. Treat JavaScript evaluation as unavailable: everything you learn about the page must come from the CLI'"'"'s page-inspection commands. You may still use the interaction commands (click/fill/press/...) freely.
