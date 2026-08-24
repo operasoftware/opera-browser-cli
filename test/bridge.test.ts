@@ -599,6 +599,26 @@ describe("handleBridgeRequest access control", () => {
     await handleBridgeRequest(okClient, bad, badMock.res, undefined, "secret");
     expect(badMock.res.statusCode).toBe(403);
   });
+
+  it("returns a 500 when the tool result carries isError, even without a thrown error", async () => {
+    const failingClient: BridgeClient = {
+      ...okClient,
+      callTool: async () => ({
+        isError: true,
+        content: [{ type: "text", text: "element uid not found" }],
+      }),
+    };
+    const req = makeMockRequest(
+      "POST",
+      "/call",
+      JSON.stringify({ name: "click", args: { uid: "1_0" } }),
+      { host: "127.0.0.1:9225", authorization: "Bearer secret" },
+    );
+    const mock = makeMockResponse();
+    await handleBridgeRequest(failingClient, req, mock.res, undefined, "secret");
+    expect(mock.res.statusCode).toBe(500);
+    expect(JSON.parse(mock.endPayload)).toEqual({ error: "element uid not found" });
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -637,6 +657,26 @@ describe("handleBridgeRequest streaming", () => {
 
     expect(mock.res.statusCode).toBe(500);
     expect(JSON.parse(mock.endPayload)).toEqual({ error: "browser crashed" });
+  });
+
+  it("returns a 500 when a streaming tool result carries isError", async () => {
+    const client: BridgeClient = {
+      listTools: async () => ({ tools: [] }),
+      callTool: async () => ({
+        isError: true,
+        content: [{ type: "text", text: "AI access is blocked on this site" }],
+      }),
+      close: async () => {},
+    };
+
+    const captureNextId = () => Promise.resolve("req-isError");
+    const req = makeMockRequest("POST", "/call", JSON.stringify({ name: "opera_do", args: { prompt: "fail" } }));
+    const mock = makeMockResponse();
+
+    await handleBridgeRequest(client, req, mock.res, captureNextId);
+
+    expect(mock.res.statusCode).toBe(500);
+    expect(JSON.parse(mock.endPayload)).toEqual({ error: "AI access is blocked on this site" });
   });
 
   it("routes concurrent streaming calls to their respective responses", async () => {

@@ -228,6 +228,16 @@ function getToolContent(result: unknown): BridgeContentBlock[] {
   return result.content as BridgeContentBlock[];
 }
 
+/** MCP CallToolResult.isError — set when the tool itself failed. */
+function isErrorResult(result: unknown): boolean {
+  return (
+    !!result &&
+    typeof result === "object" &&
+    "isError" in result &&
+    result.isError === true
+  );
+}
+
 export function parseBridgeCallPayload(body: string): BridgeCallPayload {
   let payload: { name?: unknown; args?: unknown };
   try {
@@ -477,8 +487,13 @@ async function handleCallRequest(
     try {
       const result = await callPromise;
       const text = extractToolText(getToolContent(result));
-      res.statusCode = 200;
-      res.end(JSON.stringify({ result: text }));
+      if (isErrorResult(result)) {
+        res.statusCode = 500;
+        res.end(JSON.stringify({ error: text || "Tool call failed" }));
+      } else {
+        res.statusCode = 200;
+        res.end(JSON.stringify({ result: text }));
+      }
     } catch (error) {
       res.statusCode = 500;
       res.end(JSON.stringify({ error: getErrorMessage(error) }));
@@ -496,6 +511,11 @@ async function handleCallRequest(
       undefined,
     );
     const text = extractToolText(getToolContent(result));
+    if (isErrorResult(result)) {
+      res.statusCode = 500;
+      res.end(JSON.stringify({ error: text || "Tool call failed" }));
+      return;
+    }
     if (payload.name === "take_snapshot") {
       lastSnapshot = {
         raw: text,
