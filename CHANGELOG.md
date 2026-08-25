@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.49](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.48...opera-browser-cli-v0.1.49) (2026-08-24)
+
+
+### Bug Fixes
+
+* map isError tool results to HTTP 500 in bridge ([4bff7a1](https://github.com/operasoftware/opera-browser-cli/commit/4bff7a17d4b05f37c4e19bf46325611108228e6d))
+* map isError tool results to HTTP 500 in bridge ([ef07da1](https://github.com/operasoftware/opera-browser-cli/commit/ef07da1eb36651891a7e92089cb8faa650a5b695))
+
 ## [0.1.48](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.47...opera-browser-cli-v0.1.48) (2026-08-19)
 
 
