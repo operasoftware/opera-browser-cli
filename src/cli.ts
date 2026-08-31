@@ -3502,21 +3502,30 @@ async function handleMcpAdd(args: string[]): Promise<string> {
     );
   }
 
-  let authResult: string;
+  let authResult: string = "";
   if (wasHeadless) {
     process.stderr.write("sign-in needed — opening browser\n");
+    const priorHeaded = process.env.OPERA_CLI_HEADED;
     process.env.OPERA_CLI_HEADED = "1";
+    let authError: unknown;
     try {
       await restartBridge();
       process.stderr.write("waiting for sign-in in the browser\n");
       authResult = await callTool("opera_authenticate_mcp_server", {
         server: name,
       });
+    } catch (e) {
+      authError = e;
     } finally {
-      delete process.env.OPERA_CLI_HEADED;
+      if (priorHeaded === undefined) {
+        delete process.env.OPERA_CLI_HEADED;
+      } else {
+        process.env.OPERA_CLI_HEADED = priorHeaded;
+      }
       process.stderr.write("restoring headless mode\n");
       await restartBridge();
     }
+    if (authError) throw authError;
   } else {
     process.stderr.write("waiting for sign-in in the browser\n");
     authResult = await callTool("opera_authenticate_mcp_server", {
