@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.50](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.49...opera-browser-cli-v0.1.50) (2026-08-31)
+
+
+### Features
+
+* add MCP server lifecycle commands (mcp-add, mcp-auth, mcp-remove, mcp-enable, mcp-disable) ([ea2ae8f](https://github.com/operasoftware/opera-browser-cli/commit/ea2ae8f5f3be058467658ed77bf62cb6566970ff))
+* add MCP server lifecycle commands (mcp-add, mcp-auth, mcp-remove, mcp-enable, mcp-disable) ([ac7719a](https://github.com/operasoftware/opera-browser-cli/commit/ac7719a698a50b79aff602d339999b173b426ef5))
+
+
+### Bug Fixes
+
+* require opera-devtools-mcp 0.5.0 for MCP server lifecycle commands ([84ef059](https://github.com/operasoftware/opera-browser-cli/commit/84ef0596310ef3e1dd72e6b4cc52a677826fa693))
+* require opera-devtools-mcp 0.5.0 for MCP server lifecycle commands ([1f564e5](https://github.com/operasoftware/opera-browser-cli/commit/1f564e55bc1202efe6e6439a62d364ccce45cf2c))
+
 ## [0.1.49](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.48...opera-browser-cli-v0.1.49) (2026-08-24)
 
 

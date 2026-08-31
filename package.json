@@ -1,6 +1,6 @@
 {
   "name": "opera-browser-cli",
-  "version": "0.1.49",
+  "version": "0.1.50",
   "description": "AXI-compliant opera-devtools-mcp wrapper — combined operations, TOON output, contextual suggestions",
   "type": "module",
   "repository": {
