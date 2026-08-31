@@ -15,6 +15,10 @@ metadata: {"openclaw": {"requires": {"bins": ["opera-browser-cli"]}}}
 - **`mcp-servers`** — list MCP servers registered in the browser (requires Opera Neon).
 - **`mcp-tools --server <name>`** — list tools exposed by a specific MCP server (requires Opera Neon).
 - **`mcp-call --server <name> --tool <name> [--params '{...}']`** — execute a tool on an MCP server (requires Opera Neon).
+- **`mcp-add <name> <url>`** — register, connect, and authenticate (if needed) an MCP server. Transparently switches to headed mode for OAuth popups, then restores (requires Opera Neon).
+- **`mcp-auth <name>`** — re-authenticate an MCP server that requires OAuth. Needs a headed browser (requires Opera Neon).
+- **`mcp-remove <name>`** — unregister an MCP server and its stored auth tokens (requires Opera Neon).
+- **`mcp-enable <name>` / `mcp-disable <name>`** — toggle an MCP server without unregistering (requires Opera Neon).
 
 Run `opera-browser-cli --help` for the full command list, or `opera-browser-cli <command> --help` for per-command flags and examples.
 
@@ -66,7 +70,7 @@ Branch on the exit code rather than parsing messages:
 
 ## Recovery is automatic
 
-The bridge restarts itself on version skew, a crash, or a dropped connection, and falls back to another port if one is taken. Do not run `stop`/`restart` speculatively — just re-run the command. The exception is the Opera AI tools (`invoke-do`, `make`, `research`, `chat`): if one reports the connection dropped mid-call, it was **not** retried, because it may already have acted. Ask before re-running it.
+The bridge restarts itself on version skew, a crash, or a dropped connection, and falls back to another port if one is taken. Do not run `stop`/`restart` speculatively — just re-run the command. The exception is the Opera AI tools (`invoke-do`, `make`, `research`, `chat`, `mcp-add`, `mcp-auth`): if one reports the connection dropped mid-call, it was **not** retried, because it may already have acted. Ask before re-running it.
 
 ## When the browser can't be automated
 

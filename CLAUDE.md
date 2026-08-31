@@ -34,7 +34,7 @@ that M1 removed — see `specs/robustness-hardening.md`.
 3. **Bind the port before connecting to MCP.** `runBridge` listens first so that losing a
    start race costs nothing; connecting first would launch a browser only to discard it.
 4. **Never silently replay an Opera AI tool.** `callTool` recovers dropped connections by
-   restarting and retrying, except for `opera_do`/`opera_make`/`opera_research`/`opera_chat`,
+   restarting and retrying, except for `opera_do`/`opera_make`/`opera_research`/`opera_chat`/`opera_authenticate_mcp_server`,
    which may already have acted and are billable to re-run.
 
 ### Browser target invariants
@@ -110,10 +110,11 @@ Terminal B ──HTTP──▶  (same bridge)
 
 ### Streaming (Opera AI tools)
 
-`opera_do`, `opera_chat`, `opera_make`, `opera_research`, `opera_call_mcp_tool`
+`opera_do`, `opera_chat`, `opera_make`, `opera_research`, `opera_call_mcp_tool`,
+`opera_authenticate_mcp_server`
 are streamed: the bridge keeps the HTTP response open and flushes `{"log": "..."}`
 lines as MCP `notifications/message` arrive, then ends the response with
-`{"result": "..."}`. `opera_call_mcp_tool` streams when the underlying MCP tool
+`{"result": "..."}`. `opera_call_mcp_tool` and `opera_authenticate_mcp_server` stream when the underlying MCP tool
 emits progress events.
 
 The client (`client.ts → httpPost`) reads those lines and calls `onLog(msg)` which
