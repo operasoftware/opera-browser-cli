@@ -98,7 +98,7 @@ export type MainOptions = {
 };
 
 export const TOP_HELP = `usage: opera-browser-cli [command] [args] [flags]
-commands[49]:
+commands[55]:
   open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
   type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
   run,
@@ -111,6 +111,8 @@ commands[49]:
   chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
   research <prompt>, models,
   mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  mcp-add <name> <url>, mcp-auth <name>, mcp-remove <name>,
+  mcp-enable <name>, mcp-disable <name>,
   setup, logs, doctor
 
 exit codes:
@@ -142,7 +144,8 @@ environment:
 opera ai:
   chat is available on any Opera browser. Use --model to select a model.
   Run "models" to list available models.
-  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  invoke-do, make, research, mcp-servers, mcp-tools, mcp-call, mcp-add, mcp-auth,
+  mcp-remove, mcp-enable, and mcp-disable require Opera Neon with an active sign-in.
   Run \`opera-browser-cli setup\` to configure the executable path, or set
   OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
 
@@ -755,6 +758,57 @@ flags:
 
 examples:
   opera-browser-cli mcp-call --server my-server --tool echo --params '{"text":"hello"}'`,
+  "mcp-add": `usage: opera-browser-cli mcp-add <name> <url>
+Register and connect an MCP server in the browser.
+If the server requires OAuth sign-in, the CLI switches to headed mode,
+opens the OAuth popup, then restores the original mode.
+Requires Opera Neon with a persistent browser profile.
+
+args:
+  <name>  Server name to register
+  <url>   HTTP URL of the MCP server
+
+examples:
+  opera-browser-cli mcp-add fetch https://mcp.fetch.example
+  opera-browser-cli mcp-add notion https://mcp.notion.com/mcp`,
+
+  "mcp-auth": `usage: opera-browser-cli mcp-auth <name>
+Complete OAuth sign-in for an MCP server that requires authentication.
+Opens a browser popup for the OAuth flow.
+Requires a headed (visible) browser.
+
+args:
+  <name>  MCP server name
+
+examples:
+  opera-browser-cli mcp-auth notion`,
+
+  "mcp-remove": `usage: opera-browser-cli mcp-remove <name>
+Remove a registered MCP server and its stored auth tokens.
+
+args:
+  <name>  MCP server name
+
+examples:
+  opera-browser-cli mcp-remove notion`,
+
+  "mcp-enable": `usage: opera-browser-cli mcp-enable <name>
+Enable a disabled MCP server.
+
+args:
+  <name>  MCP server name
+
+examples:
+  opera-browser-cli mcp-enable notion`,
+
+  "mcp-disable": `usage: opera-browser-cli mcp-disable <name>
+Disable an MCP server without unregistering it.
+
+args:
+  <name>  MCP server name
+
+examples:
+  opera-browser-cli mcp-disable notion`,
 
   doctor: `usage: opera-browser-cli doctor [--fix]
 Diagnose opera-browser-cli configuration: bridge status, config file, Opera Neon
@@ -3351,6 +3405,241 @@ async function handleMcpCall(args: string[]): Promise<string> {
   }
   return formatMcpToolResult(result);
 }
+// --- MCP lifecycle handlers ---
+
+interface HubResponse {
+  status?: ServerStatus;
+}
+interface ServerStatus {
+  name: string;
+  connection: { type: string };
+  requiresAuth: "not-needed" | "needed" | "unknown";
+}
+
+/**
+ * Parse a hub response (envelope `{ type, status }`) and return the inner
+ * ServerStatus. Throws CdpError on empty/CDP-error/invalid JSON.
+ */
+function parseHubStatus(result: string, label: string): ServerStatus {
+  const resp = parseMcpResultOrThrow<HubResponse>(result, label);
+  if (!resp.status) {
+    throw new CdpError(
+      `${label} returned no server status`,
+      "UNKNOWN",
+      ['Run `opera-browser-cli doctor` to check the connection'],
+    );
+  }
+  return resp.status;
+}
+
+/**
+ * Register + connect + (if needed) authenticate an MCP server.
+ *
+ * Orchestration per the architecture doc: the CLI calls primitives (register,
+ * connect, authenticate) as separate CDP calls. The hub never auto-auths.
+ * When auth is needed and the bridge is headless, the CLI transparently
+ * switches to headed mode for the OAuth popup, then restores.
+ */
+async function handleMcpAdd(args: string[]): Promise<string> {
+  const [name, url] = args.filter((a) => !a.startsWith("-"));
+  if (!name || !url) {
+    throw new CdpError("Missing <name> or <url>", "VALIDATION_ERROR", [
+      "Usage: opera-browser-cli mcp-add <name> <url>",
+      "Example: opera-browser-cli mcp-add fetch https://mcp.fetch.example",
+    ]);
+  }
+
+  // Profile prerequisite (addendum v3 §F): MCP auth tokens live in the
+  // hub extension's chrome.storage, which is per-profile. An isolated
+  // (temp) profile thrown away on exit is incompatible.
+  if (!process.env.OPERA_CLI_USER_DATA_DIR && !process.env.OPERA_CLI_BROWSER_URL) {
+    throw new CdpError(
+      "MCP servers require a persistent browser profile",
+      "BRIDGE_NOT_READY",
+      [
+        "Run `opera-browser-cli setup` to configure a persistent profile",
+        "Or set OPERA_CLI_USER_DATA_DIR to a profile directory",
+      ],
+    );
+  }
+
+  process.stderr.write("registering server\n");
+  const regResult = await callTool("opera_register_mcp_server", {
+    server: name,
+    url,
+  });
+  parseHubStatus(regResult, "MCP register");
+
+  process.stderr.write("connecting\n");
+  const conResult = await callTool("opera_connect_mcp_server", {
+    server: name,
+  });
+  const status = parseHubStatus(conResult, "MCP connect");
+
+  if (status.requiresAuth !== "needed") {
+    const conn = status.connection?.type ?? "unknown";
+    return renderOutput([
+      encode({ mcp: { name, status: conn, auth: status.requiresAuth } }),
+      renderHelp([
+        "Run `opera-browser-cli mcp-tools --server " + name + "` to list tools",
+      ]),
+    ]);
+  }
+
+  // Auth is needed. The hub can't connect without it.
+  const wasHeadless = !shouldRunHeaded();
+  const externalBrowser = Boolean(process.env.OPERA_CLI_BROWSER_URL);
+
+  if (wasHeadless && externalBrowser) {
+    throw new CdpError(
+      "This server needs OAuth sign-in in a visible browser, " +
+        "but the bridge is connected to an external headless browser",
+      "BROWSER_ERROR",
+      [
+        "Point OPERA_CLI_BROWSER_URL at a headed browser instance",
+        "Or run `opera-browser-cli setup` to let the CLI manage the browser",
+      ],
+    );
+  }
+
+  let authResult: string;
+  if (wasHeadless) {
+    process.stderr.write("sign-in needed — opening browser\n");
+    process.env.OPERA_CLI_HEADED = "1";
+    try {
+      await restartBridge();
+      process.stderr.write("waiting for sign-in in the browser\n");
+      authResult = await callTool("opera_authenticate_mcp_server", {
+        server: name,
+      });
+    } finally {
+      delete process.env.OPERA_CLI_HEADED;
+      process.stderr.write("restoring headless mode\n");
+      await restartBridge();
+    }
+  } else {
+    process.stderr.write("waiting for sign-in in the browser\n");
+    authResult = await callTool("opera_authenticate_mcp_server", {
+      server: name,
+    });
+  }
+
+  const authStatus = parseHubStatus(authResult, "MCP authenticate");
+  const conn = authStatus.connection?.type ?? "unknown";
+  return renderOutput([
+    encode({ mcp: { name, status: conn, auth: authStatus.requiresAuth } }),
+    renderHelp([
+      "Run `opera-browser-cli mcp-tools --server " + name + "` to list tools",
+    ]),
+  ]);
+}
+
+async function handleMcpAuth(args: string[]): Promise<string> {
+  const [name] = args.filter((a) => !a.startsWith("-"));
+  if (!name) {
+    throw new CdpError("Missing <name>", "VALIDATION_ERROR", [
+      "Usage: opera-browser-cli mcp-auth <name>",
+    ]);
+  }
+
+  // Profile prerequisite: same as handleMcpAdd — MCP auth tokens live
+  // in the hub extension's chrome.storage, which is per-profile.
+  if (!process.env.OPERA_CLI_USER_DATA_DIR && !process.env.OPERA_CLI_BROWSER_URL) {
+    throw new CdpError(
+      "MCP servers require a persistent browser profile",
+      "BRIDGE_NOT_READY",
+      [
+        "Run `opera-browser-cli setup` to configure a persistent profile",
+        "Or set OPERA_CLI_USER_DATA_DIR to a profile directory",
+      ],
+    );
+  }
+
+  if (!shouldRunHeaded()) {
+    throw new CdpError(
+      "OAuth sign-in needs a visible browser window, and this session is headless",
+      "VALIDATION_ERROR",
+      [
+        "Run `OPERA_CLI_HEADED=1 opera-browser-cli mcp-auth " + name + "`",
+        "Or run `opera-browser-cli setup --headed` to make it the default",
+      ],
+    );
+  }
+
+  // Check if the server actually needs auth before proceeding.
+  process.stderr.write("checking server status\n");
+  const conResult = await callTool("opera_connect_mcp_server", {
+    server: name,
+  });
+  const status = parseHubStatus(conResult, "MCP connect");
+
+  if (status.requiresAuth !== "needed") {
+    const conn = status.connection?.type ?? "unknown";
+    return renderOutput([
+      encode({ mcp: { name, status: conn, auth: status.requiresAuth } }),
+    ]);
+  }
+
+  process.stderr.write("waiting for sign-in in the browser\n");
+  const result = await callTool("opera_authenticate_mcp_server", {
+    server: name,
+  });
+  const authStatus = parseHubStatus(result, "MCP authenticate");
+  const conn = authStatus.connection?.type ?? "unknown";
+  return renderOutput([
+    encode({ mcp: { name, status: conn, auth: authStatus.requiresAuth } }),
+  ]);
+}
+
+async function handleMcpRemove(args: string[]): Promise<string> {
+  const [name] = args.filter((a) => !a.startsWith("-"));
+  if (!name) {
+    throw new CdpError("Missing <name>", "VALIDATION_ERROR", [
+      "Usage: opera-browser-cli mcp-remove <name>",
+    ]);
+  }
+  const result = await callTool("opera_unregister_mcp_server", {
+    server: name,
+  });
+  parseMcpResultOrThrow(result, "MCP unregister");
+  return renderOutput([
+    encode({ mcp: { name, status: "removed", removed: true } }),
+  ]);
+}
+
+async function handleMcpEnable(args: string[]): Promise<string> {
+  const [name] = args.filter((a) => !a.startsWith("-"));
+  if (!name) {
+    throw new CdpError("Missing <name>", "VALIDATION_ERROR", [
+      "Usage: opera-browser-cli mcp-enable <name>",
+    ]);
+  }
+  const result = await callTool("opera_enable_mcp_server", {
+    server: name,
+  });
+  const status = parseHubStatus(result, "MCP enable");
+  const conn = status.connection?.type ?? "unknown";
+  return renderOutput([
+    encode({ mcp: { name, status: conn } }),
+  ]);
+}
+
+async function handleMcpDisable(args: string[]): Promise<string> {
+  const [name] = args.filter((a) => !a.startsWith("-"));
+  if (!name) {
+    throw new CdpError("Missing <name>", "VALIDATION_ERROR", [
+      "Usage: opera-browser-cli mcp-disable <name>",
+    ]);
+  }
+  const result = await callTool("opera_disable_mcp_server", {
+    server: name,
+  });
+  const status = parseHubStatus(result, "MCP disable");
+  const conn = status.connection?.type ?? "unknown";
+  return renderOutput([
+    encode({ mcp: { name, status: conn } }),
+  ]);
+}
 
 async function handleRun(): Promise<string> {
   if (process.stdin.isTTY) {
@@ -3507,6 +3796,11 @@ const COMMANDS: Record<string, CommandFn> = {
   "mcp-servers": withoutFullFlag(handleMcpServers),
   "mcp-tools": withoutFullFlag(handleMcpTools),
   "mcp-call": withoutFullFlag(handleMcpCall),
+  "mcp-add": withoutFullFlag(handleMcpAdd),
+  "mcp-auth": withoutFullFlag(handleMcpAuth),
+  "mcp-remove": withoutFullFlag(handleMcpRemove),
+  "mcp-enable": withoutFullFlag(handleMcpEnable),
+  "mcp-disable": withoutFullFlag(handleMcpDisable),
   setup: withoutFullFlag(handleSetup),
   logs: withoutFullFlag(handleLogs),
   doctor: withoutFullFlag(handleDoctor),

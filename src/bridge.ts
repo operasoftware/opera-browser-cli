@@ -51,6 +51,7 @@ const OPERA_AI_TOOLS = new Set([
   "opera_research",
   "opera_make",
   "opera_call_mcp_tool",
+  "opera_authenticate_mcp_server",
 ]);
 
 export interface LastSnapshotCache {
