@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.51](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.50...opera-browser-cli-v0.1.51) (2026-09-01)
+
+
+### Features
+
+* add --conversation-id to chat and CONVERSATION_NOT_FOUND error code ([#34](https://github.com/operasoftware/opera-browser-cli/issues/34)) ([62e51e2](https://github.com/operasoftware/opera-browser-cli/commit/62e51e206bdef0db8d8492e2e3d323eef739e6eb))
+
+
+### Bug Fixes
+
+* **bridge:** match headed mode on bridge discover ([#35](https://github.com/operasoftware/opera-browser-cli/issues/35)) ([15c7907](https://github.com/operasoftware/opera-browser-cli/commit/15c790766192b7b94023e8a7492b3e4ef54cc03b))
+
 ## [0.1.50](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.49...opera-browser-cli-v0.1.50) (2026-08-31)
 
 
