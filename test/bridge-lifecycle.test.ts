@@ -15,6 +15,7 @@ import { join } from "node:path";
 import { spawn, type ChildProcess } from "node:child_process";
 import { BRIDGE_SERVER_NAME, computeBootMinute } from "../src/identity.js";
 import { getPackageVersion } from "../src/version.js";
+import { shouldRunHeaded } from "../src/bridge.js";
 
 type ClientModule = typeof import("../src/client.js");
 
@@ -47,6 +48,7 @@ function bridgeHealth(overrides: Record<string, unknown> = {}): Record<string, u
     startedAt: Date.now(),
     bootMinute: computeBootMinute(),
     browser: { connected: true },
+    headed: shouldRunHeaded(),
     ...overrides,
   };
 }

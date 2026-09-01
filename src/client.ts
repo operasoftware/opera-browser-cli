@@ -33,6 +33,7 @@ import { request } from "node:http";
 import { AxiError } from "axi-sdk-js";
 import {
   resolveBridgeLauncher,
+  shouldRunHeaded,
   type LastSnapshotCache,
 } from "./bridge.js";
 import {
@@ -379,19 +380,20 @@ async function probeAll(ports: number[]): Promise<PortProbe[]> {
  */
 export async function findUsableBridge(ports: number[]): Promise<number | null> {
   const version = getPackageVersion();
+  const wantHeaded = shouldRunHeaded();
 
   // Fast path: the port in the PID file is nearly always the answer, and
   // checking it alone keeps the common case to a single round trip.
   const preferred = readPidFile()?.port;
   if (preferred !== undefined && ports.includes(preferred)) {
     const health = await probeHealth(preferred);
-    if (isUsableBridge(health, version)) return preferred;
+    if (isUsableBridge(health, version) && health.headed === wantHeaded) return preferred;
     if (isOurBridge(health)) await shutdownBridgeOnPort(preferred, health);
   }
 
   const probes = await probeAll(ports.filter((p) => p !== preferred));
   for (const { port, health } of probes) {
-    if (isUsableBridge(health, version)) return port;
+    if (isUsableBridge(health, version) && health.headed === wantHeaded) return port;
   }
   for (const { port, health } of probes) {
     if (isOurBridge(health)) await shutdownBridgeOnPort(port, health);
