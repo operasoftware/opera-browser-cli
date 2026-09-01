@@ -8,27 +8,27 @@ Joins the two independent instruments: the `claude -p` result envelopes under
 results/<arm>/ (cost, tokens, turns, the agent's answer) and the shim TSVs under
 logs/ (every CLI invocation and the bytes it emitted).
 """
+
 import json
+import os
 import re
 import statistics as st
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-TASKS = [
-    line.split("\t")[0]
-    for line in (ROOT / "harness" / "tasks.tsv").read_text().splitlines()
-    if line.strip()
-]
+RUN_ID = os.environ.get("BENCH_RUN_ID", "").strip()
+RESULT_ROOT = ROOT / "results" / RUN_ID if RUN_ID else ROOT / "results"
+LOG_ROOT = ROOT / "logs" / RUN_ID if RUN_ID else ROOT / "logs"
+TASKS = [line.split("\t")[0] for line in (ROOT / "harness" / "tasks.tsv").read_text().splitlines() if line.strip()]
 TAG = {"open": "e", "strict": "s"}
 # Commands worth tallying — the point is which affordances each build's agents reached for.
-FEATURES = ["eval", "find", "chain", "snapshot --next", "snapshot --full",
-            "snapshot @", "scroll", "screenshot", "open"]
+FEATURES = ["eval", "find", "chain", "snapshot --next", "snapshot --full", "snapshot @", "scroll", "screenshot", "open"]
 
 
 def cli_stats(arm, cond, task_idx, rep):
     """calls, bytes and argv list for one cell, from the shim log."""
-    p = ROOT / "logs" / f"{cond}-t{task_idx}{TAG[arm]}{rep}.tsv"
+    p = LOG_ROOT / f"{cond}-t{task_idx}{TAG[arm]}{rep}.tsv"
     if not p.exists():
         return 0, 0, []
     calls = nbytes = 0
@@ -46,7 +46,7 @@ def cli_stats(arm, cond, task_idx, rep):
 def load(arm):
     """One record per completed cell."""
     rows = []
-    for p in sorted((ROOT / "results" / arm).glob("*.json")):
+    for p in sorted((RESULT_ROOT / arm).glob("*.json")):
         m = re.fullmatch(r"(?P<cond>[^-]+)-(?P<task>.+)-r(?P<rep>\d+)\.json", p.name)
         if not m or m["task"] not in TASKS:
             continue
@@ -58,16 +58,28 @@ def load(arm):
         idx = TASKS.index(m["task"]) + 1
         calls, nbytes, cmds = cli_stats(arm, m["cond"], idx, int(m["rep"]))
         u = d.get("usage", {}) or {}
-        answer = next((l for l in (d.get("result") or "").splitlines()
-                       if l.startswith("ANSWER:")), "")
-        rows.append(dict(
-            cond=m["cond"], task=m["task"], rep=int(m["rep"]),
-            cost=d.get("total_cost_usd", 0.0), turns=d.get("num_turns", 0),
-            error=bool(d.get("is_error")),
-            appended=u.get("input_tokens", 0) + u.get("cache_creation_input_tokens", 0),
-            cache_read=u.get("cache_read_input_tokens", 0),
-            calls=calls, bytes=nbytes, cmds=cmds, answer=answer,
-        ))
+        answer = next(
+            (line for line in (d.get("result") or "").splitlines() if line.startswith("ANSWER:")),
+            "",
+        )
+        rows.append(
+            dict(
+                cond=m["cond"],
+                task=m["task"],
+                rep=int(m["rep"]),
+                cost=d.get("total_cost_usd", 0.0),
+                turns=d.get("num_turns", 0),
+                error=bool(d.get("is_error")),
+                fresh_input=u.get("input_tokens", 0),
+                cache_write=u.get("cache_creation_input_tokens", 0),
+                cache_read=u.get("cache_read_input_tokens", 0),
+                output=u.get("output_tokens", 0),
+                calls=calls,
+                bytes=nbytes,
+                cmds=cmds,
+                answer=answer,
+            )
+        )
     return rows
 
 
@@ -88,21 +100,34 @@ def report(arm):
         return {}
     conds = sorted({r["cond"] for r in rows})
     done = len(rows)
-    print(f"\n{'=' * 74}\n### arm: {arm}   ({done} cells; "
-          f"{sum(r['error'] for r in rows)} errored)\n{'=' * 74}")
+    print(f"\n{'=' * 74}\n### arm: {arm}   ({done} cells; " f"{sum(r['error'] for r in rows)} errored)\n{'=' * 74}")
 
-    print(f"\n{'metric':16} {'cond':5} " + "".join(f"{'pass ' + str(i + 1):>11}" for i in range(3))
-          + f"{'mean':>12}{'sd':>10}")
-    for key, fmt in (("cost", "{:>11.3f}"), ("bytes", "{:>11.0f}"),
-                     ("calls", "{:>11.0f}"), ("turns", "{:>11.0f}"),
-                     ("appended", "{:>11.0f}")):
+    print(
+        f"\n{'metric':16} {'cond':5} "
+        + "".join(f"{'pass ' + str(i + 1):>11}" for i in range(3))
+        + f"{'mean':>12}{'sd':>10}"
+    )
+    for key, fmt in (
+        ("cost", "{:>11.3f}"),
+        ("bytes", "{:>11.0f}"),
+        ("calls", "{:>11.0f}"),
+        ("turns", "{:>11.0f}"),
+        ("fresh_input", "{:>11.0f}"),
+        ("cache_write", "{:>11.0f}"),
+        ("cache_read", "{:>11.0f}"),
+        ("output", "{:>11.0f}"),
+    ):
         for c in conds:
             v = per_pass(rows, c, key)
             if not v:
                 continue
             sd = st.stdev(v) if len(v) > 1 else 0.0
-            print(f"{key:16} {c:5} " + "".join(fmt.format(x) for x in v)
-                  + " " * (11 * (3 - len(v))) + f"{st.mean(v):12.3f}{sd:10.3f}")
+            print(
+                f"{key:16} {c:5} "
+                + "".join(fmt.format(x) for x in v)
+                + " " * (11 * (3 - len(v)))
+                + f"{st.mean(v):12.3f}{sd:10.3f}"
+            )
         print()
 
     print(f"{'task':16} " + "".join(f"{c:>10}" for c in conds) + "   best")
@@ -115,8 +140,7 @@ def report(arm):
         if not means:
             continue
         best = min(means, key=means.get)
-        print(f"{t:16} " + "".join(f"{means.get(c, float('nan')):10.4f}" for c in conds)
-              + f"   {best}")
+        print(f"{t:16} " + "".join(f"{means.get(c, float('nan')):10.4f}" for c in conds) + f"   {best}")
 
     print("\nfeature usage (all cells per condition)")
     for c in conds:

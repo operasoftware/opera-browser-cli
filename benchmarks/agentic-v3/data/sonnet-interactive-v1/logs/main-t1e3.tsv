@@ -1,0 +1,3 @@
+1788271008.9563760757	0.14	0	3156	0	--help
+1788271013.9600839615	1.47	0	12616	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788271022.0316410065	0.35	0	106	0	eval (() => { const els = Array.from(document.querySelectorAll('h1,h2,h3,h4,h5,h6')); const m = els.find(e => e.textContent.includes('404')); return m ? m.textContent.trim() : 'not found'; })()

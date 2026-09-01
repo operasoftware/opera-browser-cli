@@ -8,10 +8,11 @@
 #   arm        strict = agent may not use `eval` (isolates the snapshot pipeline)
 #              open   = every command available (measures real-world use)
 #   repeats    passes over the whole suite
-#   conditions default "v1 v2 v4"
+#   conditions default "main head"
 #
 # Env: BENCH_MODEL (default sonnet), BENCH_MAX_TURNS (40),
 #      BENCH_TASKS_FILE (default harness/tasks.tsv — point at a subset to smoke-test)
+#      BENCH_RUN_ID (recommended; isolates results/logs/wrappers under that id)
 #      BENCH_WARM=0 to skip the per-cell prompt-cache warmup (default on)
 #
 # Writes  results/<arm>/<cond>-<task>-r<n>.json   (claude -p envelope: cost, usage, answer)
@@ -22,14 +23,19 @@ ROOT=${HERE:h}                      # benchmarks/agentic-v3
 ARM=${1:?arm: strict|open}
 REPS=${2:?repeats}
 shift 2
-CONDS=(${@:-v1 v2 v4})
+CONDS=(${@:-main head})
 MODEL=${BENCH_MODEL:-sonnet}
 MAXTURNS=${BENCH_MAX_TURNS:-40}
+RUN_ID=${BENCH_RUN_ID:-}
+RESULT_ROOT=$ROOT/results${RUN_ID:+/$RUN_ID}
+LOG_ROOT=$ROOT/logs${RUN_ID:+/$RUN_ID}
+export BENCH_LOG_DIR=$LOG_ROOT
+export BENCH_WRAPPER_DIR=${BENCH_WRAPPER_DIR:-${TMPDIR:-/tmp}/obc-bench-bin${RUN_ID:+-$RUN_ID}}
 # Tag distinguishes arms in log filenames. Historical manual-run logs used
 # "r", so strict uses "s" — two runs must never append to one log file.
 TAG=$([[ $ARM == open ]] && echo e || echo s)
 
-mkdir -p $ROOT/results/$ARM $ROOT/logs
+mkdir -p $RESULT_ROOT/$ARM $LOG_ROOT
 typeset -a SLUGS TEXTS
 TASKS_FILE=${BENCH_TASKS_FILE:-$HERE/tasks.tsv}
 while IFS=$'\t' read -r slug text; do SLUGS+=$slug; TEXTS+=$text; done < $TASKS_FILE
@@ -60,7 +66,7 @@ for r in $(seq 1 $REPS); do
       [[ -n $cidx ]] || { print -u2 "unknown task '$slug' — add it to harness/tasks.tsv"; exit 1 }
       cell="t${cidx}${TAG}${r}"
       wrapper=$($HERE/gen.zsh $cond $cell)
-      out=$ROOT/results/$ARM/$cond-$slug-r$r.json
+      out=$RESULT_ROOT/$ARM/$cond-$slug-r$r.json
       [[ -f $out ]] && { print -u2 "  $slug — done, skipping"; continue }
 
       prompt="You are testing a browser-automation CLI. Drive the browser using ONLY this exact command:
@@ -71,7 +77,7 @@ Hard rules:
 - Never use the bare \`opera-browser-cli\` command or any other path — only the path above.
 - Never use WebFetch, WebSearch, curl, or any other way of reading the page. The browser CLI is the only permitted source of page content.
 ${NO_EVAL}- Do not edit files, do not run git.
-- Start by running \`<the path above> help\` to see what commands exist, then use them.
+- Start by running \`<the path above> --help\` to see what commands exist, then use them.
 - Work efficiently: minimise both the number of CLI calls and the amount of output you pull into context. If output is truncated, use whatever the CLI offers for reading more rather than always asking for everything.
 
 TASK: $text
@@ -88,7 +94,7 @@ CALLS: <how many CLI invocations you made>"
             --allowedTools Bash --permission-mode acceptEdits --max-turns 1 \
             --output-format json ) 2>/dev/null \
           | python3 -c "import json,sys;print(json.load(sys.stdin).get('total_cost_usd',0))" \
-          >> $ROOT/results/$ARM/_warmup_costs.txt 2>/dev/null
+          >> $RESULT_ROOT/$ARM/_warmup_costs.txt 2>/dev/null
       fi
 
       print -u2 -n "  $slug … "
@@ -103,4 +109,4 @@ CALLS: <how many CLI invocations you made>"
     done
   done
 done
-print -u2 "\nmatrix complete → $ROOT/results/$ARM"
+print -u2 "\nmatrix complete → $RESULT_ROOT/$ARM"

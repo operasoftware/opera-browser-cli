@@ -1,5 +1,8 @@
 # Running the agentic benchmark
 
+> For the current `main` vs `head` comprehensive rerun, including the cache-verification
+> gate and isolated run directories, use [`COMPREHENSIVE-RUN.md`](COMPREHENSIVE-RUN.md).
+
 How to run the whole matrix unattended, add tasks or builds, and read the output.
 
 The suite pits builds of `opera-browser-cli` against each other by giving a fresh agent a

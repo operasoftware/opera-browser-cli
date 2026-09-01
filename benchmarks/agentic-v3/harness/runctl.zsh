@@ -17,7 +17,8 @@ binfor() {
   case $1 in
     v1) echo $BENCH_WT_ROOT/wt-v1/dist/bin/opera-browser-cli.js ;;
     v2) echo $BENCH_WT_ROOT/wt-v2/dist/bin/opera-browser-cli.js ;;
-    v3|v4) echo $REPO/dist/bin/opera-browser-cli.js ;;
+    main) echo $BENCH_WT_ROOT/wt-main/dist/bin/opera-browser-cli.js ;;
+    head|v3|v4) echo $REPO/dist/bin/opera-browser-cli.js ;;
   esac
 }
 clearstate() {

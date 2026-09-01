@@ -1,6 +1,7 @@
 {
   "name": "opera-browser-cli",
   "version": "0.1.48",
+  "private": true,
   "description": "AXI-compliant opera-devtools-mcp wrapper — combined operations, TOON output, contextual suggestions",
   "type": "module",
   "repository": {
@@ -36,7 +37,7 @@
     "dev": "tsx bin/opera-cli.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "node -e \"console.error('Refusing to publish experimental feat/compact-v3 branch'); process.exit(1)\""
   },
   "license": "MIT",
   "engines": {

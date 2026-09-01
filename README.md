@@ -1,3 +1,75 @@
+# Experimental branch: `feat/compact-v3`
+
+> **Status:** local research branch; not intended for release or direct integration into
+> `main`. `package.json` is marked private and package publication is disabled.
+
+## Scope
+
+This branch evaluates changes to the browser snapshot and action interfaces, including
+bounded snapshots, targeted reads, continuation, post-action diffs, per-session state,
+action chaining, and assertions.
+
+The primary benchmark is the balanced six-task suite in `benchmarks/agentic-v3`. It covers:
+
+- long-document retrieval;
+- repeated SPA mutation and filtering;
+- form completion and submit navigation;
+- large-table extraction;
+- cross-page link navigation;
+- category navigation and product comparison.
+
+Both benchmark arms use the same tasks. `strict` disables page JavaScript to evaluate the
+snapshot/action interface; `open` allows `eval` and measures behavior with the full command
+set. The principal run uses Claude Code with first-party Sonnet 5 so Anthropic cache reads
+and cache creation are recorded.
+
+## Sonnet 5 result
+
+Three repeats per arm, comparing this branch (`head`) with upstream `main`:
+
+| Arm | Metric | Head | Main |
+|---|---|---:|---:|
+| strict | Accuracy | 18/18 | 17/18* |
+| strict | Mean cost | $0.690 | $0.705 |
+| strict | Mean raw CLI output | 205 KB | 1,666 KB |
+| strict | Mean CLI calls | 36.3 | 29.7 |
+| strict | Mean model turns | 33.3 | 28.0 |
+| open | Accuracy | 18/18 | 18/18 |
+| open | Mean cost | $0.622 | $0.708 |
+| open | Mean raw CLI output | 106 KB | 102 KB |
+| open | Mean CLI calls | 30.0 | 33.3 |
+| open | Mean model turns | 29.0 | 33.7 |
+
+*One strict `main` TodoMVC answer reproduced the baseline output's `"2items left"`
+spacing error. The interaction and filtered todo list were otherwise correct.
+
+In strict mode, compact-v3 reduced raw output by 87.7% but increased calls by 22.5% and
+turns by 19.0%; total cost was approximately equal (-2.1%). Cache creation decreased
+16.2%, while cache reads increased 23.2%. Effects varied by task: the compact path was
+cheaper for deep-document retrieval and cross-page navigation, and more expensive for the
+form and table tasks.
+
+In open mode, both conditions were fully accurate. Head cost 12.2% less and used fewer
+calls and turns, but agents frequently used `eval`, so this result does not isolate
+snapshot compaction.
+
+These are bundle-level results. They do not establish the value of `find`, windowing,
+diffs, or chaining independently. Feature-level decisions require controlled tests that
+change one interface property at a time while holding the model, prompt, sites, cache
+policy, truncation, and stopping criteria fixed.
+
+- [Run report](benchmarks/agentic-v3/results-2026-09-01-comprehensive-sonnet.md)
+- [Suite definition](benchmarks/agentic-v3/suite.md)
+- [Run and measurement protocol](benchmarks/agentic-v3/COMPREHENSIVE-RUN.md)
+- [Retained envelopes and CLI logs](benchmarks/agentic-v3/data/sonnet-interactive-v1/)
+
+---
+
+## Upstream project README
+
+The content below describes the supported product. Use `main` for release and installation
+work.
+
 <h1 align="center">opera-browser-cli</h1>
 
 <h3 align="center">The most agent-ergonomic browser automation</h3>

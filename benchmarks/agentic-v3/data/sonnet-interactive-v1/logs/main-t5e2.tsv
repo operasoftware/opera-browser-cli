@@ -1,0 +1,5 @@
+1788270952.7262890339	0.14	0	3156	0	--help
+1788270956.5118939877	1.20	0	12506	0	open https://en.wikipedia.org/wiki/Moon
+1788270965.3178761005	0.40	0	138	0	eval (() => { const links = Array.from(document.querySelectorAll('a')); const l = links.find(a => /giant.impact/i.test(a.textContent) || /giant.impact/i.test(a.href)); if (!l) return 'not found'; l.click(); return l.href; })()
+1788270968.7835628986	0.35	0	198	0	eval (() => { return {url: location.href, title: document.title}; })()
+1788270972.7844860554	0.35	0	787	0	eval (() => { const p = document.querySelector('#mw-content-text p'); const paras = Array.from(document.querySelectorAll('#mw-content-text p')).slice(0,5).map(p=>p.textContent); return paras.find(t=>/billion years|Ga\b|4\.5/i.test(t)) || paras[0]; })()
