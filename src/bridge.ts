@@ -429,6 +429,7 @@ export function buildHealth(connected: boolean): BridgeHealth {
     startedAt: STARTED_AT,
     bootMinute: BOOT_MINUTE,
     browser: { connected },
+    headed: shouldRunHeaded(),
   };
 }
 

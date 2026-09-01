@@ -18,6 +18,7 @@ function health(overrides: Partial<BridgeHealth> = {}): BridgeHealth {
     startedAt: 1_700_000_000_000,
     bootMinute: 28_000_000,
     browser: { connected: true },
+    headed: true,
     ...overrides,
   };
 }

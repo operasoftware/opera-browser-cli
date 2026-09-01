@@ -31,6 +31,8 @@ export interface BridgeHealth {
   startedAt: number;
   bootMinute: number;
   browser: { connected: boolean };
+  /** Whether the bridge launched the browser in headed (visible) mode. */
+  headed: boolean;
 }
 
 /**
@@ -107,5 +109,7 @@ export function parseHealth(body: string): BridgeHealth | null {
     bootMinute:
       typeof record.bootMinute === "number" ? record.bootMinute : Number.NaN,
     browser: { connected: browser?.connected === true },
+    // Pre-0.2.7 bridges omit headed; they launched headless by default.
+    headed: typeof record.headed === "boolean" ? record.headed : false,
   };
 }
