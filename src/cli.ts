@@ -83,11 +83,15 @@ const VERSION = getPackageVersion();
 const RAW_STDOUT_MARKER = "__OPERA_BROWSER_CLI_RAW__";
 
 
+// NOTE: These error keys are part of the CDP contract between the CLI and the
+// browser extension. Any change here MUST be mirrored in opera-chat:
+//   src/sagas/chat/handleCdpActionRequested.ts → CdpResultErrorKey
 const CdpResultErrorKey = {
   NOT_SIGNED_IN: "[OPERA_CDP_ERR:NOT_SIGNED_IN]",
   SUBSCRIPTION_REQUIRED: "[OPERA_CDP_ERR:SUBSCRIPTION_REQUIRED]",
   CONSENT_REQUIRED: "[OPERA_CDP_ERR:CONSENT_REQUIRED]",
   NEON_ONLY: "[OPERA_CDP_ERR:NEON_ONLY]",
+  CONVERSATION_NOT_FOUND: "[OPERA_CDP_ERR:CONVERSATION_NOT_FOUND]",
 } as const;
 
 type CliStdout = Pick<NodeJS.WriteStream, "write">;
@@ -108,7 +112,7 @@ commands[55]:
   network-get [id], lighthouse, perf-start, perf-stop,
   perf-insight <set> <name>, heap <path>, start, stop, restart, status,
   attach, launch-args, login,
-  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  chat [--model <id>] [--conversation-id <id>] <prompt>, invoke-do <prompt>, make <prompt>,
   research <prompt>, models,
   mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
   mcp-add <name> <url>, mcp-auth <name>, mcp-remove <name>,
@@ -651,19 +655,20 @@ args:
 examples:
   opera-browser-cli heap ./snapshot.heapsnapshot`,
 
-  // Opera AI
-  chat: `usage: opera-browser-cli chat [--model <model-id>] <prompt>
+  chat: `usage: opera-browser-cli chat [--model <model-id>] [--conversation-id <id>] <prompt>
 Send a chat message to the Opera AI.
 
 args:
   <prompt>  Message to send (required)
 
 options:
-  --model <model-id>  AI model to use (run "opera-browser-cli models" to list)
+  --model <model-id>               AI model to use (run "opera-browser-cli models" to list)
+  --conversation-id, -c <id>       Continue an existing conversation (omit to start a new one)
 
 examples:
   opera-browser-cli chat "Hello, who are you?"
-  opera-browser-cli chat --model claude-sonnet-4 "Summarize this page"`,
+  opera-browser-cli chat --model claude-sonnet-4 "Summarize this page"
+  opera-browser-cli chat --conversation-id conversation-1725000000000 "What else can you tell me?"`,
 
   "invoke-do": `usage: opera-browser-cli invoke-do <prompt>
 Ask the Opera AI to perform a complex browsing task.
@@ -1133,6 +1138,7 @@ export const EXIT_CODES: Record<ErrorCode, number> = {
   PAGE_CLOSED: 6,
   EXTENSION_NOT_FOUND: 3,
   NOT_FOUND: 2,
+  CONVERSATION_NOT_FOUND: 2,
   SERVER_DISCONNECTED: 3,
   UNKNOWN: 1,
 };
@@ -3053,6 +3059,15 @@ const CDP_RESULT_ERRORS: readonly CdpResultErrorDescriptor[] = [
     code: "UNSUPPORTED_OPERATION",
     suggestions: () => NEON_ONLY_HELP,
   },
+  {
+    match: (r) => r.includes(CdpResultErrorKey.CONVERSATION_NOT_FOUND),
+    message: "Opera: the specified conversation was not found or has expired",
+    code: "CONVERSATION_NOT_FOUND",
+    suggestions: (cmd) => [
+      `Run \`opera-browser-cli ${cmd}\` without --conversation-id to start a new conversation`,
+      "Use `opera-browser-cli models` to see available models",
+    ],
+  },
 ];
 
 function checkAiResultForCdpError(command: string, result: string): void {
@@ -3099,7 +3114,7 @@ async function callAiTool(
 }
 
 async function handleChat(args: string[]): Promise<string> {
-  const { prompt, model } = parseChatArgs(args);
+  const { prompt, model, conversationId } = parseChatArgs(args);
   if (!prompt) {
     throw new CdpError("Missing prompt", "VALIDATION_ERROR", [
       'Run `opera-browser-cli chat "What is on this page?"` to chat with Opera AI',
@@ -3110,9 +3125,41 @@ async function handleChat(args: string[]): Promise<string> {
   if (model !== undefined) {
     toolArgs["model"] = model;
   }
+  if (conversationId !== undefined) {
+    toolArgs["conversationId"] = conversationId;
+  }
   const result = await callAiTool("chat", "opera_chat", toolArgs);
+  // CDP errors are raw strings checked first; only success responses are JSON.
   checkAiResultForCdpError("chat", result);
-  return formatMcpResult("result", result, [], true);
+  let parsed: { conversationId: string; text: string };
+  try {
+    parsed = JSON.parse(result);
+  } catch {
+    // Not JSON — the extension may not support the structured response format yet.
+    // Return the raw text as the chat response, without a conversation ID.
+    return (
+      encode({ "conversation-id": null }) +
+      "\n" +
+      formatMcpResult("result", result, [], true)
+    );
+  }
+  if (
+    typeof parsed !== "object" ||
+    parsed === null ||
+    typeof (parsed as Record<string, unknown>).conversationId !== "string" ||
+    typeof (parsed as Record<string, unknown>).text !== "string"
+  ) {
+    throw new CdpError(
+      "Unexpected response format from Opera AI — the browser extension may be out of date",
+      "BROWSER_ERROR",
+      ["Run `opera-browser-cli setup` to ensure the latest extension is installed"],
+    );
+  }
+  return (
+    encode({ "conversation-id": parsed.conversationId as string }) +
+    "\n" +
+    formatMcpResult("result", parsed.text as string, [], true)
+  );
 }
 
 async function handleInvokeDo(args: string[]): Promise<string> {
@@ -3147,19 +3194,33 @@ type ResearchType = (typeof VALID_RESEARCH_TYPES)[number];
 export function parseChatArgs(args: string[]): {
   prompt: string;
   model?: string;
+  conversationId?: string;
 } {
   let model: string | undefined;
+  let conversationId: string | undefined;
   const promptParts: string[] = [];
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === "--model") {
+    const arg = args[i];
+    if (/^--conversation-id=/.test(arg) || /^-c=/.test(arg)) {
+      throw new CdpError(
+        `Invalid syntax: ${arg}. Use --conversation-id <id> (space-separated, not =).`,
+        "VALIDATION_ERROR",
+        ['Run `opera-browser-cli chat --conversation-id <id> "prompt"`'],
+      );
+    }
+    if (arg === "--model") {
       if (i + 1 < args.length) {
         model = args[++i];
       }
+    } else if (arg === "--conversation-id" || arg === "-c") {
+      if (i + 1 < args.length) {
+        conversationId = args[++i];
+      }
     } else {
-      promptParts.push(args[i]);
+      promptParts.push(arg);
     }
   }
-  return { prompt: promptParts.join(" "), model };
+  return { prompt: promptParts.join(" "), model, conversationId };
 }
 
 export function parseResearchArgs(args: string[]): {

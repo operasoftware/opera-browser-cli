@@ -9,7 +9,7 @@ metadata: {"openclaw": {"requires": {"bins": ["opera-browser-cli"]}}}
 `opera-browser-cli` controls an Opera browser session.
 
 - **Standard commands** (`open`, `click`, `fill`, `screenshot`, etc.) — work with any Opera browser session.
-- **`chat`** — available on any Opera browser. Use `--model <id>` to select an AI model.
+- **`chat`** — available on any Opera browser. Use `--model <id>` to select an AI model, `--conversation-id <id>` to continue a conversation.
 - **`models`** — list available AI models for chat (shows IDs and which is the default).
 - **`invoke-do`, `make`, `research`** — require **Opera Neon** with an active sign-in.
 - **`mcp-servers`** — list MCP servers registered in the browser (requires Opera Neon).

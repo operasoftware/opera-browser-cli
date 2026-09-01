@@ -164,26 +164,82 @@ describe("formatScreenshotOutput", () => {
 describe("parseChatArgs", () => {
   it("parses prompt only", () => {
     const result = parseChatArgs(["Hello", "world"]);
-    expect(result).toEqual({ prompt: "Hello world", model: undefined });
+    expect(result).toEqual({ prompt: "Hello world", model: undefined, conversationId: undefined });
   });
 
   it("parses --model flag with prompt", () => {
     const result = parseChatArgs(["--model", "gpt-4o", "What", "is", "this?"]);
-    expect(result).toEqual({ prompt: "What is this?", model: "gpt-4o" });
+    expect(result).toEqual({ prompt: "What is this?", model: "gpt-4o", conversationId: undefined });
   });
 
   it("parses --model at end of args", () => {
     const result = parseChatArgs(["Hello", "--model", "claude-sonnet-4"]);
-    expect(result).toEqual({ prompt: "Hello", model: "claude-sonnet-4" });
+    expect(result).toEqual({ prompt: "Hello", model: "claude-sonnet-4", conversationId: undefined });
   });
 
   it("returns empty prompt when only --model is given", () => {
     const result = parseChatArgs(["--model", "gpt-4o"]);
-    expect(result).toEqual({ prompt: "", model: "gpt-4o" });
+    expect(result).toEqual({ prompt: "", model: "gpt-4o", conversationId: undefined });
   });
 
   it("ignores --model without a value", () => {
     const result = parseChatArgs(["Hello", "--model"]);
-    expect(result).toEqual({ prompt: "Hello", model: undefined });
+    expect(result).toEqual({ prompt: "Hello", model: undefined, conversationId: undefined });
+  });
+
+  it("parses --conversation-id flag", () => {
+    const result = parseChatArgs(["--conversation-id", "conversation-123", "Hello"]);
+    expect(result).toEqual({ prompt: "Hello", model: undefined, conversationId: "conversation-123" });
+  });
+
+  it("parses -c shorthand for conversation-id", () => {
+    const result = parseChatArgs(["-c", "conversation-456", "Hi"]);
+    expect(result).toEqual({ prompt: "Hi", model: undefined, conversationId: "conversation-456" });
+  });
+
+  it("parses both --model and --conversation-id", () => {
+    const result = parseChatArgs(["--model", "gpt-4o", "--conversation-id", "conv-1", "Hello"]);
+    expect(result).toEqual({ prompt: "Hello", model: "gpt-4o", conversationId: "conv-1" });
+  });
+});
+
+describe("handleChat JSON response parsing", () => {
+  const isValidShape = (parsed: unknown): parsed is { conversationId: string; text: string } =>
+    typeof parsed === "object" &&
+    parsed !== null &&
+    typeof (parsed as Record<string, unknown>).conversationId === "string" &&
+    typeof (parsed as Record<string, unknown>).text === "string";
+
+  it("accepts valid JSON response", () => {
+    const parsed = JSON.parse('{"conversationId":"conv-1","text":"Hello"}');
+    expect(isValidShape(parsed)).toBe(true);
+    if (isValidShape(parsed)) {
+      expect(parsed.conversationId).toBe("conv-1");
+      expect(parsed.text).toBe("Hello");
+    }
+  });
+
+  it("rejects a number", () => {
+    expect(isValidShape(JSON.parse("42"))).toBe(false);
+  });
+
+  it("rejects null", () => {
+    expect(isValidShape(JSON.parse("null"))).toBe(false);
+  });
+
+  it("rejects a plain string", () => {
+    expect(isValidShape(JSON.parse('"hello"'))).toBe(false);
+  });
+
+  it("rejects an empty object", () => {
+    expect(isValidShape(JSON.parse("{}"))).toBe(false);
+  });
+
+  it("rejects an object with missing text field", () => {
+    expect(isValidShape(JSON.parse('{"conversationId":"x"}'))).toBe(false);
+  });
+
+  it("rejects an object with wrong types", () => {
+    expect(isValidShape(JSON.parse('{"conversationId":42,"text":true}'))).toBe(false);
   });
 });

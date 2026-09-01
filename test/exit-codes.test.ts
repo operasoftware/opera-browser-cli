@@ -31,6 +31,7 @@ describe("exit codes", () => {
       PAGE_CLOSED: 6,
       EXTENSION_NOT_FOUND: 3,
       NOT_FOUND: 2,
+      CONVERSATION_NOT_FOUND: 2,
       SERVER_DISCONNECTED: 3,
       UNKNOWN: 1,
     };
