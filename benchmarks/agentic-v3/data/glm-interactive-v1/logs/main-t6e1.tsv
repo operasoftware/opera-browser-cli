@@ -1,0 +1,6 @@
+1788339819.8893239498	0.15	0	3156	0	--help
+1788339822.0050749779	1.23	0	12027	0	open https://books.toscrape.com/
+1788339834.0879189968	0.83	0	10682	0	click @18.12
+1788339840.3415489197	0.36	0	961	0	eval JSON.stringify([...document.querySelectorAll('article.product_pod')].map(a => ({title: a.querySelector('h3 a').innerText, price: a.querySelector('p.price_color').innerText})).sort((a,b) => parseFloat(a.price.replace('£','')) - parseFloat(b.price.replace('£',''))))
+1788339844.7140209675	0.36	0	108	0	eval document.querySelector('article.product_pod h3 a').getAttribute('title')
+1788339849.2848649025	0.37	0	236	0	eval JSON.stringify([...document.querySelectorAll('article.product_pod')].map(a => ({title: a.querySelector('h3 a').getAttribute('title'), price: a.querySelector('p.price_color').innerText})).sort((a,b) => parseFloat(a.price.replace('£','')) - parseFloat(b.price.replace('£','')))[0])

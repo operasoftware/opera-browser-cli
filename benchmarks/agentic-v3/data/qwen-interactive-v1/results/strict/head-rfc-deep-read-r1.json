@@ -1,0 +1,33 @@
+{
+ "model": "opera-internal/Qwen/Qwen3.8-27B",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": 8000,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 0.0,
+   "output": 0.0,
+   "cache_read": 0.0,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.0,
+ "num_turns": 13,
+ "calls": 12,
+ "is_error": false,
+ "result": "\n\nConfirmed from the page body: the heading is `15.5.5.` + `404 Not Found`, followed by the defining text \"The 404 (Not Found) status code indicates that the origin server did not find a current representation for the target resource or is not willing to disclose that one exists.\"\n\nThe section that defines the 404 status code in RFC 9110 is **Section 15.5.5**, titled **\"404 Not Found\"** (sibling sections: 15.5.4 \"403 Forbidden\", 15.5.6 \"405 Method Not Allowed\").\n\nANSWER: Section 15.5.5 \u2014 \"404 Not Found\"\nCALLS: 13",
+ "usage": {
+  "input_tokens": 155187,
+  "output_tokens": 11280,
+  "cache_read_input_tokens": 137984,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0,
+  "out": 0.0,
+  "cache_read": 0.0,
+  "cache_write": 0.0
+ }
+}

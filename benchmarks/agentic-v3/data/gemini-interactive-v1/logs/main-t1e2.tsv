@@ -1,0 +1,4 @@
+1788275699.6637470722	0.13	0	3156	0	--help
+1788275701.5213949680	1.55	0	12616	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788275707.4906239510	0.35	0	174	0	eval (() => {   const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, a'));   const results = [];   headings.forEach(h => {     const text = h.textContent || '';     if (text.includes('404') && (text.includes('Found') || text.includes('Status') || text.includes('Section'))) {       results.push(text.trim());     }   });   return results.slice(0, 10).join('\n'); })()
+1788275711.0440089703	0.35	0	351	0	eval (() => {   const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));   const match = headings.find(h => h.textContent.includes('15.5.5'));   if (match) {     return {       text: match.textContent.trim(),       id: match.id,       innerHTML: match.innerHTML     };   }   return 'not found'; })()

@@ -1,0 +1,33 @@
+{
+ "model": "pc_browser/vertex_ai/gemini-3.5-flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": 8000,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.35e-06,
+   "output": 8.1e-06,
+   "cache_read": 1.35e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.09214641,
+ "num_turns": 16,
+ "calls": 15,
+ "is_error": false,
+ "result": "Atomic number: 74, Chemical symbol: W, Standard atomic weight: 183.84 (or 183.84 \u00b1 0.01)\n\nANSWER: Atomic number: 74, Chemical symbol: W, Standard atomic weight: 183.84\nCALLS: 13",
+ "usage": {
+  "input_tokens": 119838,
+  "output_tokens": 3932,
+  "cache_read_input_tokens": 83526,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0490212,
+  "out": 0.0318492,
+  "cache_read": 0.01127601,
+  "cache_write": 0.0
+ }
+}

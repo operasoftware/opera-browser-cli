@@ -1,0 +1,978 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12631B args=open https://en.wikipedia.org/wiki/List_of_chemical_elements =====
+page:
+  title: List of chemical elements - Wikipedia
+  url: "https://en.wikipedia.org/wiki/List_of_chemical_elements"
+  refs: 1445
+snapshot:
+@22.0 root "List of chemical elements - Wikipedia" url=$u1
+  @22.1 generic live="polite"
+  @22.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @22.4 banner
+    @22.5 navigation "Site"
+      @22.6 button "Main menu" haspopup="menu"
+    @22.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @22.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @22.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @22.10 search
+      @22.11 form
+        @22.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @22.13 button "Search"
+    @22.14 navigation "Personal tools"
+      @22.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @22.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @22.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @22.21 navigation "Contents"
+    @22.22 ## Contents
+    @22.23 button "Hide Contents"
+    @22.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @22.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @22.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @22.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @22.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @22.34 main
+    @22.35 # List of chemical elements
+    @22.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @22.37 navigation "Namespaces"
+      @22.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @22.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @22.42 navigation "Views"
+      @22.43 link "Read" url=$u1
+      @22.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @22.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @22.49 navigation "Page tools"
+      @22.50 button "Tools" haspopup="menu"
+    @22.51 navigation "Appearance"
+      @22.53 button "Hide Appearance"
+      @22.54 text "Text"
+      @22.55 form
+        @22.56 radio "Small"
+        @22.57 text "Small"
+        @22.58 radio "Standard" checked
+        @22.59 text "Standard"
+        @22.60 radio "Large"
+        @22.61 text "Large"
+      @22.62 text "Width"
+      @22.63 form
+        @22.64 radio "Standard" checked
+        @22.65 text "Standard"
+        @22.66 radio "Wide"
+        @22.67 text "Wide"
+      @22.68 text "Color"
+      @22.69 form
+        @22.70 radio "Automatic"
+        @22.71 text "Automatic"
+        @22.72 radio "Light" checked
+        @22.73 text "Light"
+        @22.74 radio "Dark"
+        @22.75 text "Dark"
+    @22.76 text "From Wikipedia, the free encyclopedia118 "
+    @22.78 link "chemical elements" description="Chemical element" url=$u2
+    @22.80 text " have been "
+    @22.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @22.83 text " and named officially by "
+    @22.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chem
+... [tee capped at 4096 of 12631 bytes]
+
+===== CALL rc=0 out=12514B args=snapshot =====
+page:
+  title: List of chemical elements - Wikipedia
+  refs: 1445
+snapshot:
+@22.0 root "List of chemical elements - Wikipedia" url=$u1
+  @22.1 generic live="polite"
+  @22.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @22.4 banner
+    @22.5 navigation "Site"
+      @22.6 button "Main menu" haspopup="menu"
+    @22.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @22.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @22.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @22.10 search
+      @22.11 form
+        @22.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @22.13 button "Search"
+    @22.14 navigation "Personal tools"
+      @22.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @22.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @22.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @22.21 navigation "Contents"
+    @22.22 ## Contents
+    @22.23 button "Hide Contents"
+    @22.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @22.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @22.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @22.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @22.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @22.34 main
+    @22.35 # List of chemical elements
+    @22.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @22.37 navigation "Namespaces"
+      @22.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @22.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @22.42 navigation "Views"
+      @22.43 link "Read" url=$u1
+      @22.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @22.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @22.49 navigation "Page tools"
+      @22.50 button "Tools" haspopup="menu"
+    @22.51 navigation "Appearance"
+      @22.53 button "Hide Appearance"
+      @22.54 text "Text"
+      @22.55 form
+        @22.56 radio "Small"
+        @22.57 text "Small"
+        @22.58 radio "Standard" checked
+        @22.59 text "Standard"
+        @22.60 radio "Large"
+        @22.61 text "Large"
+      @22.62 text "Width"
+      @22.63 form
+        @22.64 radio "Standard" checked
+        @22.65 text "Standard"
+        @22.66 radio "Wide"
+        @22.67 text "Wide"
+      @22.68 text "Color"
+      @22.69 form
+        @22.70 radio "Automatic"
+        @22.71 text "Automatic"
+        @22.72 radio "Light" checked
+        @22.73 text "Light"
+        @22.74 radio "Dark"
+        @22.75 text "Dark"
+    @22.76 text "From Wikipedia, the free encyclopedia118 "
+    @22.78 link "chemical elements" description="Chemical element" url=$u2
+    @22.80 text " have been "
+    @22.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @22.83 text " and named officially by "
+    @22.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @22.86 text ". A chemical element, often simply called
+... [tee capped at 4096 of 12514 bytes]
+
+===== CALL rc=0 out=12514B args=snapshot =====
+page:
+  title: List of chemical elements - Wikipedia
+  refs: 1445
+snapshot:
+@22.0 root "List of chemical elements - Wikipedia" url=$u1
+  @22.1 generic live="polite"
+  @22.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @22.4 banner
+    @22.5 navigation "Site"
+      @22.6 button "Main menu" haspopup="menu"
+    @22.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @22.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @22.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @22.10 search
+      @22.11 form
+        @22.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @22.13 button "Search"
+    @22.14 navigation "Personal tools"
+      @22.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @22.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @22.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @22.21 navigation "Contents"
+    @22.22 ## Contents
+    @22.23 button "Hide Contents"
+    @22.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @22.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @22.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @22.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @22.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @22.34 main
+    @22.35 # List of chemical elements
+    @22.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @22.37 navigation "Namespaces"
+      @22.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @22.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @22.42 navigation "Views"
+      @22.43 link "Read" url=$u1
+      @22.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @22.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @22.49 navigation "Page tools"
+      @22.50 button "Tools" haspopup="menu"
+    @22.51 navigation "Appearance"
+      @22.53 button "Hide Appearance"
+      @22.54 text "Text"
+      @22.55 form
+        @22.56 radio "Small"
+        @22.57 text "Small"
+        @22.58 radio "Standard" checked
+        @22.59 text "Standard"
+        @22.60 radio "Large"
+        @22.61 text "Large"
+      @22.62 text "Width"
+      @22.63 form
+        @22.64 radio "Standard" checked
+        @22.65 text "Standard"
+        @22.66 radio "Wide"
+        @22.67 text "Wide"
+      @22.68 text "Color"
+      @22.69 form
+        @22.70 radio "Automatic"
+        @22.71 text "Automatic"
+        @22.72 radio "Light" checked
+        @22.73 text "Light"
+        @22.74 radio "Dark"
+        @22.75 text "Dark"
+    @22.76 text "From Wikipedia, the free encyclopedia118 "
+    @22.78 link "chemical elements" description="Chemical element" url=$u2
+    @22.80 text " have been "
+    @22.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @22.83 text " and named officially by "
+    @22.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @22.86 text ". A chemical element, often simply called
+... [tee capped at 4096 of 12514 bytes]
+
+===== CALL rc=0 out=52B args=status =====
+bridge: ready
+pid: 89552
+port: 9225
+version: 0.1.48
+
+===== CALL rc=0 out=166B args=pages =====
+pages[1]{id,url,selected}:
+  1,List,false
+help[2]:
+  Run `opera-browser-cli selectpage <id>` to switch tabs
+  Run `opera-browser-cli newpage <url>` to open a new tab
+
+===== CALL rc=0 out=12516B args=selectpage 1 =====
+page:
+  title: List of chemical elements - Wikipedia
+  refs: 1445
+snapshot:
+@22.0 root "List of chemical elements - Wikipedia" url=$u1
+  @22.1 generic live="polite"
+  @22.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @22.4 banner
+    @22.5 navigation "Site"
+      @22.6 button "Main menu" haspopup="menu"
+    @22.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @22.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @22.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @22.10 search
+      @22.11 form
+        @22.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @22.13 button "Search"
+    @22.14 navigation "Personal tools"
+      @22.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @22.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @22.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @22.21 navigation "Contents"
+    @22.22 ## Contents
+    @22.23 button "Hide Contents"
+    @22.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @22.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @22.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @22.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @22.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @22.34 main
+    @22.35 # List of chemical elements
+    @22.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @22.37 navigation "Namespaces"
+      @22.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @22.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @22.42 navigation "Views"
+      @22.43 link "Read" url=$u1
+      @22.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @22.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @22.49 navigation "Page tools"
+      @22.50 button "Tools" haspopup="menu"
+    @22.51 navigation "Appearance"
+      @22.53 button "Hide Appearance"
+      @22.54 text "Text"
+      @22.55 form
+        @22.56 radio "Small"
+        @22.57 text "Small"
+        @22.58 radio "Standard" checked
+        @22.59 text "Standard"
+        @22.60 radio "Large"
+        @22.61 text "Large"
+      @22.62 text "Width"
+      @22.63 form
+        @22.64 radio "Standard" checked
+        @22.65 text "Standard"
+        @22.66 radio "Wide"
+        @22.67 text "Wide"
+      @22.68 text "Color"
+      @22.69 form
+        @22.70 radio "Automatic"
+        @22.71 text "Automatic"
+        @22.72 radio "Light" checked
+        @22.73 text "Light"
+        @22.74 radio "Dark"
+        @22.75 text "Dark"
+    @22.76 text "From Wikipedia, the free encyclopedia118 "
+    @22.78 link "chemical elements" description="Chemical element" url=$u2
+    @22.80 text " have been "
+    @22.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @22.83 text " and named officially by "
+    @22.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @22.86 text ". A chemical element, often simply called
+... [tee capped at 4096 of 12516 bytes]
+
+===== CALL rc=0 out=12514B args=snapshot =====
+page:
+  title: List of chemical elements - Wikipedia
+  refs: 1445
+snapshot:
+@22.0 root "List of chemical elements - Wikipedia" url=$u1
+  @22.1 generic live="polite"
+  @22.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @22.4 banner
+    @22.5 navigation "Site"
+      @22.6 button "Main menu" haspopup="menu"
+    @22.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @22.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @22.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @22.10 search
+      @22.11 form
+        @22.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @22.13 button "Search"
+    @22.14 navigation "Personal tools"
+      @22.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @22.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @22.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @22.21 navigation "Contents"
+    @22.22 ## Contents
+    @22.23 button "Hide Contents"
+    @22.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @22.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @22.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @22.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @22.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @22.34 main
+    @22.35 # List of chemical elements
+    @22.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @22.37 navigation "Namespaces"
+      @22.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @22.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @22.42 navigation "Views"
+      @22.43 link "Read" url=$u1
+      @22.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @22.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @22.49 navigation "Page tools"
+      @22.50 button "Tools" haspopup="menu"
+    @22.51 navigation "Appearance"
+      @22.53 button "Hide Appearance"
+      @22.54 text "Text"
+      @22.55 form
+        @22.56 radio "Small"
+        @22.57 text "Small"
+        @22.58 radio "Standard" checked
+        @22.59 text "Standard"
+        @22.60 radio "Large"
+        @22.61 text "Large"
+      @22.62 text "Width"
+      @22.63 form
+        @22.64 radio "Standard" checked
+        @22.65 text "Standard"
+        @22.66 radio "Wide"
+        @22.67 text "Wide"
+      @22.68 text "Color"
+      @22.69 form
+        @22.70 radio "Automatic"
+        @22.71 text "Automatic"
+        @22.72 radio "Light" checked
+        @22.73 text "Light"
+        @22.74 radio "Dark"
+        @22.75 text "Dark"
+    @22.76 text "From Wikipedia, the free encyclopedia118 "
+    @22.78 link "chemical elements" description="Chemical element" url=$u2
+    @22.80 text " have been "
+    @22.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @22.83 text " and named officially by "
+    @22.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @22.86 text ". A chemical element, often simply called
+... [tee capped at 4096 of 12514 bytes]
+
+===== CALL rc=0 out=12514B args=snapshot =====
+page:
+  title: List of chemical elements - Wikipedia
+  refs: 1445
+snapshot:
+@22.0 root "List of chemical elements - Wikipedia" url=$u1
+  @22.1 generic live="polite"
+  @22.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @22.4 banner
+    @22.5 navigation "Site"
+      @22.6 button "Main menu" haspopup="menu"
+    @22.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @22.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @22.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @22.10 search
+      @22.11 form
+        @22.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @22.13 button "Search"
+    @22.14 navigation "Personal tools"
+      @22.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @22.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @22.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @22.21 navigation "Contents"
+    @22.22 ## Contents
+    @22.23 button "Hide Contents"
+    @22.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @22.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @22.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @22.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @22.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @22.34 main
+    @22.35 # List of chemical elements
+    @22.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @22.37 navigation "Namespaces"
+      @22.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @22.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @22.42 navigation "Views"
+      @22.43 link "Read" url=$u1
+      @22.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @22.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @22.49 navigation "Page tools"
+      @22.50 button "Tools" haspopup="menu"
+    @22.51 navigation "Appearance"
+      @22.53 button "Hide Appearance"
+      @22.54 text "Text"
+      @22.55 form
+        @22.56 radio "Small"
+        @22.57 text "Small"
+        @22.58 radio "Standard" checked
+        @22.59 text "Standard"
+        @22.60 radio "Large"
+        @22.61 text "Large"
+      @22.62 text "Width"
+      @22.63 form
+        @22.64 radio "Standard" checked
+        @22.65 text "Standard"
+        @22.66 radio "Wide"
+        @22.67 text "Wide"
+      @22.68 text "Color"
+      @22.69 form
+        @22.70 radio "Automatic"
+        @22.71 text "Automatic"
+        @22.72 radio "Light" checked
+        @22.73 text "Light"
+        @22.74 radio "Dark"
+        @22.75 text "Dark"
+    @22.76 text "From Wikipedia, the free encyclopedia118 "
+    @22.78 link "chemical elements" description="Chemical element" url=$u2
+    @22.80 text " have been "
+    @22.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @22.83 text " and named officially by "
+    @22.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @22.86 text ". A chemical element, often simply called
+... [tee capped at 4096 of 12514 bytes]
+
+===== CALL rc=0 out=12514B args=snapshot =====
+page:
+  title: List of chemical elements - Wikipedia
+  refs: 1445
+snapshot:
+@22.0 root "List of chemical elements - Wikipedia" url=$u1
+  @22.1 generic live="polite"
+  @22.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @22.4 banner
+    @22.5 navigation "Site"
+      @22.6 button "Main menu" haspopup="menu"
+    @22.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @22.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @22.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @22.10 search
+      @22.11 form
+        @22.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @22.13 button "Search"
+    @22.14 navigation "Personal tools"
+      @22.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @22.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @22.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @22.21 navigation "Contents"
+    @22.22 ## Contents
+    @22.23 button "Hide Contents"
+    @22.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @22.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @22.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @22.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @22.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @22.34 main
+    @22.35 # List of chemical elements
+    @22.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @22.37 navigation "Namespaces"
+      @22.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @22.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @22.42 navigation "Views"
+      @22.43 link "Read" url=$u1
+      @22.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @22.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @22.49 navigation "Page tools"
+      @22.50 button "Tools" haspopup="menu"
+    @22.51 navigation "Appearance"
+      @22.53 button "Hide Appearance"
+      @22.54 text "Text"
+      @22.55 form
+        @22.56 radio "Small"
+        @22.57 text "Small"
+        @22.58 radio "Standard" checked
+        @22.59 text "Standard"
+        @22.60 radio "Large"
+        @22.61 text "Large"
+      @22.62 text "Width"
+      @22.63 form
+        @22.64 radio "Standard" checked
+        @22.65 text "Standard"
+        @22.66 radio "Wide"
+        @22.67 text "Wide"
+      @22.68 text "Color"
+      @22.69 form
+        @22.70 radio "Automatic"
+        @22.71 text "Automatic"
+        @22.72 radio "Light" checked
+        @22.73 text "Light"
+        @22.74 radio "Dark"
+        @22.75 text "Dark"
+    @22.76 text "From Wikipedia, the free encyclopedia118 "
+    @22.78 link "chemical elements" description="Chemical element" url=$u2
+    @22.80 text " have been "
+    @22.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @22.83 text " and named officially by "
+    @22.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @22.86 text ". A chemical element, often simply called
+... [tee capped at 4096 of 12514 bytes]
+
+===== CALL rc=0 out=12514B args=snapshot =====
+page:
+  title: List of chemical elements - Wikipedia
+  refs: 1445
+snapshot:
+@22.0 root "List of chemical elements - Wikipedia" url=$u1
+  @22.1 generic live="polite"
+  @22.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @22.4 banner
+    @22.5 navigation "Site"
+      @22.6 button "Main menu" haspopup="menu"
+    @22.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @22.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @22.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @22.10 search
+      @22.11 form
+        @22.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @22.13 button "Search"
+    @22.14 navigation "Personal tools"
+      @22.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @22.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @22.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @22.21 navigation "Contents"
+    @22.22 ## Contents
+    @22.23 button "Hide Contents"
+    @22.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @22.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @22.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @22.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @22.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @22.34 main
+    @22.35 # List of chemical elements
+    @22.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @22.37 navigation "Namespaces"
+      @22.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @22.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @22.42 navigation "Views"
+      @22.43 link "Read" url=$u1
+      @22.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @22.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @22.49 navigation "Page tools"
+      @22.50 button "Tools" haspopup="menu"
+    @22.51 navigation "Appearance"
+      @22.53 button "Hide Appearance"
+      @22.54 text "Text"
+      @22.55 form
+        @22.56 radio "Small"
+        @22.57 text "Small"
+        @22.58 radio "Standard" checked
+        @22.59 text "Standard"
+        @22.60 radio "Large"
+        @22.61 text "Large"
+      @22.62 text "Width"
+      @22.63 form
+        @22.64 radio "Standard" checked
+        @22.65 text "Standard"
+        @22.66 radio "Wide"
+        @22.67 text "Wide"
+      @22.68 text "Color"
+      @22.69 form
+        @22.70 radio "Automatic"
+        @22.71 text "Automatic"
+        @22.72 radio "Light" checked
+        @22.73 text "Light"
+        @22.74 radio "Dark"
+        @22.75 text "Dark"
+    @22.76 text "From Wikipedia, the free encyclopedia118 "
+    @22.78 link "chemical elements" description="Chemical element" url=$u2
+    @22.80 text " have been "
+    @22.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @22.83 text " and named officially by "
+    @22.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @22.86 text ". A chemical element, often simply called
+... [tee capped at 4096 of 12514 bytes]
+
+===== CALL rc=0 out=12514B args=snapshot =====
+page:
+  title: List of chemical elements - Wikipedia
+  refs: 1445
+snapshot:
+@22.0 root "List of chemical elements - Wikipedia" url=$u1
+  @22.1 generic live="polite"
+  @22.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @22.4 banner
+    @22.5 navigation "Site"
+      @22.6 button "Main menu" haspopup="menu"
+    @22.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @22.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @22.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @22.10 search
+      @22.11 form
+        @22.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @22.13 button "Search"
+    @22.14 navigation "Personal tools"
+      @22.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @22.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @22.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @22.21 navigation "Contents"
+    @22.22 ## Contents
+    @22.23 button "Hide Contents"
+    @22.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @22.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @22.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @22.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @22.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @22.34 main
+    @22.35 # List of chemical elements
+    @22.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @22.37 navigation "Namespaces"
+      @22.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @22.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @22.42 navigation "Views"
+      @22.43 link "Read" url=$u1
+      @22.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @22.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @22.49 navigation "Page tools"
+      @22.50 button "Tools" haspopup="menu"
+    @22.51 navigation "Appearance"
+      @22.53 button "Hide Appearance"
+      @22.54 text "Text"
+      @22.55 form
+        @22.56 radio "Small"
+        @22.57 text "Small"
+        @22.58 radio "Standard" checked
+        @22.59 text "Standard"
+        @22.60 radio "Large"
+        @22.61 text "Large"
+      @22.62 text "Width"
+      @22.63 form
+        @22.64 radio "Standard" checked
+        @22.65 text "Standard"
+        @22.66 radio "Wide"
+        @22.67 text "Wide"
+      @22.68 text "Color"
+      @22.69 form
+        @22.70 radio "Automatic"
+        @22.71 text "Automatic"
+        @22.72 radio "Light" checked
+        @22.73 text "Light"
+        @22.74 radio "Dark"
+        @22.75 text "Dark"
+    @22.76 text "From Wikipedia, the free encyclopedia118 "
+    @22.78 link "chemical elements" description="Chemical element" url=$u2
+    @22.80 text " have been "
+    @22.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @22.83 text " and named officially by "
+    @22.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @22.86 text ". A chemical element, often simply called
+... [tee capped at 4096 of 12514 bytes]
+
+===== CALL rc=0 out=93142B args=snapshot --full =====
+page:
+  title: List of chemical elements - Wikipedia
+  refs: 1445
+snapshot:
+@22.0 root "List of chemical elements - Wikipedia" url=$u1
+  @22.1 generic live="polite"
+  @22.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @22.4 banner
+    @22.5 navigation "Site"
+      @22.6 button "Main menu" haspopup="menu"
+    @22.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @22.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @22.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @22.10 search
+      @22.11 form
+        @22.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @22.13 button "Search"
+    @22.14 navigation "Personal tools"
+      @22.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @22.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @22.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @22.21 navigation "Contents"
+    @22.22 ## Contents
+    @22.23 button "Hide Contents"
+    @22.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @22.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @22.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @22.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @22.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @22.34 main
+    @22.35 # List of chemical elements
+    @22.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @22.37 navigation "Namespaces"
+      @22.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @22.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @22.42 navigation "Views"
+      @22.43 link "Read" url=$u1
+      @22.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @22.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @22.49 navigation "Page tools"
+      @22.50 button "Tools" haspopup="menu"
+    @22.51 navigation "Appearance"
+      @22.53 button "Hide Appearance"
+      @22.54 text "Text"
+      @22.55 form
+        @22.56 radio "Small"
+        @22.57 text "Small"
+        @22.58 radio "Standard" checked
+        @22.59 text "Standard"
+        @22.60 radio "Large"
+        @22.61 text "Large"
+      @22.62 text "Width"
+      @22.63 form
+        @22.64 radio "Standard" checked
+        @22.65 text "Standard"
+        @22.66 radio "Wide"
+        @22.67 text "Wide"
+      @22.68 text "Color"
+      @22.69 form
+        @22.70 radio "Automatic"
+        @22.71 text "Automatic"
+        @22.72 radio "Light" checked
+        @22.73 text "Light"
+        @22.74 radio "Dark"
+        @22.75 text "Dark"
+    @22.76 text "From Wikipedia, the free encyclopedia118 "
+    @22.78 link "chemical elements" description="Chemical element" url=$u2
+    @22.80 text " have been "
+    @22.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @22.83 text " and named officially by "
+    @22.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url=$u3
+    @22.86 text ". A chemical element, often simply called an element, is a type of "
+    @22.87 link "atom" des
+... [tee capped at 4096 of 93142 bytes]
+
+===== CALL rc=0 out=93142B args=snapshot --full =====
+page:
+  title: List of chemical elements - Wikipedia
+  refs: 1445
+snapshot:
+@22.0 root "List of chemical elements - Wikipedia" url=$u1
+  @22.1 generic live="polite"
+  @22.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @22.4 banner
+    @22.5 navigation "Site"
+      @22.6 button "Main menu" haspopup="menu"
+    @22.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @22.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @22.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @22.10 search
+      @22.11 form
+        @22.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @22.13 button "Search"
+    @22.14 navigation "Personal tools"
+      @22.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @22.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @22.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @22.21 navigation "Contents"
+    @22.22 ## Contents
+    @22.23 button "Hide Contents"
+    @22.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @22.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @22.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @22.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @22.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @22.34 main
+    @22.35 # List of chemical elements
+    @22.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @22.37 navigation "Namespaces"
+      @22.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @22.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @22.42 navigation "Views"
+      @22.43 link "Read" url=$u1
+      @22.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @22.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @22.49 navigation "Page tools"
+      @22.50 button "Tools" haspopup="menu"
+    @22.51 navigation "Appearance"
+      @22.53 button "Hide Appearance"
+      @22.54 text "Text"
+      @22.55 form
+        @22.56 radio "Small"
+        @22.57 text "Small"
+        @22.58 radio "Standard" checked
+        @22.59 text "Standard"
+        @22.60 radio "Large"
+        @22.61 text "Large"
+      @22.62 text "Width"
+      @22.63 form
+        @22.64 radio "Standard" checked
+        @22.65 text "Standard"
+        @22.66 radio "Wide"
+        @22.67 text "Wide"
+      @22.68 text "Color"
+      @22.69 form
+        @22.70 radio "Automatic"
+        @22.71 text "Automatic"
+        @22.72 radio "Light" checked
+        @22.73 text "Light"
+        @22.74 radio "Dark"
+        @22.75 text "Dark"
+    @22.76 text "From Wikipedia, the free encyclopedia118 "
+    @22.78 link "chemical elements" description="Chemical element" url=$u2
+    @22.80 text " have been "
+    @22.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @22.83 text " and named officially by "
+    @22.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url=$u3
+    @22.86 text ". A chemical element, often simply called an element, is a type of "
+    @22.87 link "atom" des
+... [tee capped at 4096 of 93142 bytes]
+
+===== CALL rc=0 out=12655B args=open https://en.wikipedia.org/wiki/Tungsten =====
+page:
+  title: Tungsten - Wikipedia
+  url: "https://en.wikipedia.org/wiki/Tungsten"
+  refs: 3571
+snapshot:
+@33.0 root "Tungsten - Wikipedia" url="/wiki/Tungsten"
+  @33.1 generic live="polite"
+  @33.2 link "Jump to content" url="/wiki/Tungsten#bodyContent"
+  @33.4 banner
+    @33.5 navigation "Site"
+      @33.6 button "Main menu" haspopup="menu"
+    @33.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @33.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @33.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @33.10 search
+      @33.11 form
+        @33.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @33.13 button "Search"
+    @33.14 navigation "Personal tools"
+      @33.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @33.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Tungsten"
+      @33.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Tungsten"
+  @33.21 navigation "Contents"
+    @33.22 ## Contents
+    @33.23 button "Hide Contents"
+    @33.24 link "(Top)" url="/wiki/Tungsten#"
+    @33.26 link "Characteristics" url="/wiki/Tungsten#Characteristics"
+    @33.28 button "Toggle Characteristics subsection" expandable
+    @33.29 link "History" url="/wiki/Tungsten#History"
+    @33.31 button "Toggle History subsection" expandable
+    @33.32 link "Occurrence" url="/wiki/Tungsten#Occurrence"
+    @33.34 link "Chemical compounds" url="/wiki/Tungsten#Chemical_compounds"
+    @33.36 link "Production" url="/wiki/Tungsten#Production"
+    @33.38 button "Toggle Production subsection" expandable
+    @33.39 link "Applications" url="/wiki/Tungsten#Applications"
+    @33.41 button "Toggle Applications subsection" expandable
+    @33.42 link "Biological role" url="/wiki/Tungsten#Biological_role"
+    @33.44 button "Toggle Biological role subsection" expandable
+    @33.45 link "Health factors" url="/wiki/Tungsten#Health_factors"
+    @33.47 link "References" url="/wiki/Tungsten#References"
+    @33.49 link "Sources" url="/wiki/Tungsten#Sources"
+    @33.51 link "External links" url="/wiki/Tungsten#External_links"
+  @33.53 main
+    @33.54 # Tungsten
+    @33.55 button "147 languages" description="Go to an article in another language. Available in 147 languages" haspopup="menu"
+    @33.56 navigation "Namespaces"
+      @33.57 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Tungsten"
+      @33.59 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Tungsten"
+    @33.61 navigation "Views"
+      @33.62 link "Read" url="/wiki/Tungsten"
+      @33.64 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Tungsten&action=edit"
+      @33.66 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Tungsten&action=history"
+    @33.68 navigation "Page tools"
+      @33.69 button "Tools" haspopup="menu"
+    @33.70 navigation "Appearance"
+      @33.72 button "Hide Appearance"
+      @33.73 text "Text"
+      @33.74 form
+        @33.75 radio "Small"
+        @33.76 text "Small"
+        @33.77 radio "Standard" checked
+        @33.78 text "Standard"
+        @33.79 radio "Large"
+        @33.80 text "Large"
+      @33.81 text "Width"
+      @33.82 form
+        @33.83 radio "Standard" checked
+        @33.84 text "Standard"
+        @33.85 radio "Wide"
+        @33.86 text "Wide"
+      @33.87 text "Color"
+      @33.88 form
+        @33.89 radio "Automatic"
+        @33.90 text "Automati
+... [tee capped at 4096 of 12655 bytes]

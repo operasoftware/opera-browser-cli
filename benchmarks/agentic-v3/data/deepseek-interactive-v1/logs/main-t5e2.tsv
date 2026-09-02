@@ -1,0 +1,12 @@
+1788348528.7440109253	0.13	0	3156	0	--help
+1788348529.5256400108	1.02	0	12506	0	open https://en.wikipedia.org/wiki/Moon
+1788348532.0486850739	0.58	0	12431	0	snapshot
+1788348533.7418570518	0.35	0	250	0	eval Array.from(document.querySelectorAll('a')).filter(a=>a.textContent.includes('Giant-impact hypothesis')).map(a=>a.href).join('\n')
+1788348547.4995970726	0.57	0	12431	0	snapshot
+1788348549.4251809120	0.14	0	108	0	eval document.querySelector('a[href="/wiki/Giant-impact_hypothesis"]').click(); 'clicked'
+1788348551.6052091122	0.14	0	52	0	status
+1788348554.8677799702	0.14	0	136	0	eval document.querySelector('a[href="/wiki/Giant-impact_hypothesis"]').click()
+1788348556.9445741177	0.48	0	88	0	eval document.querySelector('a[href*="Giant-impact_hypothesis"]').click()
+1788348560.3062789440	0.34	0	138	0	eval location.href
+1788348562.7787730694	0.24	0	12436	0	snapshot
+1788348564.0331840515	0.22	0	12436	0	snapshot

@@ -1,0 +1,33 @@
+{
+ "model": "pc_browser/vertex_ai/gemini-3.5-flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": 8000,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.35e-06,
+   "output": 8.1e-06,
+   "cache_read": 1.35e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.95764869,
+ "num_turns": 50,
+ "calls": 50,
+ "is_error": true,
+ "result": "",
+ "usage": {
+  "input_tokens": 2054144,
+  "output_tokens": 18087,
+  "cache_read_input_tokens": 1614774,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.5931495,
+  "out": 0.1465047,
+  "cache_read": 0.21799449,
+  "cache_write": 0.0
+ }
+}

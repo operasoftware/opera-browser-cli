@@ -1,0 +1,7 @@
+1788340473.5298159122	0.15	0	3156	0	--help
+1788340484.7222230434	1.51	0	12616	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788340490.8757569790	0.37	0	6969	0	eval Array.from(document.querySelectorAll('a[href*="section-15"]')).map(a => a.textContent + ' -> ' + a.href).filter(t => t.includes('15.5'))
+1788340503.5496311188	0.16	0	112	0	eval const headings = document.querySelectorAll('h4[id^="name-"], h3[id^="name-"]'); const result = []; headings.forEach(h => { const txt = h.textContent.trim(); if(txt.includes('404') || txt.match(/4\d\d/)) result.push(h.id + ' => ' + txt); }); result
+1788340506.8018519878	0.17	0	110	0	eval var r=[]; document.querySelectorAll("h4, h3, h2").forEach(function(h){ var t=h.textContent.trim(); if(t.includes("404")) r.push(h.id+" => "+t); }); r
+1788340509.2896881104	0.42	0	84	0	eval document.querySelectorAll('h4, h3, h2').length
+1788340513.3861269951	0.40	0	130	0	eval Array.from(document.querySelectorAll('h4, h3, h2')).filter(function(h){ return h.textContent.includes('404'); }).map(function(h){ return h.id + ' => ' + h.textContent.trim(); })

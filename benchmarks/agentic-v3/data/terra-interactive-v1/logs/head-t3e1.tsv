@@ -1,0 +1,4 @@
+1788273091.8996949196	0.13	0	3156	0	--help
+1788273094.8285679817	0.43	0	2040	0	open https://www.selenium.dev/selenium/web/web-form.html
+1788273095.2832620144	0.14	0	128	0	snapshot
+1788273097.9614610672	0.14	6	165	0	fillform @.5=Jan Kowalski @.7=secret1

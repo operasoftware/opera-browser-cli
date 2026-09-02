@@ -1,0 +1,2721 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12616B args=open https://www.rfc-editor.org/rfc/rfc9110.html =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  url: "https://www.rfc-editor.org/rfc/rfc9110.html"
+  refs: 6959
+snapshot:
+@2.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html"
+  @2.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @2.4 link "9110" url="/rfc/rfc9110"
+  @2.6 text "STD:97Obsoletes:"
+  @2.9 link "2818" url="/rfc/rfc2818"
+  @2.11 text ", "
+  @2.12 link "7230" url="/rfc/rfc7230"
+  @2.14 text ", "
+  @2.15 link "7231" url="/rfc/rfc7231"
+  @2.17 text ", "
+  @2.18 link "7232" url="/rfc/rfc7232"
+  @2.20 text ", "
+  @2.21 link "7233" url="/rfc/rfc7233"
+  @2.23 text ", "
+  @2.24 link "7235" url="/rfc/rfc7235"
+  @2.26 text ", "
+  @2.27 link "7538" url="/rfc/rfc7538"
+  @2.29 text ", "
+  @2.30 link "7615" url="/rfc/rfc7615"
+  @2.32 text ", "
+  @2.33 link "7694" url="/rfc/rfc7694"
+  @2.35 text "Updates:"
+  @2.36 link "3864" url="/rfc/rfc3864"
+  @2.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @2.54 # RFC 9110
+  @2.55 # HTTP Semantics
+  @2.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @2.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @2.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @2.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @2.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @2.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @2.67 text "."
+  @2.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @2.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @2.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @2.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.This document may contain material from IETF Documents or IETF Contributions published or made publicly available before November 10, 2008. The person(s) controlling the copyright in some of this material may not have granted the IETF Trust the right to allow modifications of such material outside the IETF Standards Process. Without obtaining an adequate license from the person(s) controlling the copyright in such materials, this document may not be modified outside the IETF Standards Process, and derivative works of it may not be created outside the IETF Standards Process, except to format it for publication as an RFC or to translate it into languages other than English."
+  @2.76 link "▲" url="/rfc/rfc9110.html#"
+  @2.78 link "Table of Contents" url="/rfc/rfc9110.html#name-table-of-contents"
+  @2.80 navigation
+    @2.81 link "1" url="/rfc/rfc9110.html#section-1"
+    @2.83 text ".  "
+... [tee capped at 4096 of 12616 bytes]
+
+===== CALL rc=0 out=12486B args=snapshot =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  refs: 6987
+snapshot:
+@2.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html"
+  @3.0 text "Status:Internet StandardObsoletes:"
+  @3.3 link "2818" url="/rfc/rfc2818"
+  @3.5 text ", "
+  @3.6 link "7230" url="/rfc/rfc7230"
+  @3.8 text ", "
+  @3.9 link "7231" url="/rfc/rfc7231"
+  @3.11 text ", "
+  @3.12 link "7232" url="/rfc/rfc7232"
+  @3.14 text ", "
+  @3.15 link "7233" url="/rfc/rfc7233"
+  @3.17 text ", "
+  @3.18 link "7235" url="/rfc/rfc7235"
+  @3.20 text ", "
+  @3.21 link "7538" url="/rfc/rfc7538"
+  @3.23 text ", "
+  @3.24 link "7615" url="/rfc/rfc7615"
+  @3.26 text ", "
+  @3.27 link "7694" url="/rfc/rfc7694"
+  @3.29 text "Updates:"
+  @3.30 link "3864" url="/rfc/rfc3864"
+  @3.32 text "More info:"
+  @3.33 link "Errata exist" url="/errata/rfc9110"
+  @3.35 text " | "
+  @3.36 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @3.38 text "| "
+  @3.39 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @3.41 text " | "
+  @3.42 link "Info page" url="/info/rfc9110"
+  @2.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @2.4 link "9110" url="/rfc/rfc9110"
+  @2.6 text "STD:97Obsoletes:"
+  @2.9 link "2818" url="/rfc/rfc2818"
+  @2.11 text ", "
+  @2.12 link "7230" url="/rfc/rfc7230"
+  @2.14 text ", "
+  @2.15 link "7231" url="/rfc/rfc7231"
+  @2.17 text ", "
+  @2.18 link "7232" url="/rfc/rfc7232"
+  @2.20 text ", "
+  @2.21 link "7233" url="/rfc/rfc7233"
+  @2.23 text ", "
+  @2.24 link "7235" url="/rfc/rfc7235"
+  @2.26 text ", "
+  @2.27 link "7538" url="/rfc/rfc7538"
+  @2.29 text ", "
+  @2.30 link "7615" url="/rfc/rfc7615"
+  @2.32 text ", "
+  @2.33 link "7694" url="/rfc/rfc7694"
+  @2.35 text "Updates:"
+  @2.36 link "3864" url="/rfc/rfc3864"
+  @2.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @2.54 # RFC 9110
+  @2.55 # HTTP Semantics
+  @2.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @2.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @2.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @2.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @2.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @2.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @2.67 text "."
+  @2.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @2.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @2.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @2.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.This document 
+... [tee capped at 4096 of 12486 bytes]
+
+===== CALL rc=0 out=12486B args=snapshot =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  refs: 6987
+snapshot:
+@2.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html"
+  @3.0 text "Status:Internet StandardObsoletes:"
+  @3.3 link "2818" url="/rfc/rfc2818"
+  @3.5 text ", "
+  @3.6 link "7230" url="/rfc/rfc7230"
+  @3.8 text ", "
+  @3.9 link "7231" url="/rfc/rfc7231"
+  @3.11 text ", "
+  @3.12 link "7232" url="/rfc/rfc7232"
+  @3.14 text ", "
+  @3.15 link "7233" url="/rfc/rfc7233"
+  @3.17 text ", "
+  @3.18 link "7235" url="/rfc/rfc7235"
+  @3.20 text ", "
+  @3.21 link "7538" url="/rfc/rfc7538"
+  @3.23 text ", "
+  @3.24 link "7615" url="/rfc/rfc7615"
+  @3.26 text ", "
+  @3.27 link "7694" url="/rfc/rfc7694"
+  @3.29 text "Updates:"
+  @3.30 link "3864" url="/rfc/rfc3864"
+  @3.32 text "More info:"
+  @3.33 link "Errata exist" url="/errata/rfc9110"
+  @3.35 text " | "
+  @3.36 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @3.38 text "| "
+  @3.39 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @3.41 text " | "
+  @3.42 link "Info page" url="/info/rfc9110"
+  @2.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @2.4 link "9110" url="/rfc/rfc9110"
+  @2.6 text "STD:97Obsoletes:"
+  @2.9 link "2818" url="/rfc/rfc2818"
+  @2.11 text ", "
+  @2.12 link "7230" url="/rfc/rfc7230"
+  @2.14 text ", "
+  @2.15 link "7231" url="/rfc/rfc7231"
+  @2.17 text ", "
+  @2.18 link "7232" url="/rfc/rfc7232"
+  @2.20 text ", "
+  @2.21 link "7233" url="/rfc/rfc7233"
+  @2.23 text ", "
+  @2.24 link "7235" url="/rfc/rfc7235"
+  @2.26 text ", "
+  @2.27 link "7538" url="/rfc/rfc7538"
+  @2.29 text ", "
+  @2.30 link "7615" url="/rfc/rfc7615"
+  @2.32 text ", "
+  @2.33 link "7694" url="/rfc/rfc7694"
+  @2.35 text "Updates:"
+  @2.36 link "3864" url="/rfc/rfc3864"
+  @2.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @2.54 # RFC 9110
+  @2.55 # HTTP Semantics
+  @2.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @2.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @2.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @2.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @2.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @2.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @2.67 text "."
+  @2.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @2.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @2.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @2.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.This document 
+... [tee capped at 4096 of 12486 bytes]
+
+===== CALL rc=0 out=12486B args=snapshot =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  refs: 6987
+snapshot:
+@2.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html"
+  @3.0 text "Status:Internet StandardObsoletes:"
+  @3.3 link "2818" url="/rfc/rfc2818"
+  @3.5 text ", "
+  @3.6 link "7230" url="/rfc/rfc7230"
+  @3.8 text ", "
+  @3.9 link "7231" url="/rfc/rfc7231"
+  @3.11 text ", "
+  @3.12 link "7232" url="/rfc/rfc7232"
+  @3.14 text ", "
+  @3.15 link "7233" url="/rfc/rfc7233"
+  @3.17 text ", "
+  @3.18 link "7235" url="/rfc/rfc7235"
+  @3.20 text ", "
+  @3.21 link "7538" url="/rfc/rfc7538"
+  @3.23 text ", "
+  @3.24 link "7615" url="/rfc/rfc7615"
+  @3.26 text ", "
+  @3.27 link "7694" url="/rfc/rfc7694"
+  @3.29 text "Updates:"
+  @3.30 link "3864" url="/rfc/rfc3864"
+  @3.32 text "More info:"
+  @3.33 link "Errata exist" url="/errata/rfc9110"
+  @3.35 text " | "
+  @3.36 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @3.38 text "| "
+  @3.39 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @3.41 text " | "
+  @3.42 link "Info page" url="/info/rfc9110"
+  @2.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @2.4 link "9110" url="/rfc/rfc9110"
+  @2.6 text "STD:97Obsoletes:"
+  @2.9 link "2818" url="/rfc/rfc2818"
+  @2.11 text ", "
+  @2.12 link "7230" url="/rfc/rfc7230"
+  @2.14 text ", "
+  @2.15 link "7231" url="/rfc/rfc7231"
+  @2.17 text ", "
+  @2.18 link "7232" url="/rfc/rfc7232"
+  @2.20 text ", "
+  @2.21 link "7233" url="/rfc/rfc7233"
+  @2.23 text ", "
+  @2.24 link "7235" url="/rfc/rfc7235"
+  @2.26 text ", "
+  @2.27 link "7538" url="/rfc/rfc7538"
+  @2.29 text ", "
+  @2.30 link "7615" url="/rfc/rfc7615"
+  @2.32 text ", "
+  @2.33 link "7694" url="/rfc/rfc7694"
+  @2.35 text "Updates:"
+  @2.36 link "3864" url="/rfc/rfc3864"
+  @2.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @2.54 # RFC 9110
+  @2.55 # HTTP Semantics
+  @2.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @2.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @2.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @2.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @2.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @2.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @2.67 text "."
+  @2.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @2.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @2.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @2.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.This document 
+... [tee capped at 4096 of 12486 bytes]
+
+===== CALL rc=0 out=12612B args=open https://www.rfc-editor.org/rfc/rfc9110.html#section-15 =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-15"
+  refs: 6987
+snapshot:
+@2.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html#section-15"
+  @3.0 text "Status:Internet StandardObsoletes:"
+  @3.3 link "2818" url="/rfc/rfc2818"
+  @3.5 text ", "
+  @3.6 link "7230" url="/rfc/rfc7230"
+  @3.8 text ", "
+  @3.9 link "7231" url="/rfc/rfc7231"
+  @3.11 text ", "
+  @3.12 link "7232" url="/rfc/rfc7232"
+  @3.14 text ", "
+  @3.15 link "7233" url="/rfc/rfc7233"
+  @3.17 text ", "
+  @3.18 link "7235" url="/rfc/rfc7235"
+  @3.20 text ", "
+  @3.21 link "7538" url="/rfc/rfc7538"
+  @3.23 text ", "
+  @3.24 link "7615" url="/rfc/rfc7615"
+  @3.26 text ", "
+  @3.27 link "7694" url="/rfc/rfc7694"
+  @3.29 text "Updates:"
+  @3.30 link "3864" url="/rfc/rfc3864"
+  @3.32 text "More info:"
+  @3.33 link "Errata exist" url="/errata/rfc9110"
+  @3.35 text " | "
+  @3.36 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @3.38 text "| "
+  @3.39 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @3.41 text " | "
+  @3.42 link "Info page" url="/info/rfc9110"
+  @2.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @2.4 link "9110" url="/rfc/rfc9110"
+  @2.6 text "STD:97Obsoletes:"
+  @2.9 link "2818" url="/rfc/rfc2818"
+  @2.11 text ", "
+  @2.12 link "7230" url="/rfc/rfc7230"
+  @2.14 text ", "
+  @2.15 link "7231" url="/rfc/rfc7231"
+  @2.17 text ", "
+  @2.18 link "7232" url="/rfc/rfc7232"
+  @2.20 text ", "
+  @2.21 link "7233" url="/rfc/rfc7233"
+  @2.23 text ", "
+  @2.24 link "7235" url="/rfc/rfc7235"
+  @2.26 text ", "
+  @2.27 link "7538" url="/rfc/rfc7538"
+  @2.29 text ", "
+  @2.30 link "7615" url="/rfc/rfc7615"
+  @2.32 text ", "
+  @2.33 link "7694" url="/rfc/rfc7694"
+  @2.35 text "Updates:"
+  @2.36 link "3864" url="/rfc/rfc3864"
+  @2.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @2.54 # RFC 9110
+  @2.55 # HTTP Semantics
+  @2.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @2.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @2.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @2.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @2.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @2.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @2.67 text "."
+  @2.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @2.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @2.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @2.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provi
+... [tee capped at 4096 of 12612 bytes]
+
+===== CALL rc=0 out=12497B args=snapshot =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  refs: 6987
+snapshot:
+@2.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html#section-15"
+  @3.0 text "Status:Internet StandardObsoletes:"
+  @3.3 link "2818" url="/rfc/rfc2818"
+  @3.5 text ", "
+  @3.6 link "7230" url="/rfc/rfc7230"
+  @3.8 text ", "
+  @3.9 link "7231" url="/rfc/rfc7231"
+  @3.11 text ", "
+  @3.12 link "7232" url="/rfc/rfc7232"
+  @3.14 text ", "
+  @3.15 link "7233" url="/rfc/rfc7233"
+  @3.17 text ", "
+  @3.18 link "7235" url="/rfc/rfc7235"
+  @3.20 text ", "
+  @3.21 link "7538" url="/rfc/rfc7538"
+  @3.23 text ", "
+  @3.24 link "7615" url="/rfc/rfc7615"
+  @3.26 text ", "
+  @3.27 link "7694" url="/rfc/rfc7694"
+  @3.29 text "Updates:"
+  @3.30 link "3864" url="/rfc/rfc3864"
+  @3.32 text "More info:"
+  @3.33 link "Errata exist" url="/errata/rfc9110"
+  @3.35 text " | "
+  @3.36 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @3.38 text "| "
+  @3.39 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @3.41 text " | "
+  @3.42 link "Info page" url="/info/rfc9110"
+  @2.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @2.4 link "9110" url="/rfc/rfc9110"
+  @2.6 text "STD:97Obsoletes:"
+  @2.9 link "2818" url="/rfc/rfc2818"
+  @2.11 text ", "
+  @2.12 link "7230" url="/rfc/rfc7230"
+  @2.14 text ", "
+  @2.15 link "7231" url="/rfc/rfc7231"
+  @2.17 text ", "
+  @2.18 link "7232" url="/rfc/rfc7232"
+  @2.20 text ", "
+  @2.21 link "7233" url="/rfc/rfc7233"
+  @2.23 text ", "
+  @2.24 link "7235" url="/rfc/rfc7235"
+  @2.26 text ", "
+  @2.27 link "7538" url="/rfc/rfc7538"
+  @2.29 text ", "
+  @2.30 link "7615" url="/rfc/rfc7615"
+  @2.32 text ", "
+  @2.33 link "7694" url="/rfc/rfc7694"
+  @2.35 text "Updates:"
+  @2.36 link "3864" url="/rfc/rfc3864"
+  @2.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @2.54 # RFC 9110
+  @2.55 # HTTP Semantics
+  @2.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @2.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @2.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @2.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @2.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @2.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @2.67 text "."
+  @2.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @2.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @2.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @2.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.Thi
+... [tee capped at 4096 of 12497 bytes]
+
+===== CALL rc=0 out=12497B args=snapshot =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  refs: 6987
+snapshot:
+@2.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html#section-15"
+  @3.0 text "Status:Internet StandardObsoletes:"
+  @3.3 link "2818" url="/rfc/rfc2818"
+  @3.5 text ", "
+  @3.6 link "7230" url="/rfc/rfc7230"
+  @3.8 text ", "
+  @3.9 link "7231" url="/rfc/rfc7231"
+  @3.11 text ", "
+  @3.12 link "7232" url="/rfc/rfc7232"
+  @3.14 text ", "
+  @3.15 link "7233" url="/rfc/rfc7233"
+  @3.17 text ", "
+  @3.18 link "7235" url="/rfc/rfc7235"
+  @3.20 text ", "
+  @3.21 link "7538" url="/rfc/rfc7538"
+  @3.23 text ", "
+  @3.24 link "7615" url="/rfc/rfc7615"
+  @3.26 text ", "
+  @3.27 link "7694" url="/rfc/rfc7694"
+  @3.29 text "Updates:"
+  @3.30 link "3864" url="/rfc/rfc3864"
+  @3.32 text "More info:"
+  @3.33 link "Errata exist" url="/errata/rfc9110"
+  @3.35 text " | "
+  @3.36 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @3.38 text "| "
+  @3.39 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @3.41 text " | "
+  @3.42 link "Info page" url="/info/rfc9110"
+  @2.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @2.4 link "9110" url="/rfc/rfc9110"
+  @2.6 text "STD:97Obsoletes:"
+  @2.9 link "2818" url="/rfc/rfc2818"
+  @2.11 text ", "
+  @2.12 link "7230" url="/rfc/rfc7230"
+  @2.14 text ", "
+  @2.15 link "7231" url="/rfc/rfc7231"
+  @2.17 text ", "
+  @2.18 link "7232" url="/rfc/rfc7232"
+  @2.20 text ", "
+  @2.21 link "7233" url="/rfc/rfc7233"
+  @2.23 text ", "
+  @2.24 link "7235" url="/rfc/rfc7235"
+  @2.26 text ", "
+  @2.27 link "7538" url="/rfc/rfc7538"
+  @2.29 text ", "
+  @2.30 link "7615" url="/rfc/rfc7615"
+  @2.32 text ", "
+  @2.33 link "7694" url="/rfc/rfc7694"
+  @2.35 text "Updates:"
+  @2.36 link "3864" url="/rfc/rfc3864"
+  @2.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @2.54 # RFC 9110
+  @2.55 # HTTP Semantics
+  @2.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @2.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @2.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @2.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @2.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @2.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @2.67 text "."
+  @2.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @2.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @2.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @2.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.Thi
+... [tee capped at 4096 of 12497 bytes]
+
+===== CALL rc=0 out=12497B args=snapshot =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  refs: 6987
+snapshot:
+@2.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html#section-15"
+  @3.0 text "Status:Internet StandardObsoletes:"
+  @3.3 link "2818" url="/rfc/rfc2818"
+  @3.5 text ", "
+  @3.6 link "7230" url="/rfc/rfc7230"
+  @3.8 text ", "
+  @3.9 link "7231" url="/rfc/rfc7231"
+  @3.11 text ", "
+  @3.12 link "7232" url="/rfc/rfc7232"
+  @3.14 text ", "
+  @3.15 link "7233" url="/rfc/rfc7233"
+  @3.17 text ", "
+  @3.18 link "7235" url="/rfc/rfc7235"
+  @3.20 text ", "
+  @3.21 link "7538" url="/rfc/rfc7538"
+  @3.23 text ", "
+  @3.24 link "7615" url="/rfc/rfc7615"
+  @3.26 text ", "
+  @3.27 link "7694" url="/rfc/rfc7694"
+  @3.29 text "Updates:"
+  @3.30 link "3864" url="/rfc/rfc3864"
+  @3.32 text "More info:"
+  @3.33 link "Errata exist" url="/errata/rfc9110"
+  @3.35 text " | "
+  @3.36 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @3.38 text "| "
+  @3.39 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @3.41 text " | "
+  @3.42 link "Info page" url="/info/rfc9110"
+  @2.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @2.4 link "9110" url="/rfc/rfc9110"
+  @2.6 text "STD:97Obsoletes:"
+  @2.9 link "2818" url="/rfc/rfc2818"
+  @2.11 text ", "
+  @2.12 link "7230" url="/rfc/rfc7230"
+  @2.14 text ", "
+  @2.15 link "7231" url="/rfc/rfc7231"
+  @2.17 text ", "
+  @2.18 link "7232" url="/rfc/rfc7232"
+  @2.20 text ", "
+  @2.21 link "7233" url="/rfc/rfc7233"
+  @2.23 text ", "
+  @2.24 link "7235" url="/rfc/rfc7235"
+  @2.26 text ", "
+  @2.27 link "7538" url="/rfc/rfc7538"
+  @2.29 text ", "
+  @2.30 link "7615" url="/rfc/rfc7615"
+  @2.32 text ", "
+  @2.33 link "7694" url="/rfc/rfc7694"
+  @2.35 text "Updates:"
+  @2.36 link "3864" url="/rfc/rfc3864"
+  @2.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @2.54 # RFC 9110
+  @2.55 # HTTP Semantics
+  @2.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @2.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @2.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @2.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @2.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @2.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @2.67 text "."
+  @2.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @2.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @2.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @2.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.Thi
+... [tee capped at 4096 of 12497 bytes]
+
+===== CALL rc=0 out=12497B args=snapshot =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  refs: 6987
+snapshot:
+@2.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html#section-15"
+  @3.0 text "Status:Internet StandardObsoletes:"
+  @3.3 link "2818" url="/rfc/rfc2818"
+  @3.5 text ", "
+  @3.6 link "7230" url="/rfc/rfc7230"
+  @3.8 text ", "
+  @3.9 link "7231" url="/rfc/rfc7231"
+  @3.11 text ", "
+  @3.12 link "7232" url="/rfc/rfc7232"
+  @3.14 text ", "
+  @3.15 link "7233" url="/rfc/rfc7233"
+  @3.17 text ", "
+  @3.18 link "7235" url="/rfc/rfc7235"
+  @3.20 text ", "
+  @3.21 link "7538" url="/rfc/rfc7538"
+  @3.23 text ", "
+  @3.24 link "7615" url="/rfc/rfc7615"
+  @3.26 text ", "
+  @3.27 link "7694" url="/rfc/rfc7694"
+  @3.29 text "Updates:"
+  @3.30 link "3864" url="/rfc/rfc3864"
+  @3.32 text "More info:"
+  @3.33 link "Errata exist" url="/errata/rfc9110"
+  @3.35 text " | "
+  @3.36 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @3.38 text "| "
+  @3.39 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @3.41 text " | "
+  @3.42 link "Info page" url="/info/rfc9110"
+  @2.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @2.4 link "9110" url="/rfc/rfc9110"
+  @2.6 text "STD:97Obsoletes:"
+  @2.9 link "2818" url="/rfc/rfc2818"
+  @2.11 text ", "
+  @2.12 link "7230" url="/rfc/rfc7230"
+  @2.14 text ", "
+  @2.15 link "7231" url="/rfc/rfc7231"
+  @2.17 text ", "
+  @2.18 link "7232" url="/rfc/rfc7232"
+  @2.20 text ", "
+  @2.21 link "7233" url="/rfc/rfc7233"
+  @2.23 text ", "
+  @2.24 link "7235" url="/rfc/rfc7235"
+  @2.26 text ", "
+  @2.27 link "7538" url="/rfc/rfc7538"
+  @2.29 text ", "
+  @2.30 link "7615" url="/rfc/rfc7615"
+  @2.32 text ", "
+  @2.33 link "7694" url="/rfc/rfc7694"
+  @2.35 text "Updates:"
+  @2.36 link "3864" url="/rfc/rfc3864"
+  @2.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @2.54 # RFC 9110
+  @2.55 # HTTP Semantics
+  @2.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @2.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @2.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @2.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @2.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @2.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @2.67 text "."
+  @2.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @2.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @2.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @2.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.Thi
+... [tee capped at 4096 of 12497 bytes]
+
+===== CALL rc=0 out=12495B args=scroll down =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  refs: 6987
+snapshot:
+@2.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html#section-15"
+  @3.0 text "Status:Internet StandardObsoletes:"
+  @3.3 link "2818" url="/rfc/rfc2818"
+  @3.5 text ", "
+  @3.6 link "7230" url="/rfc/rfc7230"
+  @3.8 text ", "
+  @3.9 link "7231" url="/rfc/rfc7231"
+  @3.11 text ", "
+  @3.12 link "7232" url="/rfc/rfc7232"
+  @3.14 text ", "
+  @3.15 link "7233" url="/rfc/rfc7233"
+  @3.17 text ", "
+  @3.18 link "7235" url="/rfc/rfc7235"
+  @3.20 text ", "
+  @3.21 link "7538" url="/rfc/rfc7538"
+  @3.23 text ", "
+  @3.24 link "7615" url="/rfc/rfc7615"
+  @3.26 text ", "
+  @3.27 link "7694" url="/rfc/rfc7694"
+  @3.29 text "Updates:"
+  @3.30 link "3864" url="/rfc/rfc3864"
+  @3.32 text "More info:"
+  @3.33 link "Errata exist" url="/errata/rfc9110"
+  @3.35 text " | "
+  @3.36 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @3.38 text "| "
+  @3.39 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @3.41 text " | "
+  @3.42 link "Info page" url="/info/rfc9110"
+  @2.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @2.4 link "9110" url="/rfc/rfc9110"
+  @2.6 text "STD:97Obsoletes:"
+  @2.9 link "2818" url="/rfc/rfc2818"
+  @2.11 text ", "
+  @2.12 link "7230" url="/rfc/rfc7230"
+  @2.14 text ", "
+  @2.15 link "7231" url="/rfc/rfc7231"
+  @2.17 text ", "
+  @2.18 link "7232" url="/rfc/rfc7232"
+  @2.20 text ", "
+  @2.21 link "7233" url="/rfc/rfc7233"
+  @2.23 text ", "
+  @2.24 link "7235" url="/rfc/rfc7235"
+  @2.26 text ", "
+  @2.27 link "7538" url="/rfc/rfc7538"
+  @2.29 text ", "
+  @2.30 link "7615" url="/rfc/rfc7615"
+  @2.32 text ", "
+  @2.33 link "7694" url="/rfc/rfc7694"
+  @2.35 text "Updates:"
+  @2.36 link "3864" url="/rfc/rfc3864"
+  @2.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @2.54 # RFC 9110
+  @2.55 # HTTP Semantics
+  @2.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @2.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @2.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @2.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @2.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @2.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @2.67 text "."
+  @2.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @2.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @2.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @2.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.Thi
+... [tee capped at 4096 of 12495 bytes]
+
+===== CALL rc=0 out=12723B args=open https://datatracker.ietf.org/doc/html/rfc9110 =====
+page:
+  title: RFC 9110 - HTTP Semantics
+  url: "https://datatracker.ietf.org/doc/html/rfc9110"
+  refs: 9829
+snapshot:
+@12.0 root "RFC 9110 - HTTP Semantics" url="/doc/html/rfc9110"
+  @12.1 button "Toggle theme" expandable
+  @12.2 button "Toggle metadata sidebar" expandable expanded
+  @12.3 generic
+    @12.5 text "Internet Engineering Task Force (IETF)Request for Comments:"
+    @12.7 link "9110" url="https://www.rfc-editor.org/rfc/rfc9110"
+    @12.6 text "STD:97Obsoletes:"
+    @12.10 link "2818" url="https://www.rfc-editor.org/rfc/rfc2818"
+    @12.12 text ","
+    @12.13 link "7230" url="https://www.rfc-editor.org/rfc/rfc7230"
+    @12.15 text ","
+    @12.16 link "7231" url="https://www.rfc-editor.org/rfc/rfc7231"
+    @12.18 text ","
+    @12.19 link "7232" url="https://www.rfc-editor.org/rfc/rfc7232"
+    @12.21 text ","
+    @12.22 link "7233" url="https://www.rfc-editor.org/rfc/rfc7233"
+    @12.24 text ","
+    @12.25 link "7235" url="https://www.rfc-editor.org/rfc/rfc7235"
+    @12.27 text ","
+    @12.28 link "7538" url="https://www.rfc-editor.org/rfc/rfc7538"
+    @12.30 text ","
+    @12.31 link "7615" url="https://www.rfc-editor.org/rfc/rfc7615"
+    @12.33 text ","
+    @12.34 link "7694" url="https://www.rfc-editor.org/rfc/rfc7694"
+    @12.6 text "Updates:"
+    @12.36 link "3864" url="https://www.rfc-editor.org/rfc/rfc3864"
+    @12.6 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+    @12.50 # HTTP Semantics
+    @12.51 link "Abstract" url="/doc/html/rfc9110#abstract"
+    @12.53 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+    @12.54 link "¶" url="/doc/html/rfc9110#section-abstract-1"
+    @12.56 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+    @12.57 link "¶" url="/doc/html/rfc9110#section-abstract-2"
+    @12.59 link "Status of This Memo" url="/doc/html/rfc9110#name-status-of-this-memo"
+    @12.61 text "This is an Internet Standards Track document."
+    @12.62 link "¶" url="/doc/html/rfc9110#section-boilerplate.1-1"
+    @12.64 text "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841."
+    @12.65 link "¶" url="/doc/html/rfc9110#section-boilerplate.1-2"
+    @12.67 text "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+    @12.68 link "https://www.rfc-editor.org/info/rfc9110" url="https://www.rfc-editor.org/info/rfc9110"
+    @12.70 text "."
+    @12.71 link "¶" url="/doc/html/rfc9110#section-boilerplate.1-3"
+    @12.73 link "Copyright Notice" url="/doc/html/rfc9110#name-copyright-notice"
+    @12.75 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved."
+    @12.76 link "¶" url="/doc/html/rfc9110#section-boilerplate.2-1"
+    @12.78 text "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+    @12.79 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+    @12.81 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions a
+... [tee capped at 4096 of 12723 bytes]
+
+===== CALL rc=0 out=1994B args=open https://html.duckduckgo.com/html/?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22 =====
+page:
+  title: DuckDuckGo
+  url: "https://html.duckduckgo.com/html/?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22"
+  refs: 26
+snapshot:
+@13.0 root "DuckDuckGo" url="/html/?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22"
+  @13.2 link "DuckDuckGo" url="/html/"
+  @13.6 Iframe
+    @13.7 root url="about:blank"
+  @13.8 form
+  @13.9 form
+    @13.10 text "Unfortunately, bots use DuckDuckGo too.Please complete the following challenge to confirm this search was made by a human.Select all squares containing a duck:█"
+    @13.14 image "  " url="/assets/anomaly/images/challenge/d3ca1b5cde10ee6e3e079b1f29e76427.jpg"
+    @13.13 text "█"
+    @13.15 image "  " url="/assets/anomaly/images/challenge/febf30f71991dc91e84a45c161155a9d.jpg"
+    @13.13 text "█"
+    @13.16 image "  " url="/assets/anomaly/images/challenge/d6b4642fabe209017fb2700a23bf3cf9.jpg"
+    @13.13 text "█"
+    @13.17 image "  " url="/assets/anomaly/images/challenge/1b5e621ebebd5048990d3716bb989982.jpg"
+    @13.13 text "█"
+    @13.18 image "  " url="/assets/anomaly/images/challenge/cec50d923f1504ed24d6a4507fa1baaf.jpg"
+    @13.13 text "█"
+    @13.19 image "  " url="/assets/anomaly/images/challenge/19a35de270e182a720528e91465f7484.jpg"
+    @13.13 text "█"
+    @13.20 image "  " url="/assets/anomaly/images/challenge/e82fd4ced95c8b74b7e6b131f7a16a28.jpg"
+    @13.13 text "█"
+    @13.21 image "  " url="/assets/anomaly/images/challenge/a562f54677b3cc2b562072ac2a39773e.jpg"
+    @13.13 text "█"
+    @13.22 image "  " url="/assets/anomaly/images/challenge/8318fbaadfe528ae2785564baa144bf0.jpg"
+    @13.23 button "Submit"
+    @13.24 text "Images not loading?"
+help[4]:
+  Run `opera-browser-cli click @13.23` to click the "Submit" button
+  Run `opera-browser-cli click @13.2` to click the "DuckDuckGo" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=1277B args=open https://www.google.com/search?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22 =====
+page:
+  title: "https://www.google.com/search?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22&sei=OOeWarCeMaeL7NYPqdXaqQk"
+  url: "https://www.google.com/search?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22"
+  refs: 6
+snapshot:
+@14.0 root "https://www.google.com/search?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22&sei=OOeWarCeMaeL7NYPqdXaqQk" url=$u1
+  @14.2 form
+    @14.3 IframePresentational "reCAPTCHA"
+  @14.4 text "About this pageOur systems have detected unusual traffic from your computer network. This page checks to see if it's really you sending the requests, and not a robot. "
+  @14.8 link "Why did this happen?" url=$u2
+  @14.13 text "IP address: 2001:67c:2f74:100:71c1:f111:67f4:d1cbTime: 2026-09-01T14:54:49ZURL: https://www.google.com/search?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22&sei=OOeWarCeMaeL7NYPqdXaqQk"
+urls:
+  $u1 [hidden 261b → /sorry/index?continue=https://www.google.com/search%3Fq%3Ds…]
+  $u2 [hidden 262b → /sorry/index?continue=https://www.google.com/search%3Fq%3Ds…]
+help[2]:
+  Run `opera-browser-cli click @14.8` to click the "Why did this happen?" link
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=6398B args=open https://www.bing.com/search?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22 =====
+page:
+  title: "site:rfc-editor.org/rfc/rfc9110 "
+  url: "https://www.bing.com/search?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22"
+  refs: 67
+snapshot:
+@15.0 root "site:rfc-editor.org/rfc/rfc9110 "404 Not Found" - Search" url="/search?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22&rdr=1&rdrig=8AF63B53442E4D8CADAB971A14D533B2"
+  @15.1 banner
+    @15.2 button "Skip to content"
+    @15.3 button "Accessibility Feedback"
+    @15.4 form
+      @15.5 link "Back to Bing search" url="/?FORM=Z9FD1"
+        @15.6 # Back to Bing search
+      @15.7 search
+        @15.8 button "Search"
+        @15.9 searchbox "Enter your search here - Search suggestions will show as you type" value="site:rfc-editor.org/rfc/rfc9110 "404 Not Found""
+        @15.10 button "Search using an image"
+    @15.11 complementary "Account Rewards and Preferences"
+      @15.12 button "Microsoft Rewards" expandable haspopup="menu"
+      @15.13 link "Sign in" haspopup="menu"
+        @15.14 generic "Sign in"
+    @15.15 navigation "Search Filter"
+      @15.16 link "ALL" url="/?scope=web&FORM=HDRSC1"
+      @15.18 link "SEARCH" url="/copilotsearch?q=site%3arfc-editor.org%2frfc%2frfc9110+%22404+Not+Found%22&FORM=CSSCOP"
+      @15.20 link "IMAGES" url=$u1
+      @15.22 link "VIDEOS" url=$u2
+      @15.24 link "MAPS" url=$u3
+      @15.26 link "NEWS" url=$u4
+      @15.28 button "MORE" haspopup="menu"
+  @15.29 main "Search Results"
+    @15.30 text "About 20 results"
+    @15.31 link "grammar.com" url=$u5
+      @15.33 generic
+        @15.34 text "https://www.grammar.com › paraphrasing-tool"
+    @15.35 link "Rewrite Text - Grammar.com" url=$u5
+    @15.38 text "Free Rewriter & Paraphraser Paraphrase smarter with our free AI tool. Instantly turn your text into fresh, original content—no more …"
+    @15.39 link "grammarly.com" url=$u6
+      @15.41 generic
+        @15.42 text "https://www.grammarly.com › paraphrasing-tool"
+    @15.43 link "Free Paraphrasing Tool | Paraphrase Instantly (No Sign-up)" url=$u6
+    @15.45 text "Paraphrase text instantly without losing meaning with our free AI-powered paraphrasing tool. Get instant rewrites to improve clarity, …"
+    @15.46 link "chatgpt.com" url=$u7
+      @15.48 generic
+        @15.49 text "https://chatgpt.com › writing › paraphrase"
+    @15.50 link "ChatGPT Writing Tools | Paraphrase Text with ChatGPT" url=$u7
+    @15.54 text "Paraphrase and rewrite text with ChatGPT. Easily reword sentences, refine tone, and adjust length for emails, essays, and everyday …"
+    @15.55 link "grammarly.com" url=$u8
+      @15.57 generic
+        @15.58 text "https://www.grammarly.com › ai › ai-writing-tools › rewording-tool"
+    @15.59 link "Free AI Rewording Tool | Reword Text Easily - Grammarly" url=$u8
+    @15.64 text "With Grammarly’s free rewording tool, you can use AI to instantly rewrite content for essays, articles, emails, and beyond. Type or …"
+    @15.65 link "ahrefs.com" url=$u9
+      @15.67 generic
+        @15.68 text "https://ahrefs.com › writing-tools › paragraph-rewriter"
+    @15.69 link "quillbot.com" url=$u10
+      @15.71 generic
+        @15.72 text "https://quillbot.com › paraphrasing-tool"
+    @15.73 link "rewriteai.com" url=$u11
+      @15.75 generic
+        @15.76 text "https://rewriteai.com › tools › paragraph-rewriter"
+    @15.77 link "monica.im" url=$u12
+      @15.79 generic
+        @15.80 text "https://monica.im › en › tools › rewrite-text"
+    @15.81 link "chatgpt.com" url=$u13
+      @15.83 generic
+        @15.84 text "https://chatgpt.com › writing › paragraph-rewriter"
+    @15.85 link "ahrefs.com" url=$u14
+      @15.87 generic
+        @15.88 text "https://ahrefs.com › writing-tools › sentence-rewriter"
+    @15.89 link "Some results have been removed" url=$u15
+  @15.91 complementary "Additional Results"
+  @15.92 complementary "Explore More"
+  @15.93 contentinfo
+urls:
+  $u1 [hidden 283b → /ck/a?!&p=a81f4b9aeb53d8aa66bab1b0dd355b5faa9ebe4b57eb51d8c…]
+  $u2 [hidden 283b → /ck/a?!&p=931ff54b6ef008b6f944995081d68782bd2843bf5e1d3ff26…]
+  $u3 [hidden 271b → /ck/a?!
+... [tee capped at 4096 of 6398 bytes]
+
+===== CALL rc=0 out=12349B args=open https://www.rfc-editor.org/rfc/rfc9110.txt =====
+page:
+  url: "https://www.rfc-editor.org/rfc/rfc9110.txt"
+  refs: 2
+snapshot:
+@16.0 root url="/rfc/rfc9110.txt"
+  @16.1 text "
+
+
+
+Internet Engineering Task Force (IETF)                  R. Fielding, Ed.
+Request for Comments: 9110                                         Adobe
+STD: 97                                               M. Nottingham, Ed.
+Obsoletes: 2818, 7230, 7231, 7232, 7233, 7235,                    Fastly
+           7538, 7615, 7694                              J. Reschke, Ed.
+Updates: 3864                                                 greenbytes
+Category: Standards Track                                      June 2022
+ISSN: 2070-1721
+
+
+                             HTTP Semantics
+
+Abstract
+
+   The Hypertext Transfer Protocol (HTTP) is a stateless application-
+   level protocol for distributed, collaborative, hypertext information
+   systems.  This document describes the overall architecture of HTTP,
+   establishes common terminology, and defines aspects of the protocol
+   that are shared by all versions.  In this definition are core
+   protocol elements, extensibility mechanisms, and the "http" and
+   "https" Uniform Resource Identifier (URI) schemes.
+
+   This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232,
+   7233, 7235, 7538, 7615, 7694, and portions of 7230.
+
+Status of This Memo
+
+   This is an Internet Standards Track document.
+
+   This document is a product of the Internet Engineering Task Force
+   (IETF).  It represents the consensus of the IETF community.  It has
+   received public review and has been approved for publication by the
+   Internet Engineering Steering Group (IESG).  Further information on
+   Internet Standards is available in Section 2 of RFC 7841.
+
+   Information about the current status of this document, any errata,
+   and how to provide feedback on it may be obtained at
+   https://www.rfc-editor.org/info/rfc9110.
+
+Copyright Notice
+
+   Copyright (c) 2022 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (https://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Revised BSD License text as described in Section 4.e of the
+   Trust Legal Provisions and are provided without warranty as described
+   in the Revised BSD License.
+
+   This document may contain material from IETF Documents or IETF
+   Contributions published or made publicly available before November
+   10, 2008.  The person(s) controlling the copyright in some of this
+   material may not have granted the IETF Trust the right to allow
+   modifications of such material outside the IETF Standards Process.
+   Without obtaining an adequate license from the person(s) controlling
+   the copyright in such materials, this document may not be modified
+   outside the IETF Standards Process, and derivative works of it may
+   not be created outside the IETF Standards Process, except to format
+   it for publication as an RFC or to translate it into languages other
+   than English.
+
+Table of Contents
+
+   1.  Introduction
+     1.1.  Purpose
+     1.2.  History and Evolution
+     1.3.  Core Semantics
+     1.4.  Specifications Obsoleted by This Document
+   2.  Conformance
+     2.1.  Syntax Notation
+     2.2.  Requirements Notation
+     2.3.  Length Requirements
+     2.4.  Error Handling
+     2.5.  Protocol Version
+   3.  Terminology and Core Concepts
+     3.1.  Resources
+     3.2.  Representations
+     3.3.  Connections, Clients, and Servers
+     3.4.  Messages
+     3.5.  User Agents
+     3.6.  Origin Server
+     3.7.  Intermediaries
+     3.8.  Caches
+     3.9.  Example Message Exchange
+   4.  Identifiers in HTTP
+     4.1.  URI References
+     4.2.  HTTP-Related URI Schemes
+       4.2.1.  http URI Scheme
+       4.2.2.  https URI Scheme
+       4.2.3.  http(s) Normali
+... [tee capped at 4096 of 12349 bytes]
+
+===== CALL rc=0 out=603B args=open https://www.ecosia.org/search?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22 =====
+page:
+  title: Just a moment...
+  url: "https://www.ecosia.org/search?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22"
+  refs: 5
+snapshot:
+@17.0 root "Just a moment..." url="/search?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22"
+  @17.1 main
+    @17.2 # Confirm you’re not a robot
+    @17.3 text "Our system has detected unusual traffic from your network. Please solve the challenge below to show you’re not a robot."
+    @17.4 main
+help[1]:
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=963B args=open https://www.ask.com/web?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22 =====
+page:
+  title: 404 - Page Not Found
+  url: "https://www.ask.com/web?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22"
+  refs: 11
+snapshot:
+@18.0 root "404 - Page Not Found" url="/web?q=site:rfc-editor.org/rfc/rfc9110+%22404+Not+Found%22"
+  @18.1 main
+    @18.2 link "Ask Logo" url="/index.html"
+      @18.3 image "Ask Logo" url="/site-logo.svg"
+    @18.4 # 404
+    @18.5 ## Page Not Found
+    @18.6 text "The page you are looking for does not exist, has been removed, or is temporarily unavailable."
+    @18.7 link "← Return to Home" url="/index.html"
+  @18.9 contentinfo
+    @18.10 text "© 2026 IAC Inc. All rights reserved. | "
+    @18.11 link "Privacy Policy" url="/privacy.html"
+help[3]:
+  Run `opera-browser-cli click @18.2` to click the "Ask Logo" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=905B args=open https://www.ask.com/web?q=rfc+9110+404+not+found =====
+page:
+  title: 404 - Page Not Found
+  url: "https://www.ask.com/web?q=rfc+9110+404+not+found"
+  refs: 11
+snapshot:
+@19.0 root "404 - Page Not Found" url="/web?q=rfc+9110+404+not+found"
+  @19.1 main
+    @19.2 link "Ask Logo" url="/index.html"
+      @19.3 image "Ask Logo" url="/site-logo.svg"
+    @19.4 # 404
+    @19.5 ## Page Not Found
+    @19.6 text "The page you are looking for does not exist, has been removed, or is temporarily unavailable."
+    @19.7 link "← Return to Home" url="/index.html"
+  @19.9 contentinfo
+    @19.10 text "© 2026 IAC Inc. All rights reserved. | "
+    @19.11 link "Privacy Policy" url="/privacy.html"
+help[3]:
+  Run `opera-browser-cli click @19.2` to click the "Ask Logo" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=12426B args=open https://en.wikipedia.org/wiki/List_of_HTTP_status_codes =====
+page:
+  title: List of HTTP status codes - Wikipedia
+  url: "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
+  refs: 1572
+snapshot:
+@20.0 root "List of HTTP status codes - Wikipedia" url=$u1
+  @20.1 generic live="polite"
+  @20.2 link "Jump to content" url="/wiki/List_of_HTTP_status_codes#bodyContent"
+  @20.4 banner
+    @20.5 navigation "Site"
+      @20.6 button "Main menu" haspopup="menu"
+    @20.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @20.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @20.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @20.10 search
+      @20.11 form
+        @20.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @20.13 button "Search"
+    @20.14 navigation "Personal tools"
+      @20.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @20.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+HTTP+status+codes"
+      @20.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+HTTP+status+codes"
+  @20.21 navigation "Contents"
+    @20.22 ## Contents
+    @20.23 button "Hide Contents"
+    @20.24 link "(Top)" url="/wiki/List_of_HTTP_status_codes#"
+    @20.26 link "Standard codes" url="/wiki/List_of_HTTP_status_codes#Standard_codes"
+    @20.28 button "Toggle Standard codes subsection" expandable expanded
+    @20.29 link "1xx informational response" url="/wiki/List_of_HTTP_status_codes#1xx_informational_response"
+    @20.31 link "2xx success" url="/wiki/List_of_HTTP_status_codes#2xx_success"
+    @20.33 link "3xx redirection" url="/wiki/List_of_HTTP_status_codes#3xx_redirection"
+    @20.35 link "4xx client error" url="/wiki/List_of_HTTP_status_codes#4xx_client_error"
+    @20.37 link "5xx server error" url="/wiki/List_of_HTTP_status_codes#5xx_server_error"
+    @20.39 link "Nonstandard codes" url="/wiki/List_of_HTTP_status_codes#Nonstandard_codes"
+    @20.41 button "Toggle Nonstandard codes subsection" expandable expanded
+    @20.42 link "Internet Information Services" url="/wiki/List_of_HTTP_status_codes#Internet_Information_Services"
+    @20.44 link "nginx" url="/wiki/List_of_HTTP_status_codes#nginx"
+    @20.46 link "Cloudflare" url="/wiki/List_of_HTTP_status_codes#Cloudflare"
+    @20.48 link "AWS Elastic Load Balancing" url="/wiki/List_of_HTTP_status_codes#AWS_Elastic_Load_Balancing"
+    @20.50 link "Apache" url="/wiki/List_of_HTTP_status_codes#Apache"
+    @20.52 link "Laravel framework" url="/wiki/List_of_HTTP_status_codes#Laravel_framework"
+    @20.54 link "Spring Framework" url="/wiki/List_of_HTTP_status_codes#Spring_Framework"
+    @20.56 link "Twitter" url="/wiki/List_of_HTTP_status_codes#Twitter"
+    @20.58 link "Shopify" url="/wiki/List_of_HTTP_status_codes#Shopify"
+    @20.60 link "ArcGIS Server" url="/wiki/List_of_HTTP_status_codes#ArcGIS_Server"
+    @20.62 link "cPanel" url="/wiki/List_of_HTTP_status_codes#cPanel"
+    @20.64 link "SSLLabs server testing API" url="/wiki/List_of_HTTP_status_codes#SSLLabs_server_testing_API"
+    @20.66 link "Pantheon Systems web platform" url="/wiki/List_of_HTTP_status_codes#Pantheon_Systems_web_platform"
+    @20.68 link "LinkedIn" url="/wiki/List_of_HTTP_status_codes#LinkedIn"
+    @20.70 link "Miscellaneous" url="/wiki/List_of_HTTP_status_codes#Miscellaneous"
+    @20.72 link "See also" url="/wiki/List_of_HTTP_status_codes#See_also"
+    @20.74 link "References" url="/wiki/List_of_HTTP_status_codes#References"
+    @20.76 link "External links" url="/wiki/List_of_HTTP_status_codes#External_links"
+  @20.78 main
+    @20.79 # List of HTTP status codes
+    @20.80 button "31 languages" description="Go to an article in another language. Availab
+... [tee capped at 4096 of 12426 bytes]
+
+===== CALL rc=0 out=12468B args=open https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#404 =====
+page:
+  title: List of HTTP status codes - Wikipedia
+  url: "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#404"
+  refs: 1572
+snapshot:
+@20.0 root "List of HTTP status codes - Wikipedia" url="/wiki/List_of_HTTP_status_codes#404"
+  @20.1 generic live="polite"
+  @20.2 link "Jump to content" url="/wiki/List_of_HTTP_status_codes#bodyContent"
+  @20.4 banner
+    @20.5 navigation "Site"
+      @20.6 button "Main menu" haspopup="menu"
+    @20.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @20.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @20.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @20.10 search
+      @20.11 form
+        @20.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @20.13 button "Search"
+    @20.14 navigation "Personal tools"
+      @20.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @20.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+HTTP+status+codes"
+      @20.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+HTTP+status+codes"
+  @20.21 navigation "Contents"
+    @20.22 ## Contents
+    @20.23 button "Hide Contents"
+    @20.24 link "(Top)" url="/wiki/List_of_HTTP_status_codes#"
+    @20.26 link "Standard codes" url="/wiki/List_of_HTTP_status_codes#Standard_codes"
+    @20.28 button "Toggle Standard codes subsection" expandable expanded
+    @20.29 link "1xx informational response" url="/wiki/List_of_HTTP_status_codes#1xx_informational_response"
+    @20.31 link "2xx success" url="/wiki/List_of_HTTP_status_codes#2xx_success"
+    @20.33 link "3xx redirection" url="/wiki/List_of_HTTP_status_codes#3xx_redirection"
+    @20.35 link "4xx client error" url="/wiki/List_of_HTTP_status_codes#4xx_client_error"
+    @20.37 link "5xx server error" url="/wiki/List_of_HTTP_status_codes#5xx_server_error"
+    @20.39 link "Nonstandard codes" url="/wiki/List_of_HTTP_status_codes#Nonstandard_codes"
+    @20.41 button "Toggle Nonstandard codes subsection" expandable expanded
+    @20.42 link "Internet Information Services" url="/wiki/List_of_HTTP_status_codes#Internet_Information_Services"
+    @20.44 link "nginx" url="/wiki/List_of_HTTP_status_codes#nginx"
+    @20.46 link "Cloudflare" url="/wiki/List_of_HTTP_status_codes#Cloudflare"
+    @20.48 link "AWS Elastic Load Balancing" url="/wiki/List_of_HTTP_status_codes#AWS_Elastic_Load_Balancing"
+    @20.50 link "Apache" url="/wiki/List_of_HTTP_status_codes#Apache"
+    @20.52 link "Laravel framework" url="/wiki/List_of_HTTP_status_codes#Laravel_framework"
+    @20.54 link "Spring Framework" url="/wiki/List_of_HTTP_status_codes#Spring_Framework"
+    @20.56 link "Twitter" url="/wiki/List_of_HTTP_status_codes#Twitter"
+    @20.58 link "Shopify" url="/wiki/List_of_HTTP_status_codes#Shopify"
+    @20.60 link "ArcGIS Server" url="/wiki/List_of_HTTP_status_codes#ArcGIS_Server"
+    @20.62 link "cPanel" url="/wiki/List_of_HTTP_status_codes#cPanel"
+    @20.64 link "SSLLabs server testing API" url="/wiki/List_of_HTTP_status_codes#SSLLabs_server_testing_API"
+    @20.66 link "Pantheon Systems web platform" url="/wiki/List_of_HTTP_status_codes#Pantheon_Systems_web_platform"
+    @20.68 link "LinkedIn" url="/wiki/List_of_HTTP_status_codes#LinkedIn"
+    @20.70 link "Miscellaneous" url="/wiki/List_of_HTTP_status_codes#Miscellaneous"
+    @20.72 link "See also" url="/wiki/List_of_HTTP_status_codes#See_also"
+    @20.74 link "References" url="/wiki/List_of_HTTP_status_codes#References"
+    @20.76 link "External links" url="/wiki/List_of_HTTP_status_codes#External_links"
+  @20.78 main
+    @20.79 # List of HTTP status codes
+    @20.80 button "31 languages" description="Go to a
+... [tee capped at 4096 of 12468 bytes]
+
+===== CALL rc=0 out=12343B args=snapshot =====
+page:
+  title: List of HTTP status codes - Wikipedia
+  refs: 1572
+snapshot:
+@20.0 root "List of HTTP status codes - Wikipedia" url="/wiki/List_of_HTTP_status_codes#404"
+  @20.1 generic live="polite"
+  @20.2 link "Jump to content" url="/wiki/List_of_HTTP_status_codes#bodyContent"
+  @20.4 banner
+    @20.5 navigation "Site"
+      @20.6 button "Main menu" haspopup="menu"
+    @20.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @20.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @20.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @20.10 search
+      @20.11 form
+        @20.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @20.13 button "Search"
+    @20.14 navigation "Personal tools"
+      @20.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @20.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+HTTP+status+codes"
+      @20.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+HTTP+status+codes"
+  @20.21 navigation "Contents"
+    @20.22 ## Contents
+    @20.23 button "Hide Contents"
+    @20.24 link "(Top)" url="/wiki/List_of_HTTP_status_codes#"
+    @20.26 link "Standard codes" url="/wiki/List_of_HTTP_status_codes#Standard_codes"
+    @20.28 button "Toggle Standard codes subsection" expandable expanded
+    @20.29 link "1xx informational response" url="/wiki/List_of_HTTP_status_codes#1xx_informational_response"
+    @20.31 link "2xx success" url="/wiki/List_of_HTTP_status_codes#2xx_success"
+    @20.33 link "3xx redirection" url="/wiki/List_of_HTTP_status_codes#3xx_redirection"
+    @20.35 link "4xx client error" url="/wiki/List_of_HTTP_status_codes#4xx_client_error"
+    @20.37 link "5xx server error" url="/wiki/List_of_HTTP_status_codes#5xx_server_error"
+    @20.39 link "Nonstandard codes" url="/wiki/List_of_HTTP_status_codes#Nonstandard_codes"
+    @20.41 button "Toggle Nonstandard codes subsection" expandable expanded
+    @20.42 link "Internet Information Services" url="/wiki/List_of_HTTP_status_codes#Internet_Information_Services"
+    @20.44 link "nginx" url="/wiki/List_of_HTTP_status_codes#nginx"
+    @20.46 link "Cloudflare" url="/wiki/List_of_HTTP_status_codes#Cloudflare"
+    @20.48 link "AWS Elastic Load Balancing" url="/wiki/List_of_HTTP_status_codes#AWS_Elastic_Load_Balancing"
+    @20.50 link "Apache" url="/wiki/List_of_HTTP_status_codes#Apache"
+    @20.52 link "Laravel framework" url="/wiki/List_of_HTTP_status_codes#Laravel_framework"
+    @20.54 link "Spring Framework" url="/wiki/List_of_HTTP_status_codes#Spring_Framework"
+    @20.56 link "Twitter" url="/wiki/List_of_HTTP_status_codes#Twitter"
+    @20.58 link "Shopify" url="/wiki/List_of_HTTP_status_codes#Shopify"
+    @20.60 link "ArcGIS Server" url="/wiki/List_of_HTTP_status_codes#ArcGIS_Server"
+    @20.62 link "cPanel" url="/wiki/List_of_HTTP_status_codes#cPanel"
+    @20.64 link "SSLLabs server testing API" url="/wiki/List_of_HTTP_status_codes#SSLLabs_server_testing_API"
+    @20.66 link "Pantheon Systems web platform" url="/wiki/List_of_HTTP_status_codes#Pantheon_Systems_web_platform"
+    @20.68 link "LinkedIn" url="/wiki/List_of_HTTP_status_codes#LinkedIn"
+    @20.70 link "Miscellaneous" url="/wiki/List_of_HTTP_status_codes#Miscellaneous"
+    @20.72 link "See also" url="/wiki/List_of_HTTP_status_codes#See_also"
+    @20.74 link "References" url="/wiki/List_of_HTTP_status_codes#References"
+    @20.76 link "External links" url="/wiki/List_of_HTTP_status_codes#External_links"
+  @20.78 main
+    @20.79 # List of HTTP status codes
+    @20.80 button "31 languages" description="Go to an article in another language. Available in 31 languages" haspopup="m
+... [tee capped at 4096 of 12343 bytes]
+
+===== CALL rc=0 out=12343B args=snapshot =====
+page:
+  title: List of HTTP status codes - Wikipedia
+  refs: 1572
+snapshot:
+@20.0 root "List of HTTP status codes - Wikipedia" url="/wiki/List_of_HTTP_status_codes#404"
+  @20.1 generic live="polite"
+  @20.2 link "Jump to content" url="/wiki/List_of_HTTP_status_codes#bodyContent"
+  @20.4 banner
+    @20.5 navigation "Site"
+      @20.6 button "Main menu" haspopup="menu"
+    @20.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @20.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @20.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @20.10 search
+      @20.11 form
+        @20.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @20.13 button "Search"
+    @20.14 navigation "Personal tools"
+      @20.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @20.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+HTTP+status+codes"
+      @20.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+HTTP+status+codes"
+  @20.21 navigation "Contents"
+    @20.22 ## Contents
+    @20.23 button "Hide Contents"
+    @20.24 link "(Top)" url="/wiki/List_of_HTTP_status_codes#"
+    @20.26 link "Standard codes" url="/wiki/List_of_HTTP_status_codes#Standard_codes"
+    @20.28 button "Toggle Standard codes subsection" expandable expanded
+    @20.29 link "1xx informational response" url="/wiki/List_of_HTTP_status_codes#1xx_informational_response"
+    @20.31 link "2xx success" url="/wiki/List_of_HTTP_status_codes#2xx_success"
+    @20.33 link "3xx redirection" url="/wiki/List_of_HTTP_status_codes#3xx_redirection"
+    @20.35 link "4xx client error" url="/wiki/List_of_HTTP_status_codes#4xx_client_error"
+    @20.37 link "5xx server error" url="/wiki/List_of_HTTP_status_codes#5xx_server_error"
+    @20.39 link "Nonstandard codes" url="/wiki/List_of_HTTP_status_codes#Nonstandard_codes"
+    @20.41 button "Toggle Nonstandard codes subsection" expandable expanded
+    @20.42 link "Internet Information Services" url="/wiki/List_of_HTTP_status_codes#Internet_Information_Services"
+    @20.44 link "nginx" url="/wiki/List_of_HTTP_status_codes#nginx"
+    @20.46 link "Cloudflare" url="/wiki/List_of_HTTP_status_codes#Cloudflare"
+    @20.48 link "AWS Elastic Load Balancing" url="/wiki/List_of_HTTP_status_codes#AWS_Elastic_Load_Balancing"
+    @20.50 link "Apache" url="/wiki/List_of_HTTP_status_codes#Apache"
+    @20.52 link "Laravel framework" url="/wiki/List_of_HTTP_status_codes#Laravel_framework"
+    @20.54 link "Spring Framework" url="/wiki/List_of_HTTP_status_codes#Spring_Framework"
+    @20.56 link "Twitter" url="/wiki/List_of_HTTP_status_codes#Twitter"
+    @20.58 link "Shopify" url="/wiki/List_of_HTTP_status_codes#Shopify"
+    @20.60 link "ArcGIS Server" url="/wiki/List_of_HTTP_status_codes#ArcGIS_Server"
+    @20.62 link "cPanel" url="/wiki/List_of_HTTP_status_codes#cPanel"
+    @20.64 link "SSLLabs server testing API" url="/wiki/List_of_HTTP_status_codes#SSLLabs_server_testing_API"
+    @20.66 link "Pantheon Systems web platform" url="/wiki/List_of_HTTP_status_codes#Pantheon_Systems_web_platform"
+    @20.68 link "LinkedIn" url="/wiki/List_of_HTTP_status_codes#LinkedIn"
+    @20.70 link "Miscellaneous" url="/wiki/List_of_HTTP_status_codes#Miscellaneous"
+    @20.72 link "See also" url="/wiki/List_of_HTTP_status_codes#See_also"
+    @20.74 link "References" url="/wiki/List_of_HTTP_status_codes#References"
+    @20.76 link "External links" url="/wiki/List_of_HTTP_status_codes#External_links"
+  @20.78 main
+    @20.79 # List of HTTP status codes
+    @20.80 button "31 languages" description="Go to an article in another language. Available in 31 languages" haspopup="m
+... [tee capped at 4096 of 12343 bytes]
+
+===== CALL rc=0 out=12507B args=open https://en.wikipedia.org/wiki/HTTP_404 =====
+page:
+  title: HTTP 404 - Wikipedia
+  url: "https://en.wikipedia.org/wiki/HTTP_404"
+  refs: 645
+snapshot:
+@24.0 root "HTTP 404 - Wikipedia" url="/wiki/HTTP_404"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/HTTP_404#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=HTTP+404"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=HTTP+404"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/HTTP_404#"
+    @24.26 link "Overview" url="/wiki/HTTP_404#Overview"
+    @24.28 link "Soft 404 errors" url="/wiki/HTTP_404#Soft_404_errors"
+    @24.30 button "Toggle Soft 404 errors subsection" expandable expanded
+    @24.31 link "Proxy servers" url="/wiki/HTTP_404#Proxy_servers"
+    @24.33 link "Intentional 404s" url="/wiki/HTTP_404#Intentional_404s"
+    @24.35 link "Microsoft Internet Server 404 substatus error codes" url="/wiki/HTTP_404#Microsoft_Internet_Server_404_substatus_error_codes"
+    @24.37 button "Toggle Microsoft Internet Server 404 substatus error codes subsection" expandable expanded
+    @24.38 link "Substatus codes" url="/wiki/HTTP_404#Substatus_codes"
+    @24.40 link "Custom error pages" url="/wiki/HTTP_404#Custom_error_pages"
+    @24.42 link "Tracking 404 errors" url="/wiki/HTTP_404#Tracking_404_errors"
+    @24.44 link "See also" url="/wiki/HTTP_404#See_also"
+    @24.46 link "References" url="/wiki/HTTP_404#References"
+    @24.48 link "External links" url="/wiki/HTTP_404#External_links"
+  @24.50 main
+    @24.51 # HTTP 404
+    @24.52 button "53 languages" description="Go to an article in another language. Available in 53 languages" haspopup="menu"
+    @24.53 navigation "Namespaces"
+      @24.54 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/HTTP_404"
+      @24.56 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:HTTP_404"
+    @24.58 navigation "Views"
+      @24.59 link "Read" url="/wiki/HTTP_404"
+      @24.61 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=HTTP_404&action=edit"
+      @24.63 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=HTTP_404&action=history"
+    @24.65 navigation "Page tools"
+      @24.66 button "Tools" haspopup="menu"
+    @24.67 navigation "Appearance"
+      @24.69 button "Hide Appearance"
+      @24.70 text "Text"
+      @24.71 form
+        @24.72 radio "Small"
+        @24.73 text "Small"
+        @24.74 radio "Standard" checked
+        @24.75 text "Standard"
+        @24.76 radio "Large"
+        @24.77 text "Large"
+      @24.78 text "Width"
+      @24.79 form
+        @24.80 radio "Standard" checked
+        @24.81 text "Standard"
+        @24.82 radio "Wide"
+        @24.83 text "Wide"
+      @24.84 text "Color"
+      @24.85 form
+        @24.86 radio "Automatic"
+        @24.87 text "Automatic"
+        @24.88 
+... [tee capped at 4096 of 12507 bytes]
+
+===== CALL rc=0 out=12424B args=snapshot =====
+page:
+  title: HTTP 404 - Wikipedia
+  refs: 645
+snapshot:
+@24.0 root "HTTP 404 - Wikipedia" url="/wiki/HTTP_404"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/HTTP_404#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=HTTP+404"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=HTTP+404"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/HTTP_404#"
+    @24.26 link "Overview" url="/wiki/HTTP_404#Overview"
+    @24.28 link "Soft 404 errors" url="/wiki/HTTP_404#Soft_404_errors"
+    @24.30 button "Toggle Soft 404 errors subsection" expandable expanded
+    @24.31 link "Proxy servers" url="/wiki/HTTP_404#Proxy_servers"
+    @24.33 link "Intentional 404s" url="/wiki/HTTP_404#Intentional_404s"
+    @24.35 link "Microsoft Internet Server 404 substatus error codes" url="/wiki/HTTP_404#Microsoft_Internet_Server_404_substatus_error_codes"
+    @24.37 button "Toggle Microsoft Internet Server 404 substatus error codes subsection" expandable expanded
+    @24.38 link "Substatus codes" url="/wiki/HTTP_404#Substatus_codes"
+    @24.40 link "Custom error pages" url="/wiki/HTTP_404#Custom_error_pages"
+    @24.42 link "Tracking 404 errors" url="/wiki/HTTP_404#Tracking_404_errors"
+    @24.44 link "See also" url="/wiki/HTTP_404#See_also"
+    @24.46 link "References" url="/wiki/HTTP_404#References"
+    @24.48 link "External links" url="/wiki/HTTP_404#External_links"
+  @24.50 main
+    @24.51 # HTTP 404
+    @24.52 button "53 languages" description="Go to an article in another language. Available in 53 languages" haspopup="menu"
+    @24.53 navigation "Namespaces"
+      @24.54 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/HTTP_404"
+      @24.56 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:HTTP_404"
+    @24.58 navigation "Views"
+      @24.59 link "Read" url="/wiki/HTTP_404"
+      @24.61 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=HTTP_404&action=edit"
+      @24.63 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=HTTP_404&action=history"
+    @24.65 navigation "Page tools"
+      @24.66 button "Tools" haspopup="menu"
+    @24.67 navigation "Appearance"
+      @24.69 button "Hide Appearance"
+      @24.70 text "Text"
+      @24.71 form
+        @24.72 radio "Small"
+        @24.73 text "Small"
+        @24.74 radio "Standard" checked
+        @24.75 text "Standard"
+        @24.76 radio "Large"
+        @24.77 text "Large"
+      @24.78 text "Width"
+      @24.79 form
+        @24.80 radio "Standard" checked
+        @24.81 text "Standard"
+        @24.82 radio "Wide"
+        @24.83 text "Wide"
+      @24.84 text "Color"
+      @24.85 form
+        @24.86 radio "Automatic"
+        @24.87 text "Automatic"
+        @24.88 radio "Light" checked
+        @24.89 text "Light
+... [tee capped at 4096 of 12424 bytes]
+
+===== CALL rc=0 out=12511B args=open https://httpwg.org/specs/rfc9110.html =====
+page:
+  title: RFC 9110 - HTTP Semantics
+  url: "https://httpwg.org/specs/rfc9110.html"
+  refs: 10749
+snapshot:
+@26.0 root "RFC 9110 - HTTP Semantics" url="/specs/rfc9110.html"
+  @26.1 navigation
+    @26.2 link url="/"
+    @26.3 link "📄 Documentation" url="/specs/"
+    @26.5 link "Work in Progress" url=$u1
+    @26.7 link "Participate" url=$u1
+  @26.9 navigation
+    @26.10 link "RFC 9110" url="/specs/rfc9110.html#top"
+    @26.14 link "1." url="/specs/rfc9110.html#rfc.section.1"
+    @26.17 link "Introduction" url="/specs/rfc9110.html#introduction"
+    @26.19 link "1.1." url="/specs/rfc9110.html#rfc.section.1.1"
+    @26.22 link "Purpose" url="/specs/rfc9110.html#purpose"
+    @26.24 link "1.2." url="/specs/rfc9110.html#rfc.section.1.2"
+    @26.27 link "History and Evolution" url="/specs/rfc9110.html#history.and.evolution"
+    @26.29 link "1.3." url="/specs/rfc9110.html#rfc.section.1.3"
+    @26.32 link "Core Semantics" url="/specs/rfc9110.html#core.semantics"
+    @26.34 link "1.4." url="/specs/rfc9110.html#rfc.section.1.4"
+    @26.37 link "Specifications Obsoleted by This Document" url="/specs/rfc9110.html#specifications.obsoleted.by.this.document"
+    @26.39 link "2." url="/specs/rfc9110.html#rfc.section.2"
+    @26.42 link "Conformance" url="/specs/rfc9110.html#conformance"
+    @26.44 link "2.1." url="/specs/rfc9110.html#rfc.section.2.1"
+    @26.47 link "Syntax Notation" url="/specs/rfc9110.html#notation"
+    @26.49 link "2.2." url="/specs/rfc9110.html#rfc.section.2.2"
+    @26.52 link "Requirements Notation" url="/specs/rfc9110.html#requirements.notation"
+    @26.54 link "2.3." url="/specs/rfc9110.html#rfc.section.2.3"
+    @26.57 link "Length Requirements" url="/specs/rfc9110.html#length.requirements"
+    @26.59 link "2.4." url="/specs/rfc9110.html#rfc.section.2.4"
+    @26.62 link "Error Handling" url="/specs/rfc9110.html#error.handling"
+    @26.64 link "2.5." url="/specs/rfc9110.html#rfc.section.2.5"
+    @26.67 link "Protocol Version" url="/specs/rfc9110.html#protocol.version"
+    @26.69 link "3." url="/specs/rfc9110.html#rfc.section.3"
+    @26.72 link "Terminology and Core Concepts" url="/specs/rfc9110.html#terminology"
+    @26.74 link "3.1." url="/specs/rfc9110.html#rfc.section.3.1"
+    @26.77 link "Resources" url="/specs/rfc9110.html#resources"
+    @26.79 link "3.2." url="/specs/rfc9110.html#rfc.section.3.2"
+    @26.82 link "Representations" url="/specs/rfc9110.html#representations"
+    @26.84 link "3.3." url="/specs/rfc9110.html#rfc.section.3.3"
+    @26.87 link "Connections, Clients, and Servers" url="/specs/rfc9110.html#connections"
+    @26.89 link "3.4." url="/specs/rfc9110.html#rfc.section.3.4"
+    @26.92 link "Messages" url="/specs/rfc9110.html#messages"
+    @26.94 link "3.5." url="/specs/rfc9110.html#rfc.section.3.5"
+    @26.97 link "User Agents" url="/specs/rfc9110.html#user.agent"
+    @26.99 link "3.6." url="/specs/rfc9110.html#rfc.section.3.6"
+    @26.102 link "Origin Server" url="/specs/rfc9110.html#origin.server"
+    @26.104 link "3.7." url="/specs/rfc9110.html#rfc.section.3.7"
+    @26.107 link "Intermediaries" url="/specs/rfc9110.html#intermediaries"
+    @26.109 link "3.8." url="/specs/rfc9110.html#rfc.section.3.8"
+    @26.112 link "Caches" url="/specs/rfc9110.html#caches"
+    @26.114 link "3.9." url="/specs/rfc9110.html#rfc.section.3.9"
+    @26.117 link "Example Message Exchange" url="/specs/rfc9110.html#example"
+    @26.119 link "4." url="/specs/rfc9110.html#rfc.section.4"
+    @26.122 link "Identifiers in HTTP" url="/specs/rfc9110.html#uri"
+    @26.124 link "4.1." url="/specs/rfc9110.html#rfc.section.4.1"
+    @26.127 link "URI References" url="/specs/rfc9110.html#uri.references"
+    @26.129 link "4.2." url="/specs/rfc9110.html#rfc.section.4.2"
+    @26.132 link "HTTP-Related URI Schemes" url="/specs/rfc9110.html#uri.schemes"
+    @26.134 link "4.2.1." url="/specs/rfc9110.html#rfc.section.4.2.1"
+    @26.137 link "http URI Scheme" url="/specs/rfc9110.html#http.uri"
+    @26.139 link "4.2.2." url="/specs/rfc9110.html#rfc.section.4.2.2"
+    @26.142 link "https URI Scheme" url="/specs/rfc9110.html#https.uri"
+   
+... [tee capped at 4096 of 12511 bytes]
+
+===== CALL rc=0 out=12430B args=snapshot =====
+page:
+  title: RFC 9110 - HTTP Semantics
+  refs: 10752
+snapshot:
+@26.0 root "RFC 9110 - HTTP Semantics" url="/specs/rfc9110.html"
+  @26.1 navigation
+    @26.2 link url="/"
+    @26.3 link "📄 Documentation" url="/specs/"
+    @26.5 link "Work in Progress" url=$u1
+    @26.7 link "Participate" url=$u1
+  @26.9 navigation
+    @26.10 link "RFC 9110" url="/specs/rfc9110.html#top"
+    @26.14 link "1." url="/specs/rfc9110.html#rfc.section.1"
+    @26.17 link "Introduction" url="/specs/rfc9110.html#introduction"
+    @26.19 link "1.1." url="/specs/rfc9110.html#rfc.section.1.1"
+    @26.22 link "Purpose" url="/specs/rfc9110.html#purpose"
+    @26.24 link "1.2." url="/specs/rfc9110.html#rfc.section.1.2"
+    @26.27 link "History and Evolution" url="/specs/rfc9110.html#history.and.evolution"
+    @26.29 link "1.3." url="/specs/rfc9110.html#rfc.section.1.3"
+    @26.32 link "Core Semantics" url="/specs/rfc9110.html#core.semantics"
+    @26.34 link "1.4." url="/specs/rfc9110.html#rfc.section.1.4"
+    @26.37 link "Specifications Obsoleted by This Document" url="/specs/rfc9110.html#specifications.obsoleted.by.this.document"
+    @26.39 link "2." url="/specs/rfc9110.html#rfc.section.2"
+    @26.42 link "Conformance" url="/specs/rfc9110.html#conformance"
+    @26.44 link "2.1." url="/specs/rfc9110.html#rfc.section.2.1"
+    @26.47 link "Syntax Notation" url="/specs/rfc9110.html#notation"
+    @26.49 link "2.2." url="/specs/rfc9110.html#rfc.section.2.2"
+    @26.52 link "Requirements Notation" url="/specs/rfc9110.html#requirements.notation"
+    @26.54 link "2.3." url="/specs/rfc9110.html#rfc.section.2.3"
+    @26.57 link "Length Requirements" url="/specs/rfc9110.html#length.requirements"
+    @26.59 link "2.4." url="/specs/rfc9110.html#rfc.section.2.4"
+    @26.62 link "Error Handling" url="/specs/rfc9110.html#error.handling"
+    @26.64 link "2.5." url="/specs/rfc9110.html#rfc.section.2.5"
+    @26.67 link "Protocol Version" url="/specs/rfc9110.html#protocol.version"
+    @26.69 link "3." url="/specs/rfc9110.html#rfc.section.3"
+    @26.72 link "Terminology and Core Concepts" url="/specs/rfc9110.html#terminology"
+    @26.74 link "3.1." url="/specs/rfc9110.html#rfc.section.3.1"
+    @26.77 link "Resources" url="/specs/rfc9110.html#resources"
+    @26.79 link "3.2." url="/specs/rfc9110.html#rfc.section.3.2"
+    @26.82 link "Representations" url="/specs/rfc9110.html#representations"
+    @26.84 link "3.3." url="/specs/rfc9110.html#rfc.section.3.3"
+    @26.87 link "Connections, Clients, and Servers" url="/specs/rfc9110.html#connections"
+    @26.89 link "3.4." url="/specs/rfc9110.html#rfc.section.3.4"
+    @26.92 link "Messages" url="/specs/rfc9110.html#messages"
+    @26.94 link "3.5." url="/specs/rfc9110.html#rfc.section.3.5"
+    @26.97 link "User Agents" url="/specs/rfc9110.html#user.agent"
+    @26.99 link "3.6." url="/specs/rfc9110.html#rfc.section.3.6"
+    @26.102 link "Origin Server" url="/specs/rfc9110.html#origin.server"
+    @26.104 link "3.7." url="/specs/rfc9110.html#rfc.section.3.7"
+    @26.107 link "Intermediaries" url="/specs/rfc9110.html#intermediaries"
+    @26.109 link "3.8." url="/specs/rfc9110.html#rfc.section.3.8"
+    @26.112 link "Caches" url="/specs/rfc9110.html#caches"
+    @26.114 link "3.9." url="/specs/rfc9110.html#rfc.section.3.9"
+    @26.117 link "Example Message Exchange" url="/specs/rfc9110.html#example"
+    @26.119 link "4." url="/specs/rfc9110.html#rfc.section.4"
+    @26.122 link "Identifiers in HTTP" url="/specs/rfc9110.html#uri"
+    @26.124 link "4.1." url="/specs/rfc9110.html#rfc.section.4.1"
+    @26.127 link "URI References" url="/specs/rfc9110.html#uri.references"
+    @26.129 link "4.2." url="/specs/rfc9110.html#rfc.section.4.2"
+    @26.132 link "HTTP-Related URI Schemes" url="/specs/rfc9110.html#uri.schemes"
+    @26.134 link "4.2.1." url="/specs/rfc9110.html#rfc.section.4.2.1"
+    @26.137 link "http URI Scheme" url="/specs/rfc9110.html#http.uri"
+    @26.139 link "4.2.2." url="/specs/rfc9110.html#rfc.section.4.2.2"
+    @26.142 link "https URI Scheme" url="/specs/rfc9110.html#https.uri"
+    @26.144 link "4.2.3." url="/specs/rfc9110.html
+... [tee capped at 4096 of 12430 bytes]
+
+===== CALL rc=0 out=12430B args=snapshot =====
+page:
+  title: RFC 9110 - HTTP Semantics
+  refs: 10752
+snapshot:
+@26.0 root "RFC 9110 - HTTP Semantics" url="/specs/rfc9110.html"
+  @26.1 navigation
+    @26.2 link url="/"
+    @26.3 link "📄 Documentation" url="/specs/"
+    @26.5 link "Work in Progress" url=$u1
+    @26.7 link "Participate" url=$u1
+  @26.9 navigation
+    @26.10 link "RFC 9110" url="/specs/rfc9110.html#top"
+    @26.14 link "1." url="/specs/rfc9110.html#rfc.section.1"
+    @26.17 link "Introduction" url="/specs/rfc9110.html#introduction"
+    @26.19 link "1.1." url="/specs/rfc9110.html#rfc.section.1.1"
+    @26.22 link "Purpose" url="/specs/rfc9110.html#purpose"
+    @26.24 link "1.2." url="/specs/rfc9110.html#rfc.section.1.2"
+    @26.27 link "History and Evolution" url="/specs/rfc9110.html#history.and.evolution"
+    @26.29 link "1.3." url="/specs/rfc9110.html#rfc.section.1.3"
+    @26.32 link "Core Semantics" url="/specs/rfc9110.html#core.semantics"
+    @26.34 link "1.4." url="/specs/rfc9110.html#rfc.section.1.4"
+    @26.37 link "Specifications Obsoleted by This Document" url="/specs/rfc9110.html#specifications.obsoleted.by.this.document"
+    @26.39 link "2." url="/specs/rfc9110.html#rfc.section.2"
+    @26.42 link "Conformance" url="/specs/rfc9110.html#conformance"
+    @26.44 link "2.1." url="/specs/rfc9110.html#rfc.section.2.1"
+    @26.47 link "Syntax Notation" url="/specs/rfc9110.html#notation"
+    @26.49 link "2.2." url="/specs/rfc9110.html#rfc.section.2.2"
+    @26.52 link "Requirements Notation" url="/specs/rfc9110.html#requirements.notation"
+    @26.54 link "2.3." url="/specs/rfc9110.html#rfc.section.2.3"
+    @26.57 link "Length Requirements" url="/specs/rfc9110.html#length.requirements"
+    @26.59 link "2.4." url="/specs/rfc9110.html#rfc.section.2.4"
+    @26.62 link "Error Handling" url="/specs/rfc9110.html#error.handling"
+    @26.64 link "2.5." url="/specs/rfc9110.html#rfc.section.2.5"
+    @26.67 link "Protocol Version" url="/specs/rfc9110.html#protocol.version"
+    @26.69 link "3." url="/specs/rfc9110.html#rfc.section.3"
+    @26.72 link "Terminology and Core Concepts" url="/specs/rfc9110.html#terminology"
+    @26.74 link "3.1." url="/specs/rfc9110.html#rfc.section.3.1"
+    @26.77 link "Resources" url="/specs/rfc9110.html#resources"
+    @26.79 link "3.2." url="/specs/rfc9110.html#rfc.section.3.2"
+    @26.82 link "Representations" url="/specs/rfc9110.html#representations"
+    @26.84 link "3.3." url="/specs/rfc9110.html#rfc.section.3.3"
+    @26.87 link "Connections, Clients, and Servers" url="/specs/rfc9110.html#connections"
+    @26.89 link "3.4." url="/specs/rfc9110.html#rfc.section.3.4"
+    @26.92 link "Messages" url="/specs/rfc9110.html#messages"
+    @26.94 link "3.5." url="/specs/rfc9110.html#rfc.section.3.5"
+    @26.97 link "User Agents" url="/specs/rfc9110.html#user.agent"
+    @26.99 link "3.6." url="/specs/rfc9110.html#rfc.section.3.6"
+    @26.102 link "Origin Server" url="/specs/rfc9110.html#origin.server"
+    @26.104 link "3.7." url="/specs/rfc9110.html#rfc.section.3.7"
+    @26.107 link "Intermediaries" url="/specs/rfc9110.html#intermediaries"
+    @26.109 link "3.8." url="/specs/rfc9110.html#rfc.section.3.8"
+    @26.112 link "Caches" url="/specs/rfc9110.html#caches"
+    @26.114 link "3.9." url="/specs/rfc9110.html#rfc.section.3.9"
+    @26.117 link "Example Message Exchange" url="/specs/rfc9110.html#example"
+    @26.119 link "4." url="/specs/rfc9110.html#rfc.section.4"
+    @26.122 link "Identifiers in HTTP" url="/specs/rfc9110.html#uri"
+    @26.124 link "4.1." url="/specs/rfc9110.html#rfc.section.4.1"
+    @26.127 link "URI References" url="/specs/rfc9110.html#uri.references"
+    @26.129 link "4.2." url="/specs/rfc9110.html#rfc.section.4.2"
+    @26.132 link "HTTP-Related URI Schemes" url="/specs/rfc9110.html#uri.schemes"
+    @26.134 link "4.2.1." url="/specs/rfc9110.html#rfc.section.4.2.1"
+    @26.137 link "http URI Scheme" url="/specs/rfc9110.html#http.uri"
+    @26.139 link "4.2.2." url="/specs/rfc9110.html#rfc.section.4.2.2"
+    @26.142 link "https URI Scheme" url="/specs/rfc9110.html#https.uri"
+    @26.144 link "4.2.3." url="/specs/rfc9110.html
+... [tee capped at 4096 of 12430 bytes]
+
+===== CALL rc=0 out=12430B args=snapshot =====
+page:
+  title: RFC 9110 - HTTP Semantics
+  refs: 10752
+snapshot:
+@26.0 root "RFC 9110 - HTTP Semantics" url="/specs/rfc9110.html"
+  @26.1 navigation
+    @26.2 link url="/"
+    @26.3 link "📄 Documentation" url="/specs/"
+    @26.5 link "Work in Progress" url=$u1
+    @26.7 link "Participate" url=$u1
+  @26.9 navigation
+    @26.10 link "RFC 9110" url="/specs/rfc9110.html#top"
+    @26.14 link "1." url="/specs/rfc9110.html#rfc.section.1"
+    @26.17 link "Introduction" url="/specs/rfc9110.html#introduction"
+    @26.19 link "1.1." url="/specs/rfc9110.html#rfc.section.1.1"
+    @26.22 link "Purpose" url="/specs/rfc9110.html#purpose"
+    @26.24 link "1.2." url="/specs/rfc9110.html#rfc.section.1.2"
+    @26.27 link "History and Evolution" url="/specs/rfc9110.html#history.and.evolution"
+    @26.29 link "1.3." url="/specs/rfc9110.html#rfc.section.1.3"
+    @26.32 link "Core Semantics" url="/specs/rfc9110.html#core.semantics"
+    @26.34 link "1.4." url="/specs/rfc9110.html#rfc.section.1.4"
+    @26.37 link "Specifications Obsoleted by This Document" url="/specs/rfc9110.html#specifications.obsoleted.by.this.document"
+    @26.39 link "2." url="/specs/rfc9110.html#rfc.section.2"
+    @26.42 link "Conformance" url="/specs/rfc9110.html#conformance"
+    @26.44 link "2.1." url="/specs/rfc9110.html#rfc.section.2.1"
+    @26.47 link "Syntax Notation" url="/specs/rfc9110.html#notation"
+    @26.49 link "2.2." url="/specs/rfc9110.html#rfc.section.2.2"
+    @26.52 link "Requirements Notation" url="/specs/rfc9110.html#requirements.notation"
+    @26.54 link "2.3." url="/specs/rfc9110.html#rfc.section.2.3"
+    @26.57 link "Length Requirements" url="/specs/rfc9110.html#length.requirements"
+    @26.59 link "2.4." url="/specs/rfc9110.html#rfc.section.2.4"
+    @26.62 link "Error Handling" url="/specs/rfc9110.html#error.handling"
+    @26.64 link "2.5." url="/specs/rfc9110.html#rfc.section.2.5"
+    @26.67 link "Protocol Version" url="/specs/rfc9110.html#protocol.version"
+    @26.69 link "3." url="/specs/rfc9110.html#rfc.section.3"
+    @26.72 link "Terminology and Core Concepts" url="/specs/rfc9110.html#terminology"
+    @26.74 link "3.1." url="/specs/rfc9110.html#rfc.section.3.1"
+    @26.77 link "Resources" url="/specs/rfc9110.html#resources"
+    @26.79 link "3.2." url="/specs/rfc9110.html#rfc.section.3.2"
+    @26.82 link "Representations" url="/specs/rfc9110.html#representations"
+    @26.84 link "3.3." url="/specs/rfc9110.html#rfc.section.3.3"
+    @26.87 link "Connections, Clients, and Servers" url="/specs/rfc9110.html#connections"
+    @26.89 link "3.4." url="/specs/rfc9110.html#rfc.section.3.4"
+    @26.92 link "Messages" url="/specs/rfc9110.html#messages"
+    @26.94 link "3.5." url="/specs/rfc9110.html#rfc.section.3.5"
+    @26.97 link "User Agents" url="/specs/rfc9110.html#user.agent"
+    @26.99 link "3.6." url="/specs/rfc9110.html#rfc.section.3.6"
+    @26.102 link "Origin Server" url="/specs/rfc9110.html#origin.server"
+    @26.104 link "3.7." url="/specs/rfc9110.html#rfc.section.3.7"
+    @26.107 link "Intermediaries" url="/specs/rfc9110.html#intermediaries"
+    @26.109 link "3.8." url="/specs/rfc9110.html#rfc.section.3.8"
+    @26.112 link "Caches" url="/specs/rfc9110.html#caches"
+    @26.114 link "3.9." url="/specs/rfc9110.html#rfc.section.3.9"
+    @26.117 link "Example Message Exchange" url="/specs/rfc9110.html#example"
+    @26.119 link "4." url="/specs/rfc9110.html#rfc.section.4"
+    @26.122 link "Identifiers in HTTP" url="/specs/rfc9110.html#uri"
+    @26.124 link "4.1." url="/specs/rfc9110.html#rfc.section.4.1"
+    @26.127 link "URI References" url="/specs/rfc9110.html#uri.references"
+    @26.129 link "4.2." url="/specs/rfc9110.html#rfc.section.4.2"
+    @26.132 link "HTTP-Related URI Schemes" url="/specs/rfc9110.html#uri.schemes"
+    @26.134 link "4.2.1." url="/specs/rfc9110.html#rfc.section.4.2.1"
+    @26.137 link "http URI Scheme" url="/specs/rfc9110.html#http.uri"
+    @26.139 link "4.2.2." url="/specs/rfc9110.html#rfc.section.4.2.2"
+    @26.142 link "https URI Scheme" url="/specs/rfc9110.html#https.uri"
+    @26.144 link "4.2.3." url="/specs/rfc9110.html
+... [tee capped at 4096 of 12430 bytes]
+
+===== CALL rc=0 out=12430B args=snapshot =====
+page:
+  title: RFC 9110 - HTTP Semantics
+  refs: 10752
+snapshot:
+@26.0 root "RFC 9110 - HTTP Semantics" url="/specs/rfc9110.html"
+  @26.1 navigation
+    @26.2 link url="/"
+    @26.3 link "📄 Documentation" url="/specs/"
+    @26.5 link "Work in Progress" url=$u1
+    @26.7 link "Participate" url=$u1
+  @26.9 navigation
+    @26.10 link "RFC 9110" url="/specs/rfc9110.html#top"
+    @26.14 link "1." url="/specs/rfc9110.html#rfc.section.1"
+    @26.17 link "Introduction" url="/specs/rfc9110.html#introduction"
+    @26.19 link "1.1." url="/specs/rfc9110.html#rfc.section.1.1"
+    @26.22 link "Purpose" url="/specs/rfc9110.html#purpose"
+    @26.24 link "1.2." url="/specs/rfc9110.html#rfc.section.1.2"
+    @26.27 link "History and Evolution" url="/specs/rfc9110.html#history.and.evolution"
+    @26.29 link "1.3." url="/specs/rfc9110.html#rfc.section.1.3"
+    @26.32 link "Core Semantics" url="/specs/rfc9110.html#core.semantics"
+    @26.34 link "1.4." url="/specs/rfc9110.html#rfc.section.1.4"
+    @26.37 link "Specifications Obsoleted by This Document" url="/specs/rfc9110.html#specifications.obsoleted.by.this.document"
+    @26.39 link "2." url="/specs/rfc9110.html#rfc.section.2"
+    @26.42 link "Conformance" url="/specs/rfc9110.html#conformance"
+    @26.44 link "2.1." url="/specs/rfc9110.html#rfc.section.2.1"
+    @26.47 link "Syntax Notation" url="/specs/rfc9110.html#notation"
+    @26.49 link "2.2." url="/specs/rfc9110.html#rfc.section.2.2"
+    @26.52 link "Requirements Notation" url="/specs/rfc9110.html#requirements.notation"
+    @26.54 link "2.3." url="/specs/rfc9110.html#rfc.section.2.3"
+    @26.57 link "Length Requirements" url="/specs/rfc9110.html#length.requirements"
+    @26.59 link "2.4." url="/specs/rfc9110.html#rfc.section.2.4"
+    @26.62 link "Error Handling" url="/specs/rfc9110.html#error.handling"
+    @26.64 link "2.5." url="/specs/rfc9110.html#rfc.section.2.5"
+    @26.67 link "Protocol Version" url="/specs/rfc9110.html#protocol.version"
+    @26.69 link "3." url="/specs/rfc9110.html#rfc.section.3"
+    @26.72 link "Terminology and Core Concepts" url="/specs/rfc9110.html#terminology"
+    @26.74 link "3.1." url="/specs/rfc9110.html#rfc.section.3.1"
+    @26.77 link "Resources" url="/specs/rfc9110.html#resources"
+    @26.79 link "3.2." url="/specs/rfc9110.html#rfc.section.3.2"
+    @26.82 link "Representations" url="/specs/rfc9110.html#representations"
+    @26.84 link "3.3." url="/specs/rfc9110.html#rfc.section.3.3"
+    @26.87 link "Connections, Clients, and Servers" url="/specs/rfc9110.html#connections"
+    @26.89 link "3.4." url="/specs/rfc9110.html#rfc.section.3.4"
+    @26.92 link "Messages" url="/specs/rfc9110.html#messages"
+    @26.94 link "3.5." url="/specs/rfc9110.html#rfc.section.3.5"
+    @26.97 link "User Agents" url="/specs/rfc9110.html#user.agent"
+    @26.99 link "3.6." url="/specs/rfc9110.html#rfc.section.3.6"
+    @26.102 link "Origin Server" url="/specs/rfc9110.html#origin.server"
+    @26.104 link "3.7." url="/specs/rfc9110.html#rfc.section.3.7"
+    @26.107 link "Intermediaries" url="/specs/rfc9110.html#intermediaries"
+    @26.109 link "3.8." url="/specs/rfc9110.html#rfc.section.3.8"
+    @26.112 link "Caches" url="/specs/rfc9110.html#caches"
+    @26.114 link "3.9." url="/specs/rfc9110.html#rfc.section.3.9"
+    @26.117 link "Example Message Exchange" url="/specs/rfc9110.html#example"
+    @26.119 link "4." url="/specs/rfc9110.html#rfc.section.4"
+    @26.122 link "Identifiers in HTTP" url="/specs/rfc9110.html#uri"
+    @26.124 link "4.1." url="/specs/rfc9110.html#rfc.section.4.1"
+    @26.127 link "URI References" url="/specs/rfc9110.html#uri.references"
+    @26.129 link "4.2." url="/specs/rfc9110.html#rfc.section.4.2"
+    @26.132 link "HTTP-Related URI Schemes" url="/specs/rfc9110.html#uri.schemes"
+    @26.134 link "4.2.1." url="/specs/rfc9110.html#rfc.section.4.2.1"
+    @26.137 link "http URI Scheme" url="/specs/rfc9110.html#http.uri"
+    @26.139 link "4.2.2." url="/specs/rfc9110.html#rfc.section.4.2.2"
+    @26.142 link "https URI Scheme" url="/specs/rfc9110.html#https.uri"
+    @26.144 link "4.2.3." url="/specs/rfc9110.html
+... [tee capped at 4096 of 12430 bytes]
+
+===== CALL rc=1 out=215B args=models =====
+error: "Opera.dispatchAction(listModels) failed with error: Protocol error (Opera.dispatchAction): 'Opera.dispatchAction' wasn't found"
+code: UNKNOWN
+help[1]:
+  Run `opera-browser-cli doctor` to check the connection
+===== CALL rc=0 out=11601B args=open https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404 =====
+page:
+  title: 404 Not Found - HTTP | MDN
+  url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+  refs: 259
+snapshot:
+@31.0 root "404 Not Found - HTTP | MDN" url=$u1
+  @31.1 link "Skip to main content" url="/en-US/docs/Web/HTTP/Reference/Status/404#content"
+  @31.3 link "Skip to search" url="/en-US/docs/Web/HTTP/Reference/Status/404#search"
+  @31.5 banner
+    @31.6 navigation
+      @31.7 link "MDN" url="/en-US/"
+        @31.8 image "MDN"
+      @31.9 navigation
+        @31.10 button "HTML" expandable
+        @31.11 button "CSS" expandable
+        @31.12 button "JavaScript" expandable
+        @31.13 button "Web APIs" expandable
+        @31.14 button "All" expandable
+        @31.15 button "Learn" expandable
+        @31.16 button "Tools" expandable
+        @31.17 button "About" expandable
+        @31.18 link "Blog" url="/en-US/blog/"
+      @31.20 button "Search the site"
+    @31.21 link "Web" url="/en-US/docs/Web"
+    @31.23 link "HTTP" url=$u2
+    @31.25 link "Reference" url=$u3
+    @31.27 link "HTTP response status codes" url=$u4
+    @31.29 link "404 Not Found" url=$u1
+    @31.31 button "Switch color theme" expandable
+    @31.32 button "English (US)" expandable
+  @31.33 main
+    @31.34 # 404 Not Found
+    @31.35 text "The HTTP 404 Not Found"
+    @31.38 link "client error response" url="/en-US/docs/Web/HTTP/Reference/Status#client_error_responses"
+    @31.40 text " status code indicates that the server cannot find the requested resource. Links that lead to a 404 page are often called broken or dead links and can be subject to "
+    @31.41 link "link rot (external)" description="External link (opens in new tab)" url="https://en.wikipedia.org/wiki/Link_rot"
+    @31.44 text ".A 404 status code only indicates that the resource is missing without indicating if this is temporary or permanent. If a resource is permanently removed, servers should send the "
+    @31.46 link "410 Gone" url=$u5
+    @31.48 text " status instead.404 errors on a website can lead to a poor user experience for your visitors, so the number of broken links (internal and external) should be minimized to prevent frustration for readers. Common causes of 404 responses are mistyped URLs or pages that are moved or deleted without redirection. For more information, see the "
+    @31.50 link "Redirections in HTTP" url=$u6
+    @31.52 text " guide."
+    @31.53 complementary
+      @31.54 navigation
+        @31.55 ## In this article
+        @31.56 link "Status" url=$u7
+        @31.58 link "Examples" url=$u8
+        @31.60 link "Specifications" url=$u9
+        @31.62 link "See also" url=$u10
+    @31.64 region "Status"
+      @31.65 link "Status" url=$u7
+      @31.67 text "HTTP"
+      @31.68 button "Copy"
+      @31.69 text "404 Not Found
+"
+    @31.70 region "Examples"
+      @31.71 link "Examples" url=$u8
+    @31.73 region "Page not found"
+      @31.74 link "Page not found" url="/en-US/docs/Web/HTTP/Reference/Status/404#page_not_found"
+      @31.76 text "Fetching a non-existent page may look like the following request:HTTP"
+      @31.78 button "Copy"
+      @31.79 text "GET/my-deleted-blog-postHTTP/1.1"
+      @31.85 text "
+"
+      @31.86 text "Host:example.com"
+      @31.90 text "
+"
+      @31.91 text "The server returns a response similar to this:HTTP"
+      @31.93 button "Copy"
+      @31.94 text "HTTP/1.1404Not Found"
+      @31.99 text "
+"
+      @31.100 text "Age:249970"
+      @31.104 text "
+"
+      @31.105 text "Cache-Control:max-age=604800"
+      @31.109 text "
+"
+      @31.110 text "Content-Type:text/html; charset=UTF-8"
+      @31.114 text "
+"
+      @31.115 text "Date:Fri, 28 Jun 2024 11:40:58 GMT"
+      @31.119 text "
+"
+      @31.120 text "Expires:Fri, 05 Jul 2024 11:40:58 GMT"
+      @31.124 text "
+"
+      @31.125 text "Last-Modified:Tue, 25 Jun 2024 14:14:48 GMT"
+      @31.129 text "
+"
+      @31.130 text "Server:ECAcc (nyd/D13E)"
+      @31.134 text "
+"
+      @31.135 text "Vary:Accept-Encoding"
+      @31.139 text "
+"
+      @31.140 text "X-Cache:404-HIT"
+      @31.144 text "
+"
+      @31.145 text "Content-Length:1256"
+      @31.149 text "
+
+<!doctype html>
+
+... [tee capped at 4096 of 11601 bytes]
+
+===== CALL rc=0 out=12605B args=open https://www.rfc-editor.org/rfc/rfc9110.html#status.404 =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  url: "https://www.rfc-editor.org/rfc/rfc9110.html#status.404"
+  refs: 6959
+snapshot:
+@32.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html#status.404"
+  @32.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @32.4 link "9110" url="/rfc/rfc9110"
+  @32.6 text "STD:97Obsoletes:"
+  @32.9 link "2818" url="/rfc/rfc2818"
+  @32.11 text ", "
+  @32.12 link "7230" url="/rfc/rfc7230"
+  @32.14 text ", "
+  @32.15 link "7231" url="/rfc/rfc7231"
+  @32.17 text ", "
+  @32.18 link "7232" url="/rfc/rfc7232"
+  @32.20 text ", "
+  @32.21 link "7233" url="/rfc/rfc7233"
+  @32.23 text ", "
+  @32.24 link "7235" url="/rfc/rfc7235"
+  @32.26 text ", "
+  @32.27 link "7538" url="/rfc/rfc7538"
+  @32.29 text ", "
+  @32.30 link "7615" url="/rfc/rfc7615"
+  @32.32 text ", "
+  @32.33 link "7694" url="/rfc/rfc7694"
+  @32.35 text "Updates:"
+  @32.36 link "3864" url="/rfc/rfc3864"
+  @32.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @32.54 # RFC 9110
+  @32.55 # HTTP Semantics
+  @32.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @32.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @32.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @32.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @32.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @32.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @32.67 text "."
+  @32.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @32.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @32.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @32.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.This document may contain material from IETF Documents or IETF Contributions published or made publicly available before November 10, 2008. The person(s) controlling the copyright in some of this material may not have granted the IETF Trust the right to allow modifications of such material outside the IETF Standards Process. Without obtaining an adequate license from the person(s) controlling the copyright in such materials, this document may not be modified outside the IETF Standards Process, and derivative works of it may not be created outside the IETF Standards Process, except to format it for publication as an RFC or to translate it into languages other than English."
+  @32.76 link "▲" url="/rfc/rfc9110.html#"
+  @32.78 link "Table of Contents" url="/rfc/rfc9110.html#name-table-of-contents"
+  @32.80 navigation
+    @32.81 li
+... [tee capped at 4096 of 12605 bytes]
+
+===== CALL rc=0 out=1230B args=network =====
+network:
+## Network requests
+Showing 1-11 of 11 (Page 1 of 1).
+reqid=1040 GET https://www.rfc-editor.org/rfc/rfc9110.html#status.404 [304]
+reqid=1041 GET https://fonts.googleapis.com/css?family=Noto+Sans [200]
+reqid=1042 GET https://fonts.googleapis.com/css?family=Noto+Serif [200]
+reqid=1043 GET https://fonts.googleapis.com/css?family=Roboto+Mono [200]
+reqid=1044 GET https://www.rfc-editor.org/rfc/rfc-local.css [200]
+reqid=1045 GET https://www.rfc-editor.org/js/metadata.min.js [304]
+reqid=1046 GET https://fonts.gstatic.com/s/notosans/v42/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9a6VLYyWtZ3rI.woff2 [200]
+reqid=1047 GET https://fonts.gstatic.com/s/robotomono/v31/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4AJi8SJQt.woff2 [200]
+reqid=1048 GET https://fonts.gstatic.com/s/notosans/v42/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9e6VLYyWtZ3rKW9w.woff2 [200]
+reqid=1049 GET https://fonts.gstatic.com/s/notosans/v42/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9U6VLYyWtZ3rKW9w.woff2 [200]
+reqid=1050 GET https://www.rfc-editor.org/rfc/rfc9110.json [304]
+help[2]:
+  Run `opera-browser-cli network-get <id>` to see request details
+  Run `opera-browser-cli network --type fetch` to filter by type
+
+===== CALL rc=0 out=2016B args=network-get 1040 =====
+request:
+## Request https://www.rfc-editor.org/rfc/rfc9110.html#status.404
+Status: 304
+### Request Headers
+- upgrade-insecure-requests:1
+- user-agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36
+- sec-ch-ua:"Chromium";v="152", "Not?A_Brand";v="24", "Google Chrome";v="152"
+- sec-ch-ua-mobile:?0
+- sec-ch-ua-platform:"macOS"
+- :authority:www.rfc-editor.org
+- :method:GET
+- :path:/rfc/rfc9110.html
+- :scheme:https
+- accept:text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+- accept-encoding:gzip, deflate, br, zstd
+- accept-language:en-US,en;q=0.9
+- cookie:__cf_bm=kXpCj8HP5G_GnmoIpwGtlAkSB7OAJ51DlS1dtzGp7zE-1788274436.971306-1.0.1.1-IRQKXqaRznPs3xudyJJ8foGy0xG2QpmKfw8OPmVTI371bjkJZxTuiPRxGGx66igSKAVMH1_sQaJGxNQyzPUUmzoT7VflRizqN9Vndu7GEXXEnwf6pL0NlRz_CTzjrPyf
+- if-none-match:"0d9f5fb8eb38d3c08b055f9b0671d68b"
+- priority:u=0, i
+- sec-fetch-dest:document
+- sec-fetch-mode:navigate
+- sec-fetch-site:none
+- sec-fetch-user:?1
+### Response Headers
+- access-control-allow-origin:*
+- alt-svc:h3=":443"; ma=86400
+- cf-r2-served:1
+- cf-ray:a34520119c480d39-FRA
+- date:Tue, 01 Sep 2026 14:57:04 GMT
+- etag:"0d9f5fb8eb38d3c08b055f9b0671d68b"
+- link:<https://www.rfc-editor.org/info/rfc9110/>; rel="canonical"
+- priority:u=0,i
+- server:cloudflare
+- server-timing:cfExtPri
+### Response Body
+<!DOCTYPE html>
+<html lang="en" class="RFC STD">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>RFC 9110: HTTP Semantics</title>
+<meta content="Roy T. Fielding" name="author">
+<meta content="Mark Nottingham" name="author">
+<meta content="Julian Reschke" name="author">
+<meta content='
+       
+   The Hypertext Transfer Protocol (HTTP) is a stateless application-level
+   protocol for distributed, collaborative, hypertext information systems.
+    ... (truncated, 11454 chars total)
+
+===== CALL rc=0 out=1716B args=network-get 1050 =====
+request:
+## Request https://www.rfc-editor.org/rfc/rfc9110.json
+Status: 304
+### Request Headers
+- sec-ch-ua-platform:"macOS"
+- referer:https://www.rfc-editor.org/rfc/rfc9110.html
+- user-agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36
+- sec-ch-ua:"Chromium";v="152", "Not?A_Brand";v="24", "Google Chrome";v="152"
+- sec-ch-ua-mobile:?0
+- :authority:www.rfc-editor.org
+- :method:GET
+- :path:/rfc/rfc9110.json
+- :scheme:https
+- accept:*/*
+- accept-encoding:gzip, deflate, br, zstd
+- accept-language:en-US,en;q=0.9
+- cookie:__cf_bm=kXpCj8HP5G_GnmoIpwGtlAkSB7OAJ51DlS1dtzGp7zE-1788274436.971306-1.0.1.1-IRQKXqaRznPs3xudyJJ8foGy0xG2QpmKfw8OPmVTI371bjkJZxTuiPRxGGx66igSKAVMH1_sQaJGxNQyzPUUmzoT7VflRizqN9Vndu7GEXXEnwf6pL0NlRz_CTzjrPyf
+- if-none-match:"c13fe928accc446c850fdd8e13b43dc1"
+- priority:u=1, i
+- sec-fetch-dest:empty
+- sec-fetch-mode:cors
+- sec-fetch-site:same-origin
+### Response Headers
+- access-control-allow-origin:*
+- alt-svc:h3=":443"; ma=86400
+- cf-r2-served:1
+- cf-ray:a34520148dc10d39-FRA
+- date:Tue, 01 Sep 2026 14:57:04 GMT
+- etag:"c13fe928accc446c850fdd8e13b43dc1"
+- link:<https://www.rfc-editor.org/info/rfc9110/>; rel="canonical"
+- priority:u=1,i
+- server:cloudflare
+- server-timing:cfExtPri
+### Response Body
+{
+  "draft": "draft-ietf-httpbis-semantics-19",
+  "doc_id": "RFC9110",
+  "title": "HTTP Semantics",
+  "authors": [
+    "R. Fielding, Ed.",
+    "M. Nottingham, Ed.",
+    "J. Reschke, Ed."
+  ],
+  "format": [
+    "XML",
+    "TEXT",
+    "HTML",
+    "PDF"
+  ],
+  "page_count": "194",
+  "pub_status": "INTERNET STANDARD",
+  "status": "INTERNET STANDARD",
+  "source": "HTTP",
+    ... (truncated, 2779 chars total)
+
+===== CALL rc=0 out=12528B args=open https://www.rfc-editor.org/info/rfc9110 =====
+page:
+  title: "RFC 9110: HTTP Semantics | RFC Editor"
+  url: "https://www.rfc-editor.org/info/rfc9110"
+  refs: 9441
+snapshot:
+@33.0 root "RFC 9110: HTTP Semantics | RFC Editor" url="/info/rfc9110/"
+  @33.1 banner
+    @33.2 link "Skip to content" url="/info/rfc9110/#main"
+    @33.4 link "RFC Editor - Official home of RFCs" url="/"
+      @33.5 image "RFC Editor - Official home of RFCs" url="/_nuxt/1.87.0/logo-desktop.DmfyR5wx.svg"
+    @33.6 navigation "Primary"
+      @33.7 ## Primary navigation
+      @33.8 navigation
+        @33.9 button "The RFC Series" disabled expandable
+        @33.10 button "For Authors" disabled expandable
+        @33.11 button "About Us" disabled expandable
+        @33.12 link "Search" url="/search/"
+        @33.13 button "Your preferences" disabled expandable
+  @33.14 main
+    @33.15 navigation "Breadcrumbs"
+      @33.16 link "Home" url="/"
+      @33.18 text "RFC 9110"
+    @33.19 text "RFC9110:"
+    @33.23 link "STD 97:" description="STD 97 contains RFC 9110" url="/info/std97/"
+      @33.24 text "STD97:"
+    @33.29 text "HTTP SemanticsR. Fielding, Ed.,  M. Nottingham, Ed.,  J. Reschke, Ed.INTERNET STANDARD"
+    @33.42 link "Abstract" url="/info/rfc9110/#abstract"
+    @33.44 text "The Hypertext Transfer Protocol (HTTP) is a stateless application"
+    @33.45 text "-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+    @33.46 link "¶" url="/info/rfc9110/#section-abstract-1"
+    @33.48 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+    @33.49 link "¶" url="/info/rfc9110/#section-abstract-2"
+    @33.51 link "Status of This Memo" url="/info/rfc9110/#name-status-of-this-memo"
+    @33.53 text "This is an Internet Standards Track document."
+    @33.54 link "¶" url="/info/rfc9110/#section-boilerplate.1-1"
+    @33.56 text "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841."
+    @33.57 link "¶" url="/info/rfc9110/#section-boilerplate.1-2"
+    @33.59 text "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+    @33.60 link "https:// www .rfc -editor .org /info /rfc9110" expandable haspopup="dialog" url="/info/rfc9110"
+      @33.61 text "https://www.rfc-editor.org/info/rfc9110"
+    @33.68 text "."
+    @33.69 link "¶" url="/info/rfc9110/#section-boilerplate.1-3"
+    @33.71 link "Copyright Notice" url="/info/rfc9110/#name-copyright-notice"
+    @33.73 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved."
+    @33.74 link "¶" url="/info/rfc9110/#section-boilerplate.2-1"
+    @33.76 text "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+    @33.77 link "https:// trustee .ietf .org /license -info" url="https://trustee.ietf.org/license-info"
+      @33.78 text "https://trustee.ietf.org/license-info"
+    @33.84 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License."
+    @33.85 link "¶" url="/info/rfc9110/#section-boilerplate.2-2"
+    @33.87 text "This document may contain material from IETF Documents or IETF Contributions publis
+... [tee capped at 4096 of 12528 bytes]
+
+===== CALL rc=0 out=1283B args=network =====
+network:
+## Network requests
+Showing 1-29 of 29 (Page 1 of 1).
+reqid=1052 GET https://www.rfc-editor.org/info/rfc9110/ [200]
+reqid=1053 GET https://static.ietf.org/fonts/inter/import.css [200]
+reqid=1054 GET https://www.rfc-editor.org/_nuxt/1.87.0/style.C72yHOK1.css [200]
+reqid=1055 GET https://www.rfc-editor.org/_nuxt/1.87.0/DqThrd3r.js [200]
+reqid=1056 GET https://www.rfc-editor.org/_nuxt/1.87.0/logo-mobile.CoO2D8c2.svg [200]
+reqid=1057 GET https://www.rfc-editor.org/_nuxt/1.87.0/logo-desktop.DmfyR5wx.svg [200]
+reqid=1058 GET https://www.rfc-editor.org/_nuxt/1.87.0/B-XwxScp.js [200]
+reqid=1059 GET https://www.rfc-editor.org/_nuxt/1.87.0/BhDljBGh.js [200]
+reqid=1060 GET https://www.rfc-editor.org/_nuxt/1.87.0/BOmvuScq.js [200]
+reqid=1061 GET https://www.rfc-editor.org/_nuxt/1.87.0/BVrXaSt9.js [200]
+reqid=1062 GET https://www.rfc-editor.org/_nuxt/1.87.0/BU-Rzf_N.js [200]
+reqid=1063 GET https://www.rfc-editor.org/_nuxt/1.87.0/BDx6lZXm.js [200]
+reqid=1064 GET https://www.rfc-editor.org/_nuxt/1.87.0/DJvijYg_.js [200]
+reqid=1065 GET https://static.ietf.org/fonts/inter/inter-latin.woff2 [200]
+    ... (truncated, 7828 chars total)
+help[2]:
+  Run `opera-browser-cli network-get <id>` to see request details
+  Run `opera-browser-cli network --type fetch` to filter by type
+
+===== CALL rc=0 out=12349B args=open https://www.rfc-editor.org/rfc/rfc9110.txt =====
+page:
+  url: "https://www.rfc-editor.org/rfc/rfc9110.txt"
+  refs: 2
+snapshot:
+@34.0 root url="/rfc/rfc9110.txt"
+  @34.1 text "
+
+
+
+Internet Engineering Task Force (IETF)                  R. Fielding, Ed.
+Request for Comments: 9110                                         Adobe
+STD: 97                                               M. Nottingham, Ed.
+Obsoletes: 2818, 7230, 7231, 7232, 7233, 7235,                    Fastly
+           7538, 7615, 7694                              J. Reschke, Ed.
+Updates: 3864                                                 greenbytes
+Category: Standards Track                                      June 2022
+ISSN: 2070-1721
+
+
+                             HTTP Semantics
+
+Abstract
+
+   The Hypertext Transfer Protocol (HTTP) is a stateless application-
+   level protocol for distributed, collaborative, hypertext information
+   systems.  This document describes the overall architecture of HTTP,
+   establishes common terminology, and defines aspects of the protocol
+   that are shared by all versions.  In this definition are core
+   protocol elements, extensibility mechanisms, and the "http" and
+   "https" Uniform Resource Identifier (URI) schemes.
+
+   This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232,
+   7233, 7235, 7538, 7615, 7694, and portions of 7230.
+
+Status of This Memo
+
+   This is an Internet Standards Track document.
+
+   This document is a product of the Internet Engineering Task Force
+   (IETF).  It represents the consensus of the IETF community.  It has
+   received public review and has been approved for publication by the
+   Internet Engineering Steering Group (IESG).  Further information on
+   Internet Standards is available in Section 2 of RFC 7841.
+
+   Information about the current status of this document, any errata,
+   and how to provide feedback on it may be obtained at
+   https://www.rfc-editor.org/info/rfc9110.
+
+Copyright Notice
+
+   Copyright (c) 2022 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (https://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Revised BSD License text as described in Section 4.e of the
+   Trust Legal Provisions and are provided without warranty as described
+   in the Revised BSD License.
+
+   This document may contain material from IETF Documents or IETF
+   Contributions published or made publicly available before November
+   10, 2008.  The person(s) controlling the copyright in some of this
+   material may not have granted the IETF Trust the right to allow
+   modifications of such material outside the IETF Standards Process.
+   Without obtaining an adequate license from the person(s) controlling
+   the copyright in such materials, this document may not be modified
+   outside the IETF Standards Process, and derivative works of it may
+   not be created outside the IETF Standards Process, except to format
+   it for publication as an RFC or to translate it into languages other
+   than English.
+
+Table of Contents
+
+   1.  Introduction
+     1.1.  Purpose
+     1.2.  History and Evolution
+     1.3.  Core Semantics
+     1.4.  Specifications Obsoleted by This Document
+   2.  Conformance
+     2.1.  Syntax Notation
+     2.2.  Requirements Notation
+     2.3.  Length Requirements
+     2.4.  Error Handling
+     2.5.  Protocol Version
+   3.  Terminology and Core Concepts
+     3.1.  Resources
+     3.2.  Representations
+     3.3.  Connections, Clients, and Servers
+     3.4.  Messages
+     3.5.  User Agents
+     3.6.  Origin Server
+     3.7.  Intermediaries
+     3.8.  Caches
+     3.9.  Example Message Exchange
+   4.  Identifiers in HTTP
+     4.1.  URI References
+     4.2.  HTTP-Related URI Schemes
+       4.2.1.  http URI Scheme
+       4.2.2.  https URI Scheme
+       4.2.3.  http(s) Normali
+... [tee capped at 4096 of 12349 bytes]
+
+===== CALL rc=0 out=265B args=network =====
+network:
+## Network requests
+Showing 1-1 of 1 (Page 1 of 1).
+reqid=1081 GET https://www.rfc-editor.org/rfc/rfc9110.txt [200]
+help[2]:
+  Run `opera-browser-cli network-get <id>` to see request details
+  Run `opera-browser-cli network --type fetch` to filter by type
+
+===== CALL rc=0 out=2020B args=network-get 1081 =====
+request:
+## Request https://www.rfc-editor.org/rfc/rfc9110.txt
+Status: 200
+### Request Headers
+- upgrade-insecure-requests:1
+- user-agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36
+- sec-ch-ua:"Chromium";v="152", "Not?A_Brand";v="24", "Google Chrome";v="152"
+- sec-ch-ua-mobile:?0
+- sec-ch-ua-platform:"macOS"
+### Response Headers
+- access-control-allow-origin:*
+- alt-svc:h3=":443"; ma=86400
+- cache-control:public, max-age=86400
+- cf-r2-served:1
+- cf-ray:a3451cf8ec876526-FRA
+- content-encoding:gzip
+- content-type:text/plain;charset=utf-8
+- date:Tue, 01 Sep 2026 14:54:57 GMT
+- etag:"7c9fc097e78bd883e559172c885e074c"
+- link:<https://www.rfc-editor.org/info/rfc9110/>; rel="canonical"
+- priority:u=0,i
+- server:cloudflare
+- server-timing:cfExtPri
+### Response Body
+
+
+
+
+Internet Engineering Task Force (IETF)                  R. Fielding, Ed.
+Request for Comments: 9110                                         Adobe
+STD: 97                                               M. Nottingham, Ed.
+Obsoletes: 2818, 7230, 7231, 7232, 7233, 7235,                    Fastly
+           7538, 7615, 7694                              J. Reschke, Ed.
+Updates: 3864                                                 greenbytes
+Category: Standards Track                                      June 2022
+ISSN: 2070-1721
+
+
+                             HTTP Semantics
+
+Abstract
+
+   The Hypertext Transfer Protocol (HTTP) is a stateless application-
+   level protocol for distributed, collaborative, hypertext information
+   systems.  This document describes the overall architecture of HTTP,
+   establishes common terminology, and defines aspects of the protocol
+   that are shared by all versions.  In this definition are core
+   protocol elements, extensibility mechanisms, and the "http" and
+   "https" Uniform Resource Identifier (URI) schemes.
+
+   This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232,
+    ... (truncated, 10857 chars total)
+
+===== CALL rc=0 out=2020B args=network-get 1081 =====
+request:
+## Request https://www.rfc-editor.org/rfc/rfc9110.txt
+Status: 200
+### Request Headers
+- upgrade-insecure-requests:1
+- user-agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36
+- sec-ch-ua:"Chromium";v="152", "Not?A_Brand";v="24", "Google Chrome";v="152"
+- sec-ch-ua-mobile:?0
+- sec-ch-ua-platform:"macOS"
+### Response Headers
+- access-control-allow-origin:*
+- alt-svc:h3=":443"; ma=86400
+- cache-control:public, max-age=86400
+- cf-r2-served:1
+- cf-ray:a3451cf8ec876526-FRA
+- content-encoding:gzip
+- content-type:text/plain;charset=utf-8
+- date:Tue, 01 Sep 2026 14:54:57 GMT
+- etag:"7c9fc097e78bd883e559172c885e074c"
+- link:<https://www.rfc-editor.org/info/rfc9110/>; rel="canonical"
+- priority:u=0,i
+- server:cloudflare
+- server-timing:cfExtPri
+### Response Body
+
+
+
+
+Internet Engineering Task Force (IETF)                  R. Fielding, Ed.
+Request for Comments: 9110                                         Adobe
+STD: 97                                               M. Nottingham, Ed.
+Obsoletes: 2818, 7230, 7231, 7232, 7233, 7235,                    Fastly
+           7538, 7615, 7694                              J. Reschke, Ed.
+Updates: 3864                                                 greenbytes
+Category: Standards Track                                      June 2022
+ISSN: 2070-1721
+
+
+                             HTTP Semantics
+
+Abstract
+
+   The Hypertext Transfer Protocol (HTTP) is a stateless application-
+   level protocol for distributed, collaborative, hypertext information
+   systems.  This document describes the overall architecture of HTTP,
+   establishes common terminology, and defines aspects of the protocol
+   that are shared by all versions.  In this definition are core
+   protocol elements, extensibility mechanisms, and the "http" and
+   "https" Uniform Resource Identifier (URI) schemes.
+
+   This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232,
+    ... (truncated, 10857 chars total)
+
+===== CALL rc=0 out=560B args=open https://search.yahoo.com/search?p=site%3Arfc-editor.org%2Frfc%2Frfc9110+%22404+Not+Found%22 =====
+page:
+  title: search.yahoo.com
+  url: "https://search.yahoo.com/search?p=site%3Arfc-editor.org%2Frfc%2Frfc9110+%22404+Not+Found%22"
+  refs: 4
+snapshot:
+@35.0 root "search.yahoo.com" url="/"
+  @35.1 # This page isn’t working
+  @35.2 text "search.yahoo.com is currently unable to handle this request.HTTP ERROR 500"
+  @35.5 button "Reload"
+help[2]:
+  Run `opera-browser-cli click @35.5` to click the "Reload" button
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=525B args=open https://search.yahoo.com/search?p=rfc+9110+404+not+found =====
+page:
+  title: search.yahoo.com
+  url: "https://search.yahoo.com/search?p=rfc+9110+404+not+found"
+  refs: 4
+snapshot:
+@36.0 root "search.yahoo.com" url="/"
+  @36.1 # This page isn’t working
+  @36.2 text "search.yahoo.com is currently unable to handle this request.HTTP ERROR 500"
+  @36.5 button "Reload"
+help[2]:
+  Run `opera-browser-cli click @36.5` to click the "Reload" button
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=545B args=open https://www.ecosia.org/search?q=rfc+9110+404+not+found =====
+page:
+  title: Just a moment...
+  url: "https://www.ecosia.org/search?q=rfc+9110+404+not+found"
+  refs: 5
+snapshot:
+@37.0 root "Just a moment..." url="/search?q=rfc+9110+404+not+found"
+  @37.1 main
+    @37.2 # Confirm you’re not a robot
+    @37.3 text "Our system has detected unusual traffic from your network. Please solve the challenge below to show you’re not a robot."
+    @37.4 main
+help[1]:
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=4876B args=open https://duckduckgo.com/?q=rfc+9110+404+not+found =====
+page:
+  title: rfc 9110 404 not found at DuckDuckGo
+  url: "https://duckduckgo.com/?q=rfc+9110+404+not+found"
+  refs: 83
+snapshot:
+@38.0 root "rfc 9110 404 not found at DuckDuckGo" url="/?q=rfc+9110+404+not+found"
+  @38.1 link "DuckDuckGo home" url="/"
+    @38.2 text "DuckDuckGo"
+  @38.3 form
+    @38.4 combobox "Search privately" value="rfc 9110 404 not found"
+    @38.5 button "Search"
+  @38.6 button "Open menu"
+  @38.7 navigation
+    @38.8 link "All" url="/?q=rfc+9110+404+not+found&ia=web"
+    @38.10 link "Images" url="/?q=rfc+9110+404+not+found&ia=images&iax=images"
+    @38.12 link "Videos" url="/?q=rfc+9110+404+not+found&ia=videos&iax=videos"
+    @38.14 link "News" url="/?q=rfc+9110+404+not+found&ia=news&iar=news"
+    @38.16 link "Maps" url="/?q=rfc+9110+404+not+found&iaxm=maps"
+    @38.18 link "Shopping" url="/?q=rfc+9110+404+not+found&ia=shopping&iax=shopping"
+    @38.20 generic
+      @38.21 link "Duck.ai" url="/?q=rfc+9110+404+not+found&ia=chat"
+    @38.23 generic
+      @38.24 button "Search Settings ✀"
+  @38.25 navigation
+    @38.26 button "Private" expandable
+    @38.27 switch "Filter by the selected region"
+    @38.28 button "Norway" expandable haspopup="menu"
+    @38.29 button "Safe search: moderate" expandable haspopup="menu"
+    @38.30 button "Any time" expandable haspopup="menu"
+  @38.31 button "Close menu"
+  @38.32 text "SEARCH"
+  @38.33 link "Homepage" url="https://start.duckduckgo.com/"
+  @38.35 link "Themes" url="/settings#appearance"
+  @38.37 link "Settings" url="/settings"
+  @38.39 text "SHARE FEEDBACK"
+  @38.40 button "Positive feedback" expandable
+  @38.41 button "Negative feedback" expandable
+  @38.42 text "DOWNLOADS"
+  @38.43 link "iOS Browser" url="https://apps.apple.com/app/duckduckgo-private-browser/id663592361?platform=iphone&pt=866401&mt=8&ct=serp-atb-serp"
+  @38.45 link "Android Browser" url="https://play.google.com/store/apps/details?id=com.duckduckgo.mobile.android&referrer=utm_campaign%3Dserp-atb-serp%26origin%3Dfunnel_playstore_searchresults"
+  @38.47 link "Mac Browser" url="/mac?origin=funnel_browser_searchresults"
+  @38.49 link "Windows Browser" url="/windows?origin=funnel_browser_searchresults"
+  @38.51 text "Browser ExtensionsMORE FROM DUCKDUCKGO"
+  @38.53 button "Dismiss promotion"
+  @38.54 text "Upgrade to our Private BrowserFast. Secure. Free."
+  @38.56 link "Install Mac Browser" url="/mac"
+  @38.58 link "Duck.ai" url="https://duck.ai/"
+  @38.60 link "Email Protection" url="/email"
+  @38.62 link "Newsletter" url="/newsletter"
+  @38.64 link "Blog" url="/blog"
+  @38.66 link "Podcast" url=$u1
+  @38.68 link "Collaborations" url=$u2
+  @38.70 text "LEARN MORE"
+  @38.71 link "What’s New" url="/updates"
+  @38.73 link "Compare Privacy" url=$u3
+  @38.75 link "About Our Browser" url="/app"
+  @38.77 link "About DuckDuckGo" url="/about"
+  @38.79 text "OTHER RESOURCES"
+  @38.80 link "Help" url="/duckduckgo-help-pages"
+  @38.82 link "Community" url="https://www.reddit.com/r/duckduckgo/"
+  @38.84 link "Careers" url="/careers"
+  @38.86 link "Privacy Policy" url="/privacy"
+  @38.88 link "Terms of Service" url="/terms"
+  @38.90 link "Press Kit" url="/press"
+  @38.92 link "Advertise on Search" url="/duckduckgo-help-pages/company/advertise-on-duckduckgo-search"
+  @38.94 ### Get Our Mac Browser
+  @38.95 text "Protect your data as you search, browse, and use AI."
+  @38.96 link "Download" url="/mac?origin=funnel_browser_searchresults__footercard"
+  @38.98 ### Learn More
+  @38.99 link "What's New" url="/updates"
+  @38.101 link "About Browser" url="/app"
+  @38.103 link "Compare Privacy" url=$u3
+  @38.105 link "Help Pages" url="/duckduckgo-help-pages/"
+  @38.107 ### Get More
+  @38.108 link "Email Protection" url="/email"
+  @38.110 link "Podcast" url=$u1
+  @38.112 text " & "
+  @38.113 link "Newsletter" url="/newsletter"
+  @38.115 link "Collaborations" url=$u2
+  @38.117 text "Unfortunately, bots use DuckDuckGo too.Please complete the following challenge to confirm this search was made by a human.Select all squares containing a duck:"
+  @38.120 button "Submit"
+  @38.121 button "Share Feedback"
+  @38.122 ban
+... [tee capped at 4096 of 4876 bytes]
+
+===== CALL rc=0 out=733B args=open https://www.mojeek.com/search?q=rfc+9110+404+not+found+section =====
+page:
+  title: 403 - Forbidden
+  url: "https://www.mojeek.com/search?q=rfc+9110+404+not+found+section"
+  refs: 6
+snapshot:
+@39.0 root "403 - Forbidden" url="/search?q=rfc+9110+404+not+found+section"
+  @39.1 # 403 - Forbidden
+  @39.2 ## Sorry your network appears to be sending automated queries so we can't process your search at this time.
+  @39.3 text "If you are seeing this in error please "
+  @39.4 link "contact us" url="/about/contact?refr=403&q=rfc%209110%20404%20not%20found%20section"
+  @39.6 text "."
+help[2]:
+  Run `opera-browser-cli click @39.4` to click the "contact us" link
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=363B args=open https://search.brave.com/search?q=rfc+9110+%22404+Not+Found%22 =====
+page:
+  title: Captcha - Brave Search
+  url: "https://search.brave.com/search?q=rfc+9110+%22404+Not+Found%22"
+  refs: 1
+snapshot:
+@40.0 root "Captcha - Brave Search" url="/search?q=rfc+9110+%22404+Not+Found%22"
+help[1]:
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=2406B args=open https://www.rfc-editor.org/search/ =====
+page:
+  title: Search | RFC Editor
+  url: "https://www.rfc-editor.org/search/"
+  refs: 41
+snapshot:
+@41.0 root "Search | RFC Editor" url="/search/"
+  @41.1 banner
+    @41.2 link "Skip to content" url="/search/#main"
+    @41.4 link "RFC Editor - Official home of RFCs" url="/"
+      @41.5 image "RFC Editor - Official home of RFCs" url="/_nuxt/1.87.0/logo-desktop.DmfyR5wx.svg"
+    @41.6 navigation "Primary"
+      @41.7 ## Primary navigation
+      @41.8 navigation
+        @41.9 button "The RFC Series" disabled expandable
+        @41.10 button "For Authors" disabled expandable
+        @41.11 button "About Us" disabled expandable
+        @41.12 link "Search" url="/search/"
+        @41.13 button "Your preferences" disabled expandable
+  @41.14 main
+    @41.15 navigation "Breadcrumbs"
+      @41.16 link "Home" url="/"
+      @41.18 text "Search"
+    @41.19 # Search
+    @41.20 search "RFC search"
+  @41.21 contentinfo
+    @41.22 ## Footer
+    @41.23 navigation "Footer"
+      @41.24 text "rfc-editor.org is maintained by the "
+      @41.25 link "Internet Engineering Task Force" url=$u1
+      @41.27 link "IETF" url=$u1
+        @41.28 image "IETF"
+      @41.29 link "System Status" url="https://status.ietf.org/"
+      @41.31 text "·"
+      @41.32 link "Report a Bug" url="https://github.com/ietf-tools/red/issues"
+      @41.34 text "·Version 1.87.0"
+      @41.36 ### Useful links
+      @41.37 link "IETF.org" url=$u1
+      @41.39 link "IRTF.org" url="https://www.irtf.org/"
+      @41.41 link "IAB.org" url="https://www.iab.org/"
+      @41.43 link "Datatracker" url="https://datatracker.ietf.org/"
+      @41.45 link "Author Resources" url="https://authors.ietf.org/"
+      @41.47 ### Contact Us
+      @41.48 link "RFC Editor" url="/about/contact/"
+      @41.50 link "rfc-dist Info Page" url="https://mailman.rfc-editor.org/mailman/listinfo/rfc-dist"
+      @41.52 link "rfc-interest Info Page" url="https://mailman.rfc-editor.org/mailman/listinfo/rfc-interest"
+    @41.54 link "Go to top of page" url="/search/#top"
+urls:
+  $u1 https://www.ietf.org/
+help[4]:
+  Run `opera-browser-cli click @41.9` to click the "The RFC Series" button
+  Run `opera-browser-cli click @41.2` to click the "Skip to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=12570B args=snapshot =====
+page:
+  title: Search | RFC Editor
+  refs: 376
+snapshot:
+@41.0 root "Search | RFC Editor" url="/search/"
+  @42.0 status
+    @42.1 text "Search | RFC Editor"
+  @41.1 banner
+    @41.2 link "Skip to content" url="/search/#main"
+    @41.4 link "RFC Editor - Official home of RFCs" url="/"
+      @41.5 image "RFC Editor - Official home of RFCs" url="/_nuxt/1.87.0/logo-desktop.DmfyR5wx.svg"
+    @41.6 navigation "Primary"
+      @41.7 ## Primary navigation
+      @41.8 navigation
+        @41.9 button "The RFC Series" expandable
+        @41.10 button "For Authors" expandable
+        @41.11 button "About Us" expandable
+        @41.12 link "Search" url="/search/"
+        @41.13 button "Your preferences" expandable
+  @41.14 main
+    @41.15 navigation "Breadcrumbs"
+      @41.16 link "Home" url="/"
+      @41.18 text "Search"
+    @41.19 # Search
+    @41.20 search "RFC search"
+      @42.2 form
+        @42.3 text "Search RFCs"
+        @42.4 searchbox "Search RFCs" description="Find an RFC (number, subseries, title, author, etc.)"
+        @42.5 button "Submit search"
+      @42.6 text "Find an RFC (number, subseries, title, author, etc.)"
+      @42.7 navigation "search filters"
+        @42.8 ## Filters
+        @42.9 button "Reset filters" disabled
+        @42.10 checkbox "Search only Metadata and Abstract"
+        @42.11 checkbox "Search also obsoleted / historic" checked
+        @42.12 text "Status"
+        @42.13 checkbox "Internet Standard 132"
+        @42.14 text "Internet Standard132"
+        @42.16 checkbox "Best Current Practice 337"
+        @42.17 text "Best Current Practice337"
+        @42.19 checkbox "Proposed Standard 4,424"
+        @42.20 text "Proposed Standard4,424"
+        @42.22 checkbox "Draft Standard 138"
+        @42.23 text "Draft Standard138"
+        @42.25 checkbox "Informational 3,007"
+        @42.26 text "Informational3,007"
+        @42.28 checkbox "Experimental 557"
+        @42.29 text "Experimental557"
+        @42.31 checkbox "Historic 353"
+        @42.32 text "Historic353"
+        @42.34 checkbox "Unknown 887"
+        @42.35 text "Unknown887"
+        @42.37 status
+        @42.38 text "Stream"
+        @42.39 combobox "Stream" value="All"
+          @42.40 option "All" selected value="All"
+          @42.41 option "IETF (7,243)" value="IETF (7,243)"
+          @42.42 option "Legacy (1,893)" value="Legacy (1,893)"
+          @42.43 option "ISE (435)" value="ISE (435)"
+          @42.44 option "IAB (134)" value="IAB (134)"
+          @42.45 option "IRTF (127)" value="IRTF (127)"
+          @42.46 option "Editorial (3)" value="Editorial (3)"
+        @42.47 text "Area"
+        @42.48 combobox "Area" value="All"
+          @42.49 option "All" selected value="All"
+          @42.50 option "gen - General Area (2,002)" value="gen - General Area (2,002)"
+          @42.51 option "rtg - Routing Area (1,388)" value="rtg - Routing Area (1,388)"
+          @42.52 option "ops - Operations and Management Area (926)" value="ops - Operations and Management Area (926)"
+          @42.53 option "int - Internet Area (904)" value="int - Internet Area (904)"
+          @42.54 option "iesg - Internet Engineering Steering Group (832)" value="iesg - Internet Engineering Steering Group (832)"
+          @42.55 option "sec - Security Area (808)" value="sec - Security Area (808)"
+          @42.56 option "app - Applications Area (552)" value="app - Applications Area (552)"
+          @42.57 option "art - Applications and Real-Time Area (427)" value="art - Applications and Real-Time Area (427)"
+          @42.58 option "rai - Real-time Applications and Infrastructure Area (415)" value="rai - Real-time Applications and Infrastructure Area (415)"
+          @42.59 option "wit - Web and Internet Transport (380)" value="wit - Web and Internet Transport (380)"
+          @42.60 option "tsv - Transport Area (357)" value="tsv - Transport Area (357)"
+          @42.61 option "mgt - Network Management Area (59)" value="mgt - Network Management Area (59)"
+          @42.62 option "usv - User Services Area (34)" value="usv - User Services Area (34)"
+          @42.63 option "sub
+... [tee capped at 4096 of 12570 bytes]

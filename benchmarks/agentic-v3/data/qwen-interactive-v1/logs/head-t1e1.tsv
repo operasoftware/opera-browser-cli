@@ -1,0 +1,7 @@
+1788345201.3245339394	0.13	0	3156	0	--help
+1788345204.3790678978	1.50	0	12691	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788345212.0903050900	0.35	0	85	0	eval Array.from(document.querySelectorAll('h2,h3')).filter(h=>/404/.test(h.textContent)).map(h=>h.id+' | '+h.textContent.trim()).join('\n')
+1788345218.9725880623	0.35	0	477	0	eval Array.from(document.querySelectorAll('[id^=section-]')).filter(h=>/404/.test(h.textContent.slice(0,40))).map(h=>h.tagName+' | '+h.id+' | '+h.textContent.trim().slice(0,60)).join('\n')
+1788345224.9746160507	0.14	1	540	0	eval document.querySelector('#section-15.5.5 h3, #section-15.5.5').textContent.trim().split('\n')[0]
+1788345228.4127910137	0.14	1	84	0	eval document.getElementById('section-15.5.5').querySelector('h3').textContent.trim()
+1788345232.0082769394	0.35	0	440	0	eval document.getElementById('section-15.5.5').innerHTML.slice(0,300)

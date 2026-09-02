@@ -1,0 +1,33 @@
+{
+ "model": "openai/gpt-5.6-terra",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": 8000,
+  "max_turns": 50,
+  "reasoning_effort": "none",
+  "prices_usd_per_token": {
+   "input": 2e-06,
+   "output": 1.2e-05,
+   "cache_read": 2e-07,
+   "cache_write": 2.5e-06
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.0625029,
+ "num_turns": 9,
+ "calls": 8,
+ "is_error": false,
+ "result": "ANSWER: Approximately 4.5 billion years ago.\nCALLS: 7",
+ "usage": {
+  "input_tokens": 64786,
+  "output_tokens": 973,
+  "cache_read_input_tokens": 48207,
+  "cache_creation_input_tokens": 16055
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0010479999999999997,
+  "out": 0.011676,
+  "cache_read": 0.0096414,
+  "cache_write": 0.040137500000000007
+ }
+}

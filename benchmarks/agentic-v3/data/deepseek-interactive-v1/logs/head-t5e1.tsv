@@ -1,0 +1,17 @@
+1788348229.3801341057	0.13	0	3156	0	--help
+1788348230.1601099968	1.08	0	12564	0	open https://en.wikipedia.org/wiki/Moon
+1788348233.0135369301	0.35	0	138	0	eval (()=>{const a=[...document.querySelectorAll('a')].find(x=>x.textContent.trim()==='Giant-impact hypothesis');return a?a.href:a?a.textContent:'NOT FOUND'})()
+1788348234.3239541054	0.58	0	200	0	snapshot
+1788348236.1805520058	0.58	0	200	0	snapshot
+1788348241.0371549129	0.14	1	50	0	scroll down
+1788348248.1784620285	0.14	1	50	0	scroll down
+1788348250.0215051174	0.79	0	531	0	press End
+1788348254.7417418957	0.35	0	162	0	eval (()=>{const a=[...document.querySelectorAll('a')].find(x=>x.textContent.trim()==='Giant-impact hypothesis');a.scrollIntoView({block:'center'});return a.textContent+' '+a.href})()
+1788348255.9766209126	0.62	0	12489	0	snapshot
+1788348259.1822979450	0.59	0	200	0	snapshot
+1788348261.1856911182	0.59	0	200	0	snapshot
+1788348262.9714729786	0.59	0	12489	0	snapshot --force
+1788348268.4382159710	0.59	0	12489	0	snapshot --force
+1788348273.6771349907	0.60	0	11838	0	snapshot --next
+1788348274.3088939190	0.57	0	12026	0	snapshot --next
+1788348275.6383020878	0.55	0	12648	0	click @.932

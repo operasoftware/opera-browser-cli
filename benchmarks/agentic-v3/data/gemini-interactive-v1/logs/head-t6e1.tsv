@@ -1,0 +1,4 @@
+1788275519.8733510971	0.14	0	3156	0	--help
+1788275522.0408329964	1.17	0	12091	0	open https://books.toscrape.com/
+1788275524.8590710163	0.81	0	10405	0	click @.12
+1788275529.1856360435	0.34	0	999	0	eval Array.from(document.querySelectorAll('.product_pod')).map(pod => ({title: pod.querySelector('h3 a').getAttribute('title'), price: pod.querySelector('.price_color').innerText}))

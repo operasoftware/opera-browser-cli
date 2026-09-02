@@ -1,0 +1,3 @@
+1788272954.8649549484	0.14	0	3156	0	--help
+1788272958.1122848988	1.54	0	12616	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788272959.6797668934	0.15	0	117	0	eval document.querySelector('#status.404, #status-404, [id*='404']')?.outerHTML || [...document.querySelectorAll('h1,h2,h3,h4,h5,h6')].filter(e=>e.textContent.includes('404')).map(e=>e.outerHTML).join('\n')

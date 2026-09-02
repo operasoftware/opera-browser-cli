@@ -1,0 +1,637 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12027B args=open https://books.toscrape.com/ =====
+page:
+  title: All products | Books to Scrape - Sandbox
+  url: "https://books.toscrape.com/"
+  refs: 206
+snapshot:
+@72.0 root "All products | Books to Scrape - Sandbox" url="/"
+  @72.1 banner
+    @72.2 link "Books to Scrape" url="/index.html"
+    @72.4 text " We love being scraped!"
+  @72.5 link "Home" url="/index.html"
+  @72.7 text "/ All products"
+  @72.9 complementary
+    @72.10 link "Books" url="/catalogue/category/books_1/index.html"
+    @72.12 link "Travel" url="/catalogue/category/books/travel_2/index.html"
+    @72.14 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @72.16 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @72.18 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @72.20 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @72.22 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @72.24 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @72.26 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @72.28 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @72.30 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @72.32 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @72.34 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @72.36 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @72.38 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @72.40 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @72.42 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @72.44 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @72.46 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @72.48 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @72.50 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @72.52 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @72.54 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @72.56 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @72.58 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @72.60 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @72.62 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @72.64 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @72.66 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @72.68 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @72.70 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @72.72 link "History" url="/catalogue/category/books/history_32/index.html"
+    @72.74 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @72.76 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @72.78 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @72.80 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @72.82 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @72.84 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @72.86 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @72.88 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @72.90 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @72.92 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @72.94 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @72.96 link "Suspense" url="/catalogue/category/books/suspense_44/index.
+... [tee capped at 4096 of 12027 bytes]
+
+===== CALL rc=0 out=10682B args=click @72.12 =====
+page:
+  title: Travel | Books to Scrape - Sandbox
+  refs: 143
+snapshot:
+@73.0 root "Travel | Books to Scrape - Sandbox" url=$u1
+  @73.1 banner
+    @73.2 link "Books to Scrape" url="/index.html"
+    @73.4 text " We love being scraped!"
+  @73.5 link "Home" url="/index.html"
+  @73.7 text "/ "
+  @73.9 link "Books" url=$u2
+  @73.7 text "/ Travel"
+  @73.12 complementary
+    @73.13 link "Books" url=$u2
+    @73.15 link "Travel" url=$u1
+    @73.17 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @73.19 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @73.21 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @73.23 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @73.25 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @73.27 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @73.29 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @73.31 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @73.33 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @73.35 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @73.37 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @73.39 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @73.41 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @73.43 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @73.45 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @73.47 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @73.49 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @73.51 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @73.53 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @73.55 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @73.57 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @73.59 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @73.61 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @73.63 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @73.65 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @73.67 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @73.69 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @73.71 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @73.73 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @73.75 link "History" url="/catalogue/category/books/history_32/index.html"
+    @73.77 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @73.79 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @73.81 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @73.83 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @73.85 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @73.87 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @73.89 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @73.91 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @73.93 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @73.95 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @73.97 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @73.99 link "Suspense" url="/catalogue/category/books/suspense_44/index.html"
+    @73.101 link "Short Stories" url="/catalogue/category/books/short-stories_45/
+... [tee capped at 4096 of 10682 bytes]
+
+===== CALL rc=0 out=10682B args=snapshot =====
+page:
+  title: Travel | Books to Scrape - Sandbox
+  refs: 143
+snapshot:
+@73.0 root "Travel | Books to Scrape - Sandbox" url=$u1
+  @73.1 banner
+    @73.2 link "Books to Scrape" url="/index.html"
+    @73.4 text " We love being scraped!"
+  @73.5 link "Home" url="/index.html"
+  @73.7 text "/ "
+  @73.9 link "Books" url=$u2
+  @73.7 text "/ Travel"
+  @73.12 complementary
+    @73.13 link "Books" url=$u2
+    @73.15 link "Travel" url=$u1
+    @73.17 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @73.19 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @73.21 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @73.23 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @73.25 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @73.27 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @73.29 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @73.31 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @73.33 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @73.35 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @73.37 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @73.39 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @73.41 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @73.43 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @73.45 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @73.47 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @73.49 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @73.51 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @73.53 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @73.55 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @73.57 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @73.59 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @73.61 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @73.63 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @73.65 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @73.67 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @73.69 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @73.71 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @73.73 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @73.75 link "History" url="/catalogue/category/books/history_32/index.html"
+    @73.77 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @73.79 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @73.81 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @73.83 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @73.85 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @73.87 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @73.89 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @73.91 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @73.93 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @73.95 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @73.97 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @73.99 link "Suspense" url="/catalogue/category/books/suspense_44/index.html"
+    @73.101 link "Short Stories" url="/catalogue/category/books/short-stories_45/
+... [tee capped at 4096 of 10682 bytes]
+
+===== CALL rc=0 out=10682B args=scroll down =====
+page:
+  title: Travel | Books to Scrape - Sandbox
+  refs: 143
+snapshot:
+@73.0 root "Travel | Books to Scrape - Sandbox" url=$u1
+  @73.1 banner
+    @73.2 link "Books to Scrape" url="/index.html"
+    @73.4 text " We love being scraped!"
+  @73.5 link "Home" url="/index.html"
+  @73.7 text "/ "
+  @73.9 link "Books" url=$u2
+  @73.7 text "/ Travel"
+  @73.12 complementary
+    @73.13 link "Books" url=$u2
+    @73.15 link "Travel" url=$u1
+    @73.17 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @73.19 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @73.21 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @73.23 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @73.25 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @73.27 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @73.29 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @73.31 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @73.33 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @73.35 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @73.37 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @73.39 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @73.41 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @73.43 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @73.45 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @73.47 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @73.49 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @73.51 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @73.53 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @73.55 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @73.57 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @73.59 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @73.61 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @73.63 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @73.65 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @73.67 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @73.69 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @73.71 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @73.73 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @73.75 link "History" url="/catalogue/category/books/history_32/index.html"
+    @73.77 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @73.79 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @73.81 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @73.83 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @73.85 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @73.87 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @73.89 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @73.91 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @73.93 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @73.95 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @73.97 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @73.99 link "Suspense" url="/catalogue/category/books/suspense_44/index.html"
+    @73.101 link "Short Stories" url="/catalogue/category/books/short-stories_45/
+... [tee capped at 4096 of 10682 bytes]
+
+===== CALL rc=0 out=5898B args=click @73.186 =====
+page:
+  title: "The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2) | Books to Scrape - Sandbox"
+  refs: 63
+snapshot:
+@76.0 root "The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2) | Books to Scrape - Sandbox" url="/catalogue/the-road-to-little-dribbling-adventures-of-an-american-in-britain-notes-from-a-small-island-2_277/index.html"
+  @76.1 banner
+    @76.2 link "Books to Scrape" url="/index.html"
+    @76.4 text " We love being scraped!"
+  @76.5 link "Home" url="/index.html"
+  @76.7 text "/ "
+  @76.9 link "Books" url="/catalogue/category/books_1/index.html"
+  @76.7 text "/ "
+  @76.12 link "Travel" url="/catalogue/category/books/travel_2/index.html"
+  @76.7 text "/ The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)"
+  @76.15 image "The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)" url="/media/cache/26/f5/26f5d20239a45046e756c6d09611b3ea.jpg"
+  @76.16 # The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)
+  @76.17 text "£23.21 In stock (3 available)"
+  @76.20 alert
+    @76.21 text "Warning! This is a demo website for web scraping purposes. Prices and ratings here were randomly assigned and have no real meaning."
+  @76.23 ## Product Description
+  @76.24 text "The hilarious and loving sequel to a hilarious and loving classic of travel writing: Notes from a Small Island, Bill Bryson’s valentine to his adopted country of EnglandIn 1995 Bill Bryson got into his car and took a weeks-long farewell motoring trip about England before moving his family back to the United States. The book about that trip, Notes from a Small Island, is up The hilarious and loving sequel to a hilarious and loving classic of travel writing: Notes from a Small Island, Bill Bryson’s valentine to his adopted country of EnglandIn 1995 Bill Bryson got into his car and took a weeks-long farewell motoring trip about England before moving his family back to the United States. The book about that trip, Notes from a Small Island, is uproarious and endlessly endearing, one of the most acute and affectionate portrayals of England in all its glorious eccentricity ever written. Two decades later, he set out again to rediscover that country, and the result is The Road to Little Dribbling. Nothing is funnier than Bill Bryson on the road—prepare for the total joy and multiple episodes of unseemly laughter. ...more"
+  @76.25 ## Product Information
+  @76.26 text "UPC366a236aa1ea6f07Product TypeBooksPrice (excl. tax)£23.21Price (incl. tax)£23.21Tax£0.00AvailabilityIn stock (3 available)Number of reviews0"
+  @76.40 ## Products you recently viewed
+  @76.41 link "A Year in Provence (Provence #1)" url=$u1
+    @76.42 image "A Year in Provence (Provence #1)" url="/media/cache/db/46/db46159b05faa5d95262112bf9c29ddd.jpg"
+  @76.7 text ""
+  @76.43 link "A Year in Provence ..." description="A Year in Provence (Provence #1)" url=$u1
+  @76.45 text "£56.88 In stock"
+  @76.47 form
+    @76.48 button "Add to basket"
+  @76.49 link "The Great Railway Bazaar" url=$u2
+    @76.50 image "The Great Railway Bazaar" url="/media/cache/76/de/76de41867f323d7f1f4fbe2fdfc1b2ba.jpg"
+  @76.7 text ""
+  @76.51 link "The Great Railway Bazaar" url=$u2
+  @76.53 text "£30.54 In stock"
+  @76.55 form
+    @76.56 button "Add to basket"
+  @76.57 link "A Summer In Europe" url=$u3
+    @76.58 image "A Summer In Europe" url="/media/cache/4e/15/4e15150388702ebca2c5a523ac270539.jpg"
+  @76.7 text ""
+  @76.59 link "A Summer In Europe" url=$u3
+  @76.61 text "£44.34 In stock"
+  @76.63 form
+    @76.64 button "Add to basket"
+  @76.65 link "Under the Tuscan Sun" url=$u4
+    @76.66 image "Under the Tuscan Sun" url="/media/cache/98/c2/98c2e95c5fd1a4e7cd5f2b63c52826cb.jpg"
+  @76.7 text ""
+  @76.67 link "Under the Tuscan Sun" url=$u4
+  @76.69 text "£37.33 In stock"
+  @76.71 form
+    @76.72 button 
+... [tee capped at 4096 of 5898 bytes]
+
+===== CALL rc=0 out=10682B args=click @76.12 =====
+page:
+  title: Travel | Books to Scrape - Sandbox
+  refs: 143
+snapshot:
+@77.0 root "Travel | Books to Scrape - Sandbox" url=$u1
+  @77.1 banner
+    @77.2 link "Books to Scrape" url="/index.html"
+    @77.4 text " We love being scraped!"
+  @77.5 link "Home" url="/index.html"
+  @77.7 text "/ "
+  @77.9 link "Books" url=$u2
+  @77.7 text "/ Travel"
+  @77.12 complementary
+    @77.13 link "Books" url=$u2
+    @77.15 link "Travel" url=$u1
+    @77.17 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @77.19 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @77.21 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @77.23 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @77.25 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @77.27 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @77.29 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @77.31 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @77.33 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @77.35 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @77.37 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @77.39 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @77.41 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @77.43 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @77.45 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @77.47 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @77.49 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @77.51 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @77.53 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @77.55 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @77.57 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @77.59 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @77.61 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @77.63 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @77.65 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @77.67 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @77.69 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @77.71 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @77.73 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @77.75 link "History" url="/catalogue/category/books/history_32/index.html"
+    @77.77 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @77.79 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @77.81 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @77.83 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @77.85 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @77.87 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @77.89 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @77.91 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @77.93 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @77.95 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @77.97 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @77.99 link "Suspense" url="/catalogue/category/books/suspense_44/index.html"
+    @77.101 link "Short Stories" url="/catalogue/category/books/short-stories_45/
+... [tee capped at 4096 of 10682 bytes]
+
+===== CALL rc=0 out=10682B args=snapshot @77.115 =====
+page:
+  title: Travel | Books to Scrape - Sandbox
+  refs: 143
+snapshot:
+@77.0 root "Travel | Books to Scrape - Sandbox" url=$u1
+  @77.1 banner
+    @77.2 link "Books to Scrape" url="/index.html"
+    @77.4 text " We love being scraped!"
+  @77.5 link "Home" url="/index.html"
+  @77.7 text "/ "
+  @77.9 link "Books" url=$u2
+  @77.7 text "/ Travel"
+  @77.12 complementary
+    @77.13 link "Books" url=$u2
+    @77.15 link "Travel" url=$u1
+    @77.17 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @77.19 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @77.21 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @77.23 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @77.25 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @77.27 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @77.29 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @77.31 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @77.33 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @77.35 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @77.37 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @77.39 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @77.41 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @77.43 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @77.45 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @77.47 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @77.49 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @77.51 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @77.53 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @77.55 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @77.57 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @77.59 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @77.61 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @77.63 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @77.65 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @77.67 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @77.69 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @77.71 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @77.73 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @77.75 link "History" url="/catalogue/category/books/history_32/index.html"
+    @77.77 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @77.79 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @77.81 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @77.83 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @77.85 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @77.87 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @77.89 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @77.91 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @77.93 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @77.95 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @77.97 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @77.99 link "Suspense" url="/catalogue/category/books/suspense_44/index.html"
+    @77.101 link "Short Stories" url="/catalogue/category/books/short-stories_45/
+... [tee capped at 4096 of 10682 bytes]
+
+===== CALL rc=0 out=5796B args=click @77.194 =====
+page:
+  title: "Neither Here nor There: Travels in Europe | Books to Scrape - Sandbox"
+  refs: 63
+snapshot:
+@79.0 root "Neither Here nor There: Travels in Europe | Books to Scrape - Sandbox" url="/catalogue/neither-here-nor-there-travels-in-europe_198/index.html"
+  @79.1 banner
+    @79.2 link "Books to Scrape" url="/index.html"
+    @79.4 text " We love being scraped!"
+  @79.5 link "Home" url="/index.html"
+  @79.7 text "/ "
+  @79.9 link "Books" url="/catalogue/category/books_1/index.html"
+  @79.7 text "/ "
+  @79.12 link "Travel" url="/catalogue/category/books/travel_2/index.html"
+  @79.7 text "/ Neither Here nor There: Travels in Europe"
+  @79.15 image "Neither Here nor There: Travels in Europe" url="/media/cache/c9/9a/c99a7a05537cd842eb4db83d537e3a4d.jpg"
+  @79.16 # Neither Here nor There: Travels in Europe
+  @79.17 text "£38.95 In stock (3 available)"
+  @79.20 alert
+    @79.21 text "Warning! This is a demo website for web scraping purposes. Prices and ratings here were randomly assigned and have no real meaning."
+  @79.23 ## Product Description
+  @79.24 text "Bill Bryson's first travel book, The Lost Continent, was unanimously acclaimed as one of the funniest books in years. In Neither Here nor There he brings his unique brand of humour to bear on Europe as he shoulders his backpack, keeps a tight hold on his wallet, and journeys from Hammerfest, the northernmost town on the continent, to Istanbul on the cusp of Asia. Fluent in Bill Bryson's first travel book, The Lost Continent, was unanimously acclaimed as one of the funniest books in years. In Neither Here nor There he brings his unique brand of humour to bear on Europe as he shoulders his backpack, keeps a tight hold on his wallet, and journeys from Hammerfest, the northernmost town on the continent, to Istanbul on the cusp of Asia. Fluent in, oh, at least one language, he retraces his travels as a student twenty years before.Whether braving the homicidal motorist of Paris, being robbed by gypsies in Florence, attempting not to order tripe and eyeballs in a German restaurant, window-shopping in the sex shops of the Reeperbahn or disputing his hotel bill in Copenhagen, Bryson takes in the sights, dissects the culture and illuminates each place and person with his hilariously caustic observations. He even goes to Liechtenstein. ...more"
+  @79.25 ## Product Information
+  @79.26 text "UPC747cf7fca2ccdbd4Product TypeBooksPrice (excl. tax)£38.95Price (incl. tax)£38.95Tax£0.00AvailabilityIn stock (3 available)Number of reviews0"
+  @79.40 ## Products you recently viewed
+  @79.41 link "The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)" url=$u1
+    @79.42 image "The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)" url="/media/cache/e0/4f/e04f8eda2a2fa947aec17640202d9ab0.jpg"
+  @79.7 text ""
+  @79.43 link "The Road to Little ..." description="The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)" url=$u1
+  @79.45 text "£23.21 In stock"
+  @79.47 form
+    @79.48 button "Add to basket"
+  @79.49 link "A Year in Provence (Provence #1)" url=$u2
+    @79.50 image "A Year in Provence (Provence #1)" url="/media/cache/db/46/db46159b05faa5d95262112bf9c29ddd.jpg"
+  @79.7 text ""
+  @79.51 link "A Year in Provence ..." description="A Year in Provence (Provence #1)" url=$u2
+  @79.53 text "£56.88 In stock"
+  @79.55 form
+    @79.56 button "Add to basket"
+  @79.57 link "The Great Railway Bazaar" url=$u3
+    @79.58 image "The Great Railway Bazaar" url="/media/cache/76/de/76de41867f323d7f1f4fbe2fdfc1b2ba.jpg"
+  @79.7 text ""
+  @79.59 link "The Great Railway Bazaar" url=$u3
+  @79.61 text "£30.54 In stock"
+  @79.63 form
+    @79.64 button "Add to basket"
+  @79.65 link "A Summer In Europe" url=$u4
+    @79.66 image "A Summer In Europe" url="/media/cache/4e/15/4e15150388702ebca2c5a523ac270539.jpg"
+  @79.7 text ""
+  @79.67 link "A Summer In Europe" url=$u4
+  @79.69 text "£
+... [tee capped at 4096 of 5796 bytes]
+
+===== CALL rc=0 out=10682B args=click @79.12 =====
+page:
+  title: Travel | Books to Scrape - Sandbox
+  refs: 143
+snapshot:
+@80.0 root "Travel | Books to Scrape - Sandbox" url=$u1
+  @80.1 banner
+    @80.2 link "Books to Scrape" url="/index.html"
+    @80.4 text " We love being scraped!"
+  @80.5 link "Home" url="/index.html"
+  @80.7 text "/ "
+  @80.9 link "Books" url=$u2
+  @80.7 text "/ Travel"
+  @80.12 complementary
+    @80.13 link "Books" url=$u2
+    @80.15 link "Travel" url=$u1
+    @80.17 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @80.19 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @80.21 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @80.23 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @80.25 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @80.27 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @80.29 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @80.31 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @80.33 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @80.35 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @80.37 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @80.39 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @80.41 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @80.43 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @80.45 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @80.47 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @80.49 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @80.51 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @80.53 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @80.55 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @80.57 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @80.59 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @80.61 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @80.63 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @80.65 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @80.67 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @80.69 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @80.71 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @80.73 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @80.75 link "History" url="/catalogue/category/books/history_32/index.html"
+    @80.77 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @80.79 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @80.81 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @80.83 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @80.85 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @80.87 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @80.89 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @80.91 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @80.93 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @80.95 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @80.97 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @80.99 link "Suspense" url="/catalogue/category/books/suspense_44/index.html"
+    @80.101 link "Short Stories" url="/catalogue/category/books/short-stories_45/
+... [tee capped at 4096 of 10682 bytes]
+
+===== CALL rc=0 out=6139B args=click @80.202 =====
+page:
+  title: "1,000 Places to See Before You Die | Books to Scrape - Sandbox"
+  refs: 63
+snapshot:
+@81.0 root "1,000 Places to See Before You Die | Books to Scrape - Sandbox" url="/catalogue/1000-places-to-see-before-you-die_1/index.html"
+  @81.1 banner
+    @81.2 link "Books to Scrape" url="/index.html"
+    @81.4 text " We love being scraped!"
+  @81.5 link "Home" url="/index.html"
+  @81.7 text "/ "
+  @81.9 link "Books" url="/catalogue/category/books_1/index.html"
+  @81.7 text "/ "
+  @81.12 link "Travel" url="/catalogue/category/books/travel_2/index.html"
+  @81.7 text "/ 1,000 Places to See Before You Die"
+  @81.15 image "1,000 Places to See Before You Die" url="/media/cache/9e/10/9e106f81f65b293e488718a4f54a6a3f.jpg"
+  @81.16 # 1,000 Places to See Before You Die
+  @81.17 text "£26.08 In stock (1 available)"
+  @81.20 alert
+    @81.21 text "Warning! This is a demo website for web scraping purposes. Prices and ratings here were randomly assigned and have no real meaning."
+  @81.23 ## Product Description
+  @81.24 text "Around the World, continent by continent, here is the best the world has to offer: 1,000 places guaranteed to give travelers the shivers. Sacred ruins, grand hotels, wildlife preserves, hilltop villages, snack shacks, castles, festivals, reefs, restaurants, cathedrals, hidden islands, opera houses, museums, and more. Each entry tells exactly why it's essential to visit. Th Around the World, continent by continent, here is the best the world has to offer: 1,000 places guaranteed to give travelers the shivers. Sacred ruins, grand hotels, wildlife preserves, hilltop villages, snack shacks, castles, festivals, reefs, restaurants, cathedrals, hidden islands, opera houses, museums, and more. Each entry tells exactly why it's essential to visit. Then come the nuts and bolts: addresses, websites, phone and fax numbers, best times to visit. Stop dreaming and get going.This hefty volume reminds vacationers that hot tourist spots are small percentage of what's worth seeing out there. A quick sampling: Venice's Cipriani Hotel; California's Monterey Peninsula; the Lewis and Clark Trail in Oregon; the Great Wall of China; Robert Louis Stevenson's home in Western Samoa; and the Alhambra in Andalusia, Spain. Veteran travel guide writer Schultz divides the book geographically, presenting a little less than a page on each location. Each entry lists exactly where to find the spot (e.g. Moorea is located "12 miles/19 km northwest of Tahiti; 10 minutes by air, 1 hour by boat") and when to go (e.g., if you want to check out The Complete Fly Fisher hotel in Montana, "May and Sept.-Oct. offer productive angling in a solitary setting"). This is an excellent resource for the intrepid traveler.Copyright 2003 Reed Business Information, Inc. ...more"
+  @81.25 ## Product Information
+  @81.26 text "UPC228ba5e7577e1d49Product TypeBooksPrice (excl. tax)£26.08Price (incl. tax)£26.08Tax£0.00AvailabilityIn stock (1 available)Number of reviews0"
+  @81.40 ## Products you recently viewed
+  @81.41 link "Neither Here nor There: Travels in Europe" url=$u1
+    @81.42 image "Neither Here nor There: Travels in Europe" url="/media/cache/06/81/0681530a7bc301caf5c3257e1b0f0750.jpg"
+  @81.7 text ""
+  @81.43 link "Neither Here nor There: ..." description="Neither Here nor There: Travels in Europe" url=$u1
+  @81.45 text "£38.95 In stock"
+  @81.47 form
+    @81.48 button "Add to basket"
+  @81.49 link "The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)" url=$u2
+    @81.50 image "The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)" url="/media/cache/e0/4f/e04f8eda2a2fa947aec17640202d9ab0.jpg"
+  @81.7 text ""
+  @81.51 link "The Road to Little ..." description="The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)" url=$u2
+  @81.53 text "£23.21 In stock"
+  @81.55 form
+    @81.56 button "Add to basket"
+  @81.57 link "A Year in Provence (Provence #1)" url=$u3
+    @81.58
+... [tee capped at 4096 of 6139 bytes]

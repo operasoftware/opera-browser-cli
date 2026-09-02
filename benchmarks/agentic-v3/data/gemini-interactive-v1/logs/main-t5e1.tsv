@@ -1,0 +1,7 @@
+1788275318.1759390831	0.13	0	3156	0	--help
+1788275319.9496550560	1.11	0	12506	0	open https://en.wikipedia.org/wiki/Moon
+1788275325.4401741028	0.35	0	597	0	eval Array.from(document.querySelectorAll('a')).filter(a => a.textContent.includes('Giant-impact') || a.href.includes('Giant-impact')).map(a => ({text: a.textContent, href: a.getAttribute('href')}))
+1788275330.1042339802	0.38	0	88	0	eval (document.querySelector('a[href="/wiki/Giant-impact_hypothesis"]') || document.querySelector('a[href="https://en.wikipedia.org/wiki/Giant-impact_hypothesis"]')).click()
+1788275332.7766950130	0.14	0	52	0	status
+1788275334.8051729202	0.35	0	138	0	eval window.location.href
+1788275338.1871259212	0.34	0	4101	0	eval Array.from(document.querySelectorAll('p')).map(p => p.textContent).filter(text => text.includes('years ago') || text.includes('billion years') || text.includes('Ga')).slice(0, 5)

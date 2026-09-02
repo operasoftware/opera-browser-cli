@@ -1,0 +1,4 @@
+1788275347.1137039661	0.13	0	3156	0	--help
+1788275349.4213759899	1.20	0	12027	0	open https://books.toscrape.com/
+1788275352.6806960106	0.81	0	10682	0	click @18.12
+1788275357.7879660130	0.34	0	1034	0	eval () => {   const resultsText = document.querySelector('.form-horizontal strong')?.innerText;   const books = Array.from(document.querySelectorAll('.product_pod')).map(pod => {     const title = pod.querySelector('h3 a').getAttribute('title');     const price = pod.querySelector('.price_color').innerText;     return { title, price };   });   return { resultsText, books }; }

@@ -1,0 +1,7 @@
+1788339857.7800729275	0.15	0	3156	0	--help
+1788339865.4517829418	1.55	0	12691	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788339872.3646879196	0.16	1	533	0	eval document.querySelector('[id*=name-404], a[href*=404]')?.textContent + ' | ' + document.querySelector('[id*=name-404], a[href*=404]')?.getAttribute('href')
+1788339874.8480269909	0.15	1	52	0	eval var el = document.querySelector('a[href*="404"]'); el ? el.textContent + ' | ' + el.getAttribute('href') : 'not found'
+1788339877.5787611008	0.16	1	56	0	eval let el = document.querySelector('a[href*="404"]'); el ? el.textContent + ' | ' + el.getAttribute('href') : 'not found'
+1788339883.6770570278	0.36	0	120	0	eval (function(){let el = document.querySelector('a[href*="404"]'); return el ? el.textContent + ' | ' + el.getAttribute('href') : 'not found'})()
+1788339887.6185939312	0.37	0	139	0	eval (function(){let el = document.getElementById('name-404-not-found'); if(!el) return 'no element'; let s = el.closest('section'); if(!s) return 'no parent section'; return s.id + ' | ' + s.querySelector('h2,h3,h4')?.textContent})()

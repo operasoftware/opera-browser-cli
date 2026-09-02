@@ -1,0 +1,6 @@
+1788275372.6265859604	0.13	0	3156	0	--help
+1788275375.2031168938	1.38	0	12685	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788275379.1736960411	0.35	0	124	0	eval Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).filter(h => h.textContent.includes('404')).map(h => h.textContent)
+1788275381.6893839836	0.34	0	108	0	eval Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).filter(h => h.textContent.includes('404')).map(h => h.textContent.trim())
+1788275384.8353459835	0.14	1	55	0	eval let h = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).find(h => h.textContent.includes('404')); h ? h.outerHTML : 'none'
+1788275387.8656730652	0.35	0	309	0	eval Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).find(x => x.textContent.includes('404')).outerHTML

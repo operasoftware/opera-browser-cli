@@ -1,0 +1,33 @@
+{
+ "model": "pc_browser/vertex_ai/gemini-3.5-flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": 8000,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.35e-06,
+   "output": 8.1e-06,
+   "cache_read": 1.35e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.084912165,
+ "num_turns": 12,
+ "calls": 11,
+ "is_error": false,
+ "result": "On the Wikipedia page for the List of chemical elements, the atomic number of Tungsten is 74, its chemical symbol is W, and its standard atomic weight is 183.84 (with the Tungsten-specific page showing an uncertainty value of 183.84 \u00b1 0.01).\n\nANSWER: Atomic number: 74, Chemical symbol: W, Standard atomic weight: 183.84 (also listed as 183.84 \u00b1 0.01)\nCALLS: 58",
+ "usage": {
+  "input_tokens": 85679,
+  "output_tokens": 5197,
+  "cache_read_input_tokens": 59959,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.034722,
+  "out": 0.0420957,
+  "cache_read": 0.008094465,
+  "cache_write": 0.0
+ }
+}

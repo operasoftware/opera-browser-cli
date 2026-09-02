@@ -1,0 +1,242 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12027B args=open https://books.toscrape.com/ =====
+page:
+  title: All products | Books to Scrape - Sandbox
+  url: "https://books.toscrape.com/"
+  refs: 206
+snapshot:
+@57.0 root "All products | Books to Scrape - Sandbox" url="/"
+  @57.1 banner
+    @57.2 link "Books to Scrape" url="/index.html"
+    @57.4 text " We love being scraped!"
+  @57.5 link "Home" url="/index.html"
+  @57.7 text "/ All products"
+  @57.9 complementary
+    @57.10 link "Books" url="/catalogue/category/books_1/index.html"
+    @57.12 link "Travel" url="/catalogue/category/books/travel_2/index.html"
+    @57.14 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @57.16 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @57.18 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @57.20 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @57.22 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @57.24 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @57.26 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @57.28 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @57.30 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @57.32 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @57.34 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @57.36 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @57.38 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @57.40 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @57.42 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @57.44 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @57.46 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @57.48 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @57.50 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @57.52 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @57.54 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @57.56 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @57.58 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @57.60 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @57.62 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @57.64 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @57.66 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @57.68 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @57.70 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @57.72 link "History" url="/catalogue/category/books/history_32/index.html"
+    @57.74 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @57.76 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @57.78 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @57.80 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @57.82 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @57.84 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @57.86 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @57.88 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @57.90 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @57.92 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @57.94 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @57.96 link "Suspense" url="/catalogue/category/books/suspense_44/index.
+... [tee capped at 4096 of 12027 bytes]
+
+===== CALL rc=0 out=10682B args=click @57.12 =====
+page:
+  title: Travel | Books to Scrape - Sandbox
+  refs: 143
+snapshot:
+@58.0 root "Travel | Books to Scrape - Sandbox" url=$u1
+  @58.1 banner
+    @58.2 link "Books to Scrape" url="/index.html"
+    @58.4 text " We love being scraped!"
+  @58.5 link "Home" url="/index.html"
+  @58.7 text "/ "
+  @58.9 link "Books" url=$u2
+  @58.7 text "/ Travel"
+  @58.12 complementary
+    @58.13 link "Books" url=$u2
+    @58.15 link "Travel" url=$u1
+    @58.17 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @58.19 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @58.21 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @58.23 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @58.25 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @58.27 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @58.29 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @58.31 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @58.33 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @58.35 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @58.37 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @58.39 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @58.41 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @58.43 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @58.45 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @58.47 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @58.49 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @58.51 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @58.53 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @58.55 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @58.57 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @58.59 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @58.61 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @58.63 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @58.65 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @58.67 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @58.69 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @58.71 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @58.73 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @58.75 link "History" url="/catalogue/category/books/history_32/index.html"
+    @58.77 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @58.79 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @58.81 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @58.83 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @58.85 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @58.87 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @58.89 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @58.91 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @58.93 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @58.95 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @58.97 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @58.99 link "Suspense" url="/catalogue/category/books/suspense_44/index.html"
+    @58.101 link "Short Stories" url="/catalogue/category/books/short-stories_45/
+... [tee capped at 4096 of 10682 bytes]
+
+===== CALL rc=0 out=10682B args=snapshot =====
+page:
+  title: Travel | Books to Scrape - Sandbox
+  refs: 143
+snapshot:
+@58.0 root "Travel | Books to Scrape - Sandbox" url=$u1
+  @58.1 banner
+    @58.2 link "Books to Scrape" url="/index.html"
+    @58.4 text " We love being scraped!"
+  @58.5 link "Home" url="/index.html"
+  @58.7 text "/ "
+  @58.9 link "Books" url=$u2
+  @58.7 text "/ Travel"
+  @58.12 complementary
+    @58.13 link "Books" url=$u2
+    @58.15 link "Travel" url=$u1
+    @58.17 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @58.19 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @58.21 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @58.23 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @58.25 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @58.27 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @58.29 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @58.31 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @58.33 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @58.35 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @58.37 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @58.39 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @58.41 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @58.43 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @58.45 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @58.47 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @58.49 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @58.51 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @58.53 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @58.55 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @58.57 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @58.59 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @58.61 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @58.63 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @58.65 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @58.67 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @58.69 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @58.71 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @58.73 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @58.75 link "History" url="/catalogue/category/books/history_32/index.html"
+    @58.77 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @58.79 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @58.81 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @58.83 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @58.85 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @58.87 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @58.89 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @58.91 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @58.93 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @58.95 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @58.97 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @58.99 link "Suspense" url="/catalogue/category/books/suspense_44/index.html"
+    @58.101 link "Short Stories" url="/catalogue/category/books/short-stories_45/
+... [tee capped at 4096 of 10682 bytes]

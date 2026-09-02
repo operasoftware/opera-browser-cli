@@ -1,0 +1,222 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=930B args=open https://demo.playwright.dev/todomvc =====
+page:
+  title: React • TodoMVC
+  url: "https://demo.playwright.dev/todomvc"
+  snap: "5"
+  refs: 10
+snapshot:
+@.0 root "React • TodoMVC" url="/todomvc/#/"
+  @.1 text "This is just a demo of TodoMVC for testing, not the "
+  @.2 link "real TodoMVC app." url="https://todomvc.com/"
+  @.4 # todos
+  @.5 textbox "What needs to be done?" focusable focused
+  @.6 contentinfo
+    @.7 text "Double-click to edit a todoCreated by "
+    @.9 link "Remo H. Jansen" url="http://github.com/remojansen/"
+    @.11 text "Part of "
+    @.12 link "TodoMVC" url="http://todomvc.com/"
+help[4]:
+  Run `opera-browser-cli fill @.5 "text"` to fill the "What needs to be done?" field
+  Run `opera-browser-cli click @.2` to click the "real TodoMVC app." link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=572B args=fill @.5 alpha =====
+diff: {changed: 1, added: 0, removed: 1}
+~ @5.5 textbox "What needs to be done?" focusable focused value="alpha" (was: @5.5 textbox "What needs to be done?" focusable focused)
+help[5]:
+  Run `opera-browser-cli press Enter` to submit the form
+  Run `opera-browser-cli click @5.2` to click the "real TodoMVC app." link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+
+===== CALL rc=0 out=1121B args=press Enter =====
+page:
+  title: React • TodoMVC
+  snap: "5"
+  refs: 16
+snapshot:
+@.0 root "React • TodoMVC" url="/todomvc/#/"
+  @.1 text "This is just a demo of TodoMVC for testing, not the "
+  @.2 link "real TodoMVC app." url="https://todomvc.com/"
+  @.4 # todos
+  @.5 textbox "What needs to be done?" focusable focused
+  @7.0 checkbox "❯Mark all as complete"
+  @7.1 checkbox "Toggle Todo"
+  @7.2 text "alpha1item left"
+  @7.7 link "All" url="/todomvc/#/"
+  @7.10 link "Active" url="/todomvc/#/active"
+  @7.13 link "Completed" url="/todomvc/#/completed"
+  @.6 contentinfo
+    @.7 text "Double-click to edit a todoCreated by "
+    @.9 link "Remo H. Jansen" url="http://github.com/remojansen/"
+    @.11 text "Part of "
+    @.12 link "TodoMVC" url="http://todomvc.com/"
+help[4]:
+  Run `opera-browser-cli fill @.5 "text"` to fill the "What needs to be done?" field
+  Run `opera-browser-cli click @.2` to click the "real TodoMVC app." link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=571B args=fill @.5 beta =====
+diff: {changed: 1, added: 0, removed: 0}
+~ @5.5 textbox "What needs to be done?" focusable focused value="beta" (was: @5.5 textbox "What needs to be done?" focusable focused)
+help[5]:
+  Run `opera-browser-cli press Enter` to submit the form
+  Run `opera-browser-cli click @5.2` to click the "real TodoMVC app." link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+
+===== CALL rc=0 out=715B args=press Enter =====
+diff: {changed: 2, added: 2, removed: 0}
+~ @5.5 textbox "What needs to be done?" focusable focused (was: @5.5 textbox "What needs to be done?" focusable focused value="beta")
+~ @7.2 text "alpha" (was: @7.2 text "alpha1item left")
++ @9.0 checkbox "Toggle Todo"
++ @9.1 text "beta2items left"
+help[5]:
+  Run `opera-browser-cli fill @5.5 "text"` to fill the "What needs to be done?" field
+  Run `opera-browser-cli click @5.2` to click the "real TodoMVC app." link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+
+===== CALL rc=0 out=572B args=fill @.5 gamma =====
+diff: {changed: 1, added: 0, removed: 0}
+~ @5.5 textbox "What needs to be done?" focusable focused value="gamma" (was: @5.5 textbox "What needs to be done?" focusable focused)
+help[5]:
+  Run `opera-browser-cli press Enter` to submit the form
+  Run `opera-browser-cli click @5.2` to click the "real TodoMVC app." link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+
+===== CALL rc=0 out=718B args=press Enter =====
+diff: {changed: 2, added: 2, removed: 0}
+~ @5.5 textbox "What needs to be done?" focusable focused (was: @5.5 textbox "What needs to be done?" focusable focused value="gamma")
+~ @9.1 text "beta" (was: @9.1 text "beta2items left")
++ @11.0 checkbox "Toggle Todo"
++ @11.1 text "gamma3items left"
+help[5]:
+  Run `opera-browser-cli fill @5.5 "text"` to fill the "What needs to be done?" field
+  Run `opera-browser-cli click @5.2` to click the "real TodoMVC app." link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+
+===== CALL rc=0 out=853B args=click @9.0 =====
+diff: {changed: 3, added: 2, removed: 0}
+~ @5.5 textbox "What needs to be done?" (was: @5.5 textbox "What needs to be done?" focusable focused)
+~ @9.0 checkbox "Toggle Todo" checked focusable focused (was: @9.0 checkbox "Toggle Todo")
+~ @11.1 text "gamma2items left" (was: @11.1 text "gamma3items left")
++ @12.0 button "Delete"
++ @12.1 button "Clear completed"
+help[6]:
+  Run `opera-browser-cli fill @5.5 "text"` to fill the "What needs to be done?" field
+  Run `opera-browser-cli click @12.0` to click the "Delete" button
+  Run `opera-browser-cli click @5.2` to click the "real TodoMVC app." link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+
+===== CALL rc=0 out=1287B args=click @7.10 =====
+page:
+  title: React • TodoMVC
+  snap: "5"
+  refs: 19
+snapshot:
+@.0 root "React • TodoMVC" url=$u1
+  @.1 text "This is just a demo of TodoMVC for testing, not the "
+  @.2 link "real TodoMVC app." url="https://todomvc.com/"
+  @.4 # todos
+  @.5 textbox "What needs to be done?"
+  @7.0 checkbox "❯Mark all as complete"
+  @7.1 checkbox "Toggle Todo"
+  @7.2 text "alpha"
+  @11.0 checkbox "Toggle Todo"
+  @11.1 text "gamma2items left"
+  @7.7 link "All" url="/todomvc/#/"
+  @7.10 link "Active" focusable focused url=$u1
+  @7.13 link "Completed" url="/todomvc/#/completed"
+  @12.1 button "Clear completed"
+  @.6 contentinfo
+    @.7 text "Double-click to edit a todoCreated by "
+    @.9 link "Remo H. Jansen" url="http://github.com/remojansen/"
+    @.11 text "Part of "
+    @.12 link "TodoMVC" url="http://todomvc.com/"
+urls:
+  $u1 /todomvc/#/active
+help[5]:
+  Run `opera-browser-cli fill @.5 "text"` to fill the "What needs to be done?" field
+  Run `opera-browser-cli click @12.1` to click the "Clear completed" button
+  Run `opera-browser-cli click @.2` to click the "real TodoMVC app." link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=97B args=eval document.querySelector('.todo-count').textContent.trim() =====
+result: "\"2 items left\""
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state

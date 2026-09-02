@@ -1,0 +1,5 @@
+1788340292.6482040882	0.15	0	3156	0	--help
+1788340294.7793850899	1.57	0	12610	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788340300.5008730888	0.36	0	122	0	eval document.querySelector('[id="name-404-not-found"]')?.textContent || document.querySelector('h3#section-15.5.5')?.textContent || 'not found'
+1788340305.2968790531	0.15	0	110	0	eval var el = document.querySelector('[id="name-404-not-found"]'); el ? el.closest('section').id + ' | ' + el.textContent.trim() : 'not found'
+1788340307.7209320068	0.36	0	99	0	eval document.querySelector('[id="name-404-not-found"]').closest('section').id

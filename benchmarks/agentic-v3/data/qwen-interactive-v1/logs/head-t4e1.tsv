@@ -1,0 +1,4 @@
+1788345298.5393409729	0.13	0	3156	0	--help
+1788345301.9154810905	0.69	0	12735	0	open https://en.wikipedia.org/wiki/List_of_chemical_elements
+1788345309.7791919708	0.14	1	54	0	eval const r=[...document.querySelectorAll('tr')].find(tr=>tr.textContent.trim().startsWith('74')&&tr.textContent.includes('Tungsten')); r?r.innerText:'NF'
+1788345313.5432701111	0.35	0	200	0	eval (() => { const r=[...document.querySelectorAll('tr')].find(tr=>tr.textContent.includes('Tungsten')); return r?r.innerText:'NF'; })()

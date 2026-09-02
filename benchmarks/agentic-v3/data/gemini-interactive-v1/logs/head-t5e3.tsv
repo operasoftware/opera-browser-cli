@@ -1,0 +1,17 @@
+1788276189.9498600960	0.13	0	3156	0	--help
+1788276192.4238860607	1.12	0	12564	0	open https://en.wikipedia.org/wiki/Moon
+1788276201.6189489365	0.58	0	200	0	snapshot
+1788276204.3314330578	0.59	0	200	0	snapshot
+1788276206.5626220703	0.59	0	12489	0	snapshot --force
+1788276209.3674499989	0.60	0	12489	0	snapshot --force
+1788276214.8443450928	0.36	0	543	0	eval Array.from(document.querySelectorAll('a')).filter(a => a.innerText.includes('Giant-impact') || a.href.includes('Giant-impact')).map(a => ({text: a.innerText, href: a.href}))
+1788276220.4542570114	0.57	0	88	0	eval document.querySelector('a[href="https://en.wikipedia.org/wiki/Giant-impact_hypothesis"]').click()
+1788276222.9865510464	2.16	1	50	0	wait 2000
+1788276229.3731670380	0.13	0	52	0	status
+1788276233.1102190018	0.35	0	176	0	eval document.title + ' | ' + window.location.href
+1788276241.6739969254	0.35	0	787	0	eval document.querySelector('p').innerText
+1788276244.9474010468	0.35	0	2113	0	eval Array.from(document.querySelectorAll('p')).slice(0, 5).map(p => p.innerText)
+1788276247.9472899437	0.34	0	215	0	eval document.body.innerText.match(/\d+(\.\d+)?\s*(billion|Ga|million)\s*years\s*ago/gi)
+1788276251.1991939545	0.34	0	83	0	eval document.body.innerText.split('.').filter(s => s.includes('4.45') || s.includes('4.47') || s.includes('4.5 billion') || s.includes('4.5 billion')).map(s => s.trim())
+1788276254.6513640881	0.35	0	448	0	eval Array.from(document.body.innerText.matchAll(/[^\n.?!]*billion years ago[^\n.?!]*/gi)).map(m => m[0].trim())
+1788276257.9995748997	0.35	0	1102	0	eval Array.from(document.body.innerText.matchAll(/[^\n.?!]*\d+(\.\d+)?\s*billion years ago[^\n.?!]*/gi)).map(m => m[0].trim())

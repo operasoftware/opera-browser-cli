@@ -1,0 +1,33 @@
+{
+ "model": "dashscope/glm-5.2",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": 8000,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.4e-06,
+   "output": 4.4e-06,
+   "cache_read": 2.8e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.027692920000000003,
+ "num_turns": 6,
+ "calls": 5,
+ "is_error": false,
+ "result": "I now have all the information needed. The Travel category shows 11 results, and the cheapest book is \"The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)\" at \u00a323.21.\n\nANSWER: The Travel category shows 11 results; the cheapest book is \"The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)\" at \u00a323.21.\nCALLS: 4",
+ "usage": {
+  "input_tokens": 28633,
+  "output_tokens": 1028,
+  "cache_read_input_tokens": 15104,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.018940600000000002,
+  "out": 0.004523200000000001,
+  "cache_read": 0.00422912,
+  "cache_write": 0.0
+ }
+}

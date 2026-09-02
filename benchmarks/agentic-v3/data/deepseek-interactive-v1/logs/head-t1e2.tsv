@@ -1,0 +1,3 @@
+1788348323.3351600170	0.13	0	3156	0	--help
+1788348327.3752939701	1.38	0	12685	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788348345.7684481144	0.35	0	133	0	eval Array.from(document.querySelectorAll('h2,h3,h4')).filter(h=>h.textContent.includes('404')).map(h=>h.tagName+': '+h.id+' | '+h.textContent.trim())

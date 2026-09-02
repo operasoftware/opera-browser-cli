@@ -20,48 +20,48 @@ The primary benchmark is the balanced six-task suite in `benchmarks/agentic-v3`.
 
 Both benchmark arms use the same tasks. `strict` disables page JavaScript to evaluate the
 snapshot/action interface; `open` allows `eval` and measures behavior with the full command
-set. The principal run uses Claude Code with first-party Sonnet 5 so Anthropic cache reads
-and cache creation are recorded.
+set. Six model families ran three repeats per arm and condition: 432 cells total. Sonnet 5
+used Claude Code so first-party Anthropic cache creation and reads were recorded; the other
+families used the same direct Responses API driver.
 
-## Sonnet 5 result
+## Cross-model result
 
-Three repeats per arm, comparing this branch (`head`) with upstream `main`:
+Strict-arm suite means compare this branch (`head`) with upstream `main`:
 
-| Arm | Metric | Head | Main |
-|---|---|---:|---:|
-| strict | Accuracy | 18/18 | 17/18* |
-| strict | Mean cost | $0.690 | $0.705 |
-| strict | Mean raw CLI output | 205 KB | 1,666 KB |
-| strict | Mean CLI calls | 36.3 | 29.7 |
-| strict | Mean model turns | 33.3 | 28.0 |
-| open | Accuracy | 18/18 | 18/18 |
-| open | Mean cost | $0.622 | $0.708 |
-| open | Mean raw CLI output | 106 KB | 102 KB |
-| open | Mean CLI calls | 30.0 | 33.3 |
-| open | Mean model turns | 29.0 | 33.7 |
+| Model | Accuracy head / main | Cost head / main | Raw CLI output head / main | Calls head / main |
+|---|---:|---:|---:|---:|
+| Sonnet 5 | 18/18 / 17/18 | $0.690 / $0.705 | 205 / 1,666 KB | 36.3 / 29.7 |
+| GPT-5.6-Terra | 18/18 / 18/18 | $0.136 / $0.165 | 175 / 376 KB | 48.0 / 51.3 |
+| Gemini 3.5 Flash | 18/18 / 17/18 | $0.403 / $0.705* | 2,029 / 2,734 KB | 77.0 / 62.7 |
+| GLM-5.2 | 18/18 / 18/18 | $0.441 / $0.454 | 830 / 2,269 KB | 104.7 / 69.0 |
+| Qwen3.8-27B | 18/18 / 18/18 | unavailable | 2,390 / 2,551 KB | 50.3 / 43.0 |
+| DeepSeek-V4-Flash | 18/18 / 17/18 | unavailable | 2,102 / 3,514 KB | 223.0 / 58.0† |
 
-*One strict `main` TodoMVC answer reproduced the baseline output's `"2items left"`
-spacing error. The interaction and filtered todo list were otherwise correct.
+*Gemini main includes one 50-turn failed RFC cell and is high-variance. †DeepSeek head
+includes a pathological multi-call loop. Billing data is unavailable for Qwen and
+DeepSeek; zero-valued gateway placeholders are not treated as free usage.
 
-In strict mode, compact-v3 reduced raw output by 87.7% but increased calls by 22.5% and
-turns by 19.0%; total cost was approximately equal (-2.1%). Cache creation decreased
-16.2%, while cache reads increased 23.2%. Effects varied by task: the compact path was
-cheaper for deep-document retrieval and cross-page navigation, and more expensive for the
-form and table tasks.
+Compact-v3 passed all 108 strict cells, versus 105/108 for main, and reduced strict raw
+output in every family. It did not consistently reduce work: five of six families made
+more calls on head, and priced cost effects ranged from a meaningful reduction for Terra
+to near parity for Sonnet and GLM. Sonnet reduced output by 87.7% but reinvested the saving
+in more targeted calls and cache reads. This is a model-policy result, not a universal
+relationship between snapshot size and cost.
 
-In open mode, both conditions were fully accurate. Head cost 12.2% less and used fewer
-calls and turns, but agents frequently used `eval`, so this result does not isolate
-snapshot compaction.
+The open arm is reported in the whitepaper, but it does not isolate compaction because
+models frequently use `eval` as a different page-information channel. Results are also
+primarily comparable within each model: Sonnet's Claude Code context handling differs from
+the common 8,000-character direct-driver tool cap.
 
 These are bundle-level results. They do not establish the value of `find`, windowing,
-diffs, or chaining independently. Feature-level decisions require controlled tests that
-change one interface property at a time while holding the model, prompt, sites, cache
-policy, truncation, and stopping criteria fixed.
+diffs, or chaining independently. Feature decisions require controlled ablations that
+change one interface property at a time.
 
-- [Run report](benchmarks/agentic-v3/results-2026-09-01-comprehensive-sonnet.md)
+- [Cross-model whitepaper](benchmarks/agentic-v3/model-family-browser-agents-whitepaper.md)
+- [Sonnet run report](benchmarks/agentic-v3/results-2026-09-01-comprehensive-sonnet.md)
 - [Suite definition](benchmarks/agentic-v3/suite.md)
 - [Run and measurement protocol](benchmarks/agentic-v3/COMPREHENSIVE-RUN.md)
-- [Retained envelopes and CLI logs](benchmarks/agentic-v3/data/sonnet-interactive-v1/)
+- [Retained envelopes and CLI logs](benchmarks/agentic-v3/data/)
 
 ---
 

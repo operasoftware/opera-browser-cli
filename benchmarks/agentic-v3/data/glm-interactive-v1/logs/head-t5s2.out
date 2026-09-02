@@ -1,0 +1,594 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12413B args=open https://en.wikipedia.org/wiki/Moon =====
+page:
+  title: Moon - Wikipedia
+  url: "https://en.wikipedia.org/wiki/Moon"
+  snap: "59"
+  refs: 9896
+snapshot:
+@.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/Moon#"
+    @.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @.28 button "Toggle Names and etymology subsection"
+    @.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @.31 button "Toggle Natural history subsection"
+    @.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @.34 button "Toggle Physical characteristics subsection"
+    @.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @.37 button "Toggle Earth–Moon system subsection"
+    @.38 link "Observation" url="/wiki/Moon#Observation"
+    @.40 button "Toggle Observation subsection"
+    @.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @.43 button "Toggle History of scientific understanding and exploration subsection"
+    @.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @.46 button "Toggle Human interaction and presence subsection"
+    @.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @.49 button "Toggle In culture and life subsection"
+    @.50 link "See also" url="/wiki/Moon#See_also"
+    @.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @.54 link "References" url="/wiki/Moon#References"
+    @.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @.58 link "External links" url="/wiki/Moon#External_links"
+    @.60 button "Toggle External links subsection"
+  @.61 main
+    @.62 # Moon
+    @.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @.64 navigation "Namespaces"
+      @.65 link "Article" description="View the content page [c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @.67 link "Talk" description="Discuss improvements to the content page [t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @.69 navigation "Views"
+      @.70 link "Read" url="/wiki/Moon"
+      @.72 link "View source" description="This page is protected. You can view its source [e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @.74 link "View history" description="Past revisions of this page [h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @.76 navigation "Page tools"
+      @.77 button "Tools" haspopup="menu"
+    @.78 navigation "Appearance"
+      @.80 button "Hide Appearance"
+    @.81 link "Featured article" description="This is a featured article. Click here for more information." url="/wiki/Wikipedia:Featured_articles*"
+      @.82 image "Featured article" url="https://upload.wikimedi
+... [tee capped at 4096 of 12413 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12516B args=snapshot =====
+page:
+  title: Moon - Wikipedia
+  snap: "59"
+  refs: 8904
+snapshot:
+@.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @60.0 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @60.1 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @60.3 generic description="Hide"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/Moon#"
+    @.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @.28 button "Toggle Names and etymology subsection" expandable
+    @.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @.31 button "Toggle Natural history subsection" expandable
+    @.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @.34 button "Toggle Physical characteristics subsection" expandable
+    @.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @.37 button "Toggle Earth–Moon system subsection" expandable
+    @.38 link "Observation" url="/wiki/Moon#Observation"
+    @.40 button "Toggle Observation subsection" expandable
+    @.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @.46 button "Toggle Human interaction and presence subsection" expandable
+    @.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @.49 button "Toggle In culture and life subsection" expandable
+    @.50 link "See also" url="/wiki/Moon#See_also"
+    @.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @.54 link "References" url="/wiki/Moon#References"
+    @.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @.58 link "External links" url="/wiki/Moon#External_links"
+    @.60 button "Toggle External links subsection" expandable
+  @.61 main
+    @.62 # Moon
+    @.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @.64 navigation "Namespaces"
+      @.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @.69 navigation "Views"
+      @.70 link "Read" url="/wiki/Moon"
+      @.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keysho
+... [tee capped at 4096 of 12516 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12516B args=snapshot =====
+page:
+  title: Moon - Wikipedia
+  snap: "59"
+  refs: 8904
+snapshot:
+@.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @60.0 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @60.1 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @60.3 generic description="Hide"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/Moon#"
+    @.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @.28 button "Toggle Names and etymology subsection" expandable
+    @.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @.31 button "Toggle Natural history subsection" expandable
+    @.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @.34 button "Toggle Physical characteristics subsection" expandable
+    @.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @.37 button "Toggle Earth–Moon system subsection" expandable
+    @.38 link "Observation" url="/wiki/Moon#Observation"
+    @.40 button "Toggle Observation subsection" expandable
+    @.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @.46 button "Toggle Human interaction and presence subsection" expandable
+    @.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @.49 button "Toggle In culture and life subsection" expandable
+    @.50 link "See also" url="/wiki/Moon#See_also"
+    @.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @.54 link "References" url="/wiki/Moon#References"
+    @.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @.58 link "External links" url="/wiki/Moon#External_links"
+    @.60 button "Toggle External links subsection" expandable
+  @.61 main
+    @.62 # Moon
+    @.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @.64 navigation "Namespaces"
+      @.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @.69 navigation "Views"
+      @.70 link "Read" url="/wiki/Moon"
+      @.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keysho
+... [tee capped at 4096 of 12516 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12516B args=snapshot =====
+page:
+  title: Moon - Wikipedia
+  snap: "59"
+  refs: 8904
+snapshot:
+@.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @60.0 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @60.1 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @60.3 generic description="Hide"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/Moon#"
+    @.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @.28 button "Toggle Names and etymology subsection" expandable
+    @.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @.31 button "Toggle Natural history subsection" expandable
+    @.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @.34 button "Toggle Physical characteristics subsection" expandable
+    @.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @.37 button "Toggle Earth–Moon system subsection" expandable
+    @.38 link "Observation" url="/wiki/Moon#Observation"
+    @.40 button "Toggle Observation subsection" expandable
+    @.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @.46 button "Toggle Human interaction and presence subsection" expandable
+    @.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @.49 button "Toggle In culture and life subsection" expandable
+    @.50 link "See also" url="/wiki/Moon#See_also"
+    @.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @.54 link "References" url="/wiki/Moon#References"
+    @.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @.58 link "External links" url="/wiki/Moon#External_links"
+    @.60 button "Toggle External links subsection" expandable
+  @.61 main
+    @.62 # Moon
+    @.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @.64 navigation "Namespaces"
+      @.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @.69 navigation "Views"
+      @.70 link "Read" url="/wiki/Moon"
+      @.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keysho
+... [tee capped at 4096 of 12516 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=200B args=snapshot =====
+snapshot: unchanged since last shown — "Moon - Wikipedia" (8904 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=1 out=50B args=scroll down =====
+error: "Error: fn is not a function"
+code: UNKNOWN----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=1 out=50B args=scroll down =====
+error: "Error: fn is not a function"
+code: UNKNOWN----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=200B args=snapshot =====
+snapshot: unchanged since last shown — "Moon - Wikipedia" (8904 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=200B args=snapshot =====
+snapshot: unchanged since last shown — "Moon - Wikipedia" (8904 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=11597B args=snapshot --next =====
+snapshot[11999-23762 of 796688]:
+    @.373 link "Flattening" url="/wiki/Flattening"
+    @.375 text "0.0012"
+    @.376 link "[2]" url=$u1
+    @.380 text "Circumference10921km("
+    @.388 link "equatorial" url="/wiki/Equator"
+    @.390 text ")"
+    @.391 link "Surface area" description="Spheroid" url="/wiki/Spheroid#Area"
+    @.393 text "3.793×107km2(0.074 of Earth's)"
+    @.404 link "Volume" url="/wiki/Volume"
+    @.406 text "2.1958×1010km3(0.02 of Earth's)"
+    @.417 link "[2]" url=$u1
+    @.421 link "Mass" url="/wiki/Mass"
+    @.423 text "7.346×1022kg(0.0123 of Earth's)"
+    @.435 link "[1]" url=$u2
+    @.439 link "[2]" url=$u1
+    @.443 link "[6]" url="/wiki/Moon#cite_note-8"
+    @.447 text "Mean "
+    @.448 link "density" description="Density" url="/wiki/Density"
+    @.450 text "3.344"
+    @.452 link "g/cm3" description="Gram per cubic centimetre" url="/wiki/Gram_per_cubic_centimetre"
+    @.455 link "[1]" url=$u2
+    @.459 link "[2]" url=$u1
+    @.464 text "0.606 × Earth"
+    @.466 link "Surface gravity" url=$u3
+    @.468 text "1.622m/s2 (5.32ft/s2)"
+    @.477 link "[2]" url=$u1
+    @.482 text "0.1654"
+    @.484 link "g0" description="Standard gravity" url="/wiki/Standard_gravity"
+    @.487 link "Moment of inertia factor" url="/wiki/Moment_of_inertia_factor"
+    @.489 text "0.3929±0.0009"
+    @.492 link "[7]" url="/wiki/Moon#cite_note-Williams1996-9"
+    @.496 link "Escape velocity" url="/wiki/Escape_velocity"
+    @.498 text "2.38km/s(8600km/h; 5300mph)"
+    @.511 link "Synodic rotation period" url="/wiki/Synodic_rotation_period"
+    @.513 text "29.530589d(29d 12h 44min 2.9s; "
+    @.527 link "synodic; solar day" description="Synodic day" url="/wiki/Synodic_day"
+    @.529 text ") ("
+    @.530 link "spin-orbit locked" description="Tidal locking" url=$u4
+    @.532 text ")"
+    @.533 link "Sidereal rotation period" url="/wiki/Sidereal_rotation_period"
+    @.535 text "27.321661d(spin-orbit locked)Equatorial rotationvelocity4.627 m/s"
+    @.546 link "Axial tilt" url="/wiki/Axial_tilt"
+    @.548 text "1.5424° to "
+    @.549 link "ecliptic" url="/wiki/Ecliptic"
+    @.551 link "[8]" url="/wiki/Moon#cite_note-SolarViews-10"
+    @.555 text "6.687° to "
+    @.556 link "orbit plane" description="Orbital plane (astronomy)" url="/wiki/Orbital_plane_(astronomy)"
+    @.558 link "[3]" url="/wiki/Moon#cite_note-Lang2011-3"
+    @.562 text "24° to Earth's equator"
+    @.563 link "[9]" url="/wiki/Moon#cite_note-11"
+    @.567 text "Northpole "
+    @.570 link "right ascension" description="Right ascension" url="/wiki/Right_ascension"
+    @.572 text "17h 47m 26s266.86°"
+    @.579 link "[10]" url=$u5
+    @.583 text "Northpole "
+    @.586 link "declination" description="Declination" url="/wiki/Declination"
+    @.588 text "65.64°"
+    @.589 link "[10]" url=$u5
+    @.593 link "Albedo" url="/wiki/Albedo"
+    @.595 text "0.136"
+    @.596 link "[11]" url="/wiki/Moon#cite_note-Saari-13"
+    @.600 text "Surface "
+    @.601 link "temp." description="Temperature" url="/wiki/Temperature"
+    @.603 text "minmeanmaxEquator100"
+    @.609 link "K" description="Kelvin" url="/wiki/Kelvin"
+    @.611 link "[12]" url=$u6
+    @.615 text "250K390K"
+    @.621 link "[12]" url=$u6
+    @.625 text "85°N150K230K"
+    @.633 link "[13]" url="/wiki/Moon#cite_note-Vasavada1999-15"
+    @.637 text "Surface "
+    @.638 link "absorbed dose" description="Absorbed dose" url="/wiki/Absorbed_dose"
+    @.641 link "rate" description="Dose rate" url=$u7
+    @.643 text "13.2 μGy/h(during lunar "
+    @.646 link "daytime" description="Daytime" url="/wiki/Daytime"
+    @.648 text ")"
+    @.649 link "[14]" url=$u8
+    @.653 text "Surface "
+    @.654 link "equivalent dose" description="Equivalent dose" url="/wiki/Equivalent_dose"
+    @.657 link "rate" description="Dose rate" url=$u7
+    @.659 text "57.0μSv/h(during lunar daytime)"
+    @.664 link "[14]" url=$u8
+    @.668 link "Apparent magnitude" url="/wiki/Apparent_magnitude"
+    @.670 text "−2.5 to −12.9"
+    @.671 link "[c]" url="/wiki/Moon#cite_note-maxval-17"
+    @.675 text "−12.74(mean "
+    @.679 link "full moon" des
+... [tee capped at 4096 of 11597 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=11947B args=snapshot --next =====
+snapshot[23763-35649 of 796688]:
+    @.900 text ". The Moon was volcanically active until 1.2 billion years ago, surfacing lava mostly on the thinner near side of the Moon, filling ancient craters, which through cooling formed the today prominently visible dark plains of "
+    @.901 link "basalt" description="Basalt" url="/wiki/Basalt"
+    @.903 text " called "
+    @.904 link "maria" description="Lunar mare" url="/wiki/Lunar_mare"
+    @.906 text " ('seas'). The "
+    @.907 link "origin of the Moon" description="Origin of the Moon" url="/wiki/Origin_of_the_Moon"
+    @.909 text " is not clear, although it is thought to have been formed out of material from Earth that was ejected by "
+    @.910 link "a giant impact" description="Giant-impact hypothesis" url="/wiki/Giant-impact_hypothesis"
+    @.912 text " of a "
+    @.913 link "Mars-sized body" description="Theia (planet)" url="/wiki/Theia_(planet)"
+    @.915 text " 4.51billion years ago, not long after "
+    @.918 link "Earth's formation" description="Age of Earth" url="/wiki/Age_of_Earth"
+    @.920 text ".From a distance, the day and night phases of the lunar day are visible as the "
+    @.922 link "lunar phases" description="Lunar phases" url="/wiki/Lunar_phases"
+    @.924 text ", and when the Moon passes through "
+    @.925 link "Earth's shadow" url="/wiki/Earth's_shadow"
+    @.927 text " a "
+    @.928 link "lunar eclipse" description="Lunar eclipse" url="/wiki/Lunar_eclipse"
+    @.930 text " is observable. The Moon's "
+    @.931 link "apparent size" description="Apparent size" url="/wiki/Apparent_size"
+    @.933 text " in Earth's sky is about the same as that of the Sun, which causes it to cover the Sun completely during a total "
+    @.934 link "solar eclipse" description="Solar eclipse" url="/wiki/Solar_eclipse"
+    @.936 text ". The Moon is the "
+    @.937 link "brightest celestial object" description="List of brightest natural objects in the sky" url="/wiki/List_of_brightest_natural_objects_in_the_sky"
+    @.939 text " in Earth's "
+    @.940 link "night sky" description="Night sky" url="/wiki/Night_sky"
+    @.942 text " because of its large apparent size, while the "
+    @.943 link "reflectance" description="Reflectance" url="/wiki/Reflectance"
+    @.945 text " (albedo) of its surface is comparable to that of "
+    @.946 link "asphalt" description="Asphalt concrete" url="/wiki/Asphalt_concrete"
+    @.948 text ". About 59% of the surface of the Moon is visible from Earth owing to the different angles at which the Moon can appear in Earth's sky ("
+    @.949 link "libration" description="Libration" url="/wiki/Libration"
+    @.951 text "), making parts of the "
+    @.952 link "far side of the Moon" description="Far side of the Moon" url="/wiki/Far_side_of_the_Moon"
+    @.954 text " visible.The Moon has been an important source of inspiration and knowledge in human history, having been crucial to "
+    @.956 link "cosmography" description="Cosmography" url="/wiki/Cosmography"
+    @.958 text ", "
+    @.959 link "mythology" description="Mythology" url="/wiki/Mythology"
+    @.961 text ", "
+    @.962 link "religion" description="Lunar deity" url="/wiki/Lunar_deity"
+    @.964 text ", art, "
+    @.965 link "time keeping" description="Lunar calendar" url="/wiki/Lunar_calendar"
+    @.967 text ", "
+    @.968 link "natural science" description="Natural science" url="/wiki/Natural_science"
+    @.970 text " and "
+    @.971 link "spaceflight" description="Spaceflight" url="/wiki/Spaceflight"
+    @.973 text ". The "
+    @.974 link "first spaceflights" description="Timeline of Solar System exploration" url="/wiki/Timeline_of_Solar_System_exploration"
+    @.976 text " to an extraterrestrial body were to the Moon, starting in 1959 with the "
+    @.977 link "flyby" description="Flyby (spaceflight)" url="/wiki/Flyby_(spaceflight)"
+    @.979 text " of "
+    @.980 link "Luna 1" url="/wiki/Luna_1"
+    @.982 text " (sent by the "
+    @.983 link "Soviet Union" url="/wiki/Soviet_Union"
+    @.985 text "), and the "
+    @.986 link "intentional impact" description="Impactor (spacecraft)" url="/wik
+... [tee capped at 4096 of 11947 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12475B args=click @.910 =====
+page:
+  title: Giant-impact hypothesis - Wikipedia
+  snap: "68"
+  refs: 1881
+snapshot:
+@.0 root "Giant-impact hypothesis - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/Giant-impact_hypothesis#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Giant-impact+hypothesis"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Giant-impact+hypothesis"
+  @.21 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @.22 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @.24 generic description="Hide"
+  @.25 navigation "Contents"
+    @.26 ## Contents
+    @.27 button "Hide Contents"
+    @.28 link "(Top)" url="/wiki/Giant-impact_hypothesis#"
+    @.30 link "History" url="/wiki/Giant-impact_hypothesis#History"
+    @.32 link "Theia" url="/wiki/Giant-impact_hypothesis#Theia"
+    @.34 link "Basic model" url="/wiki/Giant-impact_hypothesis#Basic_model"
+    @.36 link "Composition" url="/wiki/Giant-impact_hypothesis#Composition"
+    @.38 button "Toggle Composition subsection" expandable expanded
+    @.39 link "Equilibration hypothesis" url="/wiki/Giant-impact_hypothesis#Equilibration_hypothesis"
+    @.41 link "Direct collision hypothesis" url="/wiki/Giant-impact_hypothesis#Direct_collision_hypothesis"
+    @.43 link "Synestia hypothesis" url="/wiki/Giant-impact_hypothesis#Synestia_hypothesis"
+    @.45 link "Terrestrial magma ocean hypothesis" url="/wiki/Giant-impact_hypothesis#Terrestrial_magma_ocean_hypothesis"
+    @.47 link "Evidence" url="/wiki/Giant-impact_hypothesis#Evidence"
+    @.49 link "Difficulties" url="/wiki/Giant-impact_hypothesis#Difficulties"
+    @.51 button "Toggle Difficulties subsection" expandable expanded
+    @.52 link "Composition" url="/wiki/Giant-impact_hypothesis#Composition_2"
+    @.54 link "Lack of a Venusian moon" url="/wiki/Giant-impact_hypothesis#Lack_of_a_Venusian_moon"
+    @.56 link "Possible origin of Theia" url="/wiki/Giant-impact_hypothesis#Possible_origin_of_Theia"
+    @.58 link "Alternative hypotheses" url="/wiki/Giant-impact_hypothesis#Alternative_hypotheses"
+    @.60 link "See also" url="/wiki/Giant-impact_hypothesis#See_also"
+    @.62 link "References" url="/wiki/Giant-impact_hypothesis#References"
+    @.64 button "Toggle References subsection" expandable expanded
+    @.65 link "Further reading" url="/wiki/Giant-impact_hypothesis#Further_reading"
+    @.67 link "External links" url="/wiki/Giant-impact_hypothesis#External_links"
+  @.69 main
+    @.70 # Giant-impact hypothesis
+    @.71 button "38 languages" description="Go to an article in another language. Available in 38 languages" haspopup="menu"
+    @.72 navigation "Namespaces"
+      @.73 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.75 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Giant-impact_hypothesis"
+    @.77 navigation "Views"
+      @.78 link "Read" url=$u1
+  
+... [tee capped at 4096 of 12475 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.

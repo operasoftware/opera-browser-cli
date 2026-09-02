@@ -1,0 +1,2069 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12685B args=open https://www.rfc-editor.org/rfc/rfc9110.html =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  url: "https://www.rfc-editor.org/rfc/rfc9110.html"
+  snap: "2"
+  refs: 6959
+snapshot:
+@.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html"
+  @.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @.4 link "9110" url="/rfc/rfc9110"
+  @.6 text "STD:97Obsoletes:"
+  @.9 link "2818" url="/rfc/rfc2818"
+  @.11 text ", "
+  @.12 link "7230" url="/rfc/rfc7230"
+  @.14 text ", "
+  @.15 link "7231" url="/rfc/rfc7231"
+  @.17 text ", "
+  @.18 link "7232" url="/rfc/rfc7232"
+  @.20 text ", "
+  @.21 link "7233" url="/rfc/rfc7233"
+  @.23 text ", "
+  @.24 link "7235" url="/rfc/rfc7235"
+  @.26 text ", "
+  @.27 link "7538" url="/rfc/rfc7538"
+  @.29 text ", "
+  @.30 link "7615" url="/rfc/rfc7615"
+  @.32 text ", "
+  @.33 link "7694" url="/rfc/rfc7694"
+  @.35 text "Updates:"
+  @.36 link "3864" url="/rfc/rfc3864"
+  @.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @.54 # RFC 9110
+  @.55 # HTTP Semantics
+  @.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @.67 text "."
+  @.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.This document may contain material from IETF Documents or IETF Contributions published or made publicly available before November 10, 2008. The person(s) controlling the copyright in some of this material may not have granted the IETF Trust the right to allow modifications of such material outside the IETF Standards Process. Without obtaining an adequate license from the person(s) controlling the copyright in such materials, this document may not be modified outside the IETF Standards Process, and derivative works of it may not be created outside the IETF Standards Process, except to format it for publication as an RFC or to translate it into languages other than English."
+  @.76 link "▲" url="/rfc/rfc9110.html#"
+  @.78 link "Table of Contents" url="/rfc/rfc9110.html#name-table-of-contents"
+  @.80 navigation
+    @.81 link "1" url="/rfc/rfc9110.html#section-1"
+    @.83 text ".  "
+    @.84 link "Introduction" 
+... [tee capped at 4096 of 12685 bytes]
+
+===== CALL rc=0 out=12734B args=open https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.5 =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.5"
+  snap: "2"
+  refs: 6987
+snapshot:
+@.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html#section-15.5.5"
+  @3.0 text "Status:Internet StandardObsoletes:"
+  @3.3 link "2818" url="/rfc/rfc2818"
+  @3.5 text ", "
+  @3.6 link "7230" url="/rfc/rfc7230"
+  @3.8 text ", "
+  @3.9 link "7231" url="/rfc/rfc7231"
+  @3.11 text ", "
+  @3.12 link "7232" url="/rfc/rfc7232"
+  @3.14 text ", "
+  @3.15 link "7233" url="/rfc/rfc7233"
+  @3.17 text ", "
+  @3.18 link "7235" url="/rfc/rfc7235"
+  @3.20 text ", "
+  @3.21 link "7538" url="/rfc/rfc7538"
+  @3.23 text ", "
+  @3.24 link "7615" url="/rfc/rfc7615"
+  @3.26 text ", "
+  @3.27 link "7694" url="/rfc/rfc7694"
+  @3.29 text "Updates:"
+  @3.30 link "3864" url="/rfc/rfc3864"
+  @3.32 text "More info:"
+  @3.33 link "Errata exist" url="/errata/rfc9110"
+  @3.35 text " | "
+  @3.36 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @3.38 text "| "
+  @3.39 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @3.41 text " | "
+  @3.42 link "Info page" url="/info/rfc9110"
+  @.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @.4 link "9110" url="/rfc/rfc9110"
+  @.6 text "STD:97Obsoletes:"
+  @.9 link "2818" url="/rfc/rfc2818"
+  @.11 text ", "
+  @.12 link "7230" url="/rfc/rfc7230"
+  @.14 text ", "
+  @.15 link "7231" url="/rfc/rfc7231"
+  @.17 text ", "
+  @.18 link "7232" url="/rfc/rfc7232"
+  @.20 text ", "
+  @.21 link "7233" url="/rfc/rfc7233"
+  @.23 text ", "
+  @.24 link "7235" url="/rfc/rfc7235"
+  @.26 text ", "
+  @.27 link "7538" url="/rfc/rfc7538"
+  @.29 text ", "
+  @.30 link "7615" url="/rfc/rfc7615"
+  @.32 text ", "
+  @.33 link "7694" url="/rfc/rfc7694"
+  @.35 text "Updates:"
+  @.36 link "3864" url="/rfc/rfc3864"
+  @.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @.54 # RFC 9110
+  @.55 # HTTP Semantics
+  @.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @.67 text "."
+  @.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warra
+... [tee capped at 4096 of 12734 bytes]
+
+===== CALL rc=1 out=50B args=scroll down =====
+error: "Error: fn is not a function"
+code: UNKNOWN
+===== CALL rc=1 out=50B args=scroll down =====
+error: "Error: fn is not a function"
+code: UNKNOWN
+===== CALL rc=0 out=208B args=snapshot =====
+snapshot: unchanged since last shown — "RFC 9110: HTTP Semantics" (6987 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+
+===== CALL rc=0 out=208B args=snapshot =====
+snapshot: unchanged since last shown — "RFC 9110: HTTP Semantics" (6987 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+
+===== CALL rc=0 out=208B args=snapshot =====
+snapshot: unchanged since last shown — "RFC 9110: HTTP Semantics" (6987 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+
+===== CALL rc=0 out=208B args=snapshot =====
+snapshot: unchanged since last shown — "RFC 9110: HTTP Semantics" (6987 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+
+===== CALL rc=0 out=12734B args=open https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.5 =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.5"
+  snap: "2"
+  refs: 6987
+snapshot:
+@.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html#section-15.5.5"
+  @3.0 text "Status:Internet StandardObsoletes:"
+  @3.3 link "2818" url="/rfc/rfc2818"
+  @3.5 text ", "
+  @3.6 link "7230" url="/rfc/rfc7230"
+  @3.8 text ", "
+  @3.9 link "7231" url="/rfc/rfc7231"
+  @3.11 text ", "
+  @3.12 link "7232" url="/rfc/rfc7232"
+  @3.14 text ", "
+  @3.15 link "7233" url="/rfc/rfc7233"
+  @3.17 text ", "
+  @3.18 link "7235" url="/rfc/rfc7235"
+  @3.20 text ", "
+  @3.21 link "7538" url="/rfc/rfc7538"
+  @3.23 text ", "
+  @3.24 link "7615" url="/rfc/rfc7615"
+  @3.26 text ", "
+  @3.27 link "7694" url="/rfc/rfc7694"
+  @3.29 text "Updates:"
+  @3.30 link "3864" url="/rfc/rfc3864"
+  @3.32 text "More info:"
+  @3.33 link "Errata exist" url="/errata/rfc9110"
+  @3.35 text " | "
+  @3.36 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @3.38 text "| "
+  @3.39 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @3.41 text " | "
+  @3.42 link "Info page" url="/info/rfc9110"
+  @.1 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @.4 link "9110" url="/rfc/rfc9110"
+  @.6 text "STD:97Obsoletes:"
+  @.9 link "2818" url="/rfc/rfc2818"
+  @.11 text ", "
+  @.12 link "7230" url="/rfc/rfc7230"
+  @.14 text ", "
+  @.15 link "7231" url="/rfc/rfc7231"
+  @.17 text ", "
+  @.18 link "7232" url="/rfc/rfc7232"
+  @.20 text ", "
+  @.21 link "7233" url="/rfc/rfc7233"
+  @.23 text ", "
+  @.24 link "7235" url="/rfc/rfc7235"
+  @.26 text ", "
+  @.27 link "7538" url="/rfc/rfc7538"
+  @.29 text ", "
+  @.30 link "7615" url="/rfc/rfc7615"
+  @.32 text ", "
+  @.33 link "7694" url="/rfc/rfc7694"
+  @.35 text "Updates:"
+  @.36 link "3864" url="/rfc/rfc3864"
+  @.38 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @.54 # RFC 9110
+  @.55 # HTTP Semantics
+  @.56 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @.58 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @.59 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @.60 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @.62 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @.65 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @.67 text "."
+  @.68 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @.70 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @.72 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @.74 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warra
+... [tee capped at 4096 of 12734 bytes]
+
+===== CALL rc=0 out=12247B args=snapshot --next =====
+snapshot[11977-23975 of 696055]:
+    @.301 link "5.6.1.2" url="/rfc/rfc9110.html#section-5.6.1.2"
+    @.303 text ".  "
+    @.304 link "Recipient Requirements" url="/rfc/rfc9110.html#name-recipient-requirements"
+    @.306 link "5.6.2" url="/rfc/rfc9110.html#section-5.6.2"
+    @.308 text ".  "
+    @.309 link "Tokens" url="/rfc/rfc9110.html#name-tokens"
+    @.311 link "5.6.3" url="/rfc/rfc9110.html#section-5.6.3"
+    @.313 text ".  "
+    @.314 link "Whitespace" url="/rfc/rfc9110.html#name-whitespace"
+    @.316 link "5.6.4" url="/rfc/rfc9110.html#section-5.6.4"
+    @.318 text ".  "
+    @.319 link "Quoted Strings" url="/rfc/rfc9110.html#name-quoted-strings"
+    @.321 link "5.6.5" url="/rfc/rfc9110.html#section-5.6.5"
+    @.323 text ".  "
+    @.324 link "Comments" url="/rfc/rfc9110.html#name-comments"
+    @.326 link "5.6.6" url="/rfc/rfc9110.html#section-5.6.6"
+    @.328 text ".  "
+    @.329 link "Parameters" url="/rfc/rfc9110.html#name-parameters"
+    @.331 link "5.6.7" url="/rfc/rfc9110.html#section-5.6.7"
+    @.333 text ".  "
+    @.334 link "Date/Time Formats" url="/rfc/rfc9110.html#name-date-time-formats"
+    @.336 link "6" url="/rfc/rfc9110.html#section-6"
+    @.338 text ".  "
+    @.339 link "Message Abstraction" url="/rfc/rfc9110.html#name-message-abstraction"
+    @.341 link "6.1" url="/rfc/rfc9110.html#section-6.1"
+    @.343 text ".  "
+    @.344 link "Framing and Completeness" url="/rfc/rfc9110.html#name-framing-and-completeness"
+    @.346 link "6.2" url="/rfc/rfc9110.html#section-6.2"
+    @.348 text ".  "
+    @.349 link "Control Data" url="/rfc/rfc9110.html#name-control-data"
+    @.351 link "6.3" url="/rfc/rfc9110.html#section-6.3"
+    @.353 text ".  "
+    @.354 link "Header Fields" url="/rfc/rfc9110.html#name-header-fields"
+    @.356 link "6.4" url="/rfc/rfc9110.html#section-6.4"
+    @.358 text ".  "
+    @.359 link "Content" url="/rfc/rfc9110.html#name-content"
+    @.361 link "6.4.1" url="/rfc/rfc9110.html#section-6.4.1"
+    @.363 text ".  "
+    @.364 link "Content Semantics" url="/rfc/rfc9110.html#name-content-semantics"
+    @.366 link "6.4.2" url="/rfc/rfc9110.html#section-6.4.2"
+    @.368 text ".  "
+    @.369 link "Identifying Content" url="/rfc/rfc9110.html#name-identifying-content"
+    @.371 link "6.5" url="/rfc/rfc9110.html#section-6.5"
+    @.373 text ".  "
+    @.374 link "Trailer Fields" url="/rfc/rfc9110.html#name-trailer-fields"
+    @.376 link "6.5.1" url="/rfc/rfc9110.html#section-6.5.1"
+    @.378 text ".  "
+    @.379 link "Limitations on Use of Trailers" url="/rfc/rfc9110.html#name-limitations-on-use-of-trail"
+    @.381 link "6.5.2" url="/rfc/rfc9110.html#section-6.5.2"
+    @.383 text ".  "
+    @.384 link "Processing Trailer Fields" url="/rfc/rfc9110.html#name-processing-trailer-fields"
+    @.386 link "6.6" url="/rfc/rfc9110.html#section-6.6"
+    @.388 text ".  "
+    @.389 link "Message Metadata" url="/rfc/rfc9110.html#name-message-metadata"
+    @.391 link "6.6.1" url="/rfc/rfc9110.html#section-6.6.1"
+    @.393 text ".  "
+    @.394 link "Date" url="/rfc/rfc9110.html#name-date"
+    @.396 link "6.6.2" url="/rfc/rfc9110.html#section-6.6.2"
+    @.398 text ".  "
+    @.399 link "Trailer" url="/rfc/rfc9110.html#name-trailer"
+    @.401 link "7" url="/rfc/rfc9110.html#section-7"
+    @.403 text ".  "
+    @.404 link "Routing HTTP Messages" url="/rfc/rfc9110.html#name-routing-http-messages"
+    @.406 link "7.1" url="/rfc/rfc9110.html#section-7.1"
+    @.408 text ".  "
+    @.409 link "Determining the Target Resource" url="/rfc/rfc9110.html#name-determining-the-target-reso"
+    @.411 link "7.2" url="/rfc/rfc9110.html#section-7.2"
+    @.413 text ".  "
+    @.414 link "Host and :authority" url="/rfc/rfc9110.html#name-host-and-authority"
+    @.416 link "7.3" url="/rfc/rfc9110.html#section-7.3"
+    @.418 text ".  "
+    @.419 link "Routing Inbound Requests" url="/rfc/rfc9110.html#name-routing-inbound-requests"
+    @.421 link "7.3.1" url="/rfc/rfc9110.html#section-7.3.1"
+    @.423 text ".  "
+    @.424 link "To a Cache" url="/rfc/rfc9110.html#name-to-a-cache"
+    @.426 link "7.3.2
+... [tee capped at 4096 of 12247 bytes]
+
+===== CALL rc=0 out=12212B args=snapshot --next =====
+snapshot[23976-35947 of 696055]:
+    @.683 text ".  "
+    @.684 link "Request Context Fields" url="/rfc/rfc9110.html#name-request-context-fields"
+    @.686 link "10.1.1" url="/rfc/rfc9110.html#section-10.1.1"
+    @.688 text ".  "
+    @.689 link "Expect" url="/rfc/rfc9110.html#name-expect"
+    @.691 link "10.1.2" url="/rfc/rfc9110.html#section-10.1.2"
+    @.693 text ".  "
+    @.694 link "From" url="/rfc/rfc9110.html#name-from"
+    @.696 link "10.1.3" url="/rfc/rfc9110.html#section-10.1.3"
+    @.698 text ".  "
+    @.699 link "Referer" url="/rfc/rfc9110.html#name-referer"
+    @.701 link "10.1.4" url="/rfc/rfc9110.html#section-10.1.4"
+    @.703 text ".  "
+    @.704 link "TE" url="/rfc/rfc9110.html#name-te"
+    @.706 link "10.1.5" url="/rfc/rfc9110.html#section-10.1.5"
+    @.708 text ".  "
+    @.709 link "User-Agent" url="/rfc/rfc9110.html#name-user-agent"
+    @.711 link "10.2" url="/rfc/rfc9110.html#section-10.2"
+    @.713 text ".  "
+    @.714 link "Response Context Fields" url="/rfc/rfc9110.html#name-response-context-fields"
+    @.716 link "10.2.1" url="/rfc/rfc9110.html#section-10.2.1"
+    @.718 text ".  "
+    @.719 link "Allow" url="/rfc/rfc9110.html#name-allow"
+    @.721 link "10.2.2" url="/rfc/rfc9110.html#section-10.2.2"
+    @.723 text ".  "
+    @.724 link "Location" url="/rfc/rfc9110.html#name-location"
+    @.726 link "10.2.3" url="/rfc/rfc9110.html#section-10.2.3"
+    @.728 text ".  "
+    @.729 link "Retry-After" url="/rfc/rfc9110.html#name-retry-after"
+    @.731 link "10.2.4" url="/rfc/rfc9110.html#section-10.2.4"
+    @.733 text ".  "
+    @.734 link "Server" url="/rfc/rfc9110.html#name-server"
+    @.736 link "11" url="/rfc/rfc9110.html#section-11"
+    @.738 text ". "
+    @.739 link "HTTP Authentication" url="/rfc/rfc9110.html#name-http-authentication"
+    @.741 link "11.1" url="/rfc/rfc9110.html#section-11.1"
+    @.743 text ".  "
+    @.744 link "Authentication Scheme" url="/rfc/rfc9110.html#name-authentication-scheme"
+    @.746 link "11.2" url="/rfc/rfc9110.html#section-11.2"
+    @.748 text ".  "
+    @.749 link "Authentication Parameters" url="/rfc/rfc9110.html#name-authentication-parameters"
+    @.751 link "11.3" url="/rfc/rfc9110.html#section-11.3"
+    @.753 text ".  "
+    @.754 link "Challenge and Response" url="/rfc/rfc9110.html#name-challenge-and-response"
+    @.756 link "11.4" url="/rfc/rfc9110.html#section-11.4"
+    @.758 text ".  "
+    @.759 link "Credentials" url="/rfc/rfc9110.html#name-credentials"
+    @.761 link "11.5" url="/rfc/rfc9110.html#section-11.5"
+    @.763 text ".  "
+    @.764 link "Establishing a Protection Space (Realm)" url="/rfc/rfc9110.html#name-establishing-a-protection-s"
+    @.766 link "11.6" url="/rfc/rfc9110.html#section-11.6"
+    @.768 text ".  "
+    @.769 link "Authenticating Users to Origin Servers" url="/rfc/rfc9110.html#name-authenticating-users-to-ori"
+    @.771 link "11.6.1" url="/rfc/rfc9110.html#section-11.6.1"
+    @.773 text ".  "
+    @.774 link "WWW-Authenticate" url="/rfc/rfc9110.html#name-www-authenticate"
+    @.776 link "11.6.2" url="/rfc/rfc9110.html#section-11.6.2"
+    @.778 text ".  "
+    @.779 link "Authorization" url="/rfc/rfc9110.html#name-authorization"
+    @.781 link "11.6.3" url="/rfc/rfc9110.html#section-11.6.3"
+    @.783 text ".  "
+    @.784 link "Authentication-Info" url="/rfc/rfc9110.html#name-authentication-info"
+    @.786 link "11.7" url="/rfc/rfc9110.html#section-11.7"
+    @.788 text ".  "
+    @.789 link "Authenticating Clients to Proxies" url="/rfc/rfc9110.html#name-authenticating-clients-to-p"
+    @.791 link "11.7.1" url="/rfc/rfc9110.html#section-11.7.1"
+    @.793 text ".  "
+    @.794 link "Proxy-Authenticate" url="/rfc/rfc9110.html#name-proxy-authenticate"
+    @.796 link "11.7.2" url="/rfc/rfc9110.html#section-11.7.2"
+    @.798 text ".  "
+    @.799 link "Proxy-Authorization" url="/rfc/rfc9110.html#name-proxy-authorization"
+    @.801 link "11.7.3" url="/rfc/rfc9110.html#section-11.7.3"
+    @.803 text ".  "
+    @.804 link "Proxy-Authentication-Info" url="/rfc/rfc9110.html#name-proxy-authentication-info"
+   
+... [tee capped at 4096 of 12212 bytes]
+
+===== CALL rc=0 out=12162B args=snapshot --next =====
+snapshot[35948-47891 of 696055]:
+    @.1051 link "15.4" url="/rfc/rfc9110.html#section-15.4"
+    @.1053 text ".  "
+    @.1054 link "Redirection 3xx" url="/rfc/rfc9110.html#name-redirection-3xx"
+    @.1056 link "15.4.1" url="/rfc/rfc9110.html#section-15.4.1"
+    @.1058 text ".  "
+    @.1059 link "300 Multiple Choices" url="/rfc/rfc9110.html#name-300-multiple-choices"
+    @.1061 link "15.4.2" url="/rfc/rfc9110.html#section-15.4.2"
+    @.1063 text ".  "
+    @.1064 link "301 Moved Permanently" url="/rfc/rfc9110.html#name-301-moved-permanently"
+    @.1066 link "15.4.3" url="/rfc/rfc9110.html#section-15.4.3"
+    @.1068 text ".  "
+    @.1069 link "302 Found" url="/rfc/rfc9110.html#name-302-found"
+    @.1071 link "15.4.4" url="/rfc/rfc9110.html#section-15.4.4"
+    @.1073 text ".  "
+    @.1074 link "303 See Other" url="/rfc/rfc9110.html#name-303-see-other"
+    @.1076 link "15.4.5" url="/rfc/rfc9110.html#section-15.4.5"
+    @.1078 text ".  "
+    @.1079 link "304 Not Modified" url="/rfc/rfc9110.html#name-304-not-modified"
+    @.1081 link "15.4.6" url="/rfc/rfc9110.html#section-15.4.6"
+    @.1083 text ".  "
+    @.1084 link "305 Use Proxy" url="/rfc/rfc9110.html#name-305-use-proxy"
+    @.1086 link "15.4.7" url="/rfc/rfc9110.html#section-15.4.7"
+    @.1088 text ".  "
+    @.1089 link "306 (Unused)" url="/rfc/rfc9110.html#name-306-unused"
+    @.1091 link "15.4.8" url="/rfc/rfc9110.html#section-15.4.8"
+    @.1093 text ".  "
+    @.1094 link "307 Temporary Redirect" url="/rfc/rfc9110.html#name-307-temporary-redirect"
+    @.1096 link "15.4.9" url="/rfc/rfc9110.html#section-15.4.9"
+    @.1098 text ".  "
+    @.1099 link "308 Permanent Redirect" url="/rfc/rfc9110.html#name-308-permanent-redirect"
+    @.1101 link "15.5" url="/rfc/rfc9110.html#section-15.5"
+    @.1103 text ".  "
+    @.1104 link "Client Error 4xx" url="/rfc/rfc9110.html#name-client-error-4xx"
+    @.1106 link "15.5.1" url="/rfc/rfc9110.html#section-15.5.1"
+    @.1108 text ".  "
+    @.1109 link "400 Bad Request" url="/rfc/rfc9110.html#name-400-bad-request"
+    @.1111 link "15.5.2" url="/rfc/rfc9110.html#section-15.5.2"
+    @.1113 text ".  "
+    @.1114 link "401 Unauthorized" url="/rfc/rfc9110.html#name-401-unauthorized"
+    @.1116 link "15.5.3" url="/rfc/rfc9110.html#section-15.5.3"
+    @.1118 text ".  "
+    @.1119 link "402 Payment Required" url="/rfc/rfc9110.html#name-402-payment-required"
+    @.1121 link "15.5.4" url="/rfc/rfc9110.html#section-15.5.4"
+    @.1123 text ".  "
+    @.1124 link "403 Forbidden" url="/rfc/rfc9110.html#name-403-forbidden"
+    @.1126 link "15.5.5" url="/rfc/rfc9110.html#section-15.5.5"
+    @.1128 text ".  "
+    @.1129 link "404 Not Found" url="/rfc/rfc9110.html#name-404-not-found"
+    @.1131 link "15.5.6" url="/rfc/rfc9110.html#section-15.5.6"
+    @.1133 text ".  "
+    @.1134 link "405 Method Not Allowed" url="/rfc/rfc9110.html#name-405-method-not-allowed"
+    @.1136 link "15.5.7" url="/rfc/rfc9110.html#section-15.5.7"
+    @.1138 text ".  "
+    @.1139 link "406 Not Acceptable" url="/rfc/rfc9110.html#name-406-not-acceptable"
+    @.1141 link "15.5.8" url="/rfc/rfc9110.html#section-15.5.8"
+    @.1143 text ".  "
+    @.1144 link "407 Proxy Authentication Required" url="/rfc/rfc9110.html#name-407-proxy-authentication-re"
+    @.1146 link "15.5.9" url="/rfc/rfc9110.html#section-15.5.9"
+    @.1148 text ".  "
+    @.1149 link "408 Request Timeout" url="/rfc/rfc9110.html#name-408-request-timeout"
+    @.1151 link "15.5.10" url="/rfc/rfc9110.html#section-15.5.10"
+    @.1153 text ". "
+    @.1154 link "409 Conflict" url="/rfc/rfc9110.html#name-409-conflict"
+    @.1156 link "15.5.11" url="/rfc/rfc9110.html#section-15.5.11"
+    @.1158 text ". "
+    @.1159 link "410 Gone" url="/rfc/rfc9110.html#name-410-gone"
+    @.1161 link "15.5.12" url="/rfc/rfc9110.html#section-15.5.12"
+    @.1163 text ". "
+    @.1164 link "411 Length Required" url="/rfc/rfc9110.html#name-411-length-required"
+    @.1166 link "15.5.13" url="/rfc/rfc9110.html#section-15.5.13"
+    @.1168 text ". "
+    @.1169 link "412 Precondition Failed" url="/rfc/rfc9110.html#n
+... [tee capped at 4096 of 12162 bytes]
+
+===== CALL rc=0 out=11735B args=snapshot --next =====
+snapshot[47892-59459 of 696055]:
+    @.1389 link "Attacks via Protocol Element Length" url="/rfc/rfc9110.html#name-attacks-via-protocol-elemen"
+    @.1391 link "17.6" url="/rfc/rfc9110.html#section-17.6"
+    @.1393 text ".  "
+    @.1394 link "Attacks Using Shared-Dictionary Compression" url="/rfc/rfc9110.html#name-attacks-using-shared-dictio"
+    @.1396 link "17.7" url="/rfc/rfc9110.html#section-17.7"
+    @.1398 text ".  "
+    @.1399 link "Disclosure of Personal Information" url="/rfc/rfc9110.html#name-disclosure-of-personal-info"
+    @.1401 link "17.8" url="/rfc/rfc9110.html#section-17.8"
+    @.1403 text ".  "
+    @.1404 link "Privacy of Server Log Information" url="/rfc/rfc9110.html#name-privacy-of-server-log-infor"
+    @.1406 link "17.9" url="/rfc/rfc9110.html#section-17.9"
+    @.1408 text ".  "
+    @.1409 link "Disclosure of Sensitive Information in URIs" url="/rfc/rfc9110.html#name-disclosure-of-sensitive-inf"
+    @.1411 link "17.10" url="/rfc/rfc9110.html#section-17.10"
+    @.1413 text ". "
+    @.1414 link "Application Handling of Field Names" url="/rfc/rfc9110.html#name-application-handling-of-fie"
+    @.1416 link "17.11" url="/rfc/rfc9110.html#section-17.11"
+    @.1418 text ". "
+    @.1419 link "Disclosure of Fragment after Redirects" url="/rfc/rfc9110.html#name-disclosure-of-fragment-afte"
+    @.1421 link "17.12" url="/rfc/rfc9110.html#section-17.12"
+    @.1423 text ". "
+    @.1424 link "Disclosure of Product Information" url="/rfc/rfc9110.html#name-disclosure-of-product-infor"
+    @.1426 link "17.13" url="/rfc/rfc9110.html#section-17.13"
+    @.1428 text ". "
+    @.1429 link "Browser Fingerprinting" url="/rfc/rfc9110.html#name-browser-fingerprinting"
+    @.1431 link "17.14" url="/rfc/rfc9110.html#section-17.14"
+    @.1433 text ". "
+    @.1434 link "Validator Retention" url="/rfc/rfc9110.html#name-validator-retention"
+    @.1436 link "17.15" url="/rfc/rfc9110.html#section-17.15"
+    @.1438 text ". "
+    @.1439 link "Denial-of-Service Attacks Using Range" url="/rfc/rfc9110.html#name-denial-of-service-attacks-u"
+    @.1441 link "17.16" url="/rfc/rfc9110.html#section-17.16"
+    @.1443 text ". "
+    @.1444 link "Authentication Considerations" url="/rfc/rfc9110.html#name-authentication-consideratio"
+    @.1446 link "17.16.1" url="/rfc/rfc9110.html#section-17.16.1"
+    @.1448 text ".  "
+    @.1449 link "Confidentiality of Credentials" url="/rfc/rfc9110.html#name-confidentiality-of-credenti"
+    @.1451 link "17.16.2" url="/rfc/rfc9110.html#section-17.16.2"
+    @.1453 text ".  "
+    @.1454 link "Credentials and Idle Clients" url="/rfc/rfc9110.html#name-credentials-and-idle-client"
+    @.1456 link "17.16.3" url="/rfc/rfc9110.html#section-17.16.3"
+    @.1458 text ".  "
+    @.1459 link "Protection Spaces" url="/rfc/rfc9110.html#name-protection-spaces"
+    @.1461 link "17.16.4" url="/rfc/rfc9110.html#section-17.16.4"
+    @.1463 text ".  "
+    @.1464 link "Additional Response Fields" url="/rfc/rfc9110.html#name-additional-response-fields"
+    @.1466 link "18" url="/rfc/rfc9110.html#section-18"
+    @.1468 text ". "
+    @.1469 link "IANA Considerations" url="/rfc/rfc9110.html#name-iana-considerations"
+    @.1471 link "18.1" url="/rfc/rfc9110.html#section-18.1"
+    @.1473 text ".  "
+    @.1474 link "URI Scheme Registration" url="/rfc/rfc9110.html#name-uri-scheme-registration"
+    @.1476 link "18.2" url="/rfc/rfc9110.html#section-18.2"
+    @.1478 text ".  "
+    @.1479 link "Method Registration" url="/rfc/rfc9110.html#name-method-registration"
+    @.1481 link "18.3" url="/rfc/rfc9110.html#section-18.3"
+    @.1483 text ".  "
+    @.1484 link "Status Code Registration" url="/rfc/rfc9110.html#name-status-code-registration"
+    @.1486 link "18.4" url="/rfc/rfc9110.html#section-18.4"
+    @.1488 text ".  "
+    @.1489 link "Field Name Registration" url="/rfc/rfc9110.html#name-field-name-registration"
+    @.1491 link "18.5" url="/rfc/rfc9110.html#section-18.5"
+    @.1493 text ".  "
+    @.1494 link "Authentication Scheme Registration" url="/rfc/rfc9110.html#name-authentication-scheme-regist"
+    @.1496 link
+... [tee capped at 4096 of 11735 bytes]
+
+===== CALL rc=0 out=10754B args=snapshot --next =====
+snapshot[59460-70180 of 696055]:
+  @.1652 text "]) provides greater independence for concurrent messages by using QUIC as a secure multiplexed transport over UDP instead of TCP.All three major versions of HTTP rely on the semantics defined by this document. They have not obsoleted each other because each one has specific benefits and limitations depending on the context of use. Implementations are expected to choose the most appropriate transport and messaging syntax for their particular context.This revision of HTTP separates the definition of semantics (this document) and caching (["
+  @.1657 link "CACHING" url="/rfc/rfc9110.html#CACHING"
+  @.1659 text "]) from the current HTTP/1.1 messaging syntax (["
+  @.1662 link "HTTP/1.1" url=$u1
+  @.1664 text "]) to allow each major protocol version to progress independently while referring to the same core semantics."
+  @.1666 link "1.3. " url="/rfc/rfc9110.html#section-1.3"
+  @.1668 link "Core Semantics" url="/rfc/rfc9110.html#name-core-semantics"
+  @.1670 text "HTTP provides a uniform interface for interacting with a resource ("
+  @.1671 link "Section 3.1" url="/rfc/rfc9110.html#resources"
+  @.1673 text ") -- regardless of its type, nature, or implementation -- by sending messages that manipulate or transfer representations ("
+  @.1674 link "Section 3.2" url="/rfc/rfc9110.html#representations"
+  @.1676 text ").Each message is either a request or a response. A client constructs request messages that communicate its intentions and routes those messages toward an identified origin server. A server listens for requests, parses each message received, interprets the message semantics in relation to the identified target resource, and responds to that request with one or more response messages. The client examines received responses to see if its intentions were carried out, determining what to do next based on the status codes and content received.HTTP semantics include the intentions defined by each request method ("
+  @.1679 link "Section 9" url="/rfc/rfc9110.html#methods"
+  @.1681 text "), extensions to those semantics that might be described in request header fields, status codes that describe the response ("
+  @.1682 link "Section 15" url="/rfc/rfc9110.html#status.codes"
+  @.1684 text "), and other control data and resource metadata that might be given in response fields."
+  @.1685 text "Semantics also include representation metadata that describe how content is intended to be interpreted by a recipient, request header fields that might influence content selection, and the various selection algorithms that are collectively referred to as "content negotiation" ("
+  @.1686 link "Section 12" url="/rfc/rfc9110.html#content.negotiation"
+  @.1688 text ")."
+  @.1689 link "1.4. " url="/rfc/rfc9110.html#section-1.4"
+  @.1691 link "Specifications Obsoleted by This Document" url="/rfc/rfc9110.html#name-specifications-obsoleted-by"
+  @.1693 link "Table 1" url="/rfc/rfc9110.html#table-1"
+  @.1695 text "TitleReferenceSeeHTTP Over TLS["
+  @.1700 link "RFC2818" url="/rfc/rfc9110.html#RFC2818"
+  @.1702 text "]"
+  @.1703 link "B.1" url="/rfc/rfc9110.html#changes.from.rfc.2818"
+  @.1705 text "HTTP/1.1 Message Syntax and Routing [*]["
+  @.1707 link "RFC7230" url=$u2
+  @.1709 text "]"
+  @.1710 link "B.2" url="/rfc/rfc9110.html#changes.from.rfc.7230"
+  @.1712 text "HTTP/1.1 Semantics and Content["
+  @.1714 link "RFC7231" url="/rfc/rfc9110.html#RFC7231"
+  @.1716 text "]"
+  @.1717 link "B.3" url="/rfc/rfc9110.html#changes.from.rfc.7231"
+  @.1719 text "HTTP/1.1 Conditional Requests["
+  @.1721 link "RFC7232" url="/rfc/rfc9110.html#RFC7232"
+  @.1723 text "]"
+  @.1724 link "B.4" url="/rfc/rfc9110.html#changes.from.rfc.7232"
+  @.1726 text "HTTP/1.1 Range Requests["
+  @.1728 link "RFC7233" url="/rfc/rfc9110.html#RFC7233"
+  @.1730 text "]"
+  @.1731 link "B.5" url="/rfc/rfc9110.html#changes.from.rfc.7233"
+  @.1733 text "HTTP/1.1 Authentication["
+  @.1735 link "RFC7235" url="/rfc/rfc9110.html#RFC7235"
+  @.1737 text "]"
+  @.1738 link "B.6" url="/rfc/rfc9110.html#changes.from.rfc.7235"
+  @.1740 text "HTTP Status
+... [tee capped at 4096 of 10754 bytes]
+
+===== CALL rc=0 out=12021B args=snapshot --next =====
+snapshot[70181-82150 of 696055]:
+  @.1870 text "A recipient SHOULD parse a received protocol element defensively, with only marginal expectations that the element will conform to its ABNF grammar and fit within a reasonable buffer size.HTTP does not have specific length limitations for many of its protocol elements because the lengths that might be appropriate will vary widely, depending on the deployment context and purpose of the implementation. Hence, interoperability between senders and recipients depends on shared expectations regarding what is a reasonable length for each protocol element. Furthermore, what is commonly understood to be a reasonable length for some protocol elements has changed over the course of the past three decades of HTTP use and is expected to continue changing in the future.At a minimum, a recipient MUST be able to parse and process protocol element lengths that are at least as long as the values that it generates for those same protocol elements in other messages. For example, an origin server that publishes very long URI references to its own resources needs to be able to parse and process those same references when received as a target URI.Many received protocol elements are only parsed to the extent necessary to identify and forward that element downstream. For example, an intermediary might parse a received field into its field name and field value components, but then forward the field without further parsing inside the field value."
+  @.1878 link "2.4. " url="/rfc/rfc9110.html#section-2.4"
+  @.1880 link "Error Handling" url="/rfc/rfc9110.html#name-error-handling"
+  @.1882 text "A recipient MUST interpret a received protocol element according to the semantics defined for it by this specification, including extensions to this specification, unless the recipient has determined (through experience or configuration) that the sender incorrectly implements what is implied by those semantics. For example, an origin server might disregard the contents of a received "
+  @.1885 link "Accept-Encoding" url="/rfc/rfc9110.html#field.accept-encoding"
+  @.1887 text " header field if inspection of the "
+  @.1888 link "User-Agent" url="/rfc/rfc9110.html#field.user-agent"
+  @.1890 text " header field indicates a specific implementation version that is known to fail on receipt of certain content codings.Unless noted otherwise, a recipient MAY attempt to recover a usable protocol element from an invalid construct. HTTP does not define specific error handling mechanisms except when they have a direct impact on security, since different applications of the protocol require different error handling strategies. For example, a Web browser might wish to transparently recover from a response where the "
+  @.1894 link "Location" url="/rfc/rfc9110.html#field.location"
+  @.1896 text " header field doesn't parse according to the ABNF, whereas a systems control client might consider any form of error recovery to be dangerous.Some requests can be automatically retried by a client in the event of an underlying connection failure, as described in "
+  @.1898 link "Section 9.2.2" url="/rfc/rfc9110.html#idempotent.methods"
+  @.1900 text "."
+  @.1901 link "2.5. " url="/rfc/rfc9110.html#section-2.5"
+  @.1903 link "Protocol Version" url="/rfc/rfc9110.html#name-protocol-version"
+  @.1905 text "HTTP's version number consists of two decimal digits separated by a "." (period or decimal point). The first digit (major version) indicates the messaging syntax, whereas the second digit (minor version) indicates the highest minor version within that major version to which the sender is conformant (able to understand for future communication)."
+  @.1906 text "While HTTP's core semantics don't change between protocol versions, their expression "on the wire" can change, and so the HTTP version number changes when incompatible changes are made to the wire format. Additionally, HTTP allows incremental, backwards-compatible changes to be made to the protocol without changing its version through the use of defined extension points ("
+  @.1907 l
+... [tee capped at 4096 of 12021 bytes]
+
+===== CALL rc=0 out=11618B args=snapshot --next =====
+snapshot[82151-93671 of 696055]:
+  @.2019 text "HTTP is a stateless request/response protocol for exchanging "messages" across a "
+  @.2020 link "connection" url="/rfc/rfc9110.html#connections"
+  @.2022 text ". The terms "sender" and "recipient" refer to any implementation that sends or receives a given message, respectively."
+  @.2023 text "A client sends requests to a server in the form of a "request" message with a method ("
+  @.2024 link "Section 9" url="/rfc/rfc9110.html#methods"
+  @.2026 text ") and request target ("
+  @.2027 link "Section 7.1" url="/rfc/rfc9110.html#target.resource"
+  @.2029 text "). The request might also contain header fields ("
+  @.2030 link "Section 6.3" url="/rfc/rfc9110.html#header.fields"
+  @.2032 text ") for request modifiers, client information, and representation metadata, content ("
+  @.2033 link "Section 6.4" url="/rfc/rfc9110.html#content"
+  @.2035 text ") intended for processing in accordance with the method, and trailer fields ("
+  @.2036 link "Section 6.5" url="/rfc/rfc9110.html#trailer.fields"
+  @.2038 text ") to communicate information collected while sending the content."
+  @.2039 text "A server responds to a client's request by sending one or more "response" messages, each including a status code ("
+  @.2040 link "Section 15" url="/rfc/rfc9110.html#status.codes"
+  @.2042 text "). The response might also contain header fields for server information, resource metadata, and representation metadata, content to be interpreted in accordance with the status code, and trailer fields to communicate information collected while sending the content."
+  @.2043 link "3.5. " url="/rfc/rfc9110.html#section-3.5"
+  @.2045 link "User Agents" url="/rfc/rfc9110.html#name-user-agents"
+  @.2047 text "The term "user agent" refers to any of the various client programs that initiate a request."
+  @.2048 text "The most familiar form of user agent is the general-purpose Web browser, but that's only a small percentage of implementations. Other common user agents include spiders (web-traversing robots), command-line tools, billboard screens, household appliances, scales, light bulbs, firmware update scripts, mobile apps, and communication devices in a multitude of shapes and sizes.Being a user agent does not imply that there is a human user directly interacting with the software agent at the time of a request. In many cases, a user agent is installed or configured to run in the background and save its results for later inspection (or save only a subset of those results that might be interesting or erroneous). Spiders, for example, are typically given a start URI and configured to follow certain behavior while crawling the Web as a hypertext graph.Many user agents cannot, or choose not to, make interactive suggestions to their user or provide adequate warning for security or privacy concerns. In the few cases where this specification requires reporting of errors to the user, it is acceptable for such reporting to only be observable in an error console or log file. Likewise, requirements that an automated action be confirmed by the user before proceeding might be met via advance configuration choices, run-time options, or simple avoidance of the unsafe action; confirmation does not imply any specific user interface or interruption of normal processing if the user has already made that choice."
+  @.2051 link "3.6. " url="/rfc/rfc9110.html#section-3.6"
+  @.2053 link "Origin Server" url="/rfc/rfc9110.html#name-origin-server"
+  @.2055 text "The term "origin server" refers to a program that can originate authoritative responses for a given target resource."
+  @.2056 text "The most familiar form of origin server are large public websites. However, like user agents being equated with browsers, it is easy to be misled into thinking that all origin servers are alike. Common origin servers also include home automation units, configurable networking components, office machines, autonomous robots, news feeds, traffic cameras, real-time ad selectors, and video-on-demand platforms.Most HTTP communication consists of a retr
+... [tee capped at 4096 of 11618 bytes]
+
+===== CALL rc=0 out=11871B args=snapshot --next =====
+snapshot[93672-105627 of 696055]:
+  @.2110 text "].There is a wide variety of architectures and configurations of caches deployed across the World Wide Web and inside large organizations. These include national hierarchies of proxy caches to save bandwidth and reduce latency, content delivery networks that use gateway caching to optimize regional and global distribution of popular sites, collaborative systems that broadcast or multicast cache entries, archives of pre-fetched cache entries for use in off-line or high-latency environments, and so on."
+  @.2113 link "3.9. " url="/rfc/rfc9110.html#section-3.9"
+  @.2115 link "Example Message Exchange" url="/rfc/rfc9110.html#name-example-message-exchange"
+  @.2117 text "The following example illustrates a typical HTTP/1.1 message exchange for a GET request ("
+  @.2118 link "Section 9.3.1" url="/rfc/rfc9110.html#GET"
+  @.2120 text ") on the URI "http://www.example.com/hello.txt":"
+  @.2121 text "Client request:"
+  @.2122 text "GET /hello.txt HTTP/1.1
+User-Agent: curl/7.64.1
+Host: www.example.com
+Accept-Language: en, mi
+
+"
+  @.2123 text "Server response:"
+  @.2124 text "HTTP/1.1 200 OK
+Date: Mon, 27 Jul 2009 12:28:53 GMT
+Server: Apache
+Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT
+ETag: "34aa387-d-1568eb00"
+Accept-Ranges: bytes
+Content-Length: 51
+Vary: Accept-Encoding
+Content-Type: text/plain
+
+Hello World! My content includes a trailing CRLF.
+"
+  @.2125 link "4. " url="/rfc/rfc9110.html#section-4"
+  @.2127 link "Identifiers in HTTP" url="/rfc/rfc9110.html#name-identifiers-in-http"
+  @.2129 text "Uniform Resource Identifiers (URIs) ["
+  @.2131 link "URI" url=$u1
+  @.2133 text "] are used throughout HTTP as the means for identifying resources ("
+  @.2135 link "Section 3.1" url="/rfc/rfc9110.html#resources"
+  @.2137 text ")."
+  @.2138 link "4.1. " url="/rfc/rfc9110.html#section-4.1"
+  @.2140 link "URI References" url="/rfc/rfc9110.html#name-uri-references"
+  @.2142 text "URI references are used to target requests, indicate redirects, and define relationships."
+  @.2143 text "The definitions of "URI-reference", "absolute-URI", "relative-part", "authority", "port", "host", "path-abempty", "segment", and "query" are adopted from the URI generic syntax. An "absolute-path" rule is defined for protocol elements that can contain a non-empty path component. (This rule differs slightly from the path-abempty rule of RFC 3986, which allows for an empty path, and path-absolute rule, which does not allow paths that begin with "//".) A "partial-URI" rule is defined for protocol elements that can contain a relative URI but not a fragment component."
+  @.2144 text "  URI-reference = <URI-reference, see [URI], Section 4.1>
+  absolute-URI  = <absolute-URI, see [URI], Section 4.3>
+  relative-part = <relative-part, see [URI], Section 4.2>
+  authority     = <authority, see [URI], Section 3.2>
+  uri-host      = <host, see [URI], Section 3.2.2>
+  port          = <port, see [URI], Section 3.2.3>
+  path-abempty  = <path-abempty, see [URI], Section 3.3>
+  segment       = <segment, see [URI], Section 3.3>
+  query         = <query, see [URI], Section 3.4>
+
+  absolute-path = 1*( "/" segment )
+  partial-URI   = relative-part [ "?" query ]
+"
+  @.2145 text "Each protocol element in HTTP that allows a URI reference will indicate in its ABNF production whether the element allows any form of reference (URI-reference), only a URI in absolute form (absolute-URI), only the path and optional query components (partial-URI), or some combination of the above. Unless otherwise indicated, URI references are parsed relative to the target URI ("
+  @.2146 link "Section 7.1" url="/rfc/rfc9110.html#target.resource"
+  @.2148 text ").It is RECOMMENDED that all senders and recipients support, at a minimum, URIs with lengths of 8000 octets in protocol elements. Note that this implies some structures and on-wire representations (for example, the request line in HTTP/1.1) will necessarily be larger in some cases."
+  @.2152 link "4.2. " url="/rfc/rfc9110.html#section-4.2"
+  @.2154 link "HTTP-Related URI Schemes" url="/rfc/rfc9110.html#na
+... [tee capped at 4096 of 11871 bytes]
+
+===== CALL rc=0 out=11991B args=snapshot --next =====
+snapshot[105628-117607 of 696055]:
+  @.2304 text "Two HTTP URIs that are equivalent after normalization (using any method) can be assumed to identify the same resource, and any HTTP component MAY perform normalization. As a result, distinct resources SHOULD NOT be identified by HTTP URIs that are equivalent after normalization (using any method defined in "
+  @.2309 link "Section 6.2" url="/rfc/rfc3986#section-6.2"
+  @.2311 text " of ["
+  @.2312 link "URI" url=$u1
+  @.2314 text "])."
+  @.2316 link "4.2.4. " url="/rfc/rfc9110.html#section-4.2.4"
+  @.2318 link "Deprecation of userinfo in http(s) URIs" url="/rfc/rfc9110.html#name-deprecation-of-userinfo-in-"
+  @.2320 text "The URI generic syntax for authority also includes a userinfo subcomponent (["
+  @.2322 link "URI" url=$u1
+  @.2324 text "], "
+  @.2325 link "Section 3.2.1" url="/rfc/rfc3986#section-3.2.1"
+  @.2327 text ") for including user authentication information in the URI. In that subcomponent, the use of the format "user:password" is deprecated."
+  @.2328 text "Some implementations make use of the userinfo component for internal configuration of authentication information, such as within command invocation options, configuration files, or bookmark lists, even though such usage might expose a user identifier or password.A sender MUST NOT"
+  @.2331 text " generate the userinfo subcomponent (and its "@" delimiter) when an "http" or "https" URI reference is generated within a message as a target URI or field value."
+  @.2332 text "Before making use of an "http" or "https" URI reference received from an untrusted source, a recipient "
+  @.2333 text "SHOULD parse for userinfo and treat its presence as an error; it is likely being used to obscure the authority for the sake of phishing attacks."
+  @.2335 link "4.2.5. " url="/rfc/rfc9110.html#section-4.2.5"
+  @.2337 link "http(s) References with Fragment Identifiers" url="/rfc/rfc9110.html#name-https-references-with-fragm"
+  @.2339 text "Fragment identifiers allow for indirect identification of a secondary resource, independent of the URI scheme, as defined in "
+  @.2340 link "Section 3.5" url="/rfc/rfc3986#section-3.5"
+  @.2342 text " of ["
+  @.2343 link "URI" url=$u1
+  @.2345 text "]. Some protocol elements that refer to a URI allow inclusion of a fragment, while others do not. They are distinguished by use of the ABNF rule for elements where fragment is allowed; otherwise, a specific rule that excludes fragments is used.Note: The fragment identifier component is not part of the scheme definition for a URI scheme (see "
+  @.2349 link "Section 4.3" url="/rfc/rfc3986#section-4.3"
+  @.2351 text " of ["
+  @.2352 link "URI" url=$u1
+  @.2354 text "]"
+  @.2355 text "), thus does not appear in the ABNF definitions for the "http" and "https" URI schemes above."
+  @.2356 link "4.3. " url="/rfc/rfc9110.html#section-4.3"
+  @.2358 link "Authoritative Access" url="/rfc/rfc9110.html#name-authoritative-access"
+  @.2360 text "Authoritative access refers to dereferencing a given identifier, for the sake of access to the identified resource, in a way that the client believes is authoritative (controlled by the resource owner). The process for determining whether access is granted is defined by the URI scheme and often uses data within the URI components, such as the authority component when the generic syntax is used. However, authoritative access is not limited to the identified mechanism."
+  @.2361 link "Section 4.3.1" url="/rfc/rfc9110.html#origin"
+  @.2363 text " defines the concept of an origin as an aid to such uses, and the subsequent subsections explain how to establish that a peer has the authority to represent an origin.See "
+  @.2365 link "Section 17.1" url="/rfc/rfc9110.html#establishing.authority"
+  @.2367 text " for security considerations related to establishing authority."
+  @.2368 link "4.3.1. " url="/rfc/rfc9110.html#section-4.3.1"
+  @.2370 link "URI Origin" url="/rfc/rfc9110.html#name-uri-origin"
+  @.2372 text "The "origin" for a given URI is the triple of scheme, host, and port after normalizing the scheme and host to 
+... [tee capped at 4096 of 11991 bytes]
+
+===== CALL rc=0 out=11905B args=snapshot --next =====
+snapshot[117608-129565 of 696055]:
+  @.2453 link "Section 15" url="/rfc/rfc9110.html#status.codes"
+  @.2455 text ", then that response is considered an authoritative answer to the client's request.Note, however, that the above is not the only means for obtaining an authoritative response, nor does it imply that an authoritative response is always necessary (see ["
+  @.2458 link "CACHING" url="/rfc/rfc9110.html#CACHING"
+  @.2460 text "])."
+  @.2462 link "4.3.4. " url="/rfc/rfc9110.html#section-4.3.4"
+  @.2464 link "https Certificate Verification" url="/rfc/rfc9110.html#name-https-certificate-verificat"
+  @.2466 text "To establish a "
+  @.2467 link "secured" url="/rfc/rfc9110.html#https.uri"
+  @.2469 text " connection to dereference a URI, a client MUST verify that the service's identity is an acceptable match for the URI's origin server. Certificate verification is used to prevent server impersonation by an on-path attacker or by an attacker that controls name resolution. This process requires that a client be configured with a set of trust anchors.In general, a client MUST verify the service identity using the verification process defined in "
+  @.2475 link "Section 6" url="/rfc/rfc6125#section-6"
+  @.2477 text " of ["
+  @.2478 link "RFC6125" url=$u1
+  @.2480 text "]. The client MUST construct a reference identity from the service's host: if the host is a literal IP address ("
+  @.2484 link "Section 4.3.5" url="/rfc/rfc9110.html#https.ip-id"
+  @.2486 text "), the reference identity is an IP-ID, otherwise the host is a name and the reference identity is a DNS-ID.A reference identity of type CN-ID MUST NOT be used by clients. As noted in "
+  @.2490 link "Section 6.2.1" url="/rfc/rfc6125#section-6.2.1"
+  @.2492 text " of ["
+  @.2493 link "RFC6125" url=$u1
+  @.2495 text "], a reference identity of type CN-ID might be used by older clients.A client might be specially configured to accept an alternative form of server identity verification. For example, a client might be connecting to a server whose address and hostname are dynamic, with an expectation that the service will present a specific certificate (or a certificate matching some externally defined reference identity) rather than one matching the target URI's origin.In special cases, it might be appropriate for a client to simply ignore the server's identity, but it must be understood that this leaves a connection open to active attack.If the certificate is not valid for the target URI's origin, a user agent MUST either obtain confirmation from the user before proceeding (see "
+  @.2502 link "Section 3.5" url="/rfc/rfc9110.html#user.agent"
+  @.2504 text ") or terminate the connection with a bad certificate error. Automated clients MUST log the error to an appropriate audit log (if available) and SHOULD terminate the connection (with a bad certificate error). Automated clients MAY provide a configuration setting that disables this check, but MUST provide a setting which enables it."
+  @.2513 link "4.3.5. " url="/rfc/rfc9110.html#section-4.3.5"
+  @.2515 link "IP-ID Reference Identity" url="/rfc/rfc9110.html#name-ip-id-reference-identity"
+  @.2517 text "A server that is identified using an IP address literal in the "host" field of an "https" URI has a reference identity of type IP-ID. An IP version 4 address uses the "IPv4address" ABNF rule, and an IP version 6 address uses the "IP-literal" production with the "IPv6address" option; see "
+  @.2518 link "Section 3.2.2" url="/rfc/rfc3986#section-3.2.2"
+  @.2520 text " of ["
+  @.2521 link "URI" url="/rfc/rfc9110.html#URI"
+  @.2523 text "]. A reference identity of IP-ID contains the decoded bytes of the IP address.An IP version 4 address is 4 octets, and an IP version 6 address is 16 octets. Use of IP-ID is not defined for any other IP version. The iPAddress choice in the certificate subjectAltName extension does not explicitly include the IP version and so relies on the length of the address to distinguish versions; see "
+  @.2526 link "Section 4.2.1.6" url="/rfc/rfc5280#section-4.2.1.6"
+  @.2528 text " of ["
+  @.2529 link "RFC
+... [tee capped at 4096 of 11905 bytes]
+
+===== CALL rc=0 out=12005B args=snapshot --next =====
+snapshot[129566-141527 of 696055]:
+  @.2655 text "]).A client MAY discard or truncate received field lines that are larger than the client wishes to process if the field semantics are such that the dropped value(s) can be safely ignored without changing the message framing or response semantics."
+  @.2660 link "5.5. " url="/rfc/rfc9110.html#section-5.5"
+  @.2662 link "Field Values" url="/rfc/rfc9110.html#name-field-values"
+  @.2664 text "HTTP field values consist of a sequence of characters in a format defined by the field's grammar. Each field's grammar is usually defined using ABNF (["
+  @.2666 link "RFC5234" url=$u1
+  @.2668 text "])."
+  @.2670 text "  field-value    = *field-content
+  field-content  = field-vchar
+                   [ 1*( SP / HTAB / field-vchar ) field-vchar ]
+  field-vchar    = VCHAR / obs-text
+  obs-text       = %x80-FF
+"
+  @.2671 text "A field value does not include leading or trailing whitespace. When a specific version of HTTP allows such whitespace to appear in a message, a field parsing implementation MUST exclude such whitespace prior to evaluating the field value.Field values are usually constrained to the range of US-ASCII characters ["
+  @.2676 link "USASCII" url="/rfc/rfc9110.html#USASCII"
+  @.2678 text "]. Fields needing a greater range of characters can use an encoding, such as the one defined in ["
+  @.2681 link "RFC8187" url="/rfc/rfc9110.html#RFC8187"
+  @.2683 text "]. Historically, HTTP allowed field content with text in the ISO-8859-1 charset ["
+  @.2686 link "ISO-8859-1" url="/rfc/rfc9110.html#ISO-8859-1"
+  @.2688 text "], supporting other charsets only through use of ["
+  @.2691 link "RFC2047" url="/rfc/rfc9110.html#RFC2047"
+  @.2693 text "] encoding. Specifications for newly defined fields SHOULD limit their values to visible US-ASCII octets (VCHAR), SP, and HTAB. A recipient SHOULD treat other allowed octets in field content (i.e., "
+  @.2699 link "obs-text" url="/rfc/rfc9110.html#fields.values"
+  @.2701 text ") as opaque data.Field values containing CR, LF, or NUL characters are invalid and dangerous, due to the varying ways that implementations might parse and interpret those characters; a recipient of CR, LF, or NUL within a field value MUST either reject the message or replace each of those characters with SP before further processing or forwarding of that message. Field values containing other CTL characters are also invalid; however, recipients MAY retain such characters for the sake of robustness when they appear within a safe context (e.g., an application-specific quoted string that will not be processed by any downstream HTTP parser)."
+  @.2707 text "Fields that only anticipate a single member as the field value are referred to as "singleton fields"."
+  @.2708 text "Fields that allow multiple members as the field value are referred to as "list-based fields". The list operator extension of "
+  @.2709 link "Section 5.6.1" url="/rfc/rfc9110.html#abnf.extension"
+  @.2711 text " is used as a common notation for defining field values that can contain multiple members."
+  @.2712 text "Because commas (",") are used as the delimiter between members, they need to be treated with care if they are allowed as data within a member. This is true for both list-based and singleton fields, since a singleton field might be erroneously sent with multiple members and detecting such errors improves interoperability. Fields that expect to contain a comma within a member, such as within an "
+  @.2713 link "HTTP-date" url="/rfc/rfc9110.html#http.date"
+  @.2715 text " or "
+  @.2716 link "URI-reference" url="/rfc/rfc9110.html#uri.references"
+  @.2718 text " element, ought to be defined with delimiters around that element to distinguish any comma within that data from potential list separators.For example, a textual date and a URI (either of which might contain a comma) could be safely carried in list-based field values like these:"
+  @.2720 text "Example-URIs: "http://example.com/a.html,foo",
+              "http://without-a-comma.example.com/"
+Example-Dates: "Sat, 04 May 1996", "Wed, 14 Sep 2005
+... [tee capped at 4096 of 12005 bytes]
+
+===== CALL rc=0 out=11919B args=snapshot --next =====
+snapshot[141528-153501 of 696055]:
+  @.2840 link "5.6.5. " url="/rfc/rfc9110.html#section-5.6.5"
+  @.2842 link "Comments" url="/rfc/rfc9110.html#name-comments"
+  @.2844 text "Comments can be included in some HTTP fields by surrounding the comment text with parentheses. Comments are only allowed in fields containing "comment" as part of their field value definition."
+  @.2845 text "  comment        = "(" *( ctext / quoted-pair / comment ) ")"
+  ctext          = HTAB / SP / %x21-27 / %x2A-5B / %x5D-7E / obs-text
+"
+  @.2846 link "5.6.6. " url="/rfc/rfc9110.html#section-5.6.6"
+  @.2848 link "Parameters" url="/rfc/rfc9110.html#name-parameters"
+  @.2850 text "Parameters are instances of name/value pairs; they are often used in field values as a common syntax for appending auxiliary information to an item. Each parameter is usually delimited by an immediately preceding semicolon."
+  @.2851 text "  parameters      = *( OWS ";" OWS [ parameter ] )
+  parameter       = parameter-name "=" parameter-value
+  parameter-name  = token
+  parameter-value = ( token / quoted-string )
+"
+  @.2852 text "Parameter names are case-insensitive. Parameter values might or might not be case-sensitive, depending on the semantics of the parameter name. Examples of parameters and some equivalent forms can be seen in media types ("
+  @.2853 link "Section 8.3.1" url="/rfc/rfc9110.html#media.type"
+  @.2855 text ") and the Accept header field ("
+  @.2856 link "Section 12.5.1" url="/rfc/rfc9110.html#field.accept"
+  @.2858 text ").A parameter value that matches the "
+  @.2860 link "token" url="/rfc/rfc9110.html#rule.token.separators"
+  @.2862 text " production can be transmitted either as a token or within a quoted-string. The quoted and unquoted values are equivalent.Note:"
+  @.2864 text " Parameters do not allow whitespace (not even "bad" whitespace) around the "=" character."
+  @.2865 link "5.6.7. " url="/rfc/rfc9110.html#section-5.6.7"
+  @.2867 link "Date/Time Formats" url="/rfc/rfc9110.html#name-date-time-formats"
+  @.2869 text "Prior to 1995, there were three different formats commonly used by servers to communicate timestamps. For compatibility with old implementations, all three are defined here. The preferred format is a fixed-length and single-zone subset of the date and time specification used by the Internet Message Format ["
+  @.2871 link "RFC5322" url=$u1
+  @.2873 text "]."
+  @.2875 text "  HTTP-date    = IMF-fixdate / obs-date
+"
+  @.2876 text "An example of the preferred format is"
+  @.2877 text "  Sun, 06 Nov 1994 08:49:37 GMT    ; IMF-fixdate
+"
+  @.2878 text "Examples of the two obsolete formats are"
+  @.2879 text "  Sunday, 06-Nov-94 08:49:37 GMT   ; obsolete RFC 850 format
+  Sun Nov  6 08:49:37 1994         ; ANSI C's asctime() format
+"
+  @.2880 text "A recipient that parses a timestamp value in an HTTP field MUST accept all three HTTP-date formats. When a sender generates a field that contains one or more timestamps defined as HTTP-date, the sender MUST generate those timestamps in the IMF-fixdate format."
+  @.2885 text "An HTTP-date value represents time as an instance of Coordinated Universal Time (UTC). The first two formats indicate UTC by the three-letter abbreviation for Greenwich Mean Time, "GMT", a predecessor of the UTC name; values in the asctime format are assumed to be in UTC."
+  @.2886 text "A "clock" is an implementation capable of providing a reasonable approximation of the current instant in UTC. A clock implementation ought to use NTP ("
+  @.2887 text "["
+  @.2888 link "RFC5905" url="/rfc/rfc9110.html#RFC5905"
+  @.2890 text "]), or some similar protocol, to synchronize with UTC.Preferred format:"
+  @.2893 text "  IMF-fixdate  = day-name "," SP date1 SP time-of-day SP GMT
+  ; fixed length/zone/capitalization subset of the format
+  ; see Section 3.3 of [RFC5322]
+
+  day-name     = %s"Mon" / %s"Tue" / %s"Wed"
+               / %s"Thu" / %s"Fri" / %s"Sat" / %s"Sun"
+
+  date1        = day SP month SP year
+               ; e.g., 02 Jun 1982
+
+  day          = 2DIGIT
+  month        = %s"Jan" / %s"Feb" / %s"Mar" / %s"Apr"
+             
+... [tee capped at 4096 of 11919 bytes]
+
+===== CALL rc=0 out=11742B args=snapshot --next =====
+snapshot[153502-165476 of 696055]:
+  @.2995 link "HTTP/3" url="/rfc/rfc9110.html#HTTP3"
+  @.2997 text "]"
+  @.2998 text "), control data is sent as pseudo-header fields with a reserved name prefix (e.g., ":authority")."
+  @.2999 text "Every HTTP message has a protocol version. Depending on the version in use, it might be identified within the message explicitly or inferred by the connection over which the message is received. Recipients use that version information to determine limitations or potential for later communication with that sender.When a message is forwarded by an intermediary, the protocol version is updated to reflect the version used by that intermediary. The "
+  @.3001 link "Via" url=$u1
+  @.3003 text " header field ("
+  @.3004 link "Section 7.6.3" url=$u1
+  @.3006 text ") is used to communicate upstream protocol information within a forwarded message.A client SHOULD send a request version equal to the highest version to which the client is conformant and whose major version is no higher than the highest version supported by the server, if this is known. A client MUST NOT send a version to which it is not conformant.A client MAY send a lower request version if it is known that the server incorrectly implements the HTTP specification, but only after the client has attempted at least one normal request and determined from the response status code or header fields (e.g., "
+  @.3015 link "Server" url="/rfc/rfc9110.html#field.server"
+  @.3017 text ") that the server improperly handles higher request versions.A server SHOULD send a response version equal to the highest version to which the server is conformant that has a major version less than or equal to the one received in the request. A server MUST NOT send a version to which it is not conformant. A server can send a "
+  @.3023 link "505 (HTTP Version Not Supported)" url="/rfc/rfc9110.html#status.505"
+  @.3025 text " response if it wishes, for any reason, to refuse service of the client's major protocol version.A recipient that receives a message with a major version number that it implements and a minor version number higher than what it implements SHOULD process the message as if it were in the highest minor version within that major version to which the recipient is conformant. A recipient can assume that a message with a higher minor version, when sent to a recipient that has not yet indicated support for that higher version, is sufficiently backwards-compatible to be safely processed by any implementation of the same major version."
+  @.3029 link "6.3. " url="/rfc/rfc9110.html#section-6.3"
+  @.3031 link "Header Fields" url="/rfc/rfc9110.html#name-header-fields"
+  @.3033 text "Fields ("
+  @.3034 link "Section 5" url=$u2
+  @.3036 text ") that are sent or received before the content are referred to as "header fields" (or just "headers", colloquially)."
+  @.3037 text "The "header section" of a message consists of a sequence of header field lines. Each header field might modify or extend message semantics, describe the sender, define the content, or provide additional context."
+  @.3038 text "Note:"
+  @.3039 text " We refer to named fields specifically as a "header field" when they are only allowed to be sent in the header section."
+  @.3040 link "6.4. " url="/rfc/rfc9110.html#section-6.4"
+  @.3042 link "Content" url="/rfc/rfc9110.html#name-content"
+  @.3044 text "HTTP messages often transfer a complete or partial representation as the message "content": a stream of octets sent after the header section, as delineated by the message framing."
+  @.3045 text "This abstract definition of content reflects the data after it has been extracted from the message framing. For example, an HTTP/1.1 message body ("
+  @.3046 link "Section 6" url="/rfc/rfc9112#section-6"
+  @.3048 text " of ["
+  @.3049 link "HTTP/1.1" url="/rfc/rfc9110.html#HTTP11"
+  @.3051 text "]) might consist of a stream of data encoded with the chunked transfer coding -- a sequence of data chunks, one zero-length chunk, and a trailer section -- whereas the content of that same message includes only th
+... [tee capped at 4096 of 11742 bytes]
+
+===== CALL rc=0 out=11984B args=snapshot --next =====
+snapshot[165477-177459 of 696055]:
+  @.3184 text "Trailer fields ought to be processed and stored separately from the fields in the header section to avoid contradicting message semantics known at the time the header section was complete. The presence or absence of certain header fields might impact choices made for the routing or processing of the message as a whole before the trailers are received; those choices cannot be unmade by the later discovery of trailer fields."
+  @.3185 link "6.5.1. " url="/rfc/rfc9110.html#section-6.5.1"
+  @.3187 link "Limitations on Use of Trailers" url="/rfc/rfc9110.html#name-limitations-on-use-of-trail"
+  @.3189 text "A trailer section is only possible when supported by the version of HTTP in use and enabled by an explicit framing mechanism. For example, the chunked transfer coding in HTTP/1.1 allows a trailer section to be sent after the content ("
+  @.3190 link "Section 7.1.2" url="/rfc/rfc9112#section-7.1.2"
+  @.3192 text " of ["
+  @.3193 link "HTTP/1.1" url=$u1
+  @.3195 text "]).Many fields cannot be processed outside the header section because their evaluation is necessary prior to receiving the content, such as those that describe message framing, routing, authentication, request modifiers, response controls, or content format. A sender MUST NOT generate a trailer field unless the sender knows the corresponding header field name's definition permits the field to be sent in trailers.Trailer fields can be difficult to process by intermediaries that forward messages from one protocol version to another. If the entire message can be buffered in transit, some intermediaries could merge trailer fields into the header section (as appropriate) before it is forwarded. However, in most cases, the trailers are simply discarded. A recipient MUST NOT merge a trailer field into a header section unless the recipient understands the corresponding header field definition and that definition explicitly permits and defines how trailer field values can be safely merged."
+  @.3203 text "The presence of the keyword "trailers" in the TE header field ("
+  @.3204 link "Section 10.1.4" url="/rfc/rfc9110.html#field.te"
+  @.3206 text ") of a request indicates that the client is willing to accept trailer fields, on behalf of itself and any downstream clients. For requests from an intermediary, this implies that all downstream clients are willing to accept trailer fields in the forwarded response. Note that the presence of "trailers" does not mean that the client(s) will process any particular trailer field in the response; only that the trailer section(s) will not be dropped by any of the clients."
+  @.3207 text "Because of the potential for trailer fields to be discarded in transit, a server SHOULD NOT generate trailer fields that it believes are necessary for the user agent to receive."
+  @.3210 link "6.5.2. " url="/rfc/rfc9110.html#section-6.5.2"
+  @.3212 link "Processing Trailer Fields" url="/rfc/rfc9110.html#name-processing-trailer-fields"
+  @.3214 text "The "Trailer" header field ("
+  @.3215 link "Section 6.6.2" url=$u2
+  @.3217 text ") can be sent to indicate fields likely to be sent in the trailer section, which allows recipients to prepare for their receipt before processing the content. For example, this could be useful if a field name indicates that a dynamic checksum should be calculated as the content is received and then immediately checked upon receipt of the trailer field value.Like header fields, trailer fields with the same name are processed in the order received; multiple trailer field lines with the same name have the equivalent semantics as appending the multiple values as a list of members. Trailer fields that might be generated more than once during a message MUST be defined as a list-based field even if each member value is only processed once per field line received.At the end of a message, a recipient MAY treat the set of received trailer fields as a data structure of name/value pairs, similar to (but separate from) the header fields. Additional processing expectations, if any, can be
+... [tee capped at 4096 of 11984 bytes]
+
+===== CALL rc=0 out=11844B args=snapshot --next =====
+snapshot[177460-189280 of 696055]:
+  @.3367 text ", the Host header field is, in some cases, supplanted by the ":authority" pseudo-header field of a request's control data."
+  @.3368 text "  Host = uri-host [ ":" port ] ; Section 4
+"
+  @.3369 text "The target URI's authority information is critical for handling a request. A user agent MUST"
+  @.3371 text " generate a Host header field in a request unless it sends that information as an ":authority" pseudo-header field. A user agent that sends Host "
+  @.3372 text "SHOULD send it as the first field in the header section of a request.For example, a GET request to the origin server for <http://www.example.org/pub/WWW/> would begin with:"
+  @.3375 text "GET /pub/WWW/ HTTP/1.1
+Host: www.example.org
+"
+  @.3376 text "Since the host and port information acts as an application-level routing mechanism, it is a frequent target for malware seeking to poison a shared cache or redirect a request to an unintended server. An interception proxy is particularly vulnerable if it relies on the host and port information for redirecting requests to internal servers, or for use as a cache key in a shared cache, without first verifying that the intercepted connection is targeting a valid IP address for that host."
+  @.3377 link "7.3. " url="/rfc/rfc9110.html#section-7.3"
+  @.3379 link "Routing Inbound Requests" url="/rfc/rfc9110.html#name-routing-inbound-requests"
+  @.3381 text "Once the target URI and its origin are determined, a client decides whether a network request is necessary to accomplish the desired semantics and, if so, where that request is to be directed."
+  @.3382 link "7.3.1. " url="/rfc/rfc9110.html#section-7.3.1"
+  @.3384 link "To a Cache" url="/rfc/rfc9110.html#name-to-a-cache"
+  @.3386 text "If the client has a cache ["
+  @.3388 link "CACHING" url="/rfc/rfc9110.html#CACHING"
+  @.3390 text "] and the request can be satisfied by it, then the request is usually directed there first."
+  @.3392 link "7.3.2. " url="/rfc/rfc9110.html#section-7.3.2"
+  @.3394 link "To a Proxy" url="/rfc/rfc9110.html#name-to-a-proxy"
+  @.3396 text "If the request is not satisfied by a cache, then a typical client will check its configuration to determine whether a proxy is to be used to satisfy the request. Proxy configuration is implementation-dependent, but is often based on URI prefix matching, selective authority matching, or both, and the proxy itself is usually identified by an "http" or "https" URI."
+  @.3397 text "If an "http" or "https" proxy is applicable, the client connects inbound by establishing (or reusing) a connection to that proxy and then sending it an HTTP request message containing a request target that matches the client's target URI."
+  @.3398 link "7.3.3. " url="/rfc/rfc9110.html#section-7.3.3"
+  @.3400 link "To the Origin" url="/rfc/rfc9110.html#name-to-the-origin"
+  @.3402 text "If no proxy is applicable, a typical client will invoke a handler routine (specific to the target URI's scheme) to obtain access to the identified resource. How that is accomplished is dependent on the target URI scheme and defined by its associated specification."
+  @.3403 link "Section 4.3.2" url="/rfc/rfc9110.html#http.origin"
+  @.3405 text " defines how to obtain access to an "http" resource by establishing (or reusing) an inbound connection to the identified origin server and then sending it an HTTP request message containing a request target that matches the client's target URI."
+  @.3406 link "Section 4.3.3" url="/rfc/rfc9110.html#https.origin"
+  @.3408 text " defines how to obtain access to an "https" resource by establishing (or reusing) an inbound secured connection to an origin server that is authoritative for the identified origin and then sending it an HTTP request message containing a request target that matches the client's target URI."
+  @.3409 link "7.4. " url="/rfc/rfc9110.html#section-7.4"
+  @.3411 link "Rejecting Misdirected Requests" url="/rfc/rfc9110.html#name-rejecting-misdirected-reque"
+  @.3413 text "Once a request is received by a server and parsed sufficiently to determine it
+... [tee capped at 4096 of 11844 bytes]
+
+===== CALL rc=0 out=12016B args=snapshot --next =====
+snapshot[189281-201264 of 696055]:
+  @.3535 text ")A sender MUST NOT send a connection option corresponding to a field that is intended for all recipients of the content. For example, Cache-Control is never appropriate as a connection option ("
+  @.3539 link "Section 5.2" url="/rfc/rfc9111#section-5.2"
+  @.3541 text " of ["
+  @.3542 link "CACHING" url=$u1
+  @.3544 text "]).Connection options do not always correspond to a field present in the message, since a connection-specific field might not be needed if there are no parameters associated with a connection option. In contrast, a connection-specific field received without a corresponding connection option usually indicates that the field has been improperly forwarded by an intermediary and ought to be ignored by the recipient."
+  @.3547 text "When defining a new connection option that does not correspond to a field, specification authors ought to reserve the corresponding field name anyway in order to avoid later collisions. Such reserved field names are registered in the "Hypertext Transfer Protocol (HTTP) Field Name Registry" ("
+  @.3548 link "Section 16.3.1" url="/rfc/rfc9110.html#fields.registry"
+  @.3550 text ")."
+  @.3551 link "7.6.2. " url="/rfc/rfc9110.html#section-7.6.2"
+  @.3553 link "Max-Forwards" url="/rfc/rfc9110.html#name-max-forwards"
+  @.3555 text "The "Max-Forwards" header field provides a mechanism with the TRACE ("
+  @.3556 link "Section 9.3.8" url="/rfc/rfc9110.html#TRACE"
+  @.3558 text ") and OPTIONS ("
+  @.3559 link "Section 9.3.7" url="/rfc/rfc9110.html#OPTIONS"
+  @.3561 text ") request methods to limit the number of times that the request is forwarded by proxies. This can be useful when the client is attempting to trace a request that appears to be failing or looping mid-chain."
+  @.3562 text "  Max-Forwards = 1*DIGIT
+"
+  @.3563 text "The Max-Forwards value is a decimal integer indicating the remaining number of times this request message can be forwarded.Each intermediary that receives a TRACE or OPTIONS request containing a Max-Forwards header field MUST check and update its value prior to forwarding the request. If the received value is zero (0), the intermediary MUST NOT forward the request; instead, the intermediary MUST respond as the final recipient. If the received Max-Forwards value is greater than zero, the intermediary MUST generate an updated Max-Forwards field in the forwarded message with a field value that is the lesser of a) the received value decremented by one (1) or b) the recipient's maximum supported value for Max-Forwards.A recipient MAY ignore a Max-Forwards header field received with any other request methods."
+  @.3576 link "7.6.3. " url="/rfc/rfc9110.html#section-7.6.3"
+  @.3578 link "Via" url="/rfc/rfc9110.html#name-via"
+  @.3580 text "The "Via" header field indicates the presence of intermediate protocols and recipients between the user agent and the server (on requests) or between the origin server and the client (on responses), similar to the "Received" header field in email ("
+  @.3581 link "Section 3.6.7" url="/rfc/rfc5322#section-3.6.7"
+  @.3583 text " of ["
+  @.3584 link "RFC5322" url="/rfc/rfc9110.html#RFC5322"
+  @.3586 text "]). Via can be used for tracking message forwards, avoiding request loops, and identifying the protocol capabilities of senders along the request/response chain."
+  @.3588 text "  Via = #( received-protocol RWS received-by [ RWS comment ] )
+
+  received-protocol = [ protocol-name "/" ] protocol-version
+                    ; see Section 7.8
+  received-by       = pseudonym [ ":" port ]
+  pseudonym         = token
+"
+  @.3589 text "Each member of the Via field value represents a proxy or gateway that has forwarded the message. Each intermediary appends its own information about how the message was received, such that the end result is ordered according to the sequence of forwarding recipients.A proxy MUST send an appropriate Via header field, as described below, in each message that it forwards. An HTTP-to-HTTP gateway MUST send an appropriate Via header field in each inbound request message and
+... [tee capped at 4096 of 12016 bytes]
+
+===== CALL rc=0 out=11791B args=snapshot --next =====
+snapshot[201265-213250 of 696055]:
+  @.3718 text " response MUST send an Upgrade header field to indicate the new protocol(s) to which the connection is being switched; if multiple protocol layers are being switched, the sender MUST list the protocols in layer-ascending order. A server MUST NOT switch to a protocol that was not indicated by the client in the corresponding request's Upgrade header field. A server MAY choose to ignore the order of preference indicated by the client and select the new protocol(s) based on other factors, such as the nature of the request or the current load on the server.A server that sends a "
+  @.3728 link "426 (Upgrade Required)" url="/rfc/rfc9110.html#status.426"
+  @.3730 text " response MUST send an Upgrade header field to indicate the acceptable protocols, in order of descending preference.A server MAY send an Upgrade header field in any other response to advertise that it implements support for upgrading to the listed protocols, in order of descending preference, when appropriate for a future request.The following is a hypothetical example sent by a client:"
+  @.3737 text "GET /hello HTTP/1.1
+Host: www.example.com
+Connection: upgrade
+Upgrade: websocket, IRC/6.9, RTA/x11
+
+"
+  @.3738 text "The capabilities and nature of the application-level communication after the protocol change is entirely dependent upon the new protocol(s) chosen. However, immediately after sending the "
+  @.3739 link "101 (Switching Protocols)" url=$u1
+  @.3741 text " response, the server is expected to continue responding to the original request as if it had received its equivalent within the new protocol (i.e., the server still has an outstanding request to satisfy after the protocol has been changed, and is expected to do so without requiring the request to be repeated).For example, if the Upgrade header field is received in a GET request and the server decides to switch protocols, it first responds with a "
+  @.3743 link "101 (Switching Protocols)" url=$u1
+  @.3745 text " message in HTTP/1.1 and then immediately follows that with the new protocol's equivalent of a response to a GET on the target resource. This allows a connection to be upgraded to protocols with the same semantics as HTTP without the latency cost of an additional round trip. A server MUST NOT switch protocols unless the received message semantics can be honored by the new protocol; an OPTIONS request can be honored by any protocol.The following is an example response to the above hypothetical request:"
+  @.3749 text "HTTP/1.1 101 Switching Protocols
+Connection: upgrade
+Upgrade: websocket
+
+[... data stream switches to websocket with an appropriate response
+(as defined by new protocol) to the "GET /hello" request ...]
+"
+  @.3750 text "A sender of Upgrade MUST"
+  @.3752 text " also send an "Upgrade" connection option in the "
+  @.3753 link "Connection" url=$u2
+  @.3755 text " header field ("
+  @.3756 link "Section 7.6.1" url=$u2
+  @.3758 text ") to inform intermediaries not to forward this field. A server that receives an Upgrade header field in an HTTP/1.0 request MUST ignore that Upgrade field.A client cannot begin using an upgraded protocol on the connection until it has completely sent the request message (i.e., the client can't change the protocol it is sending in the middle of a message). If a server receives both an Upgrade and an "
+  @.3762 link "Expect" url=$u3
+  @.3764 text " header field with the "100-continue" expectation ("
+  @.3765 link "Section 10.1.1" url=$u3
+  @.3767 text "), the server MUST send a "
+  @.3770 link "100 (Continue)" url="/rfc/rfc9110.html#status.100"
+  @.3772 text " response before sending a "
+  @.3773 link "101 (Switching Protocols)" url=$u1
+  @.3775 text " response.The Upgrade header field only applies to switching protocols on top of the existing connection; it cannot be used to switch the underlying connection (transport) protocol, nor to switch the existing communication to a different connection. For those purposes, it is more appropriate to use a "
+  @.3777 link "3xx (Redirection)" url=$u4
+  @.3779 text " res
+... [tee capped at 4096 of 11791 bytes]
+
+===== CALL rc=0 out=11522B args=snapshot --next =====
+snapshot[213251-224965 of 696055]:
+  @.3908 link "Accept-Encoding" url=$u1
+  @.3910 text ", in the form of a plain "
+  @.3911 link "token" url="/rfc/rfc9110.html#rule.token.separators"
+  @.3913 text ". In both cases, charset names are matched case-insensitively."
+  @.3914 text "Charset names ought to be registered in the IANA "Character Sets" registry ("
+  @.3915 text "<"
+  @.3916 link "https://www.iana.org/assignments/character-sets" url="https://www.iana.org/assignments/character-sets"
+  @.3918 text ">) according to the procedures defined in "
+  @.3920 link "Section 2" url="/rfc/rfc2978#section-2"
+  @.3922 text " of ["
+  @.3923 link "RFC2978" url=$u2
+  @.3925 text "].Note:"
+  @.3928 text " In theory, charset names are defined by the "mime-charset" ABNF rule defined in "
+  @.3929 link "Section 2.3" url="/rfc/rfc2978#section-2.3"
+  @.3931 text " of ["
+  @.3932 link "RFC2978" url=$u2
+  @.3934 text "] (as corrected in ["
+  @.3937 link "Err1912" url="/rfc/rfc9110.html#Err1912"
+  @.3939 text "]"
+  @.3940 text "). That rule allows two characters that are not included in "token" ("{" and "}"), but no charset name registered at the time of this writing includes braces (see "
+  @.3941 text "["
+  @.3942 link "Err5433" url="/rfc/rfc9110.html#Err5433"
+  @.3944 text "])."
+  @.3946 link "8.3.3. " url="/rfc/rfc9110.html#section-8.3.3"
+  @.3948 link "Multipart Types" url="/rfc/rfc9110.html#name-multipart-types"
+  @.3950 text "MIME provides for a number of "multipart" types -- encapsulations of one or more representations within a single message body. All multipart types share a common syntax, as defined in "
+  @.3951 link "Section 5.1.1" url="/rfc/rfc2046#section-5.1.1"
+  @.3953 text " of ["
+  @.3954 link "RFC2046" url="/rfc/rfc9110.html#RFC2046"
+  @.3956 text "], and include a boundary parameter as part of the media type value. The message body is itself a protocol element; a sender MUST generate only CRLF to represent line breaks between body parts."
+  @.3960 text "HTTP message framing does not use the multipart boundary as an indicator of message body length, though it might be used by implementations that generate or process the content. For example, the "multipart/form-data" type is often used for carrying form data in a request, as described in "
+  @.3961 text "["
+  @.3962 link "RFC7578" url="/rfc/rfc9110.html#RFC7578"
+  @.3964 text "]"
+  @.3965 text ", and the "multipart/byteranges" type is defined by this specification for use in some "
+  @.3966 link "206 (Partial Content)" url=$u3
+  @.3968 text " responses (see "
+  @.3969 link "Section 15.3.7" url=$u3
+  @.3971 text ")."
+  @.3972 link "8.4. " url="/rfc/rfc9110.html#section-8.4"
+  @.3974 link "Content-Encoding" url="/rfc/rfc9110.html#name-content-encoding"
+  @.3976 text "The "Content-Encoding" header field indicates what content codings have been applied to the representation, beyond those inherent in the media type, and thus what decoding mechanisms have to be applied in order to obtain data in the media type referenced by the "
+  @.3977 link "Content-Type" url=$u4
+  @.3979 text " header field. Content-Encoding is primarily used to allow a representation's data to be compressed without losing the identity of its underlying media type."
+  @.3980 text "  Content-Encoding = #content-coding
+"
+  @.3981 text "An example of its use is"
+  @.3982 text "Content-Encoding: gzip
+"
+  @.3983 text "If one or more encodings have been applied to a representation, the sender that applied the encodings MUST"
+  @.3985 text " generate a Content-Encoding header field that lists the content codings in the order in which they were applied. Note that the coding named "identity" is reserved for its special role in "
+  @.3986 link "Accept-Encoding" url=$u1
+  @.3988 text " and thus SHOULD NOT be included.Additional information about the encoding parameters can be provided by other header fields not defined by this specification.Unlike Transfer-Encoding ("
+  @.3993 link "Section 6.1" url="/rfc/rfc9112#section-6.1"
+  @.3995 text " of ["
+  @.3996 link "HTTP/1.1" url="/rfc/rfc9110.html#HTTP11"
+  @.3998 text "]
+... [tee capped at 4096 of 11522 bytes]
+
+===== CALL rc=0 out=11861B args=snapshot --next =====
+snapshot[224966-236900 of 696055]:
+  @.4120 text "A language tag is a sequence of one or more case-insensitive subtags, each separated by a hyphen character ("-", %x2D). In most cases, a language tag consists of a primary language subtag that identifies a broad family of related languages (e.g., "en" = English), which is optionally followed by a series of subtags that refine or narrow that language's range (e.g., "en-CA" = the variety of English as communicated in Canada). Whitespace is not allowed within a language tag. Example tags include:"
+  @.4121 text "  fr, en-US, es-419, az-Arab, x-pig-latin, man-Nkoo-GN
+"
+  @.4122 text "See ["
+  @.4124 link "RFC5646" url="/rfc/rfc9110.html#RFC5646"
+  @.4126 text "] for further information."
+  @.4128 link "8.6. " url="/rfc/rfc9110.html#section-8.6"
+  @.4130 link "Content-Length" url="/rfc/rfc9110.html#name-content-length"
+  @.4132 text "The "Content-Length" header field indicates the associated representation's data length as a decimal non-negative integer number of octets. When transferring a representation as content, Content-Length refers specifically to the amount of data enclosed so that it can be used to delimit framing (e.g., "
+  @.4133 link "Section 6.2" url="/rfc/rfc9112#section-6.2"
+  @.4135 text " of ["
+  @.4136 link "HTTP/1.1" url="/rfc/rfc9110.html#HTTP11"
+  @.4138 text "]). In other cases, Content-Length indicates the selected representation's current length, which can be used by recipients to estimate transfer time or to compare with previously stored representations."
+  @.4140 text "  Content-Length = 1*DIGIT
+"
+  @.4141 text "An example is"
+  @.4142 text "Content-Length: 3495
+"
+  @.4143 text "A user agent SHOULD send Content-Length in a request when the method defines a meaning for enclosed content and it is not sending Transfer-Encoding. For example, a user agent normally sends Content-Length in a POST request even when the value is 0 (indicating empty content). A user agent SHOULD NOT send a Content-Length header field when the request message does not contain content and the method semantics do not anticipate such data.A server MAY send a Content-Length header field in a response to a HEAD request ("
+  @.4151 link "Section 9.3.2" url=$u1
+  @.4153 text "); a server MUST NOT send Content-Length in such a response unless its field value equals the decimal number of octets that would have been sent in the content of a response if the same request had used the GET method.A server MAY send a Content-Length header field in a "
+  @.4159 link "304 (Not Modified)" url=$u2
+  @.4161 text " response to a conditional GET request ("
+  @.4162 link "Section 15.4.5" url=$u2
+  @.4164 text "); a server MUST NOT send Content-Length in such a response unless its field value equals the decimal number of octets that would have been sent in the content of a "
+  @.4167 link "200 (OK)" url=$u3
+  @.4169 text " response to the same request.A server MUST NOT send a Content-Length header field in any response with a status code of "
+  @.4173 link "1xx (Informational)" url="/rfc/rfc9110.html#status.1xx"
+  @.4175 text " or "
+  @.4176 link "204 (No Content)" url="/rfc/rfc9110.html#status.204"
+  @.4178 text ". A server MUST NOT send a Content-Length header field in any "
+  @.4181 link "2xx (Successful)" url=$u4
+  @.4183 text " response to a CONNECT request ("
+  @.4184 link "Section 9.3.6" url="/rfc/rfc9110.html#CONNECT"
+  @.4186 text ").Aside from the cases defined above, in the absence of Transfer-Encoding, an origin server SHOULD send a Content-Length header field when the content size is known prior to sending the complete header section. This will allow downstream recipients to measure transfer progress, know when a received message is complete, and potentially reuse the connection for additional requests.Any Content-Length field value greater than or equal to zero is valid. Since there is no predefined limit to the length of content, a recipient MUST anticipate potentially large decimal numerals and prevent parsing errors due to integer conversion overflows or precision loss due to integer 
+... [tee capped at 4096 of 11861 bytes]
+
+===== CALL rc=0 out=11943B args=snapshot --next =====
+snapshot[236901-248897 of 696055]:
+  @.4302 link "Section 3.2" url="/rfc/rfc9110.html#representations"
+  @.4304 text ").In responses to safe requests, validator fields describe the selected representation chosen by the origin server while handling the response. Note that, depending on the method and status code semantics, the selected representation for a given response is not necessarily the same as the representation enclosed as response content.In a successful response to a state-changing request, validator fields describe the new representation that has replaced the prior "
+  @.4307 link "selected representation" url=$u1
+  @.4309 text " as a result of processing the request.For example, an ETag field in a "
+  @.4311 link "201 (Created)" url="/rfc/rfc9110.html#status.201"
+  @.4313 text " response communicates the entity tag of the newly created resource's representation, so that the entity tag can be used as a validator in later conditional requests to prevent the "lost update" problem."
+  @.4314 text "This specification defines two forms of metadata that are commonly used to observe resource state and test for preconditions: modification dates ("
+  @.4315 link "Section 8.8.2" url="/rfc/rfc9110.html#field.last-modified"
+  @.4317 text ") and opaque entity tags ("
+  @.4318 link "Section 8.8.3" url="/rfc/rfc9110.html#field.etag"
+  @.4320 text "). Additional metadata that reflects resource state has been defined by various extensions of HTTP, such as Web Distributed Authoring and Versioning ["
+  @.4322 link "WEBDAV" url="/rfc/rfc9110.html#WEBDAV"
+  @.4324 text "], that are beyond the scope of this specification."
+  @.4326 link "8.8.1. " url="/rfc/rfc9110.html#section-8.8.1"
+  @.4328 link "Weak versus Strong" url="/rfc/rfc9110.html#name-weak-versus-strong"
+  @.4330 text "Validators come in two flavors: strong or weak. Weak validators are easy to generate but are far less useful for comparisons. Strong validators are ideal for comparisons but can be very difficult (and occasionally impossible) to generate efficiently. Rather than impose that all forms of resource adhere to the same strength of validator, HTTP exposes the type of validator in use and imposes restrictions on when weak validators can be used as preconditions."
+  @.4331 text "A "strong validator" is representation metadata that changes value whenever a change occurs to the representation data that would be observable in the content of a "
+  @.4332 link "200 (OK)" url="/rfc/rfc9110.html#status.200"
+  @.4334 text " response to GET.A strong validator might change for reasons other than a change to the representation data, such as when a semantically significant part of the representation metadata is changed (e.g., "
+  @.4336 link "Content-Type" url="/rfc/rfc9110.html#field.content-type"
+  @.4338 text "), but it is in the best interests of the origin server to only change the value when it is necessary to invalidate the stored responses held by remote caches and authoring tools.Cache entries might persist for arbitrarily long periods, regardless of expiration times. Thus, a cache might attempt to validate an entry using a validator that it obtained in the distant past. A strong validator is unique across all versions of all representations associated with a particular resource over time. However, there is no implication of uniqueness across representations of different resources (i.e., the same strong validator might be in use for representations of multiple resources at the same time and does not imply that those representations are equivalent).There are a variety of strong validators used in practice. The best are based on strict revision control, wherein each change to a representation always results in a unique node name and revision identifier being assigned before the representation is made accessible to GET. A collision-resistant hash function applied to the representation data is also sufficient if the data is available prior to the response header fields being sent and the digest does not need to be recalculated every time a validation request is received.
+... [tee capped at 4096 of 11943 bytes]
+
+===== CALL rc=0 out=12046B args=snapshot --next =====
+snapshot[248898-260888 of 696055]:
+  @.4432 link "selected representation" url="/rfc/rfc9110.html#selected.representation"
+  @.4434 text ", as determined at the conclusion of handling the request. An entity tag is an opaque validator for differentiating between multiple representations of the same resource, regardless of whether those multiple representations are due to resource state changes over time, content negotiation resulting in multiple representations being valid at the same time, or both. An entity tag consists of an opaque quoted string, possibly prefixed by a weakness indicator."
+  @.4435 text "  ETag       = entity-tag
+
+  entity-tag = [ weak ] opaque-tag
+  weak       = %s"W/"
+  opaque-tag = DQUOTE *etagc DQUOTE
+  etagc      = %x21 / %x23-7E / obs-text
+             ; VCHAR except double quotes, plus obs-text
+"
+  @.4436 text "Note: Previously, opaque-tag was defined to be a quoted-string (["
+  @.4439 link "RFC2616" url="/rfc/rfc9110.html#RFC2616"
+  @.4441 text "], "
+  @.4442 link "Section 3.11" url="/rfc/rfc2616#section-3.11"
+  @.4444 text "); thus, some recipients might perform backslash unescaping. Servers therefore ought to avoid backslash characters in entity tags.An entity tag can be more reliable for validation than a modification date in situations where it is inconvenient to store modification dates, where the one-second resolution of HTTP-date values is not sufficient, or where modification dates are not consistently maintained.Examples:"
+  @.4447 text "ETag: "xyzzy"
+ETag: W/"xyzzy"
+ETag: ""
+"
+  @.4448 text "An entity tag can be either a weak or strong validator, with strong being the default. If an origin server provides an entity tag for a representation and the generation of that entity tag does not satisfy all of the characteristics of a strong validator ("
+  @.4449 link "Section 8.8.1" url="/rfc/rfc9110.html#weak.and.strong.validators"
+  @.4451 text "), then the origin server MUST"
+  @.4453 text " mark the entity tag as weak by prefixing its opaque value with "W/" (case-sensitive)."
+  @.4454 text "A sender MAY send the ETag field in a trailer section (see "
+  @.4457 link "Section 6.5" url="/rfc/rfc9110.html#trailer.fields"
+  @.4459 text "). However, since trailers are often ignored, it is preferable to send ETag as a header field unless the entity tag is generated while sending the content."
+  @.4460 link "8.8.3.1. " url="/rfc/rfc9110.html#section-8.8.3.1"
+  @.4462 link "Generation" url="/rfc/rfc9110.html#name-generation-2"
+  @.4464 text "The principle behind entity tags is that only the service author knows the implementation of a resource well enough to select the most accurate and efficient validation mechanism for that resource, and that any such mechanism can be mapped to a simple sequence of octets for easy comparison. Since the value is opaque, there is no need for the client to be aware of how each entity tag is constructed.For example, a resource that has implementation-specific versioning applied to all changes might use an internal revision number, perhaps combined with a variance identifier for content negotiation, to accurately differentiate between representations. Other implementations might use a collision-resistant hash of representation content, a combination of various file attributes, or a modification timestamp that has sub-second resolution.An origin server SHOULD send an ETag for any selected representation for which detection of changes can be reasonably and consistently determined, since the entity tag's use in conditional requests and evaluating cache freshness (["
+  @.4470 link "CACHING" url="/rfc/rfc9110.html#CACHING"
+  @.4472 text "]) can substantially reduce unnecessary transfers and significantly improve service availability, scalability, and reliability."
+  @.4474 link "8.8.3.2. " url="/rfc/rfc9110.html#section-8.8.3.2"
+  @.4476 link "Comparison" url="/rfc/rfc9110.html#name-comparison-2"
+  @.4478 text "There are two entity tag comparison functions, depending on whether or not the comparison context allows the use of weak validators:"
+  @.4479 text ""Strong comparis
+... [tee capped at 4096 of 12046 bytes]
+
+===== CALL rc=0 out=11528B args=snapshot --next =====
+snapshot[260889-272379 of 696055]:
+  @.4635 text "This definition of safe methods does not prevent an implementation from including behavior that is potentially harmful, that is not entirely read-only, or that causes side effects while invoking a safe method. What is important, however, is that the client did not request that additional behavior and cannot be held accountable for it. For example, most servers append request information to access log files at the completion of every response, regardless of the method, and that is considered safe even though the log storage might become full and cause the server to fail. Likewise, a safe request initiated by selecting an advertisement on the Web will often have the side effect of charging an advertising account.Of the request methods defined by this specification, the "
+  @.4637 link "GET" url="/rfc/rfc9110.html#GET"
+  @.4639 text ", "
+  @.4640 link "HEAD" url="/rfc/rfc9110.html#HEAD"
+  @.4642 text ", "
+  @.4643 link "OPTIONS" url="/rfc/rfc9110.html#OPTIONS"
+  @.4645 text ", and "
+  @.4646 link "TRACE" url="/rfc/rfc9110.html#TRACE"
+  @.4648 text " methods are defined to be safe.The purpose of distinguishing between safe and unsafe methods is to allow automated retrieval processes (spiders) and cache performance optimization (pre-fetching) to work without fear of causing harm. In addition, it allows a user agent to apply appropriate constraints on the automated use of unsafe methods when processing potentially untrusted content.A user agent SHOULD distinguish between safe and unsafe methods when presenting potential actions to a user, such that the user can be made aware of an unsafe action before it is requested."
+  @.4653 text "When a resource is constructed such that parameters within the target URI have the effect of selecting an action, it is the resource owner's responsibility to ensure that the action is consistent with the request method semantics. For example, it is common for Web-based content editing software to use actions within query parameters, such as "page?do=delete". If the purpose of such a resource is to perform an unsafe action, then the resource owner "
+  @.4654 text "MUST disable or disallow that action when it is accessed using a safe request method. Failure to do so will result in unfortunate side effects when automated processes perform a GET on every URI reference for the sake of link maintenance, pre-fetching, building a search index, etc."
+  @.4656 link "9.2.2. " url="/rfc/rfc9110.html#section-9.2.2"
+  @.4658 link "Idempotent Methods" url="/rfc/rfc9110.html#name-idempotent-methods"
+  @.4660 text "A request method is considered "idempotent" if the intended effect on the server of multiple identical requests with that method is the same as the effect for a single such request. Of the request methods defined by this specification, "
+  @.4661 link "PUT" url="/rfc/rfc9110.html#PUT"
+  @.4663 text ", "
+  @.4664 link "DELETE" url="/rfc/rfc9110.html#DELETE"
+  @.4666 text ", and safe request methods are idempotent.Like the definition of safe, the idempotent property only applies to what has been requested by the user; a server is free to log each request separately, retain a revision control history, or implement other non-idempotent side effects for each idempotent request.Idempotent methods are distinguished because the request can be repeated automatically if a communication failure occurs before the client is able to read the server's response. For example, if a client sends a PUT request and the underlying connection is closed before any response is received, then the client can establish a new connection and retry the idempotent request. It knows that repeating the request will have the same intended effect, even if the original request succeeded, though the response might differ.A client SHOULD NOT automatically retry a request with a non-idempotent method unless it has some means to know that the request semantics are actually idempotent, regardless of the method, or some means to detect that the original request was never applied.For example, a u
+... [tee capped at 4096 of 11528 bytes]
+
+===== CALL rc=0 out=11753B args=snapshot --next =====
+snapshot[272380-284319 of 696055]:
+  @.4777 text " fields, for example, that are not generated within a HEAD response. These minor inconsistencies are considered preferable to generating and discarding the content for a HEAD request, since HEAD is usually requested for the sake of efficiency.Although request message framing is independent of the method used, content received in a HEAD request has no generally defined semantics, cannot alter the meaning or target of the request, and might lead some implementations to reject the request and close the connection because of its potential as a request smuggling attack ("
+  @.4779 link "Section 11.2" url="/rfc/rfc9112#section-11.2"
+  @.4781 text " of ["
+  @.4782 link "HTTP/1.1" url="/rfc/rfc9110.html#HTTP11"
+  @.4784 text "]). A client SHOULD NOT generate content in a HEAD request unless it is made directly to an origin server that has previously indicated, in or out of band, that such a request has a purpose and will be adequately supported. An origin server SHOULD NOT rely on private agreements to receive content, since participants in HTTP communication are often unaware of intermediaries along the request chain.The response to a HEAD request is cacheable; a cache MAY use it to satisfy subsequent HEAD requests unless otherwise indicated by the Cache-Control header field ("
+  @.4793 link "Section 5.2" url="/rfc/rfc9111#section-5.2"
+  @.4795 text " of ["
+  @.4796 link "CACHING" url=$u1
+  @.4798 text "]). A HEAD response might also affect previously cached responses to GET; see "
+  @.4800 link "Section 4.3.5" url="/rfc/rfc9111#section-4.3.5"
+  @.4802 text " of ["
+  @.4803 link "CACHING" url=$u1
+  @.4805 text "]."
+  @.4807 link "9.3.3. " url="/rfc/rfc9110.html#section-9.3.3"
+  @.4809 link "POST" url="/rfc/rfc9110.html#name-post"
+  @.4811 text "The POST method requests that the "
+  @.4812 link "target resource" url=$u2
+  @.4814 text " process the representation enclosed in the request according to the resource's own specific semantics. For example, POST is used for the following functions (among others):Providing a block of data, such as the fields entered into an HTML form, to a data-handling process;Posting a message to a bulletin board, newsgroup, mailing list, blog, or similar group of articles;Creating a new resource that has yet to be identified by the origin server; andAppending data to a resource's existing representation(s).An origin server indicates response semantics by choosing an appropriate status code depending on the result of processing the POST request; almost all of the status codes defined by this specification could be received in a response to POST (the exceptions being "
+  @.4820 link "206 (Partial Content)" url="/rfc/rfc9110.html#status.206"
+  @.4822 text ", "
+  @.4823 link "304 (Not Modified)" url="/rfc/rfc9110.html#status.304"
+  @.4825 text ", and "
+  @.4826 link "416 (Range Not Satisfiable)" url="/rfc/rfc9110.html#status.416"
+  @.4828 text ").If one or more resources has been created on the origin server as a result of successfully processing a POST request, the origin server SHOULD send a "
+  @.4832 link "201 (Created)" url=$u3
+  @.4834 text " response containing a "
+  @.4835 link "Location" url=$u4
+  @.4837 text " header field that provides an identifier for the primary resource created ("
+  @.4838 link "Section 10.2.2" url=$u4
+  @.4840 text ") and a representation that describes the status of the request while referring to the new resource(s).Responses to POST requests are only cacheable when they include explicit freshness information (see "
+  @.4842 link "Section 4.2.1" url="/rfc/rfc9111#section-4.2.1"
+  @.4844 text " of ["
+  @.4845 link "CACHING" url=$u1
+  @.4847 text "]) and a "
+  @.4849 link "Content-Location" url=$u5
+  @.4851 text " header field that has the same value as the POST's target URI ("
+  @.4852 link "Section 8.7" url=$u5
+  @.4854 text "). A cached POST response can be reused to satisfy a later GET or HEAD request. In contrast, a POST request cannot be satisfied by a cached POST response because POST is potentially unsafe; see "
+  @.
+... [tee capped at 4096 of 11753 bytes]
+
+===== CALL rc=0 out=11954B args=snapshot --next =====
+snapshot[284320-296297 of 696055]:
+  @.4948 link "3xx (Redirection)" url="/rfc/rfc9110.html#status.3xx"
+  @.4950 text " response; the user agent MAY then make its own decision regarding whether or not to redirect the request."
+  @.4953 text "A PUT request applied to the target resource can have side effects on other resources. For example, an article might have a URI for identifying "the current version" (a resource) that is separate from the URIs identifying each particular version (different resources that at one point shared the same state as the current version resource). A successful PUT request on "the current version" URI might therefore create a new version resource in addition to changing the state of the target resource, and might also cause links to be added between the related resources."
+  @.4954 text "Some origin servers support use of the "
+  @.4955 link "Content-Range" url=$u1
+  @.4957 text " header field ("
+  @.4958 link "Section 14.4" url=$u1
+  @.4960 text ") as a request modifier to perform a partial PUT, as described in "
+  @.4961 link "Section 14.5" url="/rfc/rfc9110.html#partial.PUT"
+  @.4963 text ".Responses to the PUT method are not cacheable. If a successful PUT request passes through a cache that has one or more stored responses for the target URI, those stored responses will be invalidated (see "
+  @.4965 link "Section 4.4" url=$u2
+  @.4967 text " of ["
+  @.4968 link "CACHING" url=$u3
+  @.4970 text "])."
+  @.4972 link "9.3.5. " url="/rfc/rfc9110.html#section-9.3.5"
+  @.4974 link "DELETE" url="/rfc/rfc9110.html#name-delete"
+  @.4976 text "The DELETE method requests that the origin server remove the association between the "
+  @.4977 link "target resource" url=$u4
+  @.4979 text " and its current functionality. In effect, this method is similar to the "rm" command in UNIX: it expresses a deletion operation on the URI mapping of the origin server rather than an expectation that the previously associated information be deleted."
+  @.4980 text "If the target resource has one or more current representations, they might or might not be destroyed by the origin server, and the associated storage might or might not be reclaimed, depending entirely on the nature of the resource and its implementation by the origin server (which are beyond the scope of this specification). Likewise, other implementation aspects of a resource might need to be deactivated or archived as a result of a DELETE, such as database or gateway connections. In general, it is assumed that the origin server will only allow DELETE on resources for which it has a prescribed mechanism for accomplishing the deletion.Relatively few resources allow the DELETE method -- its primary use is for remote authoring environments, where the user has some direction regarding its effect. For example, a resource that was previously created using a PUT request, or identified via the Location header field after a "
+  @.4982 link "201 (Created)" url="/rfc/rfc9110.html#status.201"
+  @.4984 text " response to a POST request, might allow a corresponding DELETE request to undo those actions. Similarly, custom user agent implementations that implement an authoring function, such as revision control clients using HTTP for remote operations, might use DELETE based on an assumption that the server's URI space has been crafted to correspond to a version repository.If a DELETE method is successfully applied, the origin server SHOULD senda "
+  @.4989 link "202 (Accepted)" url="/rfc/rfc9110.html#status.202"
+  @.4991 text " status code if the action will likely succeed but has not yet been enacted,a "
+  @.4993 link "204 (No Content)" url="/rfc/rfc9110.html#status.204"
+  @.4995 text " status code if the action has been enacted and no further information is to be supplied, ora "
+  @.4997 link "200 (OK)" url="/rfc/rfc9110.html#status.200"
+  @.4999 text " status code if the action has been enacted and the response message includes a representation describing the status.Although request message framing is independent of the method used, content received in a DELETE request h
+... [tee capped at 4096 of 11954 bytes]
+
+===== CALL rc=0 out=11696B args=snapshot --next =====
+snapshot[296298-308239 of 696055]:
+  @.5107 text "The TRACE method requests a remote, application-level loop-back of the request message. The final recipient of the request SHOULD reflect the message received, excluding some fields described below, back to the client as the content of a "
+  @.5110 link "200 (OK)" url="/rfc/rfc9110.html#status.200"
+  @.5112 text " response. The "message/http" format ("
+  @.5113 link "Section 10.1" url="/rfc/rfc9112#section-10.1"
+  @.5115 text " of ["
+  @.5116 link "HTTP/1.1" url=$u1
+  @.5118 text "]) is one way to do so. The final recipient is either the origin server or the first server to receive a "
+  @.5120 link "Max-Forwards" url=$u2
+  @.5122 text " value of zero (0) in the request ("
+  @.5123 link "Section 7.6.2" url=$u2
+  @.5125 text ").A client MUST NOT generate fields in a TRACE request containing sensitive data that might be disclosed by the response. For example, it would be foolish for a user agent to send stored user credentials ("
+  @.5129 link "Section 11" url="/rfc/rfc9110.html#authentication"
+  @.5131 text ") or cookies ["
+  @.5133 link "COOKIE" url="/rfc/rfc9110.html#COOKIE"
+  @.5135 text "] in a TRACE request. The final recipient of the request SHOULD exclude any request fields that are likely to contain sensitive data when that recipient generates the response content.TRACE allows the client to see what is being received at the other end of the request chain and use that data for testing or diagnostic information. The value of the "
+  @.5140 link "Via" url=$u3
+  @.5142 text " header field ("
+  @.5143 link "Section 7.6.3" url=$u3
+  @.5145 text ") is of particular interest, since it acts as a trace of the request chain. Use of the "
+  @.5146 link "Max-Forwards" url=$u2
+  @.5148 text " header field allows the client to limit the length of the request chain, which is useful for testing a chain of proxies forwarding messages in an infinite loop.A client MUST NOT send content in a TRACE request.Responses to the TRACE method are not cacheable."
+  @.5153 link "10. " url="/rfc/rfc9110.html#section-10"
+  @.5155 link "Message Context" url="/rfc/rfc9110.html#name-message-context"
+  @.5157 link "10.1. " url="/rfc/rfc9110.html#section-10.1"
+  @.5159 link "Request Context Fields" url="/rfc/rfc9110.html#name-request-context-fields"
+  @.5161 text "The request header fields below provide additional information about the request context, including information about the user, user agent, and resource behind the request."
+  @.5162 link "10.1.1. " url="/rfc/rfc9110.html#section-10.1.1"
+  @.5164 link "Expect" url="/rfc/rfc9110.html#name-expect"
+  @.5166 text "The "Expect" header field in a request indicates a certain set of behaviors (expectations) that need to be supported by the server in order to properly handle this request."
+  @.5167 text "  Expect =      #expectation
+  expectation = token [ "=" ( token / quoted-string ) parameters ]
+"
+  @.5168 text "The Expect field value is case-insensitive."
+  @.5169 text "The only expectation defined by this specification is "100-continue" (with no defined parameters)."
+  @.5170 text "A server that receives an Expect field value containing a member other than "
+  @.5171 link "100-continue" url=$u4
+  @.5174 text "MAY respond with a "
+  @.5176 link "417 (Expectation Failed)" url=$u5
+  @.5178 text " status code to indicate that the unexpected expectation cannot be met."
+  @.5179 text "A "100-continue" expectation informs recipients that the client is about to send (presumably large) content in this request and wishes to receive a "
+  @.5180 link "100 (Continue)" url=$u6
+  @.5182 text " interim response if the method, target URI, and header fields are not sufficient to cause an immediate success, redirect, or error response. This allows the client to wait for an indication that it is worthwhile to send the content before actually doing so, which can improve efficiency when the data is huge or when the client anticipates that an error is likely (e.g., when sending a state-changing method, for the first time, without previously verified authentication cre
+... [tee capped at 4096 of 11696 bytes]
+
+===== CALL rc=0 out=11814B args=snapshot --next =====
+snapshot[308240-320100 of 696055]:
+  @.5332 text " either exclude the Referer header field or send it with a value of "about:blank"."
+  @.5333 text "The Referer header field value need not convey the full URI of the referring resource; a user agent MAY truncate parts other than the referring origin."
+  @.5336 text "The Referer header field has the potential to reveal information about the request context or browsing history of the user, which is a privacy concern if the referring resource's identifier reveals personal information (such as an account name) or a resource that is supposed to be confidential (such as behind a firewall or internal to a secured service). Most general-purpose user agents do not send the Referer header field when the referring resource is a local "file" or "data" URI. A user agent "
+  @.5337 text "SHOULD NOT send a "
+  @.5339 link "Referer" url=$u1
+  @.5341 text " header field if the referring resource was accessed with a secure protocol and the request target has an origin differing from that of the referring resource, unless the referring resource explicitly allows Referer to be sent. A user agent MUST NOT send a "
+  @.5344 link "Referer" url=$u1
+  @.5346 text " header field in an unsecured HTTP request if the referring resource was accessed with a secure protocol. See "
+  @.5347 link "Section 17.9" url="/rfc/rfc9110.html#sensitive.information.in.uris"
+  @.5349 text " for additional security considerations.Some intermediaries have been known to indiscriminately remove Referer header fields from outgoing requests. This has the unfortunate side effect of interfering with protection against CSRF attacks, which can be far more harmful to their users. Intermediaries and user agent extensions that wish to limit information disclosure in Referer ought to restrict their changes to specific edits, such as replacing internal domain names with pseudonyms or truncating the query and/or path components. An intermediary SHOULD NOT modify or delete the Referer header field when the field value shares the same scheme and host as the target URI."
+  @.5353 link "10.1.4. " url="/rfc/rfc9110.html#section-10.1.4"
+  @.5355 link "TE" url="/rfc/rfc9110.html#name-te"
+  @.5357 text "The "TE" header field describes capabilities of the client with regard to transfer codings and trailer sections."
+  @.5358 text "As described in "
+  @.5359 link "Section 6.5" url="/rfc/rfc9110.html#trailer.fields"
+  @.5361 text ", a TE field with a "trailers" member sent in a request indicates that the client will not discard trailer fields."
+  @.5362 text "TE is also used within HTTP/1.1 to advise servers about which transfer codings the client is able to accept in a response. As of publication, only HTTP/1.1 uses transfer codings (see "
+  @.5363 link "Section 7" url="/rfc/rfc9112#section-7"
+  @.5365 text " of ["
+  @.5366 link "HTTP/1.1" url="/rfc/rfc9110.html#HTTP11"
+  @.5368 text "])."
+  @.5370 text "The TE field value is a list of members, with each member (aside from "trailers") consisting of a transfer coding name token with an optional weight indicating the client's relative preference for that transfer coding ("
+  @.5371 link "Section 12.4.2" url="/rfc/rfc9110.html#quality.values"
+  @.5373 text ") and optional parameters for that transfer coding."
+  @.5374 text "  TE                 = #t-codings
+  t-codings          = "trailers" / ( transfer-coding [ weight ] )
+  transfer-coding    = token *( OWS ";" OWS transfer-parameter )
+  transfer-parameter = token BWS "=" BWS ( token / quoted-string )
+"
+  @.5375 text "A sender of TE MUST"
+  @.5377 text " also send a "TE" connection option within the "
+  @.5378 link "Connection" url=$u2
+  @.5380 text " header field ("
+  @.5381 link "Section 7.6.1" url=$u2
+  @.5383 text ") to inform intermediaries not to forward this field."
+  @.5384 link "10.1.5. " url="/rfc/rfc9110.html#section-10.1.5"
+  @.5386 link "User-Agent" url="/rfc/rfc9110.html#name-user-agent"
+  @.5388 text "The "User-Agent" header field contains information about the user agent originating the request, which is often used by servers t
+... [tee capped at 4096 of 11814 bytes]
+
+===== CALL rc=0 out=11562B args=snapshot --next =====
+snapshot[320101-331794 of 696055]:
+  @.5504 text ") differs from Location in that the Content-Location refers to the most specific resource corresponding to the enclosed representation. It is therefore possible for a response to contain both the Location and Content-Location header fields."
+  @.5505 link "10.2.3. " url="/rfc/rfc9110.html#section-10.2.3"
+  @.5507 link "Retry-After" url="/rfc/rfc9110.html#name-retry-after"
+  @.5509 text "Servers send the "Retry-After" header field to indicate how long the user agent ought to wait before making a follow-up request. When sent with a "
+  @.5510 link "503 (Service Unavailable)" url="/rfc/rfc9110.html#status.503"
+  @.5512 text " response, Retry-After indicates how long the service is expected to be unavailable to the client. When sent with any "
+  @.5513 link "3xx (Redirection)" url="/rfc/rfc9110.html#status.3xx"
+  @.5515 text " response, Retry-After indicates the minimum time that the user agent is asked to wait before issuing the redirected request.The Retry-After field value can be either an HTTP-date or a number of seconds to delay after receiving the response."
+  @.5517 text "  Retry-After = HTTP-date / delay-seconds
+"
+  @.5518 text "A delay-seconds value is a non-negative decimal integer, representing time in seconds."
+  @.5519 text "  delay-seconds  = 1*DIGIT
+"
+  @.5520 text "Two examples of its use are"
+  @.5521 text "Retry-After: Fri, 31 Dec 1999 23:59:59 GMT
+Retry-After: 120
+"
+  @.5522 text "In the latter example, the delay is 2 minutes."
+  @.5523 link "10.2.4. " url="/rfc/rfc9110.html#section-10.2.4"
+  @.5525 link "Server" url="/rfc/rfc9110.html#name-server"
+  @.5527 text "The "Server" header field contains information about the software used by the origin server to handle the request, which is often used by clients to help identify the scope of reported interoperability problems, to work around or tailor requests to avoid particular server limitations, and for analytics regarding server or operating system use. An origin server "
+  @.5528 text "MAY generate a Server header field in its responses."
+  @.5530 text "  Server = product *( RWS ( product / comment ) )
+"
+  @.5531 text "The Server header field value consists of one or more product identifiers, each followed by zero or more comments ("
+  @.5532 link "Section 5.6.5" url="/rfc/rfc9110.html#comments"
+  @.5534 text "), which together identify the origin server software and its significant subproducts. By convention, the product identifiers are listed in decreasing order of their significance for identifying the origin server software. Each product identifier consists of a name and optional version, as defined in "
+  @.5535 link "Section 10.1.5" url="/rfc/rfc9110.html#field.user-agent"
+  @.5537 text ".Example:"
+  @.5539 text "Server: CERN/3.0 libwww/2.17
+"
+  @.5540 text "An origin server SHOULD NOT generate a Server header field containing needlessly fine-grained detail and SHOULD limit the addition of subproducts by third parties. Overly long and detailed Server field values increase response latency and potentially reveal internal implementation details that might make it (slightly) easier for attackers to find and exploit known security holes."
+  @.5545 link "11. " url="/rfc/rfc9110.html#section-11"
+  @.5547 link "HTTP Authentication" url="/rfc/rfc9110.html#name-http-authentication"
+  @.5549 link "11.1. " url="/rfc/rfc9110.html#section-11.1"
+  @.5551 link "Authentication Scheme" url="/rfc/rfc9110.html#name-authentication-scheme"
+  @.5553 text "HTTP provides a general framework for access control and authentication, via an extensible set of challenge-response authentication schemes, which can be used by a server to challenge a client request and by a client to provide authentication information. It uses a case-insensitive token to identify the authentication scheme:"
+  @.5554 text "  auth-scheme    = token
+"
+  @.5555 text "Aside from the general framework, this document does not specify any authentication schemes. New and existing authentication schemes are specified independently and ought to be registered with
+... [tee capped at 4096 of 11562 bytes]
+
+===== CALL rc=0 out=11686B args=snapshot --next =====
+snapshot[331795-343691 of 696055]:
+  @.5682 text ") of the server being accessed, in combination with the realm value if present. These realms allow the protected resources on a server to be partitioned into a set of protection spaces, each with its own authentication scheme and/or authorization database. The realm value is a string, generally assigned by the origin server, that can have additional semantics specific to the authentication scheme. Note that a response can have multiple challenges with the same auth-scheme but with different realms.The protection space determines the domain over which credentials can be automatically applied. If a prior request has been authorized, the user agent MAY reuse the same credentials for all other requests within that protection space for a period of time determined by the authentication scheme, parameters, and/or user preferences (such as a configurable inactivity timeout).The extent of a protection space, and therefore the requests to which credentials might be automatically applied, is not necessarily known to clients without additional information. An authentication scheme might define parameters that describe the extent of a protection space. Unless specifically allowed by the authentication scheme, a single protection space cannot extend outside the scope of its server.For historical reasons, a sender MUST only generate the quoted-string syntax. Recipients might have to support both token and quoted-string syntax for maximum interoperability with existing clients that have been accepting both notations for a long time."
+  @.5690 link "11.6. " url="/rfc/rfc9110.html#section-11.6"
+  @.5692 link "Authenticating Users to Origin Servers" url="/rfc/rfc9110.html#name-authenticating-users-to-ori"
+  @.5694 link "11.6.1. " url="/rfc/rfc9110.html#section-11.6.1"
+  @.5696 link "WWW-Authenticate" url="/rfc/rfc9110.html#name-www-authenticate"
+  @.5698 text "The "WWW-Authenticate" response header field indicates the authentication scheme(s) and parameters applicable to the target resource."
+  @.5699 text "  WWW-Authenticate = #challenge
+"
+  @.5700 text "A server generating a "
+  @.5701 link "401 (Unauthorized)" url=$u1
+  @.5703 text " response MUST send a WWW-Authenticate header field containing at least one challenge. A server MAY generate a WWW-Authenticate header field in other response messages to indicate that supplying credentials (or different credentials) might affect the response.A proxy forwarding a response MUST NOT modify any "
+  @.5711 link "WWW-Authenticate" url=$u2
+  @.5713 text " header fields in that response.User agents are advised to take special care in parsing the field value, as it might contain more than one challenge, and each challenge can contain a comma-separated list of authentication parameters. Furthermore, the header field itself can occur multiple times.For instance:"
+  @.5716 text "WWW-Authenticate: Basic realm="simple", Newauth realm="apps",
+                 type=1, title="Login to \"apps\""
+"
+  @.5717 text "This header field contains two challenges, one for the "Basic" scheme with a realm value of "simple" and another for the "Newauth" scheme with a realm value of "apps". It also contains two additional parameters, "type" and "title"."
+  @.5718 text "Some user agents do not recognize this form, however. As a result, sending a WWW-Authenticate field value with more than one member on the same field line might not be interoperable.Note: The challenge grammar production uses the list syntax as well. Therefore, a sequence of comma, whitespace, and comma can be considered either as applying to the preceding challenge, or to be an empty entry in the list of challenges. In practice, this ambiguity does not affect the semantics of the header field value and thus is harmless."
+  @.5721 link "11.6.2. " url="/rfc/rfc9110.html#section-11.6.2"
+  @.5723 link "Authorization" url="/rfc/rfc9110.html#name-authorization"
+  @.5725 text "The "Authorization" header field allows a user agent to authenticate itself with an origin server -- usually, but not necessarily, after re
+... [tee capped at 4096 of 11686 bytes]
+
+===== CALL rc=0 out=11870B args=snapshot --next =====
+snapshot[343692-355639 of 696055]:
+  @.5841 text "When responses convey content, whether indicating a success or an error, the origin server often has different ways of representing that information; for example, in different formats, languages, or encodings. Likewise, different users or user agents might have differing capabilities, characteristics, or preferences that could influence which representation, among those available, would be best to deliver. For this reason, HTTP provides mechanisms for "
+  @.5842 link "content negotiation" url="/rfc/rfc9110.html#content.negotiation"
+  @.5844 text "."
+  @.5845 text "This specification defines three patterns of content negotiation that can be made visible within the protocol: "proactive" negotiation, where the server selects the representation based upon the user agent's stated preferences; "reactive" negotiation, where the server provides a list of representations for the user agent to choose from; and "request content" negotiation, where the user agent selects the representation for a future request based upon the server's stated preferences in past responses."
+  @.5846 text "Other patterns of content negotiation include "conditional content", where the representation consists of multiple parts that are selectively rendered based on user agent parameters, "active content", where the representation contains a script that makes additional (more specific) requests based on the user agent characteristics, and "Transparent Content Negotiation" ("
+  @.5847 text "["
+  @.5848 link "RFC2295" url="/rfc/rfc9110.html#RFC2295"
+  @.5850 text "]), where content selection is performed by an intermediary. These patterns are not mutually exclusive, and each has trade-offs in applicability and practicality."
+  @.5852 text "Note that, in all cases, HTTP is not aware of the resource semantics. The consistency with which an origin server responds to requests, over time and over the varying dimensions of content negotiation, and thus the "sameness" of a resource's observed representations over time, is determined entirely by whatever entity or algorithm selects or generates those responses."
+  @.5853 link "12.1. " url="/rfc/rfc9110.html#section-12.1"
+  @.5855 link "Proactive Negotiation" url="/rfc/rfc9110.html#name-proactive-negotiation"
+  @.5857 text "When content negotiation preferences are sent by the user agent in a request to encourage an algorithm located at the server to select the preferred representation, it is called "proactive negotiation" (a.k.a., "server-driven negotiation"). Selection is based on the available representations for a response (the dimensions over which it might vary, such as language, content coding, etc.) compared to various information supplied in the request, including both the explicit negotiation header fields below and implicit characteristics, such as the client's network address or parts of the "
+  @.5858 link "User-Agent" url="/rfc/rfc9110.html#field.user-agent"
+  @.5860 text " field."
+  @.5861 text "Proactive negotiation is advantageous when the algorithm for selecting from among the available representations is difficult to describe to a user agent, or when the server desires to send its "best guess" to the user agent along with the first response (when that "best guess" is good enough for the user, this avoids the round-trip delay of a subsequent request). In order to improve the server's guess, a user agent "
+  @.5862 text "MAY send request header fields that describe its preferences.Proactive negotiation has serious disadvantages:"
+  @.5865 text "It is impossible for the server to accurately determine what might be "best" for any given user, since that would require complete knowledge of both the capabilities of the user agent and the intended use for the response (e.g., does the user want to view it on screen or print it on paper?);"
+  @.5866 text "Having the user agent describe its capabilities in every request can be both very inefficient (given that only a small percentage of responses have multiple representations) and a potential risk to the user'
+... [tee capped at 4096 of 11870 bytes]
+
+===== CALL rc=0 out=11955B args=snapshot --next =====
+snapshot[355640-367640 of 696055]:
+  @.5969 link "Vary" url="/rfc/rfc9110.html#field.vary"
+  @.5971 text ", the wildcard value means that the variance is unlimited.Note:"
+  @.5973 text " In practice, using wildcards in content negotiation has limited practical value because it is seldom useful to say, for example, "I prefer image/* more or less than (some other specific value)". By sending Accept: */*;q=0, clients can explicitly request a "
+  @.5974 link "406 (Not Acceptable)" url="/rfc/rfc9110.html#status.406"
+  @.5976 text " response if a more preferred format is not available, but they still need to be able to handle a different response since the server is allowed to ignore their preference."
+  @.5977 link "12.5. " url="/rfc/rfc9110.html#section-12.5"
+  @.5979 link "Content Negotiation Fields" url="/rfc/rfc9110.html#name-content-negotiation-fields"
+  @.5981 link "12.5.1. " url="/rfc/rfc9110.html#section-12.5.1"
+  @.5983 link "Accept" url="/rfc/rfc9110.html#name-accept"
+  @.5985 text "The "Accept" header field can be used by user agents to specify their preferences regarding response media types. For example, Accept header fields can be used to indicate that the request is specifically limited to a small set of desired types, as in the case of a request for an in-line image."
+  @.5986 text "When sent by a server in a response, Accept provides information about which content types are preferred in the content of a subsequent request to the same resource."
+  @.5987 text "  Accept = #( media-range [ weight ] )
+
+  media-range    = ( "*/*"
+                     / ( type "/" "*" )
+                     / ( type "/" subtype )
+                   ) parameters
+"
+  @.5988 text "The asterisk "*" character is used to group media types into ranges, with "*/*" indicating all media types and "type/*" indicating all subtypes of that type. The media-range can include media type parameters that are applicable to that range."
+  @.5989 text "Each media-range might be followed by optional applicable media type parameters (e.g., "
+  @.5990 link "charset" url=$u1
+  @.5992 text "), followed by an optional "q" parameter for indicating a relative weight ("
+  @.5993 link "Section 12.4.2" url=$u2
+  @.5995 text ").Previous specifications allowed additional extension parameters to appear after the weight parameter. The accept extension grammar (accept-params, accept-ext) has been removed because it had a complicated definition, was not being used in practice, and is more easily deployed through new header fields. Senders using weights SHOULD"
+  @.5998 text " send "q" last (after all media-range parameters). Recipients "
+  @.5999 text "SHOULD"
+  @.6000 text " process any parameter named "q" as weight, regardless of parameter ordering."
+  @.6001 text "Note:"
+  @.6002 text " Use of the "q" parameter name to control content negotiation would interfere with any media type parameter having the same name. Hence, the media type registry disallows parameters named "q"."
+  @.6003 text "The example"
+  @.6004 text "Accept: audio/*; q=0.2, audio/basic
+"
+  @.6005 text "is interpreted as "I prefer audio/basic, but send me any audio type if it is the best available after an 80% markdown in quality"."
+  @.6006 text "A more elaborate example is"
+  @.6007 text "Accept: text/plain; q=0.5, text/html,
+       text/x-dvi; q=0.8, text/x-c
+"
+  @.6008 text "Verbally, this would be interpreted as "text/html and text/x-c are the equally preferred media types, but if they do not exist, then send the text/x-dvi representation, and if that does not exist, send the text/plain representation"."
+  @.6009 text "Media ranges can be overridden by more specific media ranges or specific media types. If more than one media range applies to a given type, the most specific reference has precedence. For example,"
+  @.6010 text "Accept: text/*, text/plain, text/plain;format=flowed, */*
+"
+  @.6011 text "have the following precedence:text/plain;format=flowedtext/plaintext/**/*The media type quality factor associated with a given type is determined by finding the media range with the highest prece
+... [tee capped at 4096 of 11955 bytes]
+
+===== CALL rc=0 out=11907B args=snapshot --next =====
+snapshot[367641-379630 of 696055]:
+"
+  @.6119 text "would mean: "I prefer Danish, but will accept British English and other types of English"."
+  @.6120 text "Note that some recipients treat the order in which language tags are listed as an indication of descending priority, particularly for tags that are assigned equal quality values (no value is the same as q=1). However, this behavior cannot be relied upon. For consistency and to maximize interoperability, many user agents assign each language tag a unique quality value while also listing them in order of decreasing quality. Additional discussion of language priority lists can be found in "
+  @.6121 link "Section 2.3" url="/rfc/rfc4647#section-2.3"
+  @.6123 text " of ["
+  @.6124 link "RFC4647" url=$u1
+  @.6126 text "].For matching, "
+  @.6129 link "Section 3" url="/rfc/rfc4647#section-3"
+  @.6131 text " of ["
+  @.6132 link "RFC4647" url=$u1
+  @.6134 text "]"
+  @.6135 text " defines several matching schemes. Implementations can offer the most appropriate matching scheme for their requirements. The "Basic Filtering" scheme ("
+  @.6136 text "["
+  @.6137 link "RFC4647" url=$u1
+  @.6139 text "], "
+  @.6140 link "Section 3.3.1" url="/rfc/rfc4647#section-3.3.1"
+  @.6142 text ") is identical to the matching scheme that was previously defined for HTTP in "
+  @.6143 link "Section 14.4" url="/rfc/rfc2616#section-14.4"
+  @.6145 text " of ["
+  @.6146 link "RFC2616" url="/rfc/rfc9110.html#RFC2616"
+  @.6148 text "].It might be contrary to the privacy expectations of the user to send an Accept-Language header field with the complete linguistic preferences of the user in every request ("
+  @.6151 link "Section 17.13" url="/rfc/rfc9110.html#fingerprinting"
+  @.6153 text ").Since intelligibility is highly dependent on the individual user, user agents need to allow user control over the linguistic preference (either through configuration of the user agent itself or by defaulting to a user controllable system setting). A user agent that does not provide such control to the user MUST NOT send an Accept-Language header field.Note:"
+  @.6158 text " User agents ought to provide guidance to users when setting a preference, since users are rarely familiar with the details of language matching as described above. For example, users might assume that on selecting "en-gb", they will be served any kind of English document if British English is not available. A user agent might suggest, in such a case, to add "en" to the list for better matching behavior."
+  @.6159 link "12.5.5. " url="/rfc/rfc9110.html#section-12.5.5"
+  @.6161 link "Vary" url="/rfc/rfc9110.html#name-vary"
+  @.6163 text "The "Vary" header field in a response describes what parts of a request message, aside from the method and target URI, might have influenced the origin server's process for selecting the content of this response."
+  @.6164 text "  Vary = #( "*" / field-name )
+"
+  @.6165 text "A Vary field value is either the wildcard member "*" or a list of request field names, known as the selecting header fields, that might have had a role in selecting the representation for this response. Potential selecting header fields are not limited to fields defined by this specification."
+  @.6166 text "A list containing the member "*" signals that other aspects of the request might have played a role in selecting the response representation, possibly including aspects outside the message syntax (e.g., the client's network address). A recipient will not be able to determine whether this response is appropriate for a later request without forwarding the request to the origin server. A proxy "
+  @.6167 text "MUST NOT"
+  @.6168 text " generate "*" in a Vary field value."
+  @.6169 text "For example, a response that contains"
+  @.6170 text "Vary: accept-encoding, accept-language
+"
+  @.6171 text "indicates that the origin server might have used the request's "
+  @.6172 link "Accept-Encoding" url="/rfc/rfc9110.html#field.accept-encoding"
+  @.6174 text " and "
+  @.6175 link "Accept-Language" url=$u2
+  @.6177 text " header fields (or lack thereof) 
+... [tee capped at 4096 of 11907 bytes]
+
+===== CALL rc=0 out=11708B args=snapshot --next =====
+snapshot[379631-391612 of 696055]:
+  @.6283 text "If the field value is "*", the condition is true if the origin server has a current representation for the target resource."
+  @.6284 text "If the field value is a list of entity tags, the condition is true if any of the listed tags match the entity tag of the selected representation.Otherwise, the condition is false.An origin server that evaluates an If-Match condition MUST NOT perform the requested method if the condition evaluates to false. Instead, the origin server MAY indicate that the conditional request failed by responding with a "
+  @.6291 link "412 (Precondition Failed)" url=$u1
+  @.6293 text " status code. Alternatively, if the request is a state-changing operation that appears to have already been applied to the selected representation, the origin server MAY respond with a "
+  @.6296 link "2xx (Successful)" url="/rfc/rfc9110.html#status.2xx"
+  @.6298 text " status code (i.e., the change requested by the user agent has already succeeded, but the user agent might not be aware of it, perhaps because the prior response was lost or an equivalent change was made by some other user agent).Allowing an origin server to send a success response when a change request appears to have already been applied is more efficient for many authoring use cases, but comes with some risk if multiple user agents are making change requests that are very similar but not cooperative. For example, multiple user agents writing to a common resource as a semaphore (e.g., a nonatomic increment) are likely to collide and potentially lose important state transitions. For those kinds of resources, an origin server is better off being stringent in sending 412 for every failed precondition on an unsafe method. In other cases, excluding the ETag field from a success response might encourage the user agent to perform a GET as its next request to eliminate confusion about the resource's current state.A client MAY send an If-Match header field in a "
+  @.6303 link "GET" url="/rfc/rfc9110.html#GET"
+  @.6305 text " request to indicate that it would prefer a "
+  @.6306 link "412 (Precondition Failed)" url=$u1
+  @.6308 text " response if the selected representation does not match. However, this is only useful in range requests ("
+  @.6309 link "Section 14" url="/rfc/rfc9110.html#range.requests"
+  @.6311 text ") for completing a previously received partial representation when there is no desire for a new representation. "
+  @.6312 link "If-Range" url=$u2
+  @.6314 text " ("
+  @.6315 link "Section 13.1.5" url=$u2
+  @.6317 text ") is better suited for range requests when the client prefers to receive a new representation.A cache or intermediary MAY ignore If-Match because its interoperability features are only necessary for an origin server."
+  @.6321 text "Note that an If-Match header field with a list value containing "*" and other values (including other instances of "*") is syntactically invalid (therefore not allowed to be generated) and furthermore is unlikely to be interoperable."
+  @.6322 link "13.1.2. " url="/rfc/rfc9110.html#section-13.1.2"
+  @.6324 link "If-None-Match" url="/rfc/rfc9110.html#name-if-none-match"
+  @.6326 text "The "If-None-Match" header field makes the request method conditional on a recipient cache or origin server either not having any current representation of the target resource, when the field value is "*", or having a "
+  @.6327 link "selected representation" url=$u3
+  @.6329 text " with an entity tag that does not match any of those listed in the field value.A recipient MUST use the weak comparison function when comparing entity tags for If-None-Match ("
+  @.6333 link "Section 8.8.3.2" url="/rfc/rfc9110.html#entity.tag.comparison"
+  @.6335 text "), since weak entity tags can be used for cache validation even if there have been changes to the representation data."
+  @.6336 text "  If-None-Match = "*" / #entity-tag
+"
+  @.6337 text "Examples:"
+  @.6338 text "If-None-Match: "xyzzy"
+If-None-Match: W/"xyzzy"
+If-None-Match: "xyzzy", "r2d2xxxx", "c3piozzzz"
+If-None-Match: W/"xyzzy", 
+... [tee capped at 4096 of 11708 bytes]
+
+===== CALL rc=0 out=10813B args=snapshot --next =====
+snapshot[391613-403124 of 696055]:
+  @.6459 link "If-Unmodified-Since" url="/rfc/rfc9110.html#name-if-unmodified-since"
+  @.6461 text "The "If-Unmodified-Since" header field makes the request method conditional on the "
+  @.6462 link "selected representation" url=$u1
+  @.6464 text "'s last modification date being earlier than or equal to the date provided in the field value. This field accomplishes the same purpose as "
+  @.6465 link "If-Match" url=$u2
+  @.6467 text " for cases where the user agent does not have an entity tag for the representation."
+  @.6468 text "  If-Unmodified-Since = HTTP-date
+"
+  @.6469 text "An example of the field is:"
+  @.6470 text "If-Unmodified-Since: Sat, 29 Oct 1994 19:43:31 GMT
+"
+  @.6471 text "A recipient MUST ignore If-Unmodified-Since if the request contains an "
+  @.6474 link "If-Match" url=$u2
+  @.6476 text " header field; the condition in "
+  @.6477 link "If-Match" url=$u2
+  @.6479 text " is considered to be a more accurate replacement for the condition in If-Unmodified-Since, and the two are only combined for the sake of interoperating with older intermediaries that might not implement "
+  @.6480 link "If-Match" url=$u2
+  @.6482 text ".A recipient MUST ignore the If-Unmodified-Since header field if the received field value is not a valid HTTP-date (including when the field value appears to be a list of dates).A recipient MUST ignore the If-Unmodified-Since header field if the resource does not have a modification date available.A recipient MUST interpret an If-Unmodified-Since field value's timestamp in terms of the origin server's clock."
+  @.6492 text "If-Unmodified-Since is most often used with state-changing methods (e.g., POST, PUT, DELETE) to prevent accidental overwrites when multiple user agents might be acting in parallel on a resource that does not supply entity tags with its representations (i.e., to prevent the "lost update" problem). In general, it can be used with any method that involves the selection or modification of a representation to abort the request if the "
+  @.6493 link "selected representation" url=$u1
+  @.6495 text "'s last modification date has changed since the date provided in the If-Unmodified-Since field value.When an origin server receives a request that selects a representation and that request includes an If-Unmodified-Since header field without an "
+  @.6497 link "If-Match" url=$u2
+  @.6499 text " header field, the origin server MUST evaluate the If-Unmodified-Since condition per "
+  @.6502 link "Section 13.2" url=$u3
+  @.6504 text " prior to performing the method.To evaluate a received If-Unmodified-Since header field:If the selected representation's last modification date is earlier than or equal to the date provided in the field value, the condition is true.Otherwise, the condition is false.An origin server that evaluates an If-Unmodified-Since condition MUST NOT perform the requested method if the condition evaluates to false. Instead, the origin server MAY indicate that the conditional request failed by responding with a "
+  @.6513 link "412 (Precondition Failed)" url=$u4
+  @.6515 text " status code. Alternatively, if the request is a state-changing operation that appears to have already been applied to the selected representation, the origin server MAY respond with a "
+  @.6518 link "2xx (Successful)" url=$u5
+  @.6520 text " status code (i.e., the change requested by the user agent has already succeeded, but the user agent might not be aware of it, perhaps because the prior response was lost or an equivalent change was made by some other user agent).Allowing an origin server to send a success response when a change request appears to have already been applied is more efficient for many authoring use cases, but comes with some risk if multiple user agents are making change requests that are very similar but not cooperative. In those cases, an origin server is better off being stringent in sending 412 for every failed precondition on an unsafe method.A client MAY send an If-Unmodified-Since header field in a "
+  @.6525 link "GET" url="/rfc/rfc9
+... [tee capped at 4096 of 10813 bytes]
+
+===== CALL rc=0 out=11278B args=snapshot --next =====
+snapshot[403125-415095 of 696055]:
+  @.6682 text ". In other words, redirects and failures that can be detected before significant processing occurs take precedence over the evaluation of preconditions.A server that is not the origin server for the target resource and cannot act as a cache for requests on the target resource MUST NOT evaluate the conditional request header fields defined by this specification, and it MUST forward them if the request is forwarded, since the generating client intends that they be evaluated by a server that can provide a current representation. Likewise, a server MUST ignore the conditional request header fields defined by this specification when received with a request method that does not involve the selection or modification of a "
+  @.6690 link "selected representation" url=$u1
+  @.6692 text ", such as CONNECT, OPTIONS, or TRACE.Note that protocol extensions can modify the conditions under which preconditions are evaluated or the consequences of their evaluation. For example, the immutable cache directive (defined by ["
+  @.6695 link "RFC8246" url="/rfc/rfc9110.html#RFC8246"
+  @.6697 text "]) instructs caches to forgo forwarding conditional requests when they hold a fresh response.Although conditional request header fields are defined as being usable with the HEAD method (to keep HEAD's semantics consistent with those of GET), there is no point in sending a conditional HEAD because a successful response is around the same size as a "
+  @.6700 link "304 (Not Modified)" url=$u2
+  @.6702 text " response and more useful than a "
+  @.6703 link "412 (Precondition Failed)" url=$u3
+  @.6705 text " response."
+  @.6706 link "13.2.2. " url="/rfc/rfc9110.html#section-13.2.2"
+  @.6708 link "Precedence of Preconditions" url="/rfc/rfc9110.html#name-precedence-of-preconditions"
+  @.6710 text "When more than one conditional request header field is present in a request, the order in which the fields are evaluated becomes important. In practice, the fields defined in this document are consistently implemented in a single, logical order, since "lost update" preconditions have more strict requirements than cache validation, a validated cache is more efficient than a partial response, and entity tags are presumed to be more accurate than date validators."
+  @.6711 text "A recipient cache or origin server MUST evaluate the request preconditions defined by this specification in the following order:When recipient is the origin server and "
+  @.6715 link "If-Match" url=$u4
+  @.6717 text " is present, evaluate the "
+  @.6718 link "If-Match" url=$u4
+  @.6720 text " precondition:if true, continue to step "
+  @.6722 link "3" url=$u5
+  @.6724 text "if false, respond "
+  @.6725 link "412 (Precondition Failed)" url=$u3
+  @.6727 text " unless it can be determined that the state-changing request has already succeeded (see "
+  @.6728 link "Section 13.1.1" url=$u4
+  @.6730 text ")When recipient is the origin server, "
+  @.6732 link "If-Match" url=$u4
+  @.6734 text " is not present, and "
+  @.6735 link "If-Unmodified-Since" url=$u6
+  @.6737 text " is present, evaluate the "
+  @.6738 link "If-Unmodified-Since" url=$u6
+  @.6740 text " precondition:if true, continue to step "
+  @.6742 link "3" url=$u5
+  @.6744 text "if false, respond "
+  @.6745 link "412 (Precondition Failed)" url=$u3
+  @.6747 text " unless it can be determined that the state-changing request has already succeeded (see "
+  @.6748 link "Section 13.1.4" url=$u6
+  @.6750 text ")When "
+  @.6752 link "If-None-Match" url=$u7
+  @.6754 text " is present, evaluate the "
+  @.6755 link "If-None-Match" url=$u7
+  @.6757 text " precondition:if true, continue to step "
+  @.6759 link "5" url=$u8
+  @.6761 text "if false for GET/HEAD, respond "
+  @.6762 link "304 (Not Modified)" url=$u2
+  @.6764 text "if false for other methods, respond "
+  @.6765 link "412 (Precondition Failed)" url=$u3
+  @.6767 text "When the method is GET or HEAD, "
+  @.6768 link "If-None-Match" url=$u7
+  @.6770 text " is not present, and "
+  @.6771 link "If-Modified-Since" url=$u9
+  @.6773 text " is present
+... [tee capped at 4096 of 11278 bytes]
+
+===== CALL rc=0 out=10773B args=snapshot --next =====
+snapshot[415096-426890 of 696055]:
+  @.6904 link "ranges-specifier" url=$u1
+  @.6906 text " is "satisfiable" if it contains at least one "
+  @.6907 link "range-spec" url=$u1
+  @.6909 text " that is satisfiable, as defined by the indicated "
+  @.6910 link "range-unit" url=$u2
+  @.6912 text ". Otherwise, the "
+  @.6913 link "ranges-specifier" url=$u1
+  @.6915 text " is "unsatisfiable"."
+  @.6916 link "14.1.2. " url="/rfc/rfc9110.html#section-14.1.2"
+  @.6918 link "Byte Ranges" url="/rfc/rfc9110.html#name-byte-ranges"
+  @.6920 text "The "bytes" range unit is used to express subranges of a representation data's octet sequence. Each byte range is expressed as an integer range at some offset, relative to either the beginning ("
+  @.6921 link "int-range" url=$u3
+  @.6923 text ") or end ("
+  @.6924 link "suffix-range" url=$u4
+  @.6926 text ") of the representation data. Byte ranges do not use the "
+  @.6927 link "other-range" url="/rfc/rfc9110.html#rule.other-range"
+  @.6929 text " specifier.The "
+  @.6931 link "first-pos" url=$u3
+  @.6933 text " value in a bytes "
+  @.6934 link "int-range" url=$u3
+  @.6936 text " gives the offset of the first byte in a range. The "
+  @.6937 link "last-pos" url=$u3
+  @.6939 text " value gives the offset of the last byte in the range; that is, the byte positions specified are inclusive. Byte offsets start at zero.If the representation data has a content coding applied, each byte range is calculated with respect to the encoded sequence of bytes, not the sequence of underlying bytes that would be obtained after decoding.Examples of bytes range specifiers:The first 500 bytes (byte offsets 0-499, inclusive):"
+  @.6943 text "     bytes=0-499
+"
+  @.6944 text "The second 500 bytes (byte offsets 500-999, inclusive):"
+  @.6945 text "     bytes=500-999
+"
+  @.6946 text "A client can limit the number of bytes requested without knowing the size of the "
+  @.6947 link "selected representation" url=$u5
+  @.6949 text ". If the "
+  @.6950 link "last-pos" url=$u3
+  @.6952 text " value is absent, or if the value is greater than or equal to the current length of the representation data, the byte range is interpreted as the remainder of the representation (i.e., the server replaces the value of "
+  @.6953 link "last-pos" url=$u3
+  @.6955 text " with a value that is one less than the current length of the selected representation).A client can refer to the last N bytes (N > 0) of the selected representation using a "
+  @.6957 link "suffix-range" url=$u4
+  @.6959 text ". If the selected representation is shorter than the specified "
+  @.6960 link "suffix-length" url=$u4
+  @.6962 text ", the entire representation is used.Additional examples, assuming a representation of length 10000:The final 500 bytes (byte offsets 9500-9999, inclusive):"
+  @.6965 text "     bytes=-500
+"
+  @.6966 text "Or:"
+  @.6967 text "     bytes=9500-
+"
+  @.6968 text "The first and last bytes only (bytes 0 and 9999):"
+  @.6969 text "     bytes=0-0,-1
+"
+  @.6970 text "The first, middle, and last 1000 bytes:"
+  @.6971 text "     bytes= 0-999, 4500-5499, -1000
+"
+  @.6972 text "Other valid (but not canonical) specifications of the second 500 bytes (byte offsets 500-999, inclusive):"
+  @.6973 text "     bytes=500-600,601-999
+     bytes=500-700,601-999
+"
+  @.6974 text "For a "
+  @.6975 link "GET" url=$u6
+  @.6977 text " request, a valid bytes "
+  @.6978 link "range-spec" url=$u1
+  @.6980 text " is "
+  @.6981 link "satisfiable" url=$u7
+  @.6983 text " if it is either:an "
+  @.6985 link "int-range" url=$u3
+  @.6987 text " with a "
+  @.6988 link "first-pos" url=$u3
+  @.6990 text " that is less than the current length of the selected representation ora "
+  @.6992 link "suffix-range" url=$u4
+  @.6994 text " with a non-zero "
+  @.6995 link "suffix-length" url=$u4
+  @.6997 text ".When a selected representation has zero length, the only "
+  @.6999 link "satisfiable" url=$u7
+  @.7001 text " form of "
+  @.7002 link "range-spec" url=$u1
+  @.7004 text " in a "
+  @.7005 link "GET" url=$u6
+  @.7007 text " request is a "
+  @.7008 link "suffix-range" url=$u4
+  @.7010 tex
+... [tee capped at 4096 of 10773 bytes]
+
+===== CALL rc=0 out=11560B args=snapshot --next =====
+snapshot[426891-438891 of 696055]:
+  @.7150 text "to indicate that it supports byte range requests for that target resource, thereby encouraging its use by the client for future partial requests on the same request path. Range units are defined in "
+  @.7151 link "Section 14.1" url=$u1
+  @.7153 text ".A client MAY generate range requests regardless of having received an Accept-Ranges field. The information only provides advice for the sake of improving performance and reducing unnecessary network transfers.Conversely, a client MUST NOT assume that receiving an Accept-Ranges field means that future range requests will return partial responses. The content might change, the server might only support range requests at certain times or under certain conditions, or a different intermediary might process the next request.A server that does not support any kind of range request for the target resource MAY send"
+  @.7163 text "Accept-Ranges: none
+"
+  @.7164 text "to advise the client not to attempt a range request on the same request path. The range unit "none" is reserved for this purpose."
+  @.7165 text "The Accept-Ranges field MAY be sent in a trailer section, but is preferred to be sent as a header field because the information is particularly useful for restarting large information transfers that have failed in mid-content (before the trailer section is received)."
+  @.7168 link "14.4. " url="/rfc/rfc9110.html#section-14.4"
+  @.7170 link "Content-Range" url="/rfc/rfc9110.html#name-content-range"
+  @.7172 text "The "Content-Range" header field is sent in a single part "
+  @.7173 link "206 (Partial Content)" url=$u2
+  @.7175 text " response to indicate the partial range of the "
+  @.7176 link "selected representation" url="/rfc/rfc9110.html#selected.representation"
+  @.7178 text " enclosed as the message content, sent in each part of a multipart 206 response to indicate the range enclosed within each body part ("
+  @.7179 link "Section 14.6" url=$u3
+  @.7181 text "), and sent in "
+  @.7182 link "416 (Range Not Satisfiable)" url=$u4
+  @.7184 text " responses to provide information about the selected representation."
+  @.7185 text "  Content-Range       = range-unit SP
+                        ( range-resp / unsatisfied-range )
+
+  range-resp          = incl-range "/" ( complete-length / "*" )
+  incl-range          = first-pos "-" last-pos
+  unsatisfied-range   = "*/" complete-length
+
+  complete-length     = 1*DIGIT
+"
+  @.7186 text "If a "
+  @.7187 link "206 (Partial Content)" url=$u2
+  @.7189 text " response contains a "
+  @.7190 link "Content-Range" url=$u5
+  @.7192 text " header field with a "
+  @.7193 link "range unit" url=$u1
+  @.7195 text " ("
+  @.7196 link "Section 14.1" url=$u1
+  @.7198 text ") that the recipient does not understand, the recipient MUST NOT attempt to recombine it with a stored representation. A proxy that receives such a message SHOULD forward it downstream.Content-Range might also be sent as a request modifier to request a partial PUT, as described in "
+  @.7204 link "Section 14.5" url="/rfc/rfc9110.html#partial.PUT"
+  @.7206 text ", based on private agreements between client and origin server. A server MUST ignore a Content-Range header field received in a request with a method for which Content-Range support is not defined.For byte ranges, a sender SHOULD"
+  @.7211 text " indicate the complete length of the representation from which the range has been extracted, unless the complete length is unknown or difficult to determine. An asterisk character ("*") in place of the complete-length indicates that the representation length was unknown when the header field was generated."
+  @.7212 text "The following example illustrates when the complete length of the selected representation is known by the sender to be 1234 bytes:"
+  @.7213 text "Content-Range: bytes 42-1233/1234
+"
+  @.7214 text "and this second example illustrates when the complete length is unknown:"
+  @.7215 text "Content-Range: bytes 42-1233/*
+"
+  @.7216 text "A Content-Range field value is invalid if it contains a "
+  @.7217 link "range-resp" u
+... [tee capped at 4096 of 11560 bytes]
+
+===== CALL rc=0 out=11792B args=snapshot --next =====
+snapshot[438892-450864 of 696055]:
+  @.7384 text ": The request was received, continuing process"
+  @.7385 link "2xx (Successful)" url="/rfc/rfc9110.html#status.2xx"
+  @.7387 text ": The request was successfully received, understood, and accepted"
+  @.7388 link "3xx (Redirection)" url="/rfc/rfc9110.html#status.3xx"
+  @.7390 text ": Further action needs to be taken in order to complete the request"
+  @.7391 link "4xx (Client Error)" url="/rfc/rfc9110.html#status.4xx"
+  @.7393 text ": The request contains bad syntax or cannot be fulfilled"
+  @.7394 link "5xx (Server Error)" url=$u1
+  @.7396 text ": The server failed to fulfill an apparently valid requestHTTP status codes are extensible. A client is not required to understand the meaning of all registered status codes, though such understanding is obviously desirable. However, a client MUST understand the class of any status code, as indicated by the first digit, and treat an unrecognized status code as being equivalent to the x00 status code of that class.For example, if a client receives an unrecognized status code of 471, it can see from the first digit that there was something wrong with its request and treat the response as if it had received a "
+  @.7401 link "400 (Bad Request)" url="/rfc/rfc9110.html#status.400"
+  @.7403 text " status code. The response message will usually contain a representation that explains the status.Values outside the range 100..599 are invalid. Implementations often use three-digit integer values outside of that range (i.e., 600..999) for internal communication of non-HTTP status (e.g., library errors). A client that receives a response with an invalid status code SHOULD process the response as if it had a "
+  @.7407 link "5xx (Server Error)" url=$u1
+  @.7409 text " status code."
+  @.7410 text "A single request can have multiple associated responses: zero or more "interim" (non-final) responses with status codes in the "informational" ("
+  @.7411 link "1xx" url="/rfc/rfc9110.html#status.1xx"
+  @.7413 text ") range, followed by exactly one "final" response with a status code in one of the other ranges."
+  @.7414 link "15.1. " url="/rfc/rfc9110.html#section-15.1"
+  @.7416 link "Overview of Status Codes" url="/rfc/rfc9110.html#name-overview-of-status-codes"
+  @.7418 text "The status codes listed below are defined in this specification. The reason phrases listed here are only recommendations -- they can be replaced by local equivalents or left out altogether without affecting the protocol.Responses with status codes that are defined as heuristically cacheable (e.g., 200, 203, 204, 206, 300, 301, 308, 404, 405, 410, 414, and 501 in this specification) can be reused by a cache with heuristic expiration unless otherwise indicated by the method definition or explicit cache controls ["
+  @.7421 link "CACHING" url=$u2
+  @.7423 text "]; all other status codes are not heuristically cacheable."
+  @.7425 text "Additional status codes, outside the scope of this specification, have been specified for use in HTTP. All such status codes ought to be registered within the "Hypertext Transfer Protocol (HTTP) Status Code Registry", as described in "
+  @.7426 link "Section 16.2" url="/rfc/rfc9110.html#status.code.extensibility"
+  @.7428 text "."
+  @.7429 link "15.2. " url="/rfc/rfc9110.html#section-15.2"
+  @.7431 link "Informational 1xx" url="/rfc/rfc9110.html#name-informational-1xx"
+  @.7433 text "The 1xx (Informational) class of status code indicates an interim response for communicating connection status or request progress prior to completing the requested action and sending a final response. Since HTTP/1.0 did not define any 1xx status codes, a server MUST NOT send a 1xx response to an HTTP/1.0 client.A 1xx response is terminated by the end of the header section; it cannot contain content or trailers.A client MUST be able to parse one or more 1xx responses received prior to a final response, even if the client does not expect one. A user agent MAY ignore unexpected 1xx responses.A proxy MUST"
+  @.7444 text " forward 1xx responses unless the proxy itself reques
+... [tee capped at 4096 of 11792 bytes]
+
+===== CALL rc=0 out=11600B args=snapshot --next =====
+snapshot[450865-462854 of 696055]:
+  @.7572 link "200 (OK)" url=$u1
+  @.7574 text " response by a transforming proxy ("
+  @.7575 link "Section 7.7" url="/rfc/rfc9110.html#message.transformations"
+  @.7577 text "). This status code allows the proxy to notify recipients when a transformation has been applied, since that knowledge might impact later decisions regarding the content. For example, future cache validation requests for the content might only be applicable along the same request path (through the same proxies).A 203 response is heuristically cacheable; i.e., unless otherwise indicated by the method definition or explicit cache controls (see "
+  @.7579 link "Section 4.2.2" url=$u2
+  @.7581 text " of ["
+  @.7582 link "CACHING" url=$u3
+  @.7584 text "])."
+  @.7586 link "15.3.5. " url="/rfc/rfc9110.html#section-15.3.5"
+  @.7588 link "204 No Content" url="/rfc/rfc9110.html#name-204-no-content"
+  @.7590 text "The 204 (No Content) status code indicates that the server has successfully fulfilled the request and that there is no additional content to send in the response content. Metadata in the response header fields refer to the "
+  @.7591 link "target resource" url="/rfc/rfc9110.html#target.resource"
+  @.7593 text " and its "
+  @.7594 link "selected representation" url=$u4
+  @.7596 text " after the requested action was applied.For example, if a 204 status code is received in response to a PUT request and the response contains an "
+  @.7598 link "ETag" url=$u5
+  @.7600 text " field, then the PUT was successful and the ETag field value contains the entity tag for the new representation of that target resource."
+  @.7601 text "The 204 response allows a server to indicate that the action has been successfully applied to the target resource, while implying that the user agent does not need to traverse away from its current "document view" (if any). The server assumes that the user agent will provide some indication of the success to its user, in accord with its own interface, and apply any new or updated metadata in the response to its active representation."
+  @.7602 text "For example, a 204 status code is commonly used with document editing interfaces corresponding to a "save" action, such that the document being saved remains available to the user for editing. It is also frequently used with interfaces that expect automated data transfers to be prevalent, such as within distributed version control systems."
+  @.7603 text "A 204 response is terminated by the end of the header section; it cannot contain content or trailers.A 204 response is heuristically cacheable; i.e., unless otherwise indicated by the method definition or explicit cache controls (see "
+  @.7605 link "Section 4.2.2" url=$u2
+  @.7607 text " of ["
+  @.7608 link "CACHING" url=$u3
+  @.7610 text "])."
+  @.7612 link "15.3.6. " url="/rfc/rfc9110.html#section-15.3.6"
+  @.7614 link "205 Reset Content" url="/rfc/rfc9110.html#name-205-reset-content"
+  @.7616 text "The 205 (Reset Content) status code indicates that the server has fulfilled the request and desires that the user agent reset the "document view", which caused the request to be sent, to its original state as received from the origin server."
+  @.7617 text "This response is intended to support a common data entry use case where the user receives content that supports data entry (a form, notepad, canvas, etc.), enters or manipulates data in that space, causes the entered data to be submitted in a request, and then the data entry mechanism is reset for the next entry so that the user can easily initiate another input action.Since the 205 status code implies that no additional content will be provided, a server MUST NOT generate content in a 205 response."
+  @.7621 link "15.3.7. " url="/rfc/rfc9110.html#section-15.3.7"
+  @.7623 link "206 Partial Content" url="/rfc/rfc9110.html#name-206-partial-content"
+  @.7625 text "The 206 (Partial Content) status code indicates that the server is successfully fulfilling a range request for the target resource by transferring one or more parts of the "
+  @.7626 link "selec
+... [tee capped at 4096 of 11600 bytes]
+
+===== CALL rc=0 out=11510B args=snapshot --next =====
+snapshot[462855-474771 of 696055]:
+  @.7761 text "A response might transfer only a subrange of a representation if the connection closed prematurely or if the request used one or more Range specifications. After several such transfers, a client might have received several ranges of the same representation. These ranges can only be safely combined if they all have in common the same strong validator ("
+  @.7762 link "Section 8.8.1" url="/rfc/rfc9110.html#weak.and.strong.validators"
+  @.7764 text ").A client that has received multiple partial responses to GET requests on a target resource MAY combine those responses into a larger continuous range if they share the same strong validator.If the most recent response is an incomplete "
+  @.7769 link "200 (OK)" url=$u1
+  @.7771 text " response, then the header fields of that response are used for any combined response and replace those of the matching stored responses.If the most recent response is a "
+  @.7773 link "206 (Partial Content)" url=$u2
+  @.7775 text " response and at least one of the matching stored responses is a "
+  @.7776 link "200 (OK)" url=$u1
+  @.7778 text ", then the combined response header fields consist of the most recent 200 response's header fields. If all of the matching stored responses are 206 responses, then the stored response with the most recent header fields is used as the source of header fields for the combined response, except that the client MUST use other header fields provided in the new response, aside from "
+  @.7781 link "Content-Range" url=$u3
+  @.7783 text ", to replace all instances of the corresponding header fields in the stored response.The combined response content consists of the union of partial content ranges within the new response and all of the matching stored responses. If the union consists of the entire range of the representation, then the client MUST process the combined response as if it were a complete "
+  @.7787 link "200 (OK)" url=$u1
+  @.7789 text " response, including a "
+  @.7790 link "Content-Length" url=$u4
+  @.7792 text " header field that reflects the complete length. Otherwise, the client MUST process the set of continuous ranges as one of the following: an incomplete "
+  @.7795 link "200 (OK)" url=$u1
+  @.7797 text " response if the combined response is a prefix of the representation, a single "
+  @.7798 link "206 (Partial Content)" url=$u2
+  @.7800 text " response containing "multipart/byteranges" content, or multiple "
+  @.7801 link "206 (Partial Content)" url=$u2
+  @.7803 text " responses, each with one continuous range that is indicated by a "
+  @.7804 link "Content-Range" url=$u3
+  @.7806 text " header field."
+  @.7807 link "15.4. " url="/rfc/rfc9110.html#section-15.4"
+  @.7809 link "Redirection 3xx" url="/rfc/rfc9110.html#name-redirection-3xx"
+  @.7811 text "The 3xx (Redirection) class of status code indicates that further action needs to be taken by the user agent in order to fulfill the request. There are several types of redirects:Redirects that indicate this resource might be available at a different URI, as provided by the "
+  @.7813 link "Location" url=$u5
+  @.7815 text " header field, as in the status codes "
+  @.7816 link "301 (Moved Permanently)" url=$u6
+  @.7818 text ", "
+  @.7819 link "302 (Found)" url=$u7
+  @.7821 text ", "
+  @.7822 link "307 (Temporary Redirect)" url=$u8
+  @.7824 text ", and "
+  @.7825 link "308 (Permanent Redirect)" url=$u9
+  @.7827 text ".Redirection that offers a choice among matching resources capable of representing this resource, as in the "
+  @.7829 link "300 (Multiple Choices)" url="/rfc/rfc9110.html#status.300"
+  @.7831 text " status code.Redirection to a different resource, identified by the "
+  @.7833 link "Location" url=$u5
+  @.7835 text " header field, that can represent an indirect response to the request, as in the "
+  @.7836 link "303 (See Other)" url=$u10
+  @.7838 text " status code.Redirection to a previously stored result, as in the "
+  @.7840 link "304 (Not Modified)" url="/rfc/rfc9110.html#status.304"
+  @.7842 text " status code.Note: In HTTP/1.0, the
+... [tee capped at 4096 of 11510 bytes]
+
+===== CALL rc=0 out=11551B args=snapshot --next =====
+snapshot[474772-486629 of 696055]:
+  @.7993 text "]).Note: The original proposal for the 300 status code defined the URI header field as providing a list of alternative representations, such that it would be usable for 200, 300, and 406 responses and be transferred in responses to the HEAD method. However, lack of deployment and disagreement over syntax led to both URI and Alternates (a subsequent proposal) being dropped from this specification. It is possible to communicate the list as a Link header field value ["
+  @.7998 link "RFC8288" url="/rfc/rfc9110.html#RFC8288"
+  @.8000 text "]"
+  @.8001 text " whose members have a relationship of "alternate", though deployment is a chicken-and-egg problem."
+  @.8002 link "15.4.2. " url="/rfc/rfc9110.html#section-15.4.2"
+  @.8004 link "301 Moved Permanently" url="/rfc/rfc9110.html#name-301-moved-permanently"
+  @.8006 text "The 301 (Moved Permanently) status code indicates that the "
+  @.8007 link "target resource" url=$u1
+  @.8009 text " has been assigned a new permanent URI and any future references to this resource ought to use one of the enclosed URIs. The server is suggesting that a user agent with link-editing capability can permanently replace references to the target URI with one of the new references sent by the server. However, this suggestion is usually ignored unless the user agent is actively editing references (e.g., engaged in authoring content), the connection is secured, and the origin server is a trusted authority for the content being edited.The server SHOULD generate a "
+  @.8013 link "Location" url=$u2
+  @.8015 text " header field in the response containing a preferred URI reference for the new permanent URI. The user agent MAY use the Location field value for automatic redirection. The server's response content usually contains a short hypertext note with a hyperlink to the new URI(s).Note: For historical reasons, a user agent MAY change the request method from POST to GET for the subsequent request. If this behavior is undesired, the "
+  @.8022 link "308 (Permanent Redirect)" url="/rfc/rfc9110.html#status.308"
+  @.8024 text " status code can be used instead.A 301 response is heuristically cacheable; i.e., unless otherwise indicated by the method definition or explicit cache controls (see "
+  @.8026 link "Section 4.2.2" url=$u3
+  @.8028 text " of ["
+  @.8029 link "CACHING" url=$u4
+  @.8031 text "])."
+  @.8033 link "15.4.3. " url="/rfc/rfc9110.html#section-15.4.3"
+  @.8035 link "302 Found" url="/rfc/rfc9110.html#name-302-found"
+  @.8037 text "The 302 (Found) status code indicates that the target resource resides temporarily under a different URI. Since the redirection might be altered on occasion, the client ought to continue to use the target URI for future requests.The server SHOULD generate a "
+  @.8041 link "Location" url=$u2
+  @.8043 text " header field in the response containing a URI reference for the different URI. The user agent MAY use the Location field value for automatic redirection. The server's response content usually contains a short hypertext note with a hyperlink to the different URI(s).Note: For historical reasons, a user agent MAY change the request method from POST to GET for the subsequent request. If this behavior is undesired, the "
+  @.8050 link "307 (Temporary Redirect)" url="/rfc/rfc9110.html#status.307"
+  @.8052 text " status code can be used instead."
+  @.8053 link "15.4.4. " url="/rfc/rfc9110.html#section-15.4.4"
+  @.8055 link "303 See Other" url="/rfc/rfc9110.html#name-303-see-other"
+  @.8057 text "The 303 (See Other) status code indicates that the server is redirecting the user agent to a different resource, as indicated by a URI in the "
+  @.8058 link "Location" url=$u2
+  @.8060 text " header field, which is intended to provide an indirect response to the original request. A user agent can perform a retrieval request targeting that URI (a GET or HEAD request if using HTTP), which might also be redirected, and present the eventual result as an answer to the original request. Note that the new URI in the Location header field i
+... [tee capped at 4096 of 11551 bytes]
+
+===== CALL rc=0 out=11687B args=snapshot --next =====
+snapshot[486630-498614 of 696055]:
+  @.8199 text "The 4xx (Client Error) class of status code indicates that the client seems to have erred. Except when responding to a HEAD request, the server SHOULD send a representation containing an explanation of the error situation, and whether it is a temporary or permanent condition. These status codes are applicable to any request method. User agents SHOULD display any included representation to the user."
+  @.8204 link "15.5.1. " url="/rfc/rfc9110.html#section-15.5.1"
+  @.8206 link "400 Bad Request" url="/rfc/rfc9110.html#name-400-bad-request"
+  @.8208 text "The 400 (Bad Request) status code indicates that the server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing)."
+  @.8209 link "15.5.2. " url="/rfc/rfc9110.html#section-15.5.2"
+  @.8211 link "401 Unauthorized" url="/rfc/rfc9110.html#name-401-unauthorized"
+  @.8213 text "The 401 (Unauthorized) status code indicates that the request has not been applied because it lacks valid authentication credentials for the target resource. The server generating a 401 response MUST send a "
+  @.8216 link "WWW-Authenticate" url=$u1
+  @.8218 text " header field ("
+  @.8219 link "Section 11.6.1" url=$u1
+  @.8221 text ") containing at least one challenge applicable to the target resource.If the request included authentication credentials, then the 401 response indicates that authorization has been refused for those credentials. The user agent MAY repeat the request with a new or replaced "
+  @.8225 link "Authorization" url=$u2
+  @.8227 text " header field ("
+  @.8228 link "Section 11.6.2" url=$u2
+  @.8230 text "). If the 401 response contains the same challenge as the prior response, and the user agent has already attempted authentication at least once, then the user agent SHOULD present the enclosed representation to the user, since it usually contains relevant diagnostic information."
+  @.8233 link "15.5.3. " url="/rfc/rfc9110.html#section-15.5.3"
+  @.8235 link "402 Payment Required" url="/rfc/rfc9110.html#name-402-payment-required"
+  @.8237 text "The 402 (Payment Required) status code is reserved for future use."
+  @.8238 link "15.5.4. " url="/rfc/rfc9110.html#section-15.5.4"
+  @.8240 link "403 Forbidden" url="/rfc/rfc9110.html#name-403-forbidden"
+  @.8242 text "The 403 (Forbidden) status code indicates that the server understood the request but refuses to fulfill it. A server that wishes to make public why the request has been forbidden can describe that reason in the response content (if any).If authentication credentials were provided in the request, the server considers them insufficient to grant access. The client SHOULD NOT automatically repeat the request with the same credentials. The client MAY repeat the request with new or different credentials. However, a request might be forbidden for reasons unrelated to the credentials."
+  @.8248 text "An origin server that wishes to "hide" the current existence of a forbidden "
+  @.8249 link "target resource" url=$u3
+  @.8252 text "MAY instead respond with a status code of "
+  @.8254 link "404 (Not Found)" url=$u4
+  @.8256 text "."
+  @.8257 link "15.5.5. " url="/rfc/rfc9110.html#section-15.5.5"
+  @.8259 link "404 Not Found" url="/rfc/rfc9110.html#name-404-not-found"
+  @.8261 text "The 404 (Not Found) status code indicates that the origin server did not find a current representation for the "
+  @.8262 link "target resource" url=$u3
+  @.8264 text " or is not willing to disclose that one exists. A 404 status code does not indicate whether this lack of representation is temporary or permanent; the "
+  @.8265 link "410 (Gone)" url="/rfc/rfc9110.html#status.410"
+  @.8267 text " status code is preferred over 404 if the origin server knows, presumably through some configurable means, that the condition is likely to be permanent.A 404 response is heuristically cacheable; i.e., unless otherwise indicated by the method definition or explicit cache controls (see "
+ 
+... [tee capped at 4096 of 11687 bytes]

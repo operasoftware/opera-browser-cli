@@ -1,0 +1,4 @@
+1788275893.3466091156	0.13	0	3156	0	--help
+1788275895.2359900475	1.45	0	12616	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788275900.0280239582	0.35	0	318	0	eval Array.from(document.querySelectorAll('a')).filter(a => a.textContent.includes('404')).map(a => ({href: a.getAttribute('href'), text: a.textContent}))
+1788275904.0815620422	0.35	0	902	0	eval (() => {   const el = document.getElementById('name-404-not-found') || document.querySelector('[href="#name-404-not-found"]') || document.getElementById('status.404');   if (!el) return 'Not found';   // Let's find the header text or section number   // Typically, sections have an <a> tag with class='section-number' or similar, or it's in the text.   // Let's print the outerHTML of the element or its parent   return el.outerHTML + ' | parent: ' + el.parentElement.outerHTML.substring(0, 500); })()

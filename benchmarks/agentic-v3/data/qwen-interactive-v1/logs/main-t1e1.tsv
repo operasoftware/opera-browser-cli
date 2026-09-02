@@ -1,0 +1,3 @@
+1788345020.1402809620	0.13	0	3156	0	--help
+1788345025.0802309513	1.47	0	12610	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788345032.5086560249	0.36	0	127	0	eval Array.from(document.querySelectorAll('section')).filter(s=>/404/.test(s.querySelector(':scope > h2, :scope > h3, :scope > h4')?.textContent||'')).map(s=>{const h=s.querySelector(':scope > h2, :scope > h3, :scope > h4');return h.id+' | '+h.textContent.trim()}).join('\n')

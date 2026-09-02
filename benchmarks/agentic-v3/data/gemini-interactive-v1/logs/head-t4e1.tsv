@@ -1,0 +1,5 @@
+1788275460.7473649979	0.14	0	3156	0	--help
+1788275463.1621289253	0.69	0	12735	0	open https://en.wikipedia.org/wiki/List_of_chemical_elements
+1788275466.8011250496	0.35	0	232	0	eval (() => {   const rows = Array.from(document.querySelectorAll('table.wikitable tbody tr, table tbody tr'));   for (const row of rows) {     if (row.innerText && row.innerText.includes('Tungsten')) {       return Array.from(row.cells).map(cell => cell.innerText.trim());     }   }   return 'Not found'; })()
+1788275470.3819329739	0.35	0	548	0	eval (() => {   const table = Array.from(document.querySelectorAll('table')).find(t => t.innerText.includes('Tungsten'));   if (table) {     const headers = Array.from(table.querySelectorAll('tr:nth-child(1) th, tr:nth-child(2) th')).map(th => th.innerText.trim());     return headers;   }   return 'No table'; })()
+1788275474.0891730785	0.34	0	100	0	eval (() => {   const rows = Array.from(document.querySelectorAll('table tbody tr'));   for (const row of rows) {     if (row.innerText && row.innerText.includes('Tungsten')) {       return row.cells[7].outerHTML;     }   }   return 'Not found'; })()

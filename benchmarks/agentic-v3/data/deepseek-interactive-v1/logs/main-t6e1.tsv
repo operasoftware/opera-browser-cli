@@ -1,0 +1,5 @@
+1788348055.4171500206	0.13	0	3156	0	--help
+1788348056.4591999054	1.19	0	12027	0	open https://books.toscrape.com/
+1788348059.0766830444	0.81	0	10682	0	click @56.12
+1788348062.6246609688	0.35	0	88	0	eval Array.from(document.querySelectorAll('article.product_pod')).map(a=>({t:a.querySelector('h3 a').getAttribute('title'), p:a.querySelector('.price_color').textContent})).forEach(x=>console.log(x.p+' | '+x.t))
+1788348064.3119380474	0.35	0	1091	0	eval JSON.stringify(Array.from(document.querySelectorAll('article.product_pod')).map(a=>({t:a.querySelector('h3 a').getAttribute('title'), p:a.querySelector('.price_color').textContent})))

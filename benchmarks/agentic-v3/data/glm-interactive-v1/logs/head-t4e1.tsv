@@ -1,0 +1,5 @@
+1788339980.3878400326	0.15	0	3156	0	--help
+1788339982.3740921021	0.74	0	12735	0	open https://en.wikipedia.org/wiki/List_of_chemical_elements
+1788339987.1941089630	0.16	1	50	0	eval document.querySelectorAll('table tbody tr').forEach(tr => { const tds = tr.querySelectorAll('td'); if (tds.length > 2) { const txt = tds[2]?.textContent || ''; if (txt.includes('Tungsten')) { console.log(tr.textContent.replace(/\s+/g, ' ').trim()); } } });
+1788339991.0115449429	0.16	1	52	0	eval var rows = document.querySelectorAll('table tbody tr'); for (var i = 0; i < rows.length; i++) { var tds = rows[i].querySelectorAll('td'); if (tds.length > 2 && (tds[2].textContent || '').indexOf('Tungsten') !== -1) { console.log(rows[i].textContent.replace(/\s+/g, ' ').trim()); break; } }
+1788339994.1427450180	0.37	0	172	0	eval Array.from(document.querySelectorAll('table tbody tr')).filter(tr => tr.textContent.includes('Tungsten')).map(tr => tr.textContent.replace(/\s+/g, ' ').trim())

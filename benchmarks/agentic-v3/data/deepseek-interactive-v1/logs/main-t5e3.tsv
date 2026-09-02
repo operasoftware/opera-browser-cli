@@ -1,0 +1,8 @@
+1788348637.4071691036	0.13	0	3156	0	--help
+1788348638.2442591190	1.05	0	12506	0	open https://en.wikipedia.org/wiki/Moon
+1788348641.2826039791	0.36	0	331	0	eval Array.from(document.querySelectorAll('a')).filter(a=>/Giant-impact/i.test(a.textContent)).map(a=>a.textContent+' => '+a.href).join('\n')
+1788348642.5612130165	0.14	0	112	0	eval const a=Array.from(document.querySelectorAll('a')).find(a=>/Giant-impact hypothesis/.test(a.textContent)); a.click(); 'clicked';
+1788348643.7906949520	0.37	0	138	0	eval (function(){var a=Array.from(document.querySelectorAll('a')).filter(function(x){return /Giant-impact hypothesis/.test(x.textContent);})[0]; a.click(); return a.href;})()
+1788348645.3877689838	0.35	0	164	0	eval location.href + ' | ' + (document.querySelector('h1')?document.querySelector('h1').textContent:'')
+1788348646.5750560760	0.35	0	527	0	eval document.body.innerText.replace(/\n+/g,' ').match(/[^.]*billion years[^.]*\.?/gi).slice(0,10).join(' || ')
+1788348648.6330230236	0.36	0	1287	0	eval (function(){var t=document.querySelector('#mw-content-text').innerText.replace(/\s+/g,' '); var i=t.indexOf('4.5'); return t.slice(0,1200);})()

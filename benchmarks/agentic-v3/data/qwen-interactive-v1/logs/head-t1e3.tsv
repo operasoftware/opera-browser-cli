@@ -1,0 +1,5 @@
+1788346118.9592030048	0.13	0	3156	0	--help
+1788346132.4181160927	1.39	0	12691	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788346139.2505660057	0.35	0	106	0	eval Array.from(document.querySelectorAll('h2,h3,h4,h5,h6')).filter(h=>/404/.test(h.textContent)).map(h=>h.textContent.trim()).join(' | ')
+1788346153.7361509800	0.14	1	52	0	eval var h=Array.from(document.querySelectorAll('h2,h3,h4,h5,h6')).find(h=>/404/.test(h.textContent)); JSON.stringify({tag:h.tagName, text:h.textContent, title:h.querySelector('a')?h.querySelector('a').textContent:null, id:h.id})
+1788346179.2186560631	0.35	0	210	0	eval (() => { const h = Array.from(document.querySelectorAll('h2,h3,h4,h5,h6')).find(h => /404/.test(h.textContent)); return JSON.stringify({tag: h.tagName, text: h.textContent, id: h.id}); })()

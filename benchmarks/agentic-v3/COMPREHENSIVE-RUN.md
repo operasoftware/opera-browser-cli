@@ -73,10 +73,22 @@ Raw CLI bytes are not a proxy for model context. The Claude Code driver may trun
 compact tool results. Interpret cost using the envelope's actual cache/token accounting,
 and describe truncation behavior as a separate experimental variable.
 
-## Extension after Sonnet
+## Cross-family extension
 
-Cross-family runs require equivalent coverage and explicit accounting differences. Do not
-combine a direct-driver model with Claude Code Sonnet as though truncation and caching were
-identical. Report each route's cache support and tool-result policy. The first objective is
-a valid Sonnet `main`/`head` comparison over the full interactive suite; model-family
-expansion follows only after that result is complete.
+After the cache-aware Sonnet run, the same matrix is run through `run-direct.py` for the
+five non-Anthropic routes. The direct driver uses the Responses API, an 8,000-character
+tool-result cap, and a 50-turn ceiling:
+
+```sh
+BENCH_MODEL=openai/gpt-5.6-terra BENCH_RUN_ID=terra-interactive-v1 \
+  python3 run-direct.py strict 3 main head
+BENCH_MODEL=openai/gpt-5.6-terra BENCH_RUN_ID=terra-interactive-v1 \
+  python3 run-direct.py open 3 main head
+```
+
+Repeat with the route and run ID recorded in the whitepaper for Gemini, GLM, Qwen, and
+DeepSeek. Do not combine their absolute totals with Claude Code Sonnet as though context
+handling and caching were identical. The primary comparison is `head` versus `main` within
+a model. Report cache support, price source, tool-result policy, turn ceiling, failures,
+and anomalous tails. For routes whose gateway price fields are zero, state **billing data
+unavailable**; do not infer that the model is free.

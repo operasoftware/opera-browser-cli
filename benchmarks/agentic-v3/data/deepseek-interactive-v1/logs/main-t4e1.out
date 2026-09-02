@@ -1,0 +1,216 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12631B args=open https://en.wikipedia.org/wiki/List_of_chemical_elements =====
+page:
+  title: List of chemical elements - Wikipedia
+  url: "https://en.wikipedia.org/wiki/List_of_chemical_elements"
+  refs: 1445
+snapshot:
+@17.0 root "List of chemical elements - Wikipedia" url=$u1
+  @17.1 generic live="polite"
+  @17.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @17.4 banner
+    @17.5 navigation "Site"
+      @17.6 button "Main menu" haspopup="menu"
+    @17.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @17.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @17.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @17.10 search
+      @17.11 form
+        @17.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @17.13 button "Search"
+    @17.14 navigation "Personal tools"
+      @17.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @17.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @17.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @17.21 navigation "Contents"
+    @17.22 ## Contents
+    @17.23 button "Hide Contents"
+    @17.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @17.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @17.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @17.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @17.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @17.34 main
+    @17.35 # List of chemical elements
+    @17.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @17.37 navigation "Namespaces"
+      @17.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @17.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @17.42 navigation "Views"
+      @17.43 link "Read" url=$u1
+      @17.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @17.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @17.49 navigation "Page tools"
+      @17.50 button "Tools" haspopup="menu"
+    @17.51 navigation "Appearance"
+      @17.53 button "Hide Appearance"
+      @17.54 text "Text"
+      @17.55 form
+        @17.56 radio "Small"
+        @17.57 text "Small"
+        @17.58 radio "Standard" checked
+        @17.59 text "Standard"
+        @17.60 radio "Large"
+        @17.61 text "Large"
+      @17.62 text "Width"
+      @17.63 form
+        @17.64 radio "Standard" checked
+        @17.65 text "Standard"
+        @17.66 radio "Wide"
+        @17.67 text "Wide"
+      @17.68 text "Color"
+      @17.69 form
+        @17.70 radio "Automatic"
+        @17.71 text "Automatic"
+        @17.72 radio "Light" checked
+        @17.73 text "Light"
+        @17.74 radio "Dark"
+        @17.75 text "Dark"
+    @17.76 text "From Wikipedia, the free encyclopedia118 "
+    @17.78 link "chemical elements" description="Chemical element" url=$u2
+    @17.80 text " have been "
+    @17.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @17.83 text " and named officially by "
+    @17.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chem
+... [tee capped at 4096 of 12631 bytes]
+
+===== CALL rc=0 out=12514B args=snapshot =====
+page:
+  title: List of chemical elements - Wikipedia
+  refs: 1445
+snapshot:
+@17.0 root "List of chemical elements - Wikipedia" url=$u1
+  @17.1 generic live="polite"
+  @17.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @17.4 banner
+    @17.5 navigation "Site"
+      @17.6 button "Main menu" haspopup="menu"
+    @17.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @17.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @17.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @17.10 search
+      @17.11 form
+        @17.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @17.13 button "Search"
+    @17.14 navigation "Personal tools"
+      @17.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @17.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @17.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @17.21 navigation "Contents"
+    @17.22 ## Contents
+    @17.23 button "Hide Contents"
+    @17.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @17.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @17.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @17.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @17.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @17.34 main
+    @17.35 # List of chemical elements
+    @17.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @17.37 navigation "Namespaces"
+      @17.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @17.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @17.42 navigation "Views"
+      @17.43 link "Read" url=$u1
+      @17.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @17.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @17.49 navigation "Page tools"
+      @17.50 button "Tools" haspopup="menu"
+    @17.51 navigation "Appearance"
+      @17.53 button "Hide Appearance"
+      @17.54 text "Text"
+      @17.55 form
+        @17.56 radio "Small"
+        @17.57 text "Small"
+        @17.58 radio "Standard" checked
+        @17.59 text "Standard"
+        @17.60 radio "Large"
+        @17.61 text "Large"
+      @17.62 text "Width"
+      @17.63 form
+        @17.64 radio "Standard" checked
+        @17.65 text "Standard"
+        @17.66 radio "Wide"
+        @17.67 text "Wide"
+      @17.68 text "Color"
+      @17.69 form
+        @17.70 radio "Automatic"
+        @17.71 text "Automatic"
+        @17.72 radio "Light" checked
+        @17.73 text "Light"
+        @17.74 radio "Dark"
+        @17.75 text "Dark"
+    @17.76 text "From Wikipedia, the free encyclopedia118 "
+    @17.78 link "chemical elements" description="Chemical element" url=$u2
+    @17.80 text " have been "
+    @17.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @17.83 text " and named officially by "
+    @17.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @17.86 text ". A chemical element, often simply called
+... [tee capped at 4096 of 12514 bytes]
+
+===== CALL rc=0 out=318B args=eval (()=>{const rows=[...document.querySelectorAll('table tr')];const r=rows.find(x=>x.textContent.includes('Tungsten'));return r?[...r.querySelectorAll('td,th')].map((c,i)=>i+'['+c.getAttribute('data-sort-value')+']'+c.textContent.trim()).join(' | '):'notfound'})() =====
+result: "\"0[null]74 | 1[null]W | 2[null]Tungsten | 3[null][ch] | 4[null]6 | 5[null]6 | 6[3074]d-block | 7[null]183.84 | 8[null]19.25 | 9[null]3695 | 10[null]6203 | 11[null]0.132 | 12[null]2.36 | 13[null]1.3 | 14[null]primordial | 15[null]solid\""
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state

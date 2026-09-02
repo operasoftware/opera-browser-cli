@@ -1,0 +1,153 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12735B args=open https://en.wikipedia.org/wiki/List_of_chemical_elements =====
+page:
+  title: List of chemical elements - Wikipedia
+  url: "https://en.wikipedia.org/wiki/List_of_chemical_elements"
+  snap: "17"
+  refs: 1445
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.34 main
+    @.35 # List of chemical elements
+    @.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.37 navigation "Namespaces"
+      @.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.42 navigation "Views"
+      @.43 link "Read" url=$u1
+      @.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.49 navigation "Page tools"
+      @.50 button "Tools" haspopup="menu"
+    @.51 navigation "Appearance"
+      @.53 button "Hide Appearance"
+      @.54 text "Text"
+      @.55 form
+        @.56 radio "Small"
+        @.57 text "Small"
+        @.58 radio "Standard" checked
+        @.59 text "Standard"
+        @.60 radio "Large"
+        @.61 text "Large"
+      @.62 text "Width"
+      @.63 form
+        @.64 radio "Standard" checked
+        @.65 text "Standard"
+        @.66 radio "Wide"
+        @.67 text "Wide"
+      @.68 text "Color"
+      @.69 form
+        @.70 radio "Automatic"
+        @.71 text "Automatic"
+        @.72 radio "Light" checked
+        @.73 text "Light"
+        @.74 radio "Dark"
+        @.75 text "Dark"
+    @.76 text "From Wikipedia, the free encyclopedia118 "
+    @.78 link "chemical elements" description="Chemical element" url=$u2
+    @.80 text " have been "
+    @.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.83 text " and named officially by "
+    @.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @.86 text ". A chemical element, often simply called an element, is a type of "
+    @.87 link "atom" descripti
+... [tee capped at 4096 of 12735 bytes]
+
+===== CALL rc=0 out=122B args=eval document.title =====
+result: "\"List of chemical elements - Wikipedia\""
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=232B args=eval (() => {   const elements = Array.from(document.querySelectorAll('tr'));   const tungstenRow = elements.find(tr => tr.textContent.includes('Tungsten'));   if (!tungstenRow) return 'Not found';   return Array.from(tungstenRow.querySelectorAll('td, th')).map(cell => cell.textContent.trim()); })() =====
+result: "[\"74\",\"W\",\"Tungsten\",\"[ch]\",\"6\",\"6\",\"d-block\",\"183.84\",\"19.25\",\"3695\",\"6203\",\"0.132\",\"2.36\",\"1.3\",\"primordial\",\"solid\"]"
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=4527B args=eval (() => {   const table = document.querySelector('table');   if (!table) return 'No table';   const headers = Array.from(table.querySelectorAll('th'));   return headers.map(h => h.textContent.trim()); })() =====
+result: "[\"hide.mw-parser-output .hlist dl,.mw-parser-output .hlist ol,.mw-parser-output .hlist ul{margin:0;padding:0}.mw-parser-output .hlist dd,.mw-parser-output .hlist dt,.mw-parser-output .hlist li{margin:0;display:inline}.mw-parser-output .hlist.inline,.mw-parser-output .hlist.inline dl,.mw-parser-output .hlist.inline ol,.mw-parser-output .hlist.inline ul,.mw-parser-output .hlist dl dl,.mw-parser-output .hlist dl ol,.mw-parser-output .hlist dl ul,.mw-parser-output .hlist ol dl,.mw-parser-output .hlist ol ol,.mw-parser-output .hlist ol ul,.mw-parser-output .hlist ul dl,.mw-parser-output .hlist ul ol,.mw-parser-output .hlist ul ul{display:inline}.mw-parser-output .hlist .mw-empty-li{display:none}.mw-parser-output .hlist dt::after{content:\\\": \\\"}.mw-parser-output .hlist dd::after,.mw-parser-output .hlist li::after{content:\\\"\\\\a0 · \\\";font-weight:bold}.mw-parser-output .hlist dd:last-child::after,.mw-parser-output .hlist dt:last-child::after,.mw-parser-output .hlist li:last-child::after{content:none}.mw-parser-output .hlist dd dd:first-child::before,.mw-parser-output .hlist dd dt:first-child::before,.mw-parser-output .hlist dd li:first-child::before,.mw-parser-output .hlist dt dd:first-child::before,.mw-parser-output .hlist dt dt:first-child::before,.mw-parser-output .hlist dt li:first-child::before,.mw-parser-output .hlist li dd:first-child::before,.mw-parser-output .hlist li dt:first-child::before,.mw-parser-output .hlist li li:first-child::before{content:\\\" (\\\";font-weight:normal}.mw-parser-output .hlist dd dd:last-child::after,.mw-parser-output .hlist dd dt:last-child::after,.mw-parser-output .hlist dd li:last-child::after,.mw-parser-output .hlist dt dd:last-child::after,.mw-parser-output .hlist dt dt:last-child::after,.mw-parser-output .hlist dt li:last-child::after,.mw-parser-output .hlist li dd:last-child::after,.mw-parser-output .hlist li dt:last-child::after,.mw-parser-output .hlist li li:last-child::after{content:\\\")\\\";font-weight:normal}.mw-parser-output .hlist ol{counter-reset:listitem}.mw-parser-output .hlist ol>li{counter-increment:listitem}.mw-parser-output .hlist ol>li::before{content:\\\" \\\"counter(listitem)\\\"\\\\a0 \\\"}.mw-parser-output .hlist dd ol>li:first-child::before,.mw-parser-output .hlist dt ol>li:first-child::before,.mw-parser-output .hlist li ol>li:first-child::before{content:\\\" (\\\"counter(listitem)\\\"\\\\a0 \\\"}.mw-parser-output .navbar{display:inline;font-size:88%;font-weight:normal}.mw-parser-output .navbar-collapse{float:left;text-align:left}.mw-parser-output .navbar-boxtext{word-spacing:0}.mw-parser-output .navbar ul{display:inline-block;white-space:nowrap;line-height:inherit}.mw-parser-output .navbar-brackets::before{margin-right:-0.125em;content:\\\"[ \\\"}.mw-parser-output .navbar-brackets::after{margin-left:-0.125em;content:\\\" ]\\\"}.mw-parser-output .navbar li{word-spacing:-0.125em}.mw-parser-output .navbar a>span,.mw-parser-output .navbar a>abbr{text-decoration:inherit}.mw-parser-output .navbar-mini abbr{font-variant:small-caps;border-bottom:none;text-decoration:none;cursor:inherit}.mw-parser-output .navbar-ct-full{font-size:114%;margin:0 7em}.mw-parser-output .navbar-ct-mini{font-size:114%;margin:0 4em}html.skin-theme-clientpref-night .mw-parser-output .navbar li a abbr{color:var(--color-base)!important}@media(prefers-color-scheme:dark){html.skin-theme-clientpref-os .mw-parser-output .navbar li a abbr{color:var(--color-base)!important}}@media print{.mw-parser-output .navbar{display:none!important}}vteList of chemical elements\",\"Z\",\"Sym.\",\"Element\",\"Nameorigin[2][3]\",\"Group\",\"Period\",\"Block\",\"Atomicweight[a].mw-parser-output .nobold{font-weight:normal}(Da)\",\"Density[b][c](.mw-parser-output .sfrac{white-space:nowrap}.mw-parser-output .sfrac.tion,.mw-parser-output .sfrac .tion{display:inline-block;vertical-align:-0.5em;font-size:85%;text-align:center;margin-left:.1em;margin-right:.1em}.mw-parser-output .sfrac .num{display:block;border-bottom:1px solid}.mw-parser-output .sfrac .den{display:block;line-height:1.5em}.mw-parser-output .sr
+... [tee capped at 4096 of 4527 bytes]

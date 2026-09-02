@@ -18,8 +18,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RUN_ID = os.environ.get("BENCH_RUN_ID", "").strip()
-RESULT_ROOT = ROOT / "results" / RUN_ID if RUN_ID else ROOT / "results"
-LOG_ROOT = ROOT / "logs" / RUN_ID if RUN_ID else ROOT / "logs"
+DATA_DIR = os.environ.get("BENCH_DATA_DIR", "").strip()
+RESULT_ROOT = Path(DATA_DIR) / "results" if DATA_DIR else (ROOT / "results" / RUN_ID if RUN_ID else ROOT / "results")
+LOG_ROOT = Path(DATA_DIR) / "logs" if DATA_DIR else (ROOT / "logs" / RUN_ID if RUN_ID else ROOT / "logs")
 TASKS = [line.split("\t")[0] for line in (ROOT / "harness" / "tasks.tsv").read_text().splitlines() if line.strip()]
 TAG = {"open": "e", "strict": "s"}
 # Commands worth tallying — the point is which affordances each build's agents reached for.
@@ -70,7 +71,12 @@ def load(arm):
                 cost=d.get("total_cost_usd", 0.0),
                 turns=d.get("num_turns", 0),
                 error=bool(d.get("is_error")),
-                fresh_input=u.get("input_tokens", 0),
+                fresh_input=max(
+                    0,
+                    u.get("input_tokens", 0)
+                    - u.get("cache_creation_input_tokens", 0)
+                    - u.get("cache_read_input_tokens", 0),
+                ),
                 cache_write=u.get("cache_creation_input_tokens", 0),
                 cache_read=u.get("cache_read_input_tokens", 0),
                 output=u.get("output_tokens", 0),

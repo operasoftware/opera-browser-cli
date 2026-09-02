@@ -1,0 +1,4 @@
+1788340090.0938169956	0.15	0	3156	0	--help
+1788340092.0684540272	1.51	0	12685	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788340101.6002581120	0.36	0	115	0	eval document.querySelector('[id*="404"]')?.closest('section')?.querySelector('h2,h3,h4')?.textContent || document.body.innerText.match(/15\.\d+\.5\.\d*[^]*?404/)?.[0]?.substring(0,200)
+1788340105.3820190430	0.36	0	130	0	eval Array.from(document.querySelectorAll('h2, h3, h4, h5')).filter(h => h.textContent.includes('404')).map(h => h.textContent.trim() + ' | id=' + h.id).join('\n')

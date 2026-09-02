@@ -1,0 +1,7 @@
+1788348674.5392169952	0.13	0	3156	0	--help
+1788348675.9048380852	1.39	0	12685	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788348677.3176829815	0.53	0	12596	0	snapshot
+1788348679.5880889893	0.52	0	208	0	snapshot
+1788348681.5117280483	0.14	1	717	0	eval (()=>{const h=document.querySelector('#section-15.5.5'); if(h){const s=h.querySelector('h3, h2, span, .section-number'); return h.id+' | '+h.innerText.slice(0,200);} const all=[...document.querySelectorAll('h2,h3,h4')].filter(x=>x.innerText.includes('404')); return JSON.stringify(all.map(x=>x.id+' | '+x.innerText));})()
+1788348682.6872010231	0.14	1	282	0	eval [...[document.querySelectorAll('h2,h3,h4,h5')]].filter(x=>x.innerText.includes('404')).map(x=>x.id+' :: '+x.innerText.trim()).join(' || ')
+1788348684.5593349934	0.35	0	128	0	eval Array.from(document.querySelectorAll('h2,h3,h4,h5')).map(x=>({id:x.id,txt:(x.textContent||'').trim()})).filter(o=>o.txt.includes('404')).map(o=>o.id+' :: '+o.txt).join(' || ')

@@ -1,0 +1,724 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12691B args=open https://www.rfc-editor.org/rfc/rfc9110.html =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  url: "https://www.rfc-editor.org/rfc/rfc9110.html"
+  snap: "2"
+  refs: 6987
+snapshot:
+@.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html"
+  @.1 text "Status:Internet StandardObsoletes:"
+  @.4 link "2818" url="/rfc/rfc2818"
+  @.6 text ", "
+  @.7 link "7230" url="/rfc/rfc7230"
+  @.9 text ", "
+  @.10 link "7231" url="/rfc/rfc7231"
+  @.12 text ", "
+  @.13 link "7232" url="/rfc/rfc7232"
+  @.15 text ", "
+  @.16 link "7233" url="/rfc/rfc7233"
+  @.18 text ", "
+  @.19 link "7235" url="/rfc/rfc7235"
+  @.21 text ", "
+  @.22 link "7538" url="/rfc/rfc7538"
+  @.24 text ", "
+  @.25 link "7615" url="/rfc/rfc7615"
+  @.27 text ", "
+  @.28 link "7694" url="/rfc/rfc7694"
+  @.30 text "Updates:"
+  @.31 link "3864" url="/rfc/rfc3864"
+  @.33 text "More info:"
+  @.34 link "Errata exist" url="/errata/rfc9110"
+  @.36 text " | "
+  @.37 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @.39 text "| "
+  @.40 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @.42 text " | "
+  @.43 link "Info page" url="/info/rfc9110"
+  @.45 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @.48 link "9110" url="/rfc/rfc9110"
+  @.50 text "STD:97Obsoletes:"
+  @.53 link "2818" url="/rfc/rfc2818"
+  @.55 text ", "
+  @.56 link "7230" url="/rfc/rfc7230"
+  @.58 text ", "
+  @.59 link "7231" url="/rfc/rfc7231"
+  @.61 text ", "
+  @.62 link "7232" url="/rfc/rfc7232"
+  @.64 text ", "
+  @.65 link "7233" url="/rfc/rfc7233"
+  @.67 text ", "
+  @.68 link "7235" url="/rfc/rfc7235"
+  @.70 text ", "
+  @.71 link "7538" url="/rfc/rfc7538"
+  @.73 text ", "
+  @.74 link "7615" url="/rfc/rfc7615"
+  @.76 text ", "
+  @.77 link "7694" url="/rfc/rfc7694"
+  @.79 text "Updates:"
+  @.80 link "3864" url="/rfc/rfc3864"
+  @.82 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @.98 # RFC 9110
+  @.99 # HTTP Semantics
+  @.100 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @.102 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @.103 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @.104 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @.106 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @.109 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @.111 text "."
+  @.112 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @.114 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @.116 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @.118 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD Licens
+... [tee capped at 4096 of 12691 bytes]
+
+===== CALL rc=0 out=208B args=snapshot =====
+snapshot: unchanged since last shown — "RFC 9110: HTTP Semantics" (6987 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+
+===== CALL rc=0 out=208B args=snapshot =====
+snapshot: unchanged since last shown — "RFC 9110: HTTP Semantics" (6987 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+
+===== CALL rc=0 out=854B args=snapshot --help =====
+usage: opera-browser-cli snapshot [--full] [--raw] [--next] [--force] [@ref]
+Capture the current page accessibility snapshot. When the page is unchanged
+since it was last shown, prints a short "unchanged" notice; use --force to
+reprint. --next continues a long snapshot from where it left off, and @ref
+expands one element's subtree.
+
+flags:
+  --full   Show complete snapshot without truncation
+  --raw    Show unprocessed MCP output (disables compact format)
+  --next   Continue reading from where the last snapshot stopped
+  --force  Reprint even when the page is unchanged since last shown
+
+args:
+  @ref     Show only that element's subtree (expands collapsed landmarks)
+
+examples:
+  opera-browser-cli snapshot
+  opera-browser-cli snapshot --full
+  opera-browser-cli snapshot --raw
+  opera-browser-cli snapshot --next
+  opera-browser-cli snapshot @2.4
+===== CALL rc=0 out=12192B args=snapshot @.124 =====
+snapshot[@.124]:
+@2.124 navigation
+  @2.125 link "1" url="/rfc/rfc9110.html#section-1"
+  @2.127 text ".  "
+  @2.128 link "Introduction" url="/rfc/rfc9110.html#name-introduction"
+  @2.130 link "1.1" url="/rfc/rfc9110.html#section-1.1"
+  @2.132 text ".  "
+  @2.133 link "Purpose" url="/rfc/rfc9110.html#name-purpose"
+  @2.135 link "1.2" url="/rfc/rfc9110.html#section-1.2"
+  @2.137 text ".  "
+  @2.138 link "History and Evolution" url="/rfc/rfc9110.html#name-history-and-evolution"
+  @2.140 link "1.3" url="/rfc/rfc9110.html#section-1.3"
+  @2.142 text ".  "
+  @2.143 link "Core Semantics" url="/rfc/rfc9110.html#name-core-semantics"
+  @2.145 link "1.4" url="/rfc/rfc9110.html#section-1.4"
+  @2.147 text ".  "
+  @2.148 link "Specifications Obsoleted by This Document" url="/rfc/rfc9110.html#name-specifications-obsoleted-by"
+  @2.150 link "2" url="/rfc/rfc9110.html#section-2"
+  @2.152 text ".  "
+  @2.153 link "Conformance" url="/rfc/rfc9110.html#name-conformance"
+  @2.155 link "2.1" url="/rfc/rfc9110.html#section-2.1"
+  @2.157 text ".  "
+  @2.158 link "Syntax Notation" url="/rfc/rfc9110.html#name-syntax-notation"
+  @2.160 link "2.2" url="/rfc/rfc9110.html#section-2.2"
+  @2.162 text ".  "
+  @2.163 link "Requirements Notation" url="/rfc/rfc9110.html#name-requirements-notation"
+  @2.165 link "2.3" url="/rfc/rfc9110.html#section-2.3"
+  @2.167 text ".  "
+  @2.168 link "Length Requirements" url="/rfc/rfc9110.html#name-length-requirements"
+  @2.170 link "2.4" url="/rfc/rfc9110.html#section-2.4"
+  @2.172 text ".  "
+  @2.173 link "Error Handling" url="/rfc/rfc9110.html#name-error-handling"
+  @2.175 link "2.5" url="/rfc/rfc9110.html#section-2.5"
+  @2.177 text ".  "
+  @2.178 link "Protocol Version" url="/rfc/rfc9110.html#name-protocol-version"
+  @2.180 link "3" url="/rfc/rfc9110.html#section-3"
+  @2.182 text ".  "
+  @2.183 link "Terminology and Core Concepts" url="/rfc/rfc9110.html#name-terminology-and-core-concep"
+  @2.185 link "3.1" url="/rfc/rfc9110.html#section-3.1"
+  @2.187 text ".  "
+  @2.188 link "Resources" url="/rfc/rfc9110.html#name-resources"
+  @2.190 link "3.2" url="/rfc/rfc9110.html#section-3.2"
+  @2.192 text ".  "
+  @2.193 link "Representations" url="/rfc/rfc9110.html#name-representations"
+  @2.195 link "3.3" url="/rfc/rfc9110.html#section-3.3"
+  @2.197 text ".  "
+  @2.198 link "Connections, Clients, and Servers" url="/rfc/rfc9110.html#name-connections-clients-and-ser"
+  @2.200 link "3.4" url="/rfc/rfc9110.html#section-3.4"
+  @2.202 text ".  "
+  @2.203 link "Messages" url="/rfc/rfc9110.html#name-messages"
+  @2.205 link "3.5" url="/rfc/rfc9110.html#section-3.5"
+  @2.207 text ".  "
+  @2.208 link "User Agents" url="/rfc/rfc9110.html#name-user-agents"
+  @2.210 link "3.6" url="/rfc/rfc9110.html#section-3.6"
+  @2.212 text ".  "
+  @2.213 link "Origin Server" url="/rfc/rfc9110.html#name-origin-server"
+  @2.215 link "3.7" url="/rfc/rfc9110.html#section-3.7"
+  @2.217 text ".  "
+  @2.218 link "Intermediaries" url="/rfc/rfc9110.html#name-intermediaries"
+  @2.220 link "3.8" url="/rfc/rfc9110.html#section-3.8"
+  @2.222 text ".  "
+  @2.223 link "Caches" url="/rfc/rfc9110.html#name-caches"
+  @2.225 link "3.9" url="/rfc/rfc9110.html#section-3.9"
+  @2.227 text ".  "
+  @2.228 link "Example Message Exchange" url="/rfc/rfc9110.html#name-example-message-exchange"
+  @2.230 link "4" url="/rfc/rfc9110.html#section-4"
+  @2.232 text ".  "
+  @2.233 link "Identifiers in HTTP" url="/rfc/rfc9110.html#name-identifiers-in-http"
+  @2.235 link "4.1" url="/rfc/rfc9110.html#section-4.1"
+  @2.237 text ".  "
+  @2.238 link "URI References" url="/rfc/rfc9110.html#name-uri-references"
+  @2.240 link "4.2" url="/rfc/rfc9110.html#section-4.2"
+  @2.242 text ".  "
+  @2.243 link "HTTP-Related URI Schemes" url="/rfc/rfc9110.html#name-http-related-uri-schemes"
+  @2.245 link "4.2.1" url="/rfc/rfc9110.html#section-4.2.1"
+  @2.247 text ".  "
+  @2.248 link "http URI Scheme" url="/rfc/rfc9110.html#name-http-uri-scheme"
+  @2.250 link "4.2.2" url="/rfc/rfc9110.html#section-4.2.2"
+  @2.252 text ".  "
+  @2.253 link "https URI Scheme" url="
+... [tee capped at 4096 of 12192 bytes]
+
+===== CALL rc=0 out=12192B args=snapshot @.124 =====
+snapshot[@.124]:
+@2.124 navigation
+  @2.125 link "1" url="/rfc/rfc9110.html#section-1"
+  @2.127 text ".  "
+  @2.128 link "Introduction" url="/rfc/rfc9110.html#name-introduction"
+  @2.130 link "1.1" url="/rfc/rfc9110.html#section-1.1"
+  @2.132 text ".  "
+  @2.133 link "Purpose" url="/rfc/rfc9110.html#name-purpose"
+  @2.135 link "1.2" url="/rfc/rfc9110.html#section-1.2"
+  @2.137 text ".  "
+  @2.138 link "History and Evolution" url="/rfc/rfc9110.html#name-history-and-evolution"
+  @2.140 link "1.3" url="/rfc/rfc9110.html#section-1.3"
+  @2.142 text ".  "
+  @2.143 link "Core Semantics" url="/rfc/rfc9110.html#name-core-semantics"
+  @2.145 link "1.4" url="/rfc/rfc9110.html#section-1.4"
+  @2.147 text ".  "
+  @2.148 link "Specifications Obsoleted by This Document" url="/rfc/rfc9110.html#name-specifications-obsoleted-by"
+  @2.150 link "2" url="/rfc/rfc9110.html#section-2"
+  @2.152 text ".  "
+  @2.153 link "Conformance" url="/rfc/rfc9110.html#name-conformance"
+  @2.155 link "2.1" url="/rfc/rfc9110.html#section-2.1"
+  @2.157 text ".  "
+  @2.158 link "Syntax Notation" url="/rfc/rfc9110.html#name-syntax-notation"
+  @2.160 link "2.2" url="/rfc/rfc9110.html#section-2.2"
+  @2.162 text ".  "
+  @2.163 link "Requirements Notation" url="/rfc/rfc9110.html#name-requirements-notation"
+  @2.165 link "2.3" url="/rfc/rfc9110.html#section-2.3"
+  @2.167 text ".  "
+  @2.168 link "Length Requirements" url="/rfc/rfc9110.html#name-length-requirements"
+  @2.170 link "2.4" url="/rfc/rfc9110.html#section-2.4"
+  @2.172 text ".  "
+  @2.173 link "Error Handling" url="/rfc/rfc9110.html#name-error-handling"
+  @2.175 link "2.5" url="/rfc/rfc9110.html#section-2.5"
+  @2.177 text ".  "
+  @2.178 link "Protocol Version" url="/rfc/rfc9110.html#name-protocol-version"
+  @2.180 link "3" url="/rfc/rfc9110.html#section-3"
+  @2.182 text ".  "
+  @2.183 link "Terminology and Core Concepts" url="/rfc/rfc9110.html#name-terminology-and-core-concep"
+  @2.185 link "3.1" url="/rfc/rfc9110.html#section-3.1"
+  @2.187 text ".  "
+  @2.188 link "Resources" url="/rfc/rfc9110.html#name-resources"
+  @2.190 link "3.2" url="/rfc/rfc9110.html#section-3.2"
+  @2.192 text ".  "
+  @2.193 link "Representations" url="/rfc/rfc9110.html#name-representations"
+  @2.195 link "3.3" url="/rfc/rfc9110.html#section-3.3"
+  @2.197 text ".  "
+  @2.198 link "Connections, Clients, and Servers" url="/rfc/rfc9110.html#name-connections-clients-and-ser"
+  @2.200 link "3.4" url="/rfc/rfc9110.html#section-3.4"
+  @2.202 text ".  "
+  @2.203 link "Messages" url="/rfc/rfc9110.html#name-messages"
+  @2.205 link "3.5" url="/rfc/rfc9110.html#section-3.5"
+  @2.207 text ".  "
+  @2.208 link "User Agents" url="/rfc/rfc9110.html#name-user-agents"
+  @2.210 link "3.6" url="/rfc/rfc9110.html#section-3.6"
+  @2.212 text ".  "
+  @2.213 link "Origin Server" url="/rfc/rfc9110.html#name-origin-server"
+  @2.215 link "3.7" url="/rfc/rfc9110.html#section-3.7"
+  @2.217 text ".  "
+  @2.218 link "Intermediaries" url="/rfc/rfc9110.html#name-intermediaries"
+  @2.220 link "3.8" url="/rfc/rfc9110.html#section-3.8"
+  @2.222 text ".  "
+  @2.223 link "Caches" url="/rfc/rfc9110.html#name-caches"
+  @2.225 link "3.9" url="/rfc/rfc9110.html#section-3.9"
+  @2.227 text ".  "
+  @2.228 link "Example Message Exchange" url="/rfc/rfc9110.html#name-example-message-exchange"
+  @2.230 link "4" url="/rfc/rfc9110.html#section-4"
+  @2.232 text ".  "
+  @2.233 link "Identifiers in HTTP" url="/rfc/rfc9110.html#name-identifiers-in-http"
+  @2.235 link "4.1" url="/rfc/rfc9110.html#section-4.1"
+  @2.237 text ".  "
+  @2.238 link "URI References" url="/rfc/rfc9110.html#name-uri-references"
+  @2.240 link "4.2" url="/rfc/rfc9110.html#section-4.2"
+  @2.242 text ".  "
+  @2.243 link "HTTP-Related URI Schemes" url="/rfc/rfc9110.html#name-http-related-uri-schemes"
+  @2.245 link "4.2.1" url="/rfc/rfc9110.html#section-4.2.1"
+  @2.247 text ".  "
+  @2.248 link "http URI Scheme" url="/rfc/rfc9110.html#name-http-uri-scheme"
+  @2.250 link "4.2.2" url="/rfc/rfc9110.html#section-4.2.2"
+  @2.252 text ".  "
+  @2.253 link "https URI Scheme" url="
+... [tee capped at 4096 of 12192 bytes]
+
+===== CALL rc=0 out=12192B args=snapshot @.124 =====
+snapshot[@.124]:
+@2.124 navigation
+  @2.125 link "1" url="/rfc/rfc9110.html#section-1"
+  @2.127 text ".  "
+  @2.128 link "Introduction" url="/rfc/rfc9110.html#name-introduction"
+  @2.130 link "1.1" url="/rfc/rfc9110.html#section-1.1"
+  @2.132 text ".  "
+  @2.133 link "Purpose" url="/rfc/rfc9110.html#name-purpose"
+  @2.135 link "1.2" url="/rfc/rfc9110.html#section-1.2"
+  @2.137 text ".  "
+  @2.138 link "History and Evolution" url="/rfc/rfc9110.html#name-history-and-evolution"
+  @2.140 link "1.3" url="/rfc/rfc9110.html#section-1.3"
+  @2.142 text ".  "
+  @2.143 link "Core Semantics" url="/rfc/rfc9110.html#name-core-semantics"
+  @2.145 link "1.4" url="/rfc/rfc9110.html#section-1.4"
+  @2.147 text ".  "
+  @2.148 link "Specifications Obsoleted by This Document" url="/rfc/rfc9110.html#name-specifications-obsoleted-by"
+  @2.150 link "2" url="/rfc/rfc9110.html#section-2"
+  @2.152 text ".  "
+  @2.153 link "Conformance" url="/rfc/rfc9110.html#name-conformance"
+  @2.155 link "2.1" url="/rfc/rfc9110.html#section-2.1"
+  @2.157 text ".  "
+  @2.158 link "Syntax Notation" url="/rfc/rfc9110.html#name-syntax-notation"
+  @2.160 link "2.2" url="/rfc/rfc9110.html#section-2.2"
+  @2.162 text ".  "
+  @2.163 link "Requirements Notation" url="/rfc/rfc9110.html#name-requirements-notation"
+  @2.165 link "2.3" url="/rfc/rfc9110.html#section-2.3"
+  @2.167 text ".  "
+  @2.168 link "Length Requirements" url="/rfc/rfc9110.html#name-length-requirements"
+  @2.170 link "2.4" url="/rfc/rfc9110.html#section-2.4"
+  @2.172 text ".  "
+  @2.173 link "Error Handling" url="/rfc/rfc9110.html#name-error-handling"
+  @2.175 link "2.5" url="/rfc/rfc9110.html#section-2.5"
+  @2.177 text ".  "
+  @2.178 link "Protocol Version" url="/rfc/rfc9110.html#name-protocol-version"
+  @2.180 link "3" url="/rfc/rfc9110.html#section-3"
+  @2.182 text ".  "
+  @2.183 link "Terminology and Core Concepts" url="/rfc/rfc9110.html#name-terminology-and-core-concep"
+  @2.185 link "3.1" url="/rfc/rfc9110.html#section-3.1"
+  @2.187 text ".  "
+  @2.188 link "Resources" url="/rfc/rfc9110.html#name-resources"
+  @2.190 link "3.2" url="/rfc/rfc9110.html#section-3.2"
+  @2.192 text ".  "
+  @2.193 link "Representations" url="/rfc/rfc9110.html#name-representations"
+  @2.195 link "3.3" url="/rfc/rfc9110.html#section-3.3"
+  @2.197 text ".  "
+  @2.198 link "Connections, Clients, and Servers" url="/rfc/rfc9110.html#name-connections-clients-and-ser"
+  @2.200 link "3.4" url="/rfc/rfc9110.html#section-3.4"
+  @2.202 text ".  "
+  @2.203 link "Messages" url="/rfc/rfc9110.html#name-messages"
+  @2.205 link "3.5" url="/rfc/rfc9110.html#section-3.5"
+  @2.207 text ".  "
+  @2.208 link "User Agents" url="/rfc/rfc9110.html#name-user-agents"
+  @2.210 link "3.6" url="/rfc/rfc9110.html#section-3.6"
+  @2.212 text ".  "
+  @2.213 link "Origin Server" url="/rfc/rfc9110.html#name-origin-server"
+  @2.215 link "3.7" url="/rfc/rfc9110.html#section-3.7"
+  @2.217 text ".  "
+  @2.218 link "Intermediaries" url="/rfc/rfc9110.html#name-intermediaries"
+  @2.220 link "3.8" url="/rfc/rfc9110.html#section-3.8"
+  @2.222 text ".  "
+  @2.223 link "Caches" url="/rfc/rfc9110.html#name-caches"
+  @2.225 link "3.9" url="/rfc/rfc9110.html#section-3.9"
+  @2.227 text ".  "
+  @2.228 link "Example Message Exchange" url="/rfc/rfc9110.html#name-example-message-exchange"
+  @2.230 link "4" url="/rfc/rfc9110.html#section-4"
+  @2.232 text ".  "
+  @2.233 link "Identifiers in HTTP" url="/rfc/rfc9110.html#name-identifiers-in-http"
+  @2.235 link "4.1" url="/rfc/rfc9110.html#section-4.1"
+  @2.237 text ".  "
+  @2.238 link "URI References" url="/rfc/rfc9110.html#name-uri-references"
+  @2.240 link "4.2" url="/rfc/rfc9110.html#section-4.2"
+  @2.242 text ".  "
+  @2.243 link "HTTP-Related URI Schemes" url="/rfc/rfc9110.html#name-http-related-uri-schemes"
+  @2.245 link "4.2.1" url="/rfc/rfc9110.html#section-4.2.1"
+  @2.247 text ".  "
+  @2.248 link "http URI Scheme" url="/rfc/rfc9110.html#name-http-uri-scheme"
+  @2.250 link "4.2.2" url="/rfc/rfc9110.html#section-4.2.2"
+  @2.252 text ".  "
+  @2.253 link "https URI Scheme" url="
+... [tee capped at 4096 of 12192 bytes]
+
+===== CALL rc=0 out=12192B args=snapshot @.124 =====
+snapshot[@.124]:
+@2.124 navigation
+  @2.125 link "1" url="/rfc/rfc9110.html#section-1"
+  @2.127 text ".  "
+  @2.128 link "Introduction" url="/rfc/rfc9110.html#name-introduction"
+  @2.130 link "1.1" url="/rfc/rfc9110.html#section-1.1"
+  @2.132 text ".  "
+  @2.133 link "Purpose" url="/rfc/rfc9110.html#name-purpose"
+  @2.135 link "1.2" url="/rfc/rfc9110.html#section-1.2"
+  @2.137 text ".  "
+  @2.138 link "History and Evolution" url="/rfc/rfc9110.html#name-history-and-evolution"
+  @2.140 link "1.3" url="/rfc/rfc9110.html#section-1.3"
+  @2.142 text ".  "
+  @2.143 link "Core Semantics" url="/rfc/rfc9110.html#name-core-semantics"
+  @2.145 link "1.4" url="/rfc/rfc9110.html#section-1.4"
+  @2.147 text ".  "
+  @2.148 link "Specifications Obsoleted by This Document" url="/rfc/rfc9110.html#name-specifications-obsoleted-by"
+  @2.150 link "2" url="/rfc/rfc9110.html#section-2"
+  @2.152 text ".  "
+  @2.153 link "Conformance" url="/rfc/rfc9110.html#name-conformance"
+  @2.155 link "2.1" url="/rfc/rfc9110.html#section-2.1"
+  @2.157 text ".  "
+  @2.158 link "Syntax Notation" url="/rfc/rfc9110.html#name-syntax-notation"
+  @2.160 link "2.2" url="/rfc/rfc9110.html#section-2.2"
+  @2.162 text ".  "
+  @2.163 link "Requirements Notation" url="/rfc/rfc9110.html#name-requirements-notation"
+  @2.165 link "2.3" url="/rfc/rfc9110.html#section-2.3"
+  @2.167 text ".  "
+  @2.168 link "Length Requirements" url="/rfc/rfc9110.html#name-length-requirements"
+  @2.170 link "2.4" url="/rfc/rfc9110.html#section-2.4"
+  @2.172 text ".  "
+  @2.173 link "Error Handling" url="/rfc/rfc9110.html#name-error-handling"
+  @2.175 link "2.5" url="/rfc/rfc9110.html#section-2.5"
+  @2.177 text ".  "
+  @2.178 link "Protocol Version" url="/rfc/rfc9110.html#name-protocol-version"
+  @2.180 link "3" url="/rfc/rfc9110.html#section-3"
+  @2.182 text ".  "
+  @2.183 link "Terminology and Core Concepts" url="/rfc/rfc9110.html#name-terminology-and-core-concep"
+  @2.185 link "3.1" url="/rfc/rfc9110.html#section-3.1"
+  @2.187 text ".  "
+  @2.188 link "Resources" url="/rfc/rfc9110.html#name-resources"
+  @2.190 link "3.2" url="/rfc/rfc9110.html#section-3.2"
+  @2.192 text ".  "
+  @2.193 link "Representations" url="/rfc/rfc9110.html#name-representations"
+  @2.195 link "3.3" url="/rfc/rfc9110.html#section-3.3"
+  @2.197 text ".  "
+  @2.198 link "Connections, Clients, and Servers" url="/rfc/rfc9110.html#name-connections-clients-and-ser"
+  @2.200 link "3.4" url="/rfc/rfc9110.html#section-3.4"
+  @2.202 text ".  "
+  @2.203 link "Messages" url="/rfc/rfc9110.html#name-messages"
+  @2.205 link "3.5" url="/rfc/rfc9110.html#section-3.5"
+  @2.207 text ".  "
+  @2.208 link "User Agents" url="/rfc/rfc9110.html#name-user-agents"
+  @2.210 link "3.6" url="/rfc/rfc9110.html#section-3.6"
+  @2.212 text ".  "
+  @2.213 link "Origin Server" url="/rfc/rfc9110.html#name-origin-server"
+  @2.215 link "3.7" url="/rfc/rfc9110.html#section-3.7"
+  @2.217 text ".  "
+  @2.218 link "Intermediaries" url="/rfc/rfc9110.html#name-intermediaries"
+  @2.220 link "3.8" url="/rfc/rfc9110.html#section-3.8"
+  @2.222 text ".  "
+  @2.223 link "Caches" url="/rfc/rfc9110.html#name-caches"
+  @2.225 link "3.9" url="/rfc/rfc9110.html#section-3.9"
+  @2.227 text ".  "
+  @2.228 link "Example Message Exchange" url="/rfc/rfc9110.html#name-example-message-exchange"
+  @2.230 link "4" url="/rfc/rfc9110.html#section-4"
+  @2.232 text ".  "
+  @2.233 link "Identifiers in HTTP" url="/rfc/rfc9110.html#name-identifiers-in-http"
+  @2.235 link "4.1" url="/rfc/rfc9110.html#section-4.1"
+  @2.237 text ".  "
+  @2.238 link "URI References" url="/rfc/rfc9110.html#name-uri-references"
+  @2.240 link "4.2" url="/rfc/rfc9110.html#section-4.2"
+  @2.242 text ".  "
+  @2.243 link "HTTP-Related URI Schemes" url="/rfc/rfc9110.html#name-http-related-uri-schemes"
+  @2.245 link "4.2.1" url="/rfc/rfc9110.html#section-4.2.1"
+  @2.247 text ".  "
+  @2.248 link "http URI Scheme" url="/rfc/rfc9110.html#name-http-uri-scheme"
+  @2.250 link "4.2.2" url="/rfc/rfc9110.html#section-4.2.2"
+  @2.252 text ".  "
+  @2.253 link "https URI Scheme" url="
+... [tee capped at 4096 of 12192 bytes]
+
+===== CALL rc=0 out=643277B args=snapshot --full --force =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  snap: "2"
+  refs: 6987
+snapshot:
+@.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html"
+  @.1 text "Status:Internet StandardObsoletes:"
+  @.4 link "2818" url="/rfc/rfc2818"
+  @.6 text ", "
+  @.7 link "7230" url="/rfc/rfc7230"
+  @.9 text ", "
+  @.10 link "7231" url="/rfc/rfc7231"
+  @.12 text ", "
+  @.13 link "7232" url="/rfc/rfc7232"
+  @.15 text ", "
+  @.16 link "7233" url="/rfc/rfc7233"
+  @.18 text ", "
+  @.19 link "7235" url="/rfc/rfc7235"
+  @.21 text ", "
+  @.22 link "7538" url="/rfc/rfc7538"
+  @.24 text ", "
+  @.25 link "7615" url="/rfc/rfc7615"
+  @.27 text ", "
+  @.28 link "7694" url="/rfc/rfc7694"
+  @.30 text "Updates:"
+  @.31 link "3864" url="/rfc/rfc3864"
+  @.33 text "More info:"
+  @.34 link "Errata exist" url="/errata/rfc9110"
+  @.36 text " | "
+  @.37 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @.39 text "| "
+  @.40 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @.42 text " | "
+  @.43 link "Info page" url="/info/rfc9110"
+  @.45 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @.48 link "9110" url="/rfc/rfc9110"
+  @.50 text "STD:97Obsoletes:"
+  @.53 link "2818" url="/rfc/rfc2818"
+  @.55 text ", "
+  @.56 link "7230" url="/rfc/rfc7230"
+  @.58 text ", "
+  @.59 link "7231" url="/rfc/rfc7231"
+  @.61 text ", "
+  @.62 link "7232" url="/rfc/rfc7232"
+  @.64 text ", "
+  @.65 link "7233" url="/rfc/rfc7233"
+  @.67 text ", "
+  @.68 link "7235" url="/rfc/rfc7235"
+  @.70 text ", "
+  @.71 link "7538" url="/rfc/rfc7538"
+  @.73 text ", "
+  @.74 link "7615" url="/rfc/rfc7615"
+  @.76 text ", "
+  @.77 link "7694" url="/rfc/rfc7694"
+  @.79 text "Updates:"
+  @.80 link "3864" url="/rfc/rfc3864"
+  @.82 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @.98 # RFC 9110
+  @.99 # HTTP Semantics
+  @.100 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @.102 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @.103 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @.104 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @.106 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @.109 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @.111 text "."
+  @.112 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @.114 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @.116 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @.118 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.This document may contain material from IETF Docume
+... [tee capped at 4096 of 643277 bytes]
+
+===== CALL rc=0 out=643277B args=snapshot --full --force =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  snap: "2"
+  refs: 6987
+snapshot:
+@.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html"
+  @.1 text "Status:Internet StandardObsoletes:"
+  @.4 link "2818" url="/rfc/rfc2818"
+  @.6 text ", "
+  @.7 link "7230" url="/rfc/rfc7230"
+  @.9 text ", "
+  @.10 link "7231" url="/rfc/rfc7231"
+  @.12 text ", "
+  @.13 link "7232" url="/rfc/rfc7232"
+  @.15 text ", "
+  @.16 link "7233" url="/rfc/rfc7233"
+  @.18 text ", "
+  @.19 link "7235" url="/rfc/rfc7235"
+  @.21 text ", "
+  @.22 link "7538" url="/rfc/rfc7538"
+  @.24 text ", "
+  @.25 link "7615" url="/rfc/rfc7615"
+  @.27 text ", "
+  @.28 link "7694" url="/rfc/rfc7694"
+  @.30 text "Updates:"
+  @.31 link "3864" url="/rfc/rfc3864"
+  @.33 text "More info:"
+  @.34 link "Errata exist" url="/errata/rfc9110"
+  @.36 text " | "
+  @.37 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @.39 text "| "
+  @.40 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @.42 text " | "
+  @.43 link "Info page" url="/info/rfc9110"
+  @.45 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @.48 link "9110" url="/rfc/rfc9110"
+  @.50 text "STD:97Obsoletes:"
+  @.53 link "2818" url="/rfc/rfc2818"
+  @.55 text ", "
+  @.56 link "7230" url="/rfc/rfc7230"
+  @.58 text ", "
+  @.59 link "7231" url="/rfc/rfc7231"
+  @.61 text ", "
+  @.62 link "7232" url="/rfc/rfc7232"
+  @.64 text ", "
+  @.65 link "7233" url="/rfc/rfc7233"
+  @.67 text ", "
+  @.68 link "7235" url="/rfc/rfc7235"
+  @.70 text ", "
+  @.71 link "7538" url="/rfc/rfc7538"
+  @.73 text ", "
+  @.74 link "7615" url="/rfc/rfc7615"
+  @.76 text ", "
+  @.77 link "7694" url="/rfc/rfc7694"
+  @.79 text "Updates:"
+  @.80 link "3864" url="/rfc/rfc3864"
+  @.82 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @.98 # RFC 9110
+  @.99 # HTTP Semantics
+  @.100 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @.102 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @.103 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @.104 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @.106 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @.109 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @.111 text "."
+  @.112 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @.114 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @.116 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @.118 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.This document may contain material from IETF Docume
+... [tee capped at 4096 of 643277 bytes]
+
+===== CALL rc=0 out=643277B args=snapshot --full --force =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  snap: "2"
+  refs: 6987
+snapshot:
+@.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html"
+  @.1 text "Status:Internet StandardObsoletes:"
+  @.4 link "2818" url="/rfc/rfc2818"
+  @.6 text ", "
+  @.7 link "7230" url="/rfc/rfc7230"
+  @.9 text ", "
+  @.10 link "7231" url="/rfc/rfc7231"
+  @.12 text ", "
+  @.13 link "7232" url="/rfc/rfc7232"
+  @.15 text ", "
+  @.16 link "7233" url="/rfc/rfc7233"
+  @.18 text ", "
+  @.19 link "7235" url="/rfc/rfc7235"
+  @.21 text ", "
+  @.22 link "7538" url="/rfc/rfc7538"
+  @.24 text ", "
+  @.25 link "7615" url="/rfc/rfc7615"
+  @.27 text ", "
+  @.28 link "7694" url="/rfc/rfc7694"
+  @.30 text "Updates:"
+  @.31 link "3864" url="/rfc/rfc3864"
+  @.33 text "More info:"
+  @.34 link "Errata exist" url="/errata/rfc9110"
+  @.36 text " | "
+  @.37 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @.39 text "| "
+  @.40 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @.42 text " | "
+  @.43 link "Info page" url="/info/rfc9110"
+  @.45 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @.48 link "9110" url="/rfc/rfc9110"
+  @.50 text "STD:97Obsoletes:"
+  @.53 link "2818" url="/rfc/rfc2818"
+  @.55 text ", "
+  @.56 link "7230" url="/rfc/rfc7230"
+  @.58 text ", "
+  @.59 link "7231" url="/rfc/rfc7231"
+  @.61 text ", "
+  @.62 link "7232" url="/rfc/rfc7232"
+  @.64 text ", "
+  @.65 link "7233" url="/rfc/rfc7233"
+  @.67 text ", "
+  @.68 link "7235" url="/rfc/rfc7235"
+  @.70 text ", "
+  @.71 link "7538" url="/rfc/rfc7538"
+  @.73 text ", "
+  @.74 link "7615" url="/rfc/rfc7615"
+  @.76 text ", "
+  @.77 link "7694" url="/rfc/rfc7694"
+  @.79 text "Updates:"
+  @.80 link "3864" url="/rfc/rfc3864"
+  @.82 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @.98 # RFC 9110
+  @.99 # HTTP Semantics
+  @.100 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @.102 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @.103 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @.104 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @.106 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @.109 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @.111 text "."
+  @.112 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @.114 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @.116 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @.118 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.This document may contain material from IETF Docume
+... [tee capped at 4096 of 643277 bytes]
+
+===== CALL rc=0 out=90B args=snapshot @.8303 --raw =====
+snapshot[@.8303]:
+@2.8303 link "404 Not Found" url="/rfc/rfc9110.html#name-404-not-found"

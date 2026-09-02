@@ -1,0 +1,3 @@
+1788273102.2185668945	0.13	0	3156	0	--help
+1788273104.5492839813	0.70	0	12735	0	open https://en.wikipedia.org/wiki/List_of_chemical_elements
+1788273105.2769598961	0.33	0	1463	0	eval document.body.innerText.match(/Tungsten[\s\S]{0,1000}/)?.[0]

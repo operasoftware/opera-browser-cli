@@ -1,0 +1,8 @@
+1788345734.4367079735	0.13	0	3156	0	--help
+1788345736.9760038853	0.54	0	2109	0	open https://www.selenium.dev/selenium/web/web-form.html
+1788345743.6040930748	0.14	0	2048	0	fillform @13.5=Jan Kowalski @13.7=secret1
+1788345750.3316729069	0.35	0	87	0	eval (() => { const f = document.querySelector('form'); return JSON.stringify({text: f.querySelector('input[name=text]')?.value, pass: f.querySelector('input[name=password]')?.value}); })()
+1788345757.2311799526	0.35	0	1896	0	eval (() => { return JSON.stringify(Array.from(document.querySelectorAll('input,textarea,select')).map(e => ({tag:e.tagName, name:e.name, type:e.type, value:e.value}))); })()
+1788345762.1422650814	0.37	0	2069	0	fill @13.5 Jan Kowalski
+1788345762.5397729874	0.37	0	2099	0	fill @13.7 secret1
+1788345777.7106010914	0.47	0	414	0	click @13.32

@@ -1,0 +1,46 @@
+1788347959.8091340065	0.14	0	3156	0	--help
+1788347960.6916830540	1.06	0	12506	0	open https://en.wikipedia.org/wiki/Moon
+1788347962.5978219509	0.59	0	12431	0	snapshot
+1788347964.0710549355	0.35	0	477	0	eval Array.from(document.querySelectorAll('a')).filter(a=>a.textContent.includes('Giant-impact')||(a.href||'').includes('Giant-impact')).map(a=>a.href+' | '+a.textContent).join('\n')
+1788347965.7469940186	0.60	0	12429	0	scroll down
+1788347966.3685550690	0.58	0	12431	0	snapshot
+1788347968.5765519142	0.60	0	12429	0	scroll down
+1788347969.2039339542	0.56	0	12431	0	snapshot
+1788347981.0516979694	0.58	0	12429	0	scroll down
+1788347981.6575028896	0.57	0	12429	0	scroll down
+1788347982.2513420582	0.56	0	12429	0	scroll down
+1788347982.8393239975	0.58	0	12429	0	scroll down
+1788347983.4453880787	0.55	0	12431	0	snapshot
+1788347986.3386580944	0.14	0	110	0	eval var a=Array.from(document.querySelectorAll('a')).find(x=>(x.textContent.trim()==='Giant-impact hypothesis')); a.scrollIntoView({block:'center'}); 'scrolled to '+a.href
+1788347986.4976360798	0.61	0	12431	0	snapshot
+1788347988.1031610966	0.36	0	138	0	eval (function(){var a=Array.from(document.querySelectorAll('a')).find(x=>x.textContent.trim()==='Giant-impact hypothesis'); a.scrollIntoView({block:'center'}); return a.href;})()
+1788347988.4928328991	0.59	0	12431	0	snapshot
+1788347990.1705029011	0.59	0	12431	0	snapshot
+1788347992.5062100887	0.59	0	12429	0	scroll down
+1788347993.1242458820	0.57	0	12429	0	scroll down
+1788347993.7138218880	0.56	0	12429	0	scroll down
+1788347994.2955510616	0.58	0	12429	0	scroll down
+1788347994.9017028809	0.57	0	12429	0	scroll down
+1788347995.4988141060	0.57	0	12429	0	scroll down
+1788347996.0883400440	0.58	0	12429	0	scroll down
+1788347996.6919240952	0.58	0	12429	0	scroll down
+1788347997.3002181053	0.58	0	12429	0	scroll down
+1788347997.9084401131	0.57	0	12429	0	scroll down
+1788347998.4987459183	0.57	0	12429	0	scroll down
+1788347999.0899860859	0.58	0	12429	0	scroll down
+1788347999.6972649097	0.59	0	12429	0	scroll down
+1788348000.3138759136	0.58	0	12429	0	scroll down
+1788348000.9141891003	0.57	0	12429	0	scroll down
+1788348001.5045828819	0.59	0	12429	0	scroll down
+1788348002.1156580448	0.61	0	12429	0	scroll down
+1788348002.7464120388	0.58	0	12429	0	scroll down
+1788348003.3496749401	0.56	0	12429	0	scroll down
+1788348003.9340639114	0.60	0	12429	0	scroll down
+1788348004.5602691174	0.57	0	12431	0	snapshot
+1788348007.2429111004	0.36	0	101	0	eval window.scrollY + ' body:' + (document.body?document.scrollingElement.scrollTop:'')
+1788348014.5862140656	0.59	0	12431	0	snapshot
+1788348015.2035689354	0.56	0	12431	0	snapshot
+1788348039.9905729294	0.49	0	146	0	eval (function(){var a=Array.from(document.querySelectorAll('a')).find(x=>x.textContent.trim()==='Giant-impact hypothesis'); a.click(); return 'clicked '+a.href;})()
+1788348043.0736780167	2.15	0	85	0	wait 2000
+1788348045.2541298866	0.35	0	176	0	eval location.href + ' | ' + document.title
+1788348047.1889328957	0.35	0	587	0	eval (function(){var t=document.body.innerText; var idx=t.search(/4\.5/); return t.substring(Math.max(0,idx-200), idx+300);})()

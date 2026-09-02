@@ -1,0 +1,7 @@
+1788346039.0230979919	0.13	0	3156	0	--help
+1788346042.9933600426	1.15	0	12506	0	open https://en.wikipedia.org/wiki/Moon
+1788346051.3351750374	0.59	0	12431	0	snapshot
+1788346057.0325551033	0.35	0	1046	0	eval Array.from(document.querySelectorAll('a')).filter(a=>/giant/i.test(a.textContent)).map(a=>a.textContent.trim()+' => '+a.getAttribute('href')).join('\n')
+1788346065.7505829334	0.13	0	334	0	snapshot --help
+1788346069.2846169472	0.60	0	796966	0	snapshot --full
+1788346073.2012488842	0.95	0	12433	0	click @17.932

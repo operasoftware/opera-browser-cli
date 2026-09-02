@@ -1,0 +1,11 @@
+1788275999.6150169373	0.12	0	3156	0	--help
+1788276001.4561889172	1.08	0	12506	0	open https://en.wikipedia.org/wiki/Moon
+1788276004.9872310162	0.59	0	12431	0	snapshot
+1788276007.2040948868	0.58	0	12431	0	snapshot
+1788276010.6517701149	0.35	0	400	0	eval Array.from(document.querySelectorAll('a')).filter(a => a.textContent.toLowerCase().includes('giant-impact')).map(a => ({text: a.textContent, href: a.getAttribute('href')}))
+1788276015.2377290726	0.80	0	88	0	eval document.querySelector('a[href*="Giant-impact_hypothesis"]').click()
+1788276017.4697470665	0.14	0	52	0	status
+1788276019.0659871101	0.14	0	174	0	pages
+1788276020.9502320290	0.25	0	12438	0	selectpage 1
+1788276023.5029129982	0.34	0	215	0	eval document.body.innerText.match(/(\d+\.?\d*)\s*(billion|million)\s*years\s*ago/gi)
+1788276025.7059419155	0.35	0	3388	0	eval Array.from(document.querySelectorAll('p, li')).map(el => el.textContent).filter(text => text.includes('billion years ago')).slice(0, 10)

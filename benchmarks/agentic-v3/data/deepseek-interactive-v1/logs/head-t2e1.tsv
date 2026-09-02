@@ -1,0 +1,11 @@
+1788348097.2396740913	0.13	0	3156	0	--help
+1788348098.5452640057	0.51	0	930	0	open https://demo.playwright.dev/todomvc
+1788348108.0860490799	0.37	0	572	0	fill @.5 alpha
+1788348108.4891440868	0.36	0	1121	0	press Enter
+1788348132.4318079948	0.37	0	571	0	fill @.5 beta
+1788348132.8322160244	0.34	0	715	0	press Enter
+1788348133.1952290535	0.35	0	572	0	fill @.5 gamma
+1788348133.5737779140	0.34	0	718	0	press Enter
+1788348138.8714139462	0.39	0	853	0	click @8.0
+1788348146.2256119251	0.39	0	1287	0	click @6.10
+1788348164.6177709103	0.35	0	184	0	eval (() => { const c=document.querySelector('.todo-count'); const labels=[...document.querySelectorAll('.todo-list li')].map(li=>li.querySelector('label').innerText); return JSON.stringify({counterTextContent: c ? c.textContent : null, activeTodos: labels}); })()

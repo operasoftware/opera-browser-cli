@@ -1,0 +1,33 @@
+{
+ "model": "dashscope/glm-5.2",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": 8000,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.4e-06,
+   "output": 4.4e-06,
+   "cache_read": 2.8e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.0428648,
+ "num_turns": 14,
+ "calls": 13,
+ "is_error": false,
+ "result": "I found the answer in the snapshot text. The article states at @.182: \"approximately 4.5 billion years ago in the early Hadean eon (about 20 to 100 million years after the Solar System formed)\".\n\nANSWER: The giant impact is estimated to have occurred approximately 4.5 billion years ago (about 20 to 100 million years after the Solar System formed).\nCALLS: 11",
+ "usage": {
+  "input_tokens": 59410,
+  "output_tokens": 1265,
+  "cache_read_input_tokens": 40960,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.02583,
+  "out": 0.005566,
+  "cache_read": 0.011468800000000003,
+  "cache_write": 0.0
+ }
+}

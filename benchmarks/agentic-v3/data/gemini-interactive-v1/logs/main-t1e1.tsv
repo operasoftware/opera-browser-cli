@@ -1,0 +1,4 @@
+1788275222.0763471127	0.13	0	3156	0	--help
+1788275224.2025349140	1.35	0	12616	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788275228.7196969986	0.35	0	108	0	eval Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).filter(h => h.innerText.includes('404')).map(h => h.innerText)
+1788275231.4909229279	0.35	0	309	0	eval Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).find(h => h.innerText.includes('15.5.5')).outerHTML

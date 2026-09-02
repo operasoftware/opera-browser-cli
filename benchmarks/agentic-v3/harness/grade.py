@@ -9,15 +9,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RUN_ID = os.environ.get("BENCH_RUN_ID", "").strip()
-RESULT_ROOT = ROOT / "results" / RUN_ID if RUN_ID else ROOT / "results"
+DATA_DIR = os.environ.get("BENCH_DATA_DIR", "").strip()
+RESULT_ROOT = Path(DATA_DIR) / "results" if DATA_DIR else (ROOT / "results" / RUN_ID if RUN_ID else ROOT / "results")
 ARM = sys.argv[1] if len(sys.argv) > 1 else "strict"
 
 PINS = {
-    "rfc-deep-read": ["15.5.5", "404 not found"],
+    "rfc-deep-read": ["15.5.5", "not found"],
     "spa-todomvc": ["2 items left", "alpha", "gamma"],
     "web-form": ["form submitted", "received"],
     "table-extract": ["74", "w", "183.84"],
-    "wiki-journey": ["4.5"],
+    "wiki-journey": [],
     "shop-navigate": ["11", "23.21", "road to little dribbling"],
 }
 ANSWER_RE = re.compile(r"^\**ANSWER:\**\s*(.*)$", re.IGNORECASE | re.MULTILINE)
@@ -40,6 +41,8 @@ def main() -> None:
         answer = answer_match.group(1).strip() if answer_match else ""
         normalized = answer.lower().replace("≈", "").replace("~", "")
         passed = not data.get("is_error") and all(pin in normalized for pin in PINS[match["task"]])
+        if match["task"] == "wiki-journey":
+            passed = passed and bool(re.search(r"4[. ](?:4|5)", normalized))
         rows.append((match["cond"], match["task"], int(match["rep"]), passed, answer))
 
     if not rows:

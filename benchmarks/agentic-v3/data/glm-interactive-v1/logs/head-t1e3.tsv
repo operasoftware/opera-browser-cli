@@ -1,0 +1,4 @@
+1788340697.0310831070	0.15	0	3156	0	--help
+1788340699.7513470650	1.53	0	12685	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788340704.4688849449	0.36	0	84	0	eval document.querySelectorAll('h1, h2, h3, h4').length
+1788340707.1666989326	0.36	0	309	0	eval Array.from(document.querySelectorAll('h1, h2, h3, h4')).filter(h => h.textContent.includes('404')).map(h => h.outerHTML).join('\n')

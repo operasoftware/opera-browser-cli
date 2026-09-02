@@ -1,0 +1,9 @@
+1788340806.6429100037	0.14	0	3156	0	--help
+1788340808.8404541016	1.35	0	12564	0	open https://en.wikipedia.org/wiki/Moon
+1788340813.3007009029	0.36	0	400	0	eval Array.from(document.querySelectorAll('a')).filter(a => a.textContent.includes('Giant-impact')).map(a => ({text: a.textContent, href: a.href})).slice(0,5)
+1788340816.7793369293	0.16	1	50	0	eval document.querySelector('a[href="/wiki/Giant-impact_hypothesis"]').click(); 'clicked'
+1788340820.1312820911	0.16	1	78	0	eval (function(){document.querySelector('a[href="/wiki/Giant-impact_hypothesis"]').click(); return 'clicked';})()
+1788340824.0949881077	0.58	0	147	0	eval (function(){var links = document.querySelectorAll('a'); for(var i=0; i<links.length; i++){if(links[i].textContent.includes('Giant-impact')){links[i].click(); return 'clicked: '+links[i].href;}} return 'not found';})()
+1788340827.2460379601	2.18	1	50	0	wait 2000
+1788340831.4424469471	0.29	0	12651	0	snapshot
+1788340835.0803220272	0.37	0	1114	0	eval (function(){var text = document.body.innerText; var matches = text.match(/[^.]*\d+\.?\d*\s*(?:billion|million)\s*years[^.]*ago[^.]*/gi); return matches ? matches.slice(0,5) : 'no match';})()

@@ -1,0 +1,7 @@
+1788340371.3386158943	0.15	0	3156	0	--help
+1788340373.5499150753	0.77	0	12631	0	open https://en.wikipedia.org/wiki/List_of_chemical_elements
+1788340379.7523400784	0.16	0	112	0	eval const rows = document.querySelectorAll('table.wikitable tr'); for (const row of rows) { const cells = row.querySelectorAll('td, th'); const text = Array.from(cells).map(c => c.textContent.trim()).join(' | '); if (text.includes('Tungsten') || text.includes('tungsten')) { return text; } } return 'not found';
+1788340384.2451789379	0.16	0	110	0	eval var rows = document.querySelectorAll("table.wikitable tr"); var result = "not found"; for (var i = 0; i < rows.length; i++) { var cells = rows[i].querySelectorAll("td, th"); var text = Array.from(cells).map(function(c) { return c.textContent.trim(); }).join(" | "); if (text.indexOf("Tungsten") >= 0) { result = text; break; } } return result;
+1788340386.9015140533	0.36	0	122	0	eval document.title
+1788340390.3462829590	0.36	0	200	0	eval (function(){var rows=document.querySelectorAll('table.wikitable tr');for(var i=0;i<rows.length;i++){var cells=rows[i].querySelectorAll('td,th');var text=Array.from(cells).map(function(c){return c.textContent.trim()}).join(' | ');if(text.indexOf('Tungsten')>=0) return text;}return 'not found';})()
+1788340397.5133419037	0.36	0	4493	0	eval (function(){var headers=document.querySelectorAll('table.wikitable th');return Array.from(headers).map(function(h){return h.textContent.trim()}).join(' | ')})()

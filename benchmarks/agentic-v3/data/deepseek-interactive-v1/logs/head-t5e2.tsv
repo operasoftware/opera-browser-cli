@@ -1,0 +1,15 @@
+1788348410.5878639221	0.13	0	3156	0	--help
+1788348411.8839070797	1.03	0	12564	0	open https://en.wikipedia.org/wiki/Moon
+1788348414.7699429989	0.60	0	200	0	snapshot
+1788348416.6297938824	0.35	0	482	0	eval Array.from(document.querySelectorAll('a')).filter(a=>a.href.includes('Giant-impact')||a.textContent.includes('Giant-impact')).map(a=>a.textContent.trim()+' => '+a.href).join('\n')
+1788348420.2965838909	0.58	0	200	0	snapshot
+1788348422.1458280087	0.14	1	50	0	scroll down
+1788348432.2965569496	0.14	1	52	0	eval var a=Array.from(document.querySelectorAll('a')).find(a=>a.textContent.includes('Giant-impact hypothesis')); a.scrollIntoView({block:'center'}); a.getBoundingClientRect().top+','+a.textContent.trim()
+1788348433.5379860401	0.34	0	119	0	eval (()=>{const a=Array.from(document.querySelectorAll('a')).find(a=>a.textContent.includes('Giant-impact hypothesis')); a.scrollIntoView({block:'center'}); return a.getBoundingClientRect().top+' '+a.textContent.trim()})()
+1788348435.0892920494	0.59	0	200	0	snapshot
+1788348437.5441970825	0.59	0	200	0	snapshot
+1788348438.1657431126	0.57	0	200	0	snapshot
+1788348439.7271680832	0.60	0	200	0	snapshot
+1788348442.7744159698	0.58	0	11838	0	snapshot --force --next
+1788348444.2245268822	0.61	0	12026	0	snapshot --next
+1788348447.3536169529	0.85	0	12648	0	click @.932

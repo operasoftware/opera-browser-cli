@@ -1,0 +1,6 @@
+1788273109.0759561062	0.13	0	3156	0	--help
+1788273112.4821839333	1.12	0	12564	0	open https://en.wikipedia.org/wiki/Moon
+1788273113.6287679672	0.63	0	200	0	snapshot
+1788273116.8296740055	0.36	0	400	0	eval [...document.querySelectorAll('a')].filter(a=>a.textContent.trim().toLowerCase().includes('giant-impact')).map(a=>({text:a.textContent.trim(),href:a.href})).slice(0,10)
+1788273120.2559390068	0.42	0	88	0	eval [...document.querySelectorAll('a')].find(a=>a.textContent.trim()==='Giant-impact hypothesis').click()
+1788273120.7035589218	0.66	1	50	0	wait 500

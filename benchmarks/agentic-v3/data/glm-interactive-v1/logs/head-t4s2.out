@@ -1,0 +1,1579 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12749B args=open https://en.wikipedia.org/wiki/List_of_chemical_elements =====
+page:
+  title: List of chemical elements - Wikipedia
+  url: "https://en.wikipedia.org/wiki/List_of_chemical_elements"
+  snap: "20"
+  refs: 1448
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @.22 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @.24 generic description="Hide"
+  @.25 navigation "Contents"
+    @.26 ## Contents
+    @.27 button "Hide Contents"
+    @.28 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.30 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.32 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.34 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.36 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.38 main
+    @.39 # List of chemical elements
+    @.40 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.41 navigation "Namespaces"
+      @.42 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.44 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.46 navigation "Views"
+      @.47 link "Read" url=$u1
+      @.49 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.51 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.53 navigation "Page tools"
+      @.54 button "Tools" haspopup="menu"
+    @.55 navigation "Appearance"
+      @.57 button "Hide Appearance"
+      @.58 text "Text"
+      @.59 form
+        @.60 radio "Small"
+        @.61 text "Small"
+        @.62 radio "Standard" checked
+        @.63 text "Standard"
+        @.64 radio "Large"
+        @.65 text "Large"
+      @.66 text "Width"
+      @.67 form
+        @.68 radio "Standard" checked
+        @.69 text "Standard"
+        @.70 radio "Wide"
+        @.71 text "Wide"
+      @.72 text "Color"
+      @.73 form
+        @.74 radio "Automatic"
+        @.75 text "Automatic"
+        @.76 radio "Light" checked
+        @.77 text "Light"
+        @.78 radio "Dark"
+        @.79 text "Dark"
+    @.80 text "From Wikipedia, the free encyclopedia118 "
+    @.82 link "chemical elements" description="Chemical element" url=$u2
+    @.84 text " have been "
+    @.85 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.87 tex
+... [tee capped at 4096 of 12749 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=221B args=snapshot =====
+snapshot: unchanged since last shown — "List of chemical elements - Wikipedia" (1448 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=1 out=50B args=scroll down =====
+error: "Error: fn is not a function"
+code: UNKNOWN----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=531B args=press PageDown =====
+diff: {changed: 0, added: 0, removed: 1}
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12632B args=snapshot =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "20"
+  refs: 1448
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @.22 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @.24 generic description="Hide"
+  @.25 navigation "Contents"
+    @.26 ## Contents
+    @.27 button "Hide Contents"
+    @.28 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.30 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.32 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.34 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.36 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.38 main
+    @.39 # List of chemical elements
+    @.40 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.41 navigation "Namespaces"
+      @.42 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.44 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.46 navigation "Views"
+      @.47 link "Read" url=$u1
+      @.49 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.51 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.53 navigation "Page tools"
+      @.54 button "Tools" haspopup="menu"
+    @.55 navigation "Appearance"
+      @.57 button "Hide Appearance"
+      @.58 text "Text"
+      @.59 form
+        @.60 radio "Small"
+        @.61 text "Small"
+        @.62 radio "Standard" checked
+        @.63 text "Standard"
+        @.64 radio "Large"
+        @.65 text "Large"
+      @.66 text "Width"
+      @.67 form
+        @.68 radio "Standard" checked
+        @.69 text "Standard"
+        @.70 radio "Wide"
+        @.71 text "Wide"
+      @.72 text "Color"
+      @.73 form
+        @.74 radio "Automatic"
+        @.75 text "Automatic"
+        @.76 radio "Light" checked
+        @.77 text "Light"
+        @.78 radio "Dark"
+        @.79 text "Dark"
+    @.80 text "From Wikipedia, the free encyclopedia118 "
+    @.82 link "chemical elements" description="Chemical element" url=$u2
+    @.84 text " have been "
+    @.85 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.87 text " and named officially by "
+    @.88 link "IUPAC" description="
+... [tee capped at 4096 of 12632 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=531B args=press PageDown =====
+diff: {changed: 0, added: 0, removed: 1}
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12632B args=snapshot =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "20"
+  refs: 1448
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @.22 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @.24 generic description="Hide"
+  @.25 navigation "Contents"
+    @.26 ## Contents
+    @.27 button "Hide Contents"
+    @.28 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.30 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.32 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.34 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.36 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.38 main
+    @.39 # List of chemical elements
+    @.40 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.41 navigation "Namespaces"
+      @.42 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.44 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.46 navigation "Views"
+      @.47 link "Read" url=$u1
+      @.49 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.51 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.53 navigation "Page tools"
+      @.54 button "Tools" haspopup="menu"
+    @.55 navigation "Appearance"
+      @.57 button "Hide Appearance"
+      @.58 text "Text"
+      @.59 form
+        @.60 radio "Small"
+        @.61 text "Small"
+        @.62 radio "Standard" checked
+        @.63 text "Standard"
+        @.64 radio "Large"
+        @.65 text "Large"
+      @.66 text "Width"
+      @.67 form
+        @.68 radio "Standard" checked
+        @.69 text "Standard"
+        @.70 radio "Wide"
+        @.71 text "Wide"
+      @.72 text "Color"
+      @.73 form
+        @.74 radio "Automatic"
+        @.75 text "Automatic"
+        @.76 radio "Light" checked
+        @.77 text "Light"
+        @.78 radio "Dark"
+        @.79 text "Dark"
+    @.80 text "From Wikipedia, the free encyclopedia118 "
+    @.82 link "chemical elements" description="Chemical element" url=$u2
+    @.84 text " have been "
+    @.85 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.87 text " and named officially by "
+    @.88 link "IUPAC" description="
+... [tee capped at 4096 of 12632 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=531B args=press PageDown =====
+diff: {changed: 0, added: 0, removed: 1}
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=514B args=press PageDown =====
+diff: no visible change
+help[6]:
+  Run `opera-browser-cli fill @20.12 "text"` to fill the "Search Wikipedia" field
+  Run `opera-browser-cli click @20.6` to click the "Main menu" button
+  Run `opera-browser-cli click @20.2` to click the "Jump to content" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12632B args=snapshot =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "20"
+  refs: 1448
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @.22 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @.24 generic description="Hide"
+  @.25 navigation "Contents"
+    @.26 ## Contents
+    @.27 button "Hide Contents"
+    @.28 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.30 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.32 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.34 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.36 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.38 main
+    @.39 # List of chemical elements
+    @.40 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.41 navigation "Namespaces"
+      @.42 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.44 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.46 navigation "Views"
+      @.47 link "Read" url=$u1
+      @.49 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.51 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.53 navigation "Page tools"
+      @.54 button "Tools" haspopup="menu"
+    @.55 navigation "Appearance"
+      @.57 button "Hide Appearance"
+      @.58 text "Text"
+      @.59 form
+        @.60 radio "Small"
+        @.61 text "Small"
+        @.62 radio "Standard" checked
+        @.63 text "Standard"
+        @.64 radio "Large"
+        @.65 text "Large"
+      @.66 text "Width"
+      @.67 form
+        @.68 radio "Standard" checked
+        @.69 text "Standard"
+        @.70 radio "Wide"
+        @.71 text "Wide"
+      @.72 text "Color"
+      @.73 form
+        @.74 radio "Automatic"
+        @.75 text "Automatic"
+        @.76 radio "Light" checked
+        @.77 text "Light"
+        @.78 radio "Dark"
+        @.79 text "Dark"
+    @.80 text "From Wikipedia, the free encyclopedia118 "
+    @.82 link "chemical elements" description="Chemical element" url=$u2
+    @.84 text " have been "
+    @.85 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.87 text " and named officially by "
+    @.88 link "IUPAC" description="
+... [tee capped at 4096 of 12632 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=221B args=snapshot =====
+snapshot: unchanged since last shown — "List of chemical elements - Wikipedia" (1448 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12026B args=snapshot --next =====
+snapshot[11967-23881 of 90342]:
+      @.372 link "[n]" url="/wiki/List_of_chemical_elements#cite_note-17"
+      @.376 text "12s-block6.940.534453.6915603.5820.9820primordial"
+      @.387 link "solid" description="Solid" url="/wiki/Solid"
+      @.389 text "4Be"
+      @.391 link "Beryllium" url="/wiki/Beryllium"
+      @.393 link "[o]" url="/wiki/List_of_chemical_elements#cite_note-19"
+      @.397 text "22s-block9.01221.85156027421.8251.572.8primordialsolid5B"
+      @.411 link "Boron" url="/wiki/Boron"
+      @.413 link "[p]" url="/wiki/List_of_chemical_elements#cite_note-20"
+      @.417 text "132"
+      @.419 link "p-block" url="/wiki/Block_(periodic_table)#p-block"
+      @.421 text "10.812.34234942001.0262.0410primordialsolid6C"
+      @.432 link "Carbon" url="/wiki/Carbon"
+      @.434 link "[q]" url="/wiki/List_of_chemical_elements#cite_note-21"
+      @.438 text "142p-block12.0112.267>400043000.7092.55200primordialsolid7N"
+      @.452 link "Nitrogen" url="/wiki/Nitrogen"
+      @.454 link "[r]" url="/wiki/List_of_chemical_elements#cite_note-22"
+      @.458 text "152p-block14.0070.001250663.1577.361.043.0419primordialgas8O"
+      @.473 link "Oxygen" url="/wiki/Oxygen"
+      @.475 link "[s]" url="/wiki/List_of_chemical_elements#cite_note-23"
+      @.479 text "162p-block15.9990.00142954.3690.200.9183.44461000primordialgas9F"
+      @.495 link "Fluorine" url="/wiki/Fluorine"
+      @.497 link "[t]" url="/wiki/List_of_chemical_elements#cite_note-24"
+      @.501 text "172p-block18.9980.00169653.5385.030.8243.98585primordialgas10Ne"
+      @.516 link "Neon" url="/wiki/Neon"
+      @.518 link "[u]" url="/wiki/List_of_chemical_elements#cite_note-25"
+      @.522 text "182p-block20.1800.000900224.5627.071.03–0.005primordialgas11Na"
+      @.537 link "Sodium" url="/wiki/Sodium"
+      @.539 link "[v]" url="/wiki/List_of_chemical_elements#cite_note-26"
+      @.543 text "13s-block22.9900.968370.8711561.2280.9323600primordialsolid12Mg"
+      @.558 link "Magnesium" url="/wiki/Magnesium"
+      @.560 link "[w]" url="/wiki/List_of_chemical_elements#cite_note-27"
+      @.564 text "23s-block24.3051.73892313631.0231.3123300primordialsolid13Al"
+      @.579 link "Aluminium" url="/wiki/Aluminium"
+      @.581 link "[x]" url="/wiki/List_of_chemical_elements#cite_note-28"
+      @.585 text "133p-block26.9822.70933.4727920.8971.6182300primordialsolid14Si"
+      @.600 link "Silicon" url="/wiki/Silicon"
+      @.602 link "[y]" url="/wiki/List_of_chemical_elements#cite_note-29"
+      @.606 text "143p-block28.0852.3290168735380.7051.9282000primordialsolid15P"
+      @.621 link "Phosphorus" url="/wiki/Phosphorus"
+      @.623 link "[z]" url="/wiki/List_of_chemical_elements#cite_note-30"
+      @.627 text "153p-block30.9741.823317.305500.7692.191050primordialsolid16S"
+      @.642 link "Sulfur" url="/wiki/Sulfur"
+      @.644 link "[aa]" url="/wiki/List_of_chemical_elements#cite_note-31"
+      @.648 text "163p-block32.062.07388.36717.870.712.58350primordialsolid17Cl"
+      @.662 link "Chlorine" url="/wiki/Chlorine"
+      @.664 link "[ab]" url="/wiki/List_of_chemical_elements#cite_note-32"
+      @.668 text "173p-block35.450.0032171.6239.110.4793.16145primordialgas18Ar"
+      @.682 link "Argon" url="/wiki/Argon"
+      @.684 link "[ac]" url="/wiki/List_of_chemical_elements#cite_note-33"
+      @.688 text "183p-block39.950.00178483.8087.300.52–3.5primordialgas19K"
+      @.703 link "Potassium" url="/wiki/Potassium"
+      @.705 link "[ad]" url="/wiki/List_of_chemical_elements#cite_note-34"
+      @.709 text "14s-block39.0980.89336.5310320.7570.8220900primordialsolid20Ca"
+      @.724 link "Calcium" url="/wiki/Calcium"
+      @.726 link "[ae]" url="/wiki/List_of_chemical_elements#cite_note-35"
+      @.730 text "24s-block40.0781.55111517570.6471.0041500primordialsolid21Sc"
+      @.745 link "Scandium" url="/wiki/Scandium"
+      @.747 link "[af]" url="/wiki/List_of_chemical_elements#cite_note-36"
+      @.751 text "34"
+      @.753 link "d-block" url="/wiki/Block_(periodic_table)#d-block"
+      @.755 text "44.9562.985181431090.5681.3622primordialsolid22Ti"
+      @.766 link "Titanium
+... [tee capped at 4096 of 12026 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12165B args=snapshot --next =====
+snapshot[23882-35828 of 90342]:
+      @.1522 text "f-block groups6f-block140.126.770106837160.1921.1266.5primordialsolid59Pr"
+      @.1536 link "Praseodymium" url="/wiki/Praseodymium"
+      @.1538 link "[bs]" url="/wiki/List_of_chemical_elements#cite_note-75"
+      @.1542 text "f-block groups6f-block140.916.77120837930.1931.139.2primordialsolid60Nd"
+      @.1556 link "Neodymium" url="/wiki/Neodymium"
+      @.1558 link "[bt]" url="/wiki/List_of_chemical_elements#cite_note-76"
+      @.1562 text "f-block groups6f-block144.247.01129733470.191.1441.5primordialsolid61Pm"
+      @.1576 link "Promethium" url="/wiki/Promethium"
+      @.1578 link "[bu]" url="/wiki/List_of_chemical_elements#cite_note-77"
+      @.1582 text "f-block groups6f-block[145]7.2613153273–1.132×10−19from decaysolid62Sm"
+      @.1599 link "Samarium" url="/wiki/Samarium"
+      @.1601 link "[bv]" url="/wiki/List_of_chemical_elements#cite_note-78"
+      @.1605 text "f-block groups6f-block150.367.52134520670.1971.177.05primordialsolid63Eu"
+      @.1619 link "Europium" url="/wiki/Europium"
+      @.1621 link "[bw]" url="/wiki/List_of_chemical_elements#cite_note-79"
+      @.1625 text "f-block groups6f-block151.965.244109918020.1821.22primordialsolid64Gd"
+      @.1639 link "Gadolinium" url="/wiki/Gadolinium"
+      @.1641 link "[bx]" url="/wiki/List_of_chemical_elements#cite_note-80"
+      @.1645 text "f-block groups6f-block157.257.90158535460.2361.26.2primordialsolid65Tb"
+      @.1659 link "Terbium" url="/wiki/Terbium"
+      @.1661 link "[by]" url="/wiki/List_of_chemical_elements#cite_note-81"
+      @.1665 text "f-block groups6f-block158.938.23162935030.1821.21.2primordialsolid66Dy"
+      @.1679 link "Dysprosium" url="/wiki/Dysprosium"
+      @.1681 link "[bz]" url="/wiki/List_of_chemical_elements#cite_note-82"
+      @.1685 text "f-block groups6f-block162.508.540168028400.171.225.2primordialsolid67Ho"
+      @.1699 link "Holmium" url="/wiki/Holmium"
+      @.1701 link "[ca]" url="/wiki/List_of_chemical_elements#cite_note-83"
+      @.1705 text "f-block groups6f-block164.938.79173429930.1651.231.3primordialsolid68Er"
+      @.1719 link "Erbium" url="/wiki/Erbium"
+      @.1721 link "[cb]" url="/wiki/List_of_chemical_elements#cite_note-84"
+      @.1725 text "f-block groups6f-block167.269.066180231410.1681.243.5primordialsolid69Tm"
+      @.1739 link "Thulium" url="/wiki/Thulium"
+      @.1741 link "[cc]" url="/wiki/List_of_chemical_elements#cite_note-85"
+      @.1745 text "f-block groups6f-block168.939.32181822230.161.250.52primordialsolid70Yb"
+      @.1759 link "Ytterbium" url="/wiki/Ytterbium"
+      @.1761 link "[cd]" url="/wiki/List_of_chemical_elements#cite_note-86"
+      @.1765 text "f-block groups6f-block173.056.90109714690.1551.13.2primordialsolid71Lu"
+      @.1779 link "Lutetium" url="/wiki/Lutetium"
+      @.1781 link "[ce]" url="/wiki/List_of_chemical_elements#cite_note-87"
+      @.1785 text "36d-block174.979.841192536750.1541.270.8primordialsolid72Hf"
+      @.1799 link "Hafnium" url="/wiki/Hafnium"
+      @.1801 link "[cf]" url="/wiki/List_of_chemical_elements#cite_note-88"
+      @.1805 text "46d-block178.4913.31250648760.1441.33primordialsolid73Ta"
+      @.1819 link "Tantalum" url="/wiki/Tantalum"
+      @.1821 link "[cg]" url="/wiki/List_of_chemical_elements#cite_note-89"
+      @.1825 text "56d-block180.9516.69329057310.141.52primordialsolid74W"
+      @.1839 link "Tungsten" url="/wiki/Tungsten"
+      @.1841 link "[ch]" url="/wiki/List_of_chemical_elements#cite_note-90"
+      @.1845 text "66d-block183.8419.25369562030.1322.361.3primordialsolid75Re"
+      @.1859 link "Rhenium" url="/wiki/Rhenium"
+      @.1861 link "[ci]" url="/wiki/List_of_chemical_elements#cite_note-91"
+      @.1865 text "76d-block186.2121.02345958690.1371.97×10−4primordialsolid76Os"
+      @.1882 link "Osmium" url="/wiki/Osmium"
+      @.1884 link "[cj]" url="/wiki/List_of_chemical_elements#cite_note-92"
+      @.1888 text "86d-block190.2322.59330652850.132.20.002primordialsolid77Ir"
+      @.1902 link "Iridium" url="/wiki/Iridium"
+      @.1904 link "[ck]" url="/wiki/List_of_chemical_elements#cite
+... [tee capped at 4096 of 12165 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12126B args=snapshot --next =====
+snapshot[35829-47798 of 90342]:
+      @.2639 link "[dr]" url="/wiki/List_of_chemical_elements#cite_note-129"
+      @.2643 text "107d-block[281](26–27)–––––syntheticunknown phase111Rg"
+      @.2657 link "Roentgenium" url="/wiki/Roentgenium"
+      @.2659 link "[ds]" url="/wiki/List_of_chemical_elements#cite_note-130"
+      @.2663 text "117d-block[282](22–24)–––––syntheticunknown phase112Cn"
+      @.2677 link "Copernicium" url="/wiki/Copernicium"
+      @.2679 link "[dt]" url="/wiki/List_of_chemical_elements#cite_note-131"
+      @.2683 text "127d-block[285](14.0)(283±11)(340±10)"
+      @.2694 link "[b]" url=$u1
+      @.2698 text "–––syntheticunknown phase113Nh"
+      @.2705 link "Nihonium" url="/wiki/Nihonium"
+      @.2707 link "[du]" url="/wiki/List_of_chemical_elements#cite_note-132"
+      @.2711 text "137p-block[286](16)(700)(1400)–––syntheticunknown phase114Fl"
+      @.2725 link "Flerovium" url="/wiki/Flerovium"
+      @.2727 link "[dv]" url="/wiki/List_of_chemical_elements#cite_note-133"
+      @.2731 text "147p-block[289](11.4±0.3)(284±50)"
+      @.2741 link "[b]" url=$u1
+      @.2745 text "––––syntheticunknown phase115Mc"
+      @.2753 link "Moscovium" url="/wiki/Moscovium"
+      @.2755 link "[dw]" url="/wiki/List_of_chemical_elements#cite_note-134"
+      @.2759 text "157p-block[290](13.5)(700)(1400)–––syntheticunknown phase116Lv"
+      @.2773 link "Livermorium" url="/wiki/Livermorium"
+      @.2775 link "[dx]" url="/wiki/List_of_chemical_elements#cite_note-135"
+      @.2779 text "167p-block[293](12.9)(700)(1100)–––syntheticunknown phase117Ts"
+      @.2793 link "Tennessine" url="/wiki/Tennessine"
+      @.2795 link "[dy]" url="/wiki/List_of_chemical_elements#cite_note-136"
+      @.2799 text "177p-block[294](7.1–7.3)(700)(883)–––syntheticunknown phase118Og"
+      @.2813 link "Oganesson" url="/wiki/Oganesson"
+      @.2815 link "[dz]" url="/wiki/List_of_chemical_elements#cite_note-137"
+      @.2819 text "187p-block[294](7)(325±15)(450±10)–––syntheticunknown phase^ "
+      @.2835 link "Jump up to: " url="/wiki/List_of_chemical_elements#cite_ref-saw_4-0"
+        @.147 text "aJump up to:"
+      @.2837 link url="/wiki/List_of_chemical_elements#cite_ref-saw_4-1"
+        @.147 text "b"
+      @.2839 text "Standard atomic weight or Ar°(E)'1.0080': abridged value, uncertainty ignored here'[97]', [] notation: mass number of most stable isotope^ "
+      @.2850 link "Jump up to: " url="/wiki/List_of_chemical_elements#cite_ref-prediction_5-0"
+        @.147 text "aJump up to:"
+      @.2852 link "  " url="/wiki/List_of_chemical_elements#cite_ref-prediction_5-1"
+        @.147 text "b"
+      @.2853 link "  " url="/wiki/List_of_chemical_elements#cite_ref-prediction_5-2"
+        @.147 text "c"
+      @.2854 link "  " url="/wiki/List_of_chemical_elements#cite_ref-prediction_5-3"
+        @.147 text "d"
+      @.2855 link url="/wiki/List_of_chemical_elements#cite_ref-prediction_5-4"
+        @.147 text "e"
+      @.2857 text "Values in () brackets are predictions"
+      @.2860 link "Jump up" description="Jump up" url="/wiki/List_of_chemical_elements#cite_ref-density_6-0"
+        @.147 text "^"
+      @.2862 text "Density ("
+      @.2863 link "sources" description="Densities of the elements (data page)" url="/wiki/Densities_of_the_elements_(data_page)"
+      @.2865 text ")"
+      @.2866 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-mp_7-0"
+        @.147 text "^"
+      @.2868 text "Melting point in "
+      @.2869 link "kelvin" url="/wiki/Kelvin"
+      @.2872 text "(K) ("
+      @.2873 link "sources" description="Melting points of the elements (data page)" url="/wiki/Melting_points_of_the_elements_(data_page)"
+      @.2875 text ")"
+      @.2876 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-bp_8-0"
+        @.147 text "^"
+      @.2878 text "Boiling point in "
+      @.2879 link "kelvin" url="/wiki/Kelvin"
+      @.2882 text "(K) ("
+      @.2883 link "sources" description="Boiling points of the elements (data page)" url="/wiki/Boiling_points_of_the_element
+... [tee capped at 4096 of 12126 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12179B args=snapshot --next =====
+snapshot[47799-59772 of 90342]:
+      @.3133 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-40"
+        @.147 text "^"
+      @.3135 text "Corrupted from "
+      @.3136 link "magnesia" description="wikt:magnesia" url="https://en.wiktionary.org/wiki/magnesia#Latin"
+      @.3139 link "negra" description="wikt:negra" url="https://en.wiktionary.org/wiki/negra#Latin"
+      @.3141 text "; see "
+      @.3142 link "magnesium" url="/wiki/List_of_chemical_elements#Mg"
+      @.3144 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-41"
+        @.147 text "^"
+      @.3146 text "English, from "
+      @.3147 link "Proto-Celtic" url="/wiki/Proto-Celtic"
+      @.3149 text " *īsarnom 'iron', from a root meaning 'blood'"
+      @.3150 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-42"
+        @.147 text "^"
+      @.3152 link "German" description="German language" url="/wiki/German_language"
+      @.3155 link "Kobold" description="wikt:Kobold" url="https://en.wiktionary.org/wiki/Kobold#German"
+      @.3157 text ", '"
+      @.3158 link "goblin" description="Goblin" url="/wiki/Goblin"
+      @.3160 text "'"
+      @.3161 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-43"
+        @.147 text "^"
+      @.3163 text "Nickel, a mischievous "
+      @.3164 link "sprite" description="Sprite (folklore)" url="/wiki/Sprite_(folklore)"
+      @.3166 text " in German miner mythology"
+      @.3167 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-44"
+        @.147 text "^"
+      @.3169 text "English, from Latin "
+      @.3170 link "cuprum" description="wikt:cuprum" url="https://en.wiktionary.org/wiki/cuprum#Latin"
+      @.3172 text ", after "
+      @.3173 link "Cyprus" url="/wiki/Cyprus"
+      @.3175 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-45"
+        @.147 text "^"
+      @.3177 text "Most likely German "
+      @.3178 link "Zinke" description="wikt:Zinke" url="https://en.wiktionary.org/wiki/Zinke#German"
+      @.3180 text ", 'prong, tooth', but some suggest "
+      @.3181 link "Persian" description="Persian language" url=$u1
+      @.3184 link "sang" description="wikt:سنگ" url="https://en.wiktionary.org/wiki/%D8%B3%D9%86%DA%AF#Persian"
+      @.3186 text " 'stone'"
+      @.3187 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-46"
+        @.147 text "^"
+      @.3189 text "Latin "
+      @.3190 link "Gallia" url="/wiki/Gallia"
+      @.3192 text " '"
+      @.3193 link "France" url="/wiki/France"
+      @.3195 text "'"
+      @.3196 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-47"
+        @.147 text "^"
+      @.3198 text "Latin "
+      @.3199 link "Germania" url="/wiki/Germania"
+      @.3201 text " '"
+      @.3202 link "Germany" url="/wiki/Germany"
+      @.3204 text "'"
+      @.3205 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-48"
+        @.147 text "^"
+      @.3207 text "Middle English, from "
+      @.3208 link "Middle French" url="/wiki/Middle_French"
+      @.3211 link "arsenic" description="wikt:arsenic" url="https://en.wiktionary.org/wiki/arsenic#French"
+      @.3213 text ", from Greek "
+      @.3214 link "arsenikón" description="wikt:ἀρσενικόν" url="https://en.wiktionary.org/wiki/%E1%BC%80%CF%81%CF%83%CE%B5%CE%BD%CE%B9%CE%BA%CF%8C%CE%BD#Ancient_Greek"
+      @.3216 text " 'yellow arsenic' (influenced by "
+      @.3217 link "arsenikós" description="wikt:ἀρσενικός" url="https://en.wiktionary.org/wiki/%E1%BC%80%CF%81%CF%83%CE%B5%CE%BD%CE%B9%CE%BA%CF%8C%CF%82#Ancient_Greek"
+      @.3219 text " 'masculine, virile'), from a "
+      @.3220 link "West Asian" description="West Asia" url="/wiki/West_Asia"
+      @.3223 link "wanderword" description="Wanderword" url="/wiki/Wanderword"
+      @.3225 text " ultimately from "
+      @.3226 link "Old Persian" description="Old Persian language" url="/wiki/Old_Persian_language"
+      @.3228 text ": *zarniya-ka, "
+      @.3232 link "lit." description="Literal translation" url="/wiki/Literal_translation"
+      @.3235 text "'golden'"
+      @.3238 link "Jump up" url="/wiki/List_of_chemica
+... [tee capped at 4096 of 12179 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12072B args=snapshot --next =====
+snapshot[59773-71773 of 90342]:
+      @.3428 text "French "
+      @.3429 link "iode" url="https://en.wiktionary.org/wiki/#French"
+      @.3431 text ", from Greek "
+      @.3432 link "ioeidḗs" description="wikt:ἰοειδής" url="https://en.wiktionary.org/wiki/%E1%BC%B0%CE%BF%CE%B5%CE%B9%CE%B4%CE%AE%CF%82#Ancient_Greek"
+      @.3434 text " 'violet'"
+      @.3435 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-70"
+        @.147 text "^"
+      @.3437 text "Greek "
+      @.3438 link "xénon" description="wikt:ξένον" url="https://en.wiktionary.org/wiki/%CE%BE%CE%AD%CE%BD%CE%BF%CE%BD#Ancient_Greek"
+      @.3440 text ", neuter of "
+      @.3441 link "xénos" description="wikt:ξένος" url="https://en.wiktionary.org/wiki/%CE%BE%CE%AD%CE%BD%CE%BF%CF%82#Ancient_Greek"
+      @.3443 text " 'strange, foreign'"
+      @.3444 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-71"
+        @.147 text "^"
+      @.3446 text "Latin "
+      @.3447 link "caesius" description="wikt:caesius" url="https://en.wiktionary.org/wiki/caesius#Latin"
+      @.3449 text " 'sky-blue'"
+      @.3450 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-72"
+        @.147 text "^"
+      @.3452 text "Greek "
+      @.3453 link "barýs" description="wikt:βαρύς" url="https://en.wiktionary.org/wiki/%CE%B2%CE%B1%CF%81%CF%8D%CF%82#Ancient_Greek"
+      @.3455 text " 'heavy'"
+      @.3456 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-73"
+        @.147 text "^"
+      @.3458 text "Greek "
+      @.3459 link "lanthánein" description="wikt:λᾰνθᾰ́νειν" url="https://en.wiktionary.org/wiki/%CE%BB%E1%BE%B0%CE%BD%CE%B8%E1%BE%B0%CC%81%CE%BD%CE%B5%CE%B9%CE%BD#Ancient_Greek"
+      @.3461 text " 'to lie hidden'"
+      @.3462 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-74"
+        @.147 text "^"
+      @.3464 link "Ceres (dwarf planet)" url="/wiki/Ceres_(dwarf_planet)"
+      @.3466 text ", then considered a planet"
+      @.3467 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-75"
+        @.147 text "^"
+      @.3469 text "Greek "
+      @.3470 link "prásios" description="wikt:πράσιος" url="https://en.wiktionary.org/wiki/%CF%80%CF%81%CE%AC%CF%83%CE%B9%CE%BF%CF%82#Ancient_Greek"
+      @.3473 link "dídymos" description="wikt:δίδυμος" url="https://en.wiktionary.org/wiki/%CE%B4%CE%AF%CE%B4%CF%85%CE%BC%CE%BF%CF%82#Ancient_Greek"
+      @.3475 text " 'green twin'"
+      @.3476 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-76"
+        @.147 text "^"
+      @.3478 text "Greek "
+      @.3479 link "néos" description="wikt:νέος" url="https://en.wiktionary.org/wiki/%CE%BD%CE%AD%CE%BF%CF%82#Ancient_Greek"
+      @.3482 text "dídymos 'new twin'"
+      @.3484 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-77"
+        @.147 text "^"
+      @.3486 link "Prometheus" url="/wiki/Prometheus"
+      @.3488 text ", a "
+      @.3489 link "Titan" description="Titans" url="/wiki/Titans"
+      @.3491 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-78"
+        @.147 text "^"
+      @.3493 link "Samarskite" url="/wiki/Samarskite"
+      @.3495 text ", a mineral named after "
+      @.3496 link "V. Samarsky-Bykhovets" description="Vasili Samarsky-Bykhovets" url="/wiki/Vasili_Samarsky-Bykhovets"
+      @.3498 text ", Russian mine official"
+      @.3499 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-79"
+        @.147 text "^"
+      @.3501 link "Europe" url="/wiki/Europe"
+      @.3503 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-80"
+        @.147 text "^"
+      @.3505 link "Gadolinite" url="/wiki/Gadolinite"
+      @.3507 text ", a mineral named after "
+      @.3508 link "Johan Gadolin" url="/wiki/Johan_Gadolin"
+      @.3510 text ", Finnish chemist, physicist and mineralogist"
+      @.3511 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-81"
+        @.147 text "^"
+      @.3513 link "Ytterby" url="/wiki/Ytterby"
+      @.3515 text ", Sweden, where it was found; see "
+      @.3516 link "yttrium" url=$u1
+      @.3518 text ", "
+
+... [tee capped at 4096 of 12072 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12632B args=snapshot --force =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "20"
+  refs: 1448
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @.22 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @.24 generic description="Hide"
+  @.25 navigation "Contents"
+    @.26 ## Contents
+    @.27 button "Hide Contents"
+    @.28 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.30 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.32 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.34 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.36 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.38 main
+    @.39 # List of chemical elements
+    @.40 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.41 navigation "Namespaces"
+      @.42 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.44 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.46 navigation "Views"
+      @.47 link "Read" url=$u1
+      @.49 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.51 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.53 navigation "Page tools"
+      @.54 button "Tools" haspopup="menu"
+    @.55 navigation "Appearance"
+      @.57 button "Hide Appearance"
+      @.58 text "Text"
+      @.59 form
+        @.60 radio "Small"
+        @.61 text "Small"
+        @.62 radio "Standard" checked
+        @.63 text "Standard"
+        @.64 radio "Large"
+        @.65 text "Large"
+      @.66 text "Width"
+      @.67 form
+        @.68 radio "Standard" checked
+        @.69 text "Standard"
+        @.70 radio "Wide"
+        @.71 text "Wide"
+      @.72 text "Color"
+      @.73 form
+        @.74 radio "Automatic"
+        @.75 text "Automatic"
+        @.76 radio "Light" checked
+        @.77 text "Light"
+        @.78 radio "Dark"
+        @.79 text "Dark"
+    @.80 text "From Wikipedia, the free encyclopedia118 "
+    @.82 link "chemical elements" description="Chemical element" url=$u2
+    @.84 text " have been "
+    @.85 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.87 text " and named officially by "
+    @.88 link "IUPAC" description="
+... [tee capped at 4096 of 12632 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12632B args=snapshot --force =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "20"
+  refs: 1448
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @.22 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @.24 generic description="Hide"
+  @.25 navigation "Contents"
+    @.26 ## Contents
+    @.27 button "Hide Contents"
+    @.28 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.30 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.32 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.34 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.36 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.38 main
+    @.39 # List of chemical elements
+    @.40 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.41 navigation "Namespaces"
+      @.42 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.44 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.46 navigation "Views"
+      @.47 link "Read" url=$u1
+      @.49 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.51 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.53 navigation "Page tools"
+      @.54 button "Tools" haspopup="menu"
+    @.55 navigation "Appearance"
+      @.57 button "Hide Appearance"
+      @.58 text "Text"
+      @.59 form
+        @.60 radio "Small"
+        @.61 text "Small"
+        @.62 radio "Standard" checked
+        @.63 text "Standard"
+        @.64 radio "Large"
+        @.65 text "Large"
+      @.66 text "Width"
+      @.67 form
+        @.68 radio "Standard" checked
+        @.69 text "Standard"
+        @.70 radio "Wide"
+        @.71 text "Wide"
+      @.72 text "Color"
+      @.73 form
+        @.74 radio "Automatic"
+        @.75 text "Automatic"
+        @.76 radio "Light" checked
+        @.77 text "Light"
+        @.78 radio "Dark"
+        @.79 text "Dark"
+    @.80 text "From Wikipedia, the free encyclopedia118 "
+    @.82 link "chemical elements" description="Chemical element" url=$u2
+    @.84 text " have been "
+    @.85 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.87 text " and named officially by "
+    @.88 link "IUPAC" description="
+... [tee capped at 4096 of 12632 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12632B args=snapshot --force =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "20"
+  refs: 1448
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @.22 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @.24 generic description="Hide"
+  @.25 navigation "Contents"
+    @.26 ## Contents
+    @.27 button "Hide Contents"
+    @.28 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.30 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.32 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.34 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.36 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.38 main
+    @.39 # List of chemical elements
+    @.40 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.41 navigation "Namespaces"
+      @.42 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.44 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.46 navigation "Views"
+      @.47 link "Read" url=$u1
+      @.49 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.51 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.53 navigation "Page tools"
+      @.54 button "Tools" haspopup="menu"
+    @.55 navigation "Appearance"
+      @.57 button "Hide Appearance"
+      @.58 text "Text"
+      @.59 form
+        @.60 radio "Small"
+        @.61 text "Small"
+        @.62 radio "Standard" checked
+        @.63 text "Standard"
+        @.64 radio "Large"
+        @.65 text "Large"
+      @.66 text "Width"
+      @.67 form
+        @.68 radio "Standard" checked
+        @.69 text "Standard"
+        @.70 radio "Wide"
+        @.71 text "Wide"
+      @.72 text "Color"
+      @.73 form
+        @.74 radio "Automatic"
+        @.75 text "Automatic"
+        @.76 radio "Light" checked
+        @.77 text "Light"
+        @.78 radio "Dark"
+        @.79 text "Dark"
+    @.80 text "From Wikipedia, the free encyclopedia118 "
+    @.82 link "chemical elements" description="Chemical element" url=$u2
+    @.84 text " have been "
+    @.85 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.87 text " and named officially by "
+    @.88 link "IUPAC" description="
+... [tee capped at 4096 of 12632 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12632B args=snapshot --force =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "20"
+  refs: 1448
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @.22 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @.24 generic description="Hide"
+  @.25 navigation "Contents"
+    @.26 ## Contents
+    @.27 button "Hide Contents"
+    @.28 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.30 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.32 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.34 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.36 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.38 main
+    @.39 # List of chemical elements
+    @.40 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.41 navigation "Namespaces"
+      @.42 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.44 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.46 navigation "Views"
+      @.47 link "Read" url=$u1
+      @.49 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.51 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.53 navigation "Page tools"
+      @.54 button "Tools" haspopup="menu"
+    @.55 navigation "Appearance"
+      @.57 button "Hide Appearance"
+      @.58 text "Text"
+      @.59 form
+        @.60 radio "Small"
+        @.61 text "Small"
+        @.62 radio "Standard" checked
+        @.63 text "Standard"
+        @.64 radio "Large"
+        @.65 text "Large"
+      @.66 text "Width"
+      @.67 form
+        @.68 radio "Standard" checked
+        @.69 text "Standard"
+        @.70 radio "Wide"
+        @.71 text "Wide"
+      @.72 text "Color"
+      @.73 form
+        @.74 radio "Automatic"
+        @.75 text "Automatic"
+        @.76 radio "Light" checked
+        @.77 text "Light"
+        @.78 radio "Dark"
+        @.79 text "Dark"
+    @.80 text "From Wikipedia, the free encyclopedia118 "
+    @.82 link "chemical elements" description="Chemical element" url=$u2
+    @.84 text " have been "
+    @.85 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.87 text " and named officially by "
+    @.88 link "IUPAC" description="
+... [tee capped at 4096 of 12632 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12632B args=snapshot --force =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "20"
+  refs: 1448
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 link "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win! Learn more" url="https://pl.wikipedia.org/wiki/Wikipedia:Wiki_Lubi_Zabytki_2026"
+    @.22 text "Wiki Loves Monuments: Photograph a monument, help Wikipedia and win!Learn more"
+  @.24 generic description="Hide"
+  @.25 navigation "Contents"
+    @.26 ## Contents
+    @.27 button "Hide Contents"
+    @.28 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.30 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.32 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.34 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.36 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.38 main
+    @.39 # List of chemical elements
+    @.40 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.41 navigation "Namespaces"
+      @.42 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.44 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.46 navigation "Views"
+      @.47 link "Read" url=$u1
+      @.49 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.51 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.53 navigation "Page tools"
+      @.54 button "Tools" haspopup="menu"
+    @.55 navigation "Appearance"
+      @.57 button "Hide Appearance"
+      @.58 text "Text"
+      @.59 form
+        @.60 radio "Small"
+        @.61 text "Small"
+        @.62 radio "Standard" checked
+        @.63 text "Standard"
+        @.64 radio "Large"
+        @.65 text "Large"
+      @.66 text "Width"
+      @.67 form
+        @.68 radio "Standard" checked
+        @.69 text "Standard"
+        @.70 radio "Wide"
+        @.71 text "Wide"
+      @.72 text "Color"
+      @.73 form
+        @.74 radio "Automatic"
+        @.75 text "Automatic"
+        @.76 radio "Light" checked
+        @.77 text "Light"
+        @.78 radio "Dark"
+        @.79 text "Dark"
+    @.80 text "From Wikipedia, the free encyclopedia118 "
+    @.82 link "chemical elements" description="Chemical element" url=$u2
+    @.84 text " have been "
+    @.85 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.87 text " and named officially by "
+    @.88 link "IUPAC" description="
+... [tee capped at 4096 of 12632 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12026B args=snapshot --next =====
+snapshot[11967-23881 of 90342]:
+      @.372 link "[n]" url="/wiki/List_of_chemical_elements#cite_note-17"
+      @.376 text "12s-block6.940.534453.6915603.5820.9820primordial"
+      @.387 link "solid" description="Solid" url="/wiki/Solid"
+      @.389 text "4Be"
+      @.391 link "Beryllium" url="/wiki/Beryllium"
+      @.393 link "[o]" url="/wiki/List_of_chemical_elements#cite_note-19"
+      @.397 text "22s-block9.01221.85156027421.8251.572.8primordialsolid5B"
+      @.411 link "Boron" url="/wiki/Boron"
+      @.413 link "[p]" url="/wiki/List_of_chemical_elements#cite_note-20"
+      @.417 text "132"
+      @.419 link "p-block" url="/wiki/Block_(periodic_table)#p-block"
+      @.421 text "10.812.34234942001.0262.0410primordialsolid6C"
+      @.432 link "Carbon" url="/wiki/Carbon"
+      @.434 link "[q]" url="/wiki/List_of_chemical_elements#cite_note-21"
+      @.438 text "142p-block12.0112.267>400043000.7092.55200primordialsolid7N"
+      @.452 link "Nitrogen" url="/wiki/Nitrogen"
+      @.454 link "[r]" url="/wiki/List_of_chemical_elements#cite_note-22"
+      @.458 text "152p-block14.0070.001250663.1577.361.043.0419primordialgas8O"
+      @.473 link "Oxygen" url="/wiki/Oxygen"
+      @.475 link "[s]" url="/wiki/List_of_chemical_elements#cite_note-23"
+      @.479 text "162p-block15.9990.00142954.3690.200.9183.44461000primordialgas9F"
+      @.495 link "Fluorine" url="/wiki/Fluorine"
+      @.497 link "[t]" url="/wiki/List_of_chemical_elements#cite_note-24"
+      @.501 text "172p-block18.9980.00169653.5385.030.8243.98585primordialgas10Ne"
+      @.516 link "Neon" url="/wiki/Neon"
+      @.518 link "[u]" url="/wiki/List_of_chemical_elements#cite_note-25"
+      @.522 text "182p-block20.1800.000900224.5627.071.03–0.005primordialgas11Na"
+      @.537 link "Sodium" url="/wiki/Sodium"
+      @.539 link "[v]" url="/wiki/List_of_chemical_elements#cite_note-26"
+      @.543 text "13s-block22.9900.968370.8711561.2280.9323600primordialsolid12Mg"
+      @.558 link "Magnesium" url="/wiki/Magnesium"
+      @.560 link "[w]" url="/wiki/List_of_chemical_elements#cite_note-27"
+      @.564 text "23s-block24.3051.73892313631.0231.3123300primordialsolid13Al"
+      @.579 link "Aluminium" url="/wiki/Aluminium"
+      @.581 link "[x]" url="/wiki/List_of_chemical_elements#cite_note-28"
+      @.585 text "133p-block26.9822.70933.4727920.8971.6182300primordialsolid14Si"
+      @.600 link "Silicon" url="/wiki/Silicon"
+      @.602 link "[y]" url="/wiki/List_of_chemical_elements#cite_note-29"
+      @.606 text "143p-block28.0852.3290168735380.7051.9282000primordialsolid15P"
+      @.621 link "Phosphorus" url="/wiki/Phosphorus"
+      @.623 link "[z]" url="/wiki/List_of_chemical_elements#cite_note-30"
+      @.627 text "153p-block30.9741.823317.305500.7692.191050primordialsolid16S"
+      @.642 link "Sulfur" url="/wiki/Sulfur"
+      @.644 link "[aa]" url="/wiki/List_of_chemical_elements#cite_note-31"
+      @.648 text "163p-block32.062.07388.36717.870.712.58350primordialsolid17Cl"
+      @.662 link "Chlorine" url="/wiki/Chlorine"
+      @.664 link "[ab]" url="/wiki/List_of_chemical_elements#cite_note-32"
+      @.668 text "173p-block35.450.0032171.6239.110.4793.16145primordialgas18Ar"
+      @.682 link "Argon" url="/wiki/Argon"
+      @.684 link "[ac]" url="/wiki/List_of_chemical_elements#cite_note-33"
+      @.688 text "183p-block39.950.00178483.8087.300.52–3.5primordialgas19K"
+      @.703 link "Potassium" url="/wiki/Potassium"
+      @.705 link "[ad]" url="/wiki/List_of_chemical_elements#cite_note-34"
+      @.709 text "14s-block39.0980.89336.5310320.7570.8220900primordialsolid20Ca"
+      @.724 link "Calcium" url="/wiki/Calcium"
+      @.726 link "[ae]" url="/wiki/List_of_chemical_elements#cite_note-35"
+      @.730 text "24s-block40.0781.55111517570.6471.0041500primordialsolid21Sc"
+      @.745 link "Scandium" url="/wiki/Scandium"
+      @.747 link "[af]" url="/wiki/List_of_chemical_elements#cite_note-36"
+      @.751 text "34"
+      @.753 link "d-block" url="/wiki/Block_(periodic_table)#d-block"
+      @.755 text "44.9562.985181431090.5681.3622primordialsolid22Ti"
+      @.766 link "Titanium
+... [tee capped at 4096 of 12026 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.
+
+===== CALL rc=0 out=12165B args=snapshot --next =====
+snapshot[23882-35828 of 90342]:
+      @.1522 text "f-block groups6f-block140.126.770106837160.1921.1266.5primordialsolid59Pr"
+      @.1536 link "Praseodymium" url="/wiki/Praseodymium"
+      @.1538 link "[bs]" url="/wiki/List_of_chemical_elements#cite_note-75"
+      @.1542 text "f-block groups6f-block140.916.77120837930.1931.139.2primordialsolid60Nd"
+      @.1556 link "Neodymium" url="/wiki/Neodymium"
+      @.1558 link "[bt]" url="/wiki/List_of_chemical_elements#cite_note-76"
+      @.1562 text "f-block groups6f-block144.247.01129733470.191.1441.5primordialsolid61Pm"
+      @.1576 link "Promethium" url="/wiki/Promethium"
+      @.1578 link "[bu]" url="/wiki/List_of_chemical_elements#cite_note-77"
+      @.1582 text "f-block groups6f-block[145]7.2613153273–1.132×10−19from decaysolid62Sm"
+      @.1599 link "Samarium" url="/wiki/Samarium"
+      @.1601 link "[bv]" url="/wiki/List_of_chemical_elements#cite_note-78"
+      @.1605 text "f-block groups6f-block150.367.52134520670.1971.177.05primordialsolid63Eu"
+      @.1619 link "Europium" url="/wiki/Europium"
+      @.1621 link "[bw]" url="/wiki/List_of_chemical_elements#cite_note-79"
+      @.1625 text "f-block groups6f-block151.965.244109918020.1821.22primordialsolid64Gd"
+      @.1639 link "Gadolinium" url="/wiki/Gadolinium"
+      @.1641 link "[bx]" url="/wiki/List_of_chemical_elements#cite_note-80"
+      @.1645 text "f-block groups6f-block157.257.90158535460.2361.26.2primordialsolid65Tb"
+      @.1659 link "Terbium" url="/wiki/Terbium"
+      @.1661 link "[by]" url="/wiki/List_of_chemical_elements#cite_note-81"
+      @.1665 text "f-block groups6f-block158.938.23162935030.1821.21.2primordialsolid66Dy"
+      @.1679 link "Dysprosium" url="/wiki/Dysprosium"
+      @.1681 link "[bz]" url="/wiki/List_of_chemical_elements#cite_note-82"
+      @.1685 text "f-block groups6f-block162.508.540168028400.171.225.2primordialsolid67Ho"
+      @.1699 link "Holmium" url="/wiki/Holmium"
+      @.1701 link "[ca]" url="/wiki/List_of_chemical_elements#cite_note-83"
+      @.1705 text "f-block groups6f-block164.938.79173429930.1651.231.3primordialsolid68Er"
+      @.1719 link "Erbium" url="/wiki/Erbium"
+      @.1721 link "[cb]" url="/wiki/List_of_chemical_elements#cite_note-84"
+      @.1725 text "f-block groups6f-block167.269.066180231410.1681.243.5primordialsolid69Tm"
+      @.1739 link "Thulium" url="/wiki/Thulium"
+      @.1741 link "[cc]" url="/wiki/List_of_chemical_elements#cite_note-85"
+      @.1745 text "f-block groups6f-block168.939.32181822230.161.250.52primordialsolid70Yb"
+      @.1759 link "Ytterbium" url="/wiki/Ytterbium"
+      @.1761 link "[cd]" url="/wiki/List_of_chemical_elements#cite_note-86"
+      @.1765 text "f-block groups6f-block173.056.90109714690.1551.13.2primordialsolid71Lu"
+      @.1779 link "Lutetium" url="/wiki/Lutetium"
+      @.1781 link "[ce]" url="/wiki/List_of_chemical_elements#cite_note-87"
+      @.1785 text "36d-block174.979.841192536750.1541.270.8primordialsolid72Hf"
+      @.1799 link "Hafnium" url="/wiki/Hafnium"
+      @.1801 link "[cf]" url="/wiki/List_of_chemical_elements#cite_note-88"
+      @.1805 text "46d-block178.4913.31250648760.1441.33primordialsolid73Ta"
+      @.1819 link "Tantalum" url="/wiki/Tantalum"
+      @.1821 link "[cg]" url="/wiki/List_of_chemical_elements#cite_note-89"
+      @.1825 text "56d-block180.9516.69329057310.141.52primordialsolid74W"
+      @.1839 link "Tungsten" url="/wiki/Tungsten"
+      @.1841 link "[ch]" url="/wiki/List_of_chemical_elements#cite_note-90"
+      @.1845 text "66d-block183.8419.25369562030.1322.361.3primordialsolid75Re"
+      @.1859 link "Rhenium" url="/wiki/Rhenium"
+      @.1861 link "[ci]" url="/wiki/List_of_chemical_elements#cite_note-91"
+      @.1865 text "76d-block186.2121.02345958690.1371.97×10−4primordialsolid76Os"
+      @.1882 link "Osmium" url="/wiki/Osmium"
+      @.1884 link "[cj]" url="/wiki/List_of_chemical_elements#cite_note-92"
+      @.1888 text "86d-block190.2322.59330652850.132.20.002primordialsolid77Ir"
+      @.1902 link "Iridium" url="/wiki/Iridium"
+      @.1904 link "[ck]" url="/wiki/List_of_chemical_elements#cite
+... [tee capped at 4096 of 12165 bytes]
+----- stderr -----
+note: Opera is running on the configured profile; using /Users/opera_user/.opera-browser-cli/profile for this run.
+      Run `opera-browser-cli launch-args` to start Opera so the CLI can attach to it.

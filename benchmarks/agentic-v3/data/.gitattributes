@@ -1,0 +1,3 @@
+# Captured browser output is an immutable research artifact, not source text.
+*/logs/*.out -whitespace
+*/logs/*.tsv -whitespace

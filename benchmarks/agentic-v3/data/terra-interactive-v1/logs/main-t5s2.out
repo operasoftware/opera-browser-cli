@@ -1,0 +1,1709 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12506B args=open https://en.wikipedia.org/wiki/Moon =====
+page:
+  title: Moon - Wikipedia
+  url: "https://en.wikipedia.org/wiki/Moon"
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 nav
+... [tee capped at 4096 of 12506 bytes]
+
+===== CALL rc=0 out=12431B args=snapshot =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12431 bytes]
+
+===== CALL rc=0 out=12431B args=snapshot =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12431 bytes]
+
+===== CALL rc=0 out=12428B args=press CTRL+F =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12428 bytes]
+
+===== CALL rc=0 out=12427B args=type Giant-impact hypothesis =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12427 bytes]
+
+===== CALL rc=0 out=12428B args=press ENTER =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12428 bytes]
+
+===== CALL rc=0 out=12428B args=press ESCAPE =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12428 bytes]
+
+===== CALL rc=0 out=12431B args=snapshot =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12431 bytes]
+
+===== CALL rc=0 out=12428B args=press CTRL+F =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12428 bytes]
+
+===== CALL rc=0 out=12427B args=type Giant impact =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12427 bytes]
+
+===== CALL rc=0 out=12428B args=press ENTER =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12428 bytes]
+
+===== CALL rc=0 out=12428B args=press ESCAPE =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12428 bytes]
+
+===== CALL rc=0 out=12431B args=snapshot =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12431 bytes]
+
+===== CALL rc=0 out=12428B args=press CTRL+L =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12428 bytes]
+
+===== CALL rc=0 out=12427B args=type Giant-impact hypothesis =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12427 bytes]
+
+===== CALL rc=0 out=12428B args=press ENTER =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12428 bytes]
+
+===== CALL rc=0 out=12431B args=snapshot =====
+page:
+  title: Moon - Wikipedia
+  refs: 8901
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @24.11 form
+        @24.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @24.13 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @24.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @24.76 navigation "Page tools"
+      @24.77 button "Tools" haspopup="menu"
+    @24.78 navigation "Appearance"
+      @24.80 button "Hi
+... [tee capped at 4096 of 12431 bytes]
+
+===== CALL rc=0 out=12439B args=click @24.12 =====
+page:
+  title: Moon - Wikipedia
+  refs: 8905
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @41.0 form
+        @41.1 combobox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" expanded focusable focused keyshortcuts="Ctrl+Alt+f"
+        @41.2 listbox "Search results" orientation="vertical"
+          @41.3 link "Far side of the Moon Hemisphere of the Moon that always faces away from Earth" url="/w/index.php?title=Special%3ASearch&search=Far+side+of+the+Moon&wprov=acrw1_0"
+          @41.4 link "Geology of the Moon Structure and composition of the Moon" url="/w/index.php?title=Special%3ASearch&search=Geology+of+the+Moon&wprov=acrw1_1"
+          @41.5 link "Phobos (moon) Larger of the two moons of Mars" url="/w/index.php?title=Special%3ASearch&search=Phobos+%28moon%29&wprov=acrw1_2"
+        @41.6 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts=
+... [tee capped at 4096 of 12439 bytes]
+
+===== CALL rc=0 out=12413B args=fill @24.12 Giant-impact hypothesis =====
+page:
+  title: Moon - Wikipedia
+  refs: 8905
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @41.0 form
+        @41.1 combobox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" expanded focusable focused keyshortcuts="Ctrl+Alt+f"
+        @41.2 listbox "Search results" orientation="vertical"
+          @41.3 link "Far side of the Moon Hemisphere of the Moon that always faces away from Earth" url="/w/index.php?title=Special%3ASearch&search=Far+side+of+the+Moon&wprov=acrw1_0"
+          @41.4 link "Geology of the Moon Structure and composition of the Moon" url="/w/index.php?title=Special%3ASearch&search=Geology+of+the+Moon&wprov=acrw1_1"
+          @41.5 link "Phobos (moon) Larger of the two moons of Mars" url="/w/index.php?title=Special%3ASearch&search=Phobos+%28moon%29&wprov=acrw1_2"
+        @41.6 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts=
+... [tee capped at 4096 of 12413 bytes]
+
+===== CALL rc=0 out=12439B args=click @24.13 =====
+page:
+  title: Moon - Wikipedia
+  refs: 8905
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @41.0 form
+        @41.1 combobox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" expanded focusable focused keyshortcuts="Ctrl+Alt+f"
+        @41.2 listbox "Search results" orientation="vertical"
+          @41.3 link "Far side of the Moon Hemisphere of the Moon that always faces away from Earth" url="/w/index.php?title=Special%3ASearch&search=Far+side+of+the+Moon&wprov=acrw1_0"
+          @41.4 link "Geology of the Moon Structure and composition of the Moon" url="/w/index.php?title=Special%3ASearch&search=Geology+of+the+Moon&wprov=acrw1_1"
+          @41.5 link "Phobos (moon) Larger of the two moons of Mars" url="/w/index.php?title=Special%3ASearch&search=Phobos+%28moon%29&wprov=acrw1_2"
+        @41.6 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts=
+... [tee capped at 4096 of 12439 bytes]
+
+===== CALL rc=0 out=12442B args=snapshot =====
+page:
+  title: Moon - Wikipedia
+  refs: 8905
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @41.0 form
+        @41.1 combobox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" expanded focusable focused keyshortcuts="Ctrl+Alt+f"
+        @41.2 listbox "Search results" orientation="vertical"
+          @41.3 link "Far side of the Moon Hemisphere of the Moon that always faces away from Earth" url="/w/index.php?title=Special%3ASearch&search=Far+side+of+the+Moon&wprov=acrw1_0"
+          @41.4 link "Geology of the Moon Structure and composition of the Moon" url="/w/index.php?title=Special%3ASearch&search=Geology+of+the+Moon&wprov=acrw1_1"
+          @41.5 link "Phobos (moon) Larger of the two moons of Mars" url="/w/index.php?title=Special%3ASearch&search=Phobos+%28moon%29&wprov=acrw1_2"
+        @41.6 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts=
+... [tee capped at 4096 of 12442 bytes]
+
+===== CALL rc=0 out=12445B args=fill @41.1 Giant impact hypothesis =====
+page:
+  title: Moon - Wikipedia
+  refs: 8905
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @41.0 form
+        @41.1 combobox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" expanded focusable focused keyshortcuts="Ctrl+Alt+f" value="Giant impact hypothesis"
+        @41.2 listbox "Search results" orientation="vertical"
+          @41.3 link "Far side of the Moon Hemisphere of the Moon that always faces away from Earth" url="/w/index.php?title=Special%3ASearch&search=Far+side+of+the+Moon&wprov=acrw1_0"
+          @41.4 link "Geology of the Moon Structure and composition of the Moon" url="/w/index.php?title=Special%3ASearch&search=Geology+of+the+Moon&wprov=acrw1_1"
+          @41.5 link "Phobos (moon) Larger of the two moons of Mars" url="/w/index.php?title=Special%3ASearch&search=Phobos+%28moon%29&wprov=acrw1_2"
+        @41.6 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content pag
+... [tee capped at 4096 of 12445 bytes]
+
+===== CALL rc=0 out=12457B args=press ENTER =====
+page:
+  title: Moon - Wikipedia
+  refs: 8904
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @41.0 form
+        @41.1 combobox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" expanded focusable focused keyshortcuts="Ctrl+Alt+f" value="Giant impact hypothesis"
+        @41.2 listbox "Search results" orientation="vertical"
+          @46.0 link "Giant-impact hypothesis Hypothesis of the formation of the Moon" url="/w/index.php?title=Special%3ASearch&search=Giant-impact+hypothesis&wprov=acrw1_0"
+          @46.1 link "Search for pages containing Giant impact hypothesis" url="/w/index.php?title=Special%3ASearch&fulltext=1&search=Giant+impact+hypothesis"
+        @41.6 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View sou
+... [tee capped at 4096 of 12457 bytes]
+
+===== CALL rc=0 out=85B args=wait 1000 =====
+waited: "1000"
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=12460B args=snapshot =====
+page:
+  title: Moon - Wikipedia
+  refs: 8904
+snapshot:
+@24.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @24.1 generic live="polite"
+  @24.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @24.4 banner
+    @24.5 navigation "Site"
+      @24.6 button "Main menu" haspopup="menu"
+    @24.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @24.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @24.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @24.10 search
+      @41.0 form
+        @41.1 combobox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" expanded focusable focused keyshortcuts="Ctrl+Alt+f" value="Giant impact hypothesis"
+        @41.2 listbox "Search results" orientation="vertical"
+          @46.0 link "Giant-impact hypothesis Hypothesis of the formation of the Moon" url="/w/index.php?title=Special%3ASearch&search=Giant-impact+hypothesis&wprov=acrw1_0"
+          @46.1 link "Search for pages containing Giant impact hypothesis" url="/w/index.php?title=Special%3ASearch&fulltext=1&search=Giant+impact+hypothesis"
+        @41.6 button "Search"
+    @24.14 navigation "Personal tools"
+      @24.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @24.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @24.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @24.21 navigation "Contents"
+    @24.22 ## Contents
+    @24.23 button "Hide Contents"
+    @24.24 link "(Top)" url="/wiki/Moon#"
+    @24.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @24.28 button "Toggle Names and etymology subsection" expandable
+    @24.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @24.31 button "Toggle Natural history subsection" expandable
+    @24.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @24.34 button "Toggle Physical characteristics subsection" expandable
+    @24.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @24.37 button "Toggle Earth–Moon system subsection" expandable
+    @24.38 link "Observation" url="/wiki/Moon#Observation"
+    @24.40 button "Toggle Observation subsection" expandable
+    @24.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @24.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @24.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @24.46 button "Toggle Human interaction and presence subsection" expandable
+    @24.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @24.49 button "Toggle In culture and life subsection" expandable
+    @24.50 link "See also" url="/wiki/Moon#See_also"
+    @24.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @24.54 link "References" url="/wiki/Moon#References"
+    @24.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @24.58 link "External links" url="/wiki/Moon#External_links"
+    @24.60 button "Toggle External links subsection" expandable
+  @24.61 main
+    @24.62 # Moon
+    @24.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @24.64 navigation "Namespaces"
+      @24.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @24.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @24.69 navigation "Views"
+      @24.70 link "Read" url="/wiki/Moon"
+      @24.72 link "View sou
+... [tee capped at 4096 of 12460 bytes]
+
+===== CALL rc=0 out=230B args=click @41.6 =====
+page:
+  refs: 1
+snapshot:
+@48.0 root busy url="/wiki/Giant_impact_hypothesis"
+help[1]:
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=85B args=wait 1000 =====
+waited: "1000"
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=12507B args=snapshot =====
+page:
+  title: Giant-impact hypothesis - Wikipedia
+  refs: 1880
+snapshot:
+@48.0 root "Giant-impact hypothesis - Wikipedia" url=$u1
+  @49.0 generic live="polite"
+  @49.1 link "Jump to content" url="/wiki/Giant-impact_hypothesis#bodyContent"
+  @49.3 banner
+    @49.4 navigation "Site"
+      @49.5 button "Main menu" haspopup="menu"
+    @49.6 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @49.7 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @49.8 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @49.9 search
+      @49.10 form
+        @49.11 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @49.12 button "Search"
+    @49.13 navigation "Personal tools"
+      @49.14 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @49.16 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Giant-impact+hypothesis"
+      @49.18 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Giant-impact+hypothesis"
+  @49.20 navigation "Contents"
+    @49.21 ## Contents
+    @49.22 button "Hide Contents"
+    @49.23 link "(Top)" url="/wiki/Giant-impact_hypothesis#"
+    @49.25 link "History" url="/wiki/Giant-impact_hypothesis#History"
+    @49.27 link "Theia" url="/wiki/Giant-impact_hypothesis#Theia"
+    @49.29 link "Basic model" url="/wiki/Giant-impact_hypothesis#Basic_model"
+    @49.31 link "Composition" url="/wiki/Giant-impact_hypothesis#Composition"
+    @49.33 button "Toggle Composition subsection" expandable expanded
+    @49.34 link "Equilibration hypothesis" url="/wiki/Giant-impact_hypothesis#Equilibration_hypothesis"
+    @49.36 link "Direct collision hypothesis" url="/wiki/Giant-impact_hypothesis#Direct_collision_hypothesis"
+    @49.38 link "Synestia hypothesis" url="/wiki/Giant-impact_hypothesis#Synestia_hypothesis"
+    @49.40 link "Terrestrial magma ocean hypothesis" url="/wiki/Giant-impact_hypothesis#Terrestrial_magma_ocean_hypothesis"
+    @49.42 link "Evidence" url="/wiki/Giant-impact_hypothesis#Evidence"
+    @49.44 link "Difficulties" url="/wiki/Giant-impact_hypothesis#Difficulties"
+    @49.46 button "Toggle Difficulties subsection" expandable expanded
+    @49.47 link "Composition" url="/wiki/Giant-impact_hypothesis#Composition_2"
+    @49.49 link "Lack of a Venusian moon" url="/wiki/Giant-impact_hypothesis#Lack_of_a_Venusian_moon"
+    @49.51 link "Possible origin of Theia" url="/wiki/Giant-impact_hypothesis#Possible_origin_of_Theia"
+    @49.53 link "Alternative hypotheses" url="/wiki/Giant-impact_hypothesis#Alternative_hypotheses"
+    @49.55 link "See also" url="/wiki/Giant-impact_hypothesis#See_also"
+    @49.57 link "References" url="/wiki/Giant-impact_hypothesis#References"
+    @49.59 button "Toggle References subsection" expandable expanded
+    @49.60 link "Further reading" url="/wiki/Giant-impact_hypothesis#Further_reading"
+    @49.62 link "External links" url="/wiki/Giant-impact_hypothesis#External_links"
+  @49.64 main
+    @49.65 # Giant-impact hypothesis
+    @49.66 button "38 languages" description="Go to an article in another language. Available in 38 languages" haspopup="menu"
+    @49.67 navigation "Namespaces"
+      @49.68 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @49.70 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Giant-impact_hypothesis"
+    @49.72 navigation "Views"
+      @49.73 link "Read" url=$u1
+      @49.75 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Giant-impact_hypothesis&action=edit"
+      @49.77 link "View history" description="Past 
+... [tee capped at 4096 of 12507 bytes]
+
+===== CALL rc=0 out=12507B args=snapshot =====
+page:
+  title: Giant-impact hypothesis - Wikipedia
+  refs: 1880
+snapshot:
+@48.0 root "Giant-impact hypothesis - Wikipedia" url=$u1
+  @49.0 generic live="polite"
+  @49.1 link "Jump to content" url="/wiki/Giant-impact_hypothesis#bodyContent"
+  @49.3 banner
+    @49.4 navigation "Site"
+      @49.5 button "Main menu" haspopup="menu"
+    @49.6 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @49.7 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @49.8 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @49.9 search
+      @49.10 form
+        @49.11 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @49.12 button "Search"
+    @49.13 navigation "Personal tools"
+      @49.14 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @49.16 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Giant-impact+hypothesis"
+      @49.18 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Giant-impact+hypothesis"
+  @49.20 navigation "Contents"
+    @49.21 ## Contents
+    @49.22 button "Hide Contents"
+    @49.23 link "(Top)" url="/wiki/Giant-impact_hypothesis#"
+    @49.25 link "History" url="/wiki/Giant-impact_hypothesis#History"
+    @49.27 link "Theia" url="/wiki/Giant-impact_hypothesis#Theia"
+    @49.29 link "Basic model" url="/wiki/Giant-impact_hypothesis#Basic_model"
+    @49.31 link "Composition" url="/wiki/Giant-impact_hypothesis#Composition"
+    @49.33 button "Toggle Composition subsection" expandable expanded
+    @49.34 link "Equilibration hypothesis" url="/wiki/Giant-impact_hypothesis#Equilibration_hypothesis"
+    @49.36 link "Direct collision hypothesis" url="/wiki/Giant-impact_hypothesis#Direct_collision_hypothesis"
+    @49.38 link "Synestia hypothesis" url="/wiki/Giant-impact_hypothesis#Synestia_hypothesis"
+    @49.40 link "Terrestrial magma ocean hypothesis" url="/wiki/Giant-impact_hypothesis#Terrestrial_magma_ocean_hypothesis"
+    @49.42 link "Evidence" url="/wiki/Giant-impact_hypothesis#Evidence"
+    @49.44 link "Difficulties" url="/wiki/Giant-impact_hypothesis#Difficulties"
+    @49.46 button "Toggle Difficulties subsection" expandable expanded
+    @49.47 link "Composition" url="/wiki/Giant-impact_hypothesis#Composition_2"
+    @49.49 link "Lack of a Venusian moon" url="/wiki/Giant-impact_hypothesis#Lack_of_a_Venusian_moon"
+    @49.51 link "Possible origin of Theia" url="/wiki/Giant-impact_hypothesis#Possible_origin_of_Theia"
+    @49.53 link "Alternative hypotheses" url="/wiki/Giant-impact_hypothesis#Alternative_hypotheses"
+    @49.55 link "See also" url="/wiki/Giant-impact_hypothesis#See_also"
+    @49.57 link "References" url="/wiki/Giant-impact_hypothesis#References"
+    @49.59 button "Toggle References subsection" expandable expanded
+    @49.60 link "Further reading" url="/wiki/Giant-impact_hypothesis#Further_reading"
+    @49.62 link "External links" url="/wiki/Giant-impact_hypothesis#External_links"
+  @49.64 main
+    @49.65 # Giant-impact hypothesis
+    @49.66 button "38 languages" description="Go to an article in another language. Available in 38 languages" haspopup="menu"
+    @49.67 navigation "Namespaces"
+      @49.68 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @49.70 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Giant-impact_hypothesis"
+    @49.72 navigation "Views"
+      @49.73 link "Read" url=$u1
+      @49.75 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Giant-impact_hypothesis&action=edit"
+      @49.77 link "View history" description="Past 
+... [tee capped at 4096 of 12507 bytes]

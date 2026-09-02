@@ -1,0 +1,4 @@
+1788345675.7170429230	0.14	0	3156	0	--help
+1788345679.7445640564	1.37	0	12616	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788345686.2627310753	0.51	0	12486	0	snapshot
+1788345691.6824460030	0.35	0	127	0	eval Array.from(document.querySelectorAll('h2,h3,h4,h5')).filter(h=>/404/.test(h.textContent)).map(h=>h.id+' | '+h.textContent.trim()).join('\n')

@@ -1,0 +1,9 @@
+1788276139.9527099133	0.13	0	3156	0	--help
+1788276142.2020080090	0.68	0	12735	0	open https://en.wikipedia.org/wiki/List_of_chemical_elements
+1788276146.7476251125	0.26	0	221	0	snapshot
+1788276154.2254569530	0.26	0	221	0	snapshot
+1788276156.7571299076	0.26	0	12618	0	snapshot --force
+1788276159.5873959064	0.35	0	85	0	eval document.body.innerText.includes('Tungsten')
+1788276167.8232460022	0.34	0	200	0	eval Array.from(document.querySelectorAll('tr')).find(tr => tr.innerText.includes('Tungsten')).innerText
+1788276172.5553491116	0.35	0	275	0	eval (() => {   const tr = Array.from(document.querySelectorAll('tr')).find(tr => tr.innerText.includes('Tungsten'));   const table = tr.closest('table');   const headers = Array.from(table.querySelectorAll('th')).map(th => th.innerText.trim());   return headers.slice(0, 10).join(' | '); })()
+1788276176.8257629871	0.35	0	232	0	eval (() => {   const tr = Array.from(document.querySelectorAll('tr')).find(tr => tr.innerText.includes('Tungsten'));   return Array.from(tr.querySelectorAll('td, th')).map(cell => cell.innerText.trim()); })()

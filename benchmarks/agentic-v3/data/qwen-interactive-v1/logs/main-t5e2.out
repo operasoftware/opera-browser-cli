@@ -1,0 +1,150 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12506B args=open https://en.wikipedia.org/wiki/Moon =====
+page:
+  title: Moon - Wikipedia
+  url: "https://en.wikipedia.org/wiki/Moon"
+  refs: 8901
+snapshot:
+@19.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @19.1 generic live="polite"
+  @19.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @19.4 banner
+    @19.5 navigation "Site"
+      @19.6 button "Main menu" haspopup="menu"
+    @19.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @19.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @19.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @19.10 search
+      @19.11 form
+        @19.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @19.13 button "Search"
+    @19.14 navigation "Personal tools"
+      @19.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @19.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @19.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @19.21 navigation "Contents"
+    @19.22 ## Contents
+    @19.23 button "Hide Contents"
+    @19.24 link "(Top)" url="/wiki/Moon#"
+    @19.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @19.28 button "Toggle Names and etymology subsection" expandable
+    @19.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @19.31 button "Toggle Natural history subsection" expandable
+    @19.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @19.34 button "Toggle Physical characteristics subsection" expandable
+    @19.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @19.37 button "Toggle Earth–Moon system subsection" expandable
+    @19.38 link "Observation" url="/wiki/Moon#Observation"
+    @19.40 button "Toggle Observation subsection" expandable
+    @19.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @19.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @19.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @19.46 button "Toggle Human interaction and presence subsection" expandable
+    @19.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @19.49 button "Toggle In culture and life subsection" expandable
+    @19.50 link "See also" url="/wiki/Moon#See_also"
+    @19.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @19.54 link "References" url="/wiki/Moon#References"
+    @19.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @19.58 link "External links" url="/wiki/Moon#External_links"
+    @19.60 button "Toggle External links subsection" expandable
+  @19.61 main
+    @19.62 # Moon
+    @19.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @19.64 navigation "Namespaces"
+      @19.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @19.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @19.69 navigation "Views"
+      @19.70 link "Read" url="/wiki/Moon"
+      @19.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @19.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @19.76 navigation "Page tools"
+      @19.77 button "Tools" haspopup="menu"
+    @19.78 nav
+... [tee capped at 4096 of 12506 bytes]
+
+===== CALL rc=0 out=466B args=eval Array.from(document.querySelectorAll('a')).filter(a=>/giant.impact/i.test(a.textContent)).map(a=>a.textContent+' -> '+a.href).join('\n') =====
+result: "\"a giant impact -> https://en.wikipedia.org/wiki/Giant-impact_hypothesis\\nGiant-impact hypothesis -> https://en.wikipedia.org/wiki/Giant-impact_hypothesis\\ngiant impact -> https://en.wikipedia.org/wiki/Giant_impact\\nGiant-impact hypothesis -> https://en.wikipedia.org/wiki/Giant-impact_hypothesis\\nGiant-impact hypothesis -> https://en.wikipedia.org/wiki/Giant-impact_hypothesis\""
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=110B args=eval var a=Array.from(document.querySelectorAll('a')).find(a=>a.textContent.trim()==='Giant-impact hypothesis' && a.href.includes('/wiki/Giant-impact_hypothesis')); a.click(); 'clicked: '+a.href =====
+result: "Error: Unexpected token 'var'"
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=147B args=eval (function(){var a=Array.from(document.querySelectorAll('a')).find(function(x){return x.textContent.trim()==='Giant-impact hypothesis' && x.href.indexOf('/wiki/Giant-impact_hypothesis')>-1;}); a.click(); return 'clicked: '+a.href;})() =====
+result: "\"clicked: https://en.wikipedia.org/wiki/Giant-impact_hypothesis\""
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=102B args=wait Giant-impact hypothesis =====
+waited: Giant-impact hypothesis
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=1019B args=eval (function(){var t=document.querySelector('#mw-content-text').innerText; var m=t.match(/[^.]*4[.,]5[^.]*\./g)||[]; return location.href+'\n'+m.slice(0,6).join('\n');})() =====
+result: "\"https://en.wikipedia.org/wiki/Giant-impact_hypothesis\\n The hypothesis suggests that the Proto-Earth collided with a Mars-sized co-orbital protoplanet likely from the L4 or L5 Lagrange points of the Earth's orbit[3] approximately 4.5 billion years ago in the early Hadean eon (about 20 to 100 million years after the Solar System formed), and some of the ejected debris from the impact event later re-accreted to form the Moon.\\n[5][17] According to modern theories of planet formation, Theia was part of a population of Mars-sized bodies that existed in the Solar System 4.5 billion years ago.\\n[3]\\n\\nIn 2008, evidence was presented that suggests that the collision might have occurred later than the accepted value of 4.53 Gya, at approximately 4.\\n In this hypothesis, the formation of the Moon occurs 60–140 million years after the formation of the Solar System (as compared to hypothesized Theia impact at 4.527 ± 0.\""
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
