@@ -1,0 +1,181 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=2040B args=open https://www.selenium.dev/selenium/web/web-form.html =====
+page:
+  title: Web form
+  url: "https://www.selenium.dev/selenium/web/web-form.html"
+  snap: "16"
+  refs: 38
+snapshot:
+@.0 root "Web form" url="/selenium/web/web-form.html"
+  @.1 main
+    @.2 # Web form
+    @.3 form
+      @.4 text "Text input"
+      @.5 textbox "Text input"
+      @.6 text "Password"
+      @.7 textbox "Password"
+      @.8 text "Textarea"
+      @.9 textbox "Textarea" multiline
+      @.10 text "Disabled input"
+      @.11 textbox "Disabled input" disabled
+      @.12 text "Readonly input"
+      @.13 textbox "Readonly input" readonly value="Readonly input"
+      @.14 link "Return to index" url="/selenium/web/index.html"
+      @.16 text "Dropdown (select)"
+      @.17 combobox "Dropdown (select)" value="Open this select menu"
+        @.18 option "Open this select menu" selected value="Open this select menu"
+        @.19 option "One" value="One"
+        @.20 option "Two" value="Two"
+        @.21 option "Three" value="Three"
+      @.22 text "Dropdown (datalist)"
+      @.23 combobox "Dropdown (datalist)"
+      @.24 text "File input"
+      @.25 button "File input" value="No file chosen"
+      @.26 checkbox "Checked checkbox" checked
+      @.27 text "Checked checkbox"
+      @.28 checkbox "Default checkbox"
+      @.29 text "Default checkbox"
+      @.30 radio "Checked radio" checked
+      @.31 radio "Default radio"
+      @.32 button "Submit"
+      @.33 text "Color picker"
+      @.34 color "Color picker" value="#563d7c"
+      @.35 text "Date picker"
+      @.36 textbox "Date picker"
+      @.37 text "Example range "
+      @.38 slider "Example range " value=5 valuemax=10 valuemin=0 valuetext=5
+help[5]:
+  Run `opera-browser-cli fill @.5 "text"` to fill the "Text input" field
+  Run `opera-browser-cli click @.25` to click the "File input" button
+  Run `opera-browser-cli click @.14` to click the "Return to index" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=128B args=snapshot =====
+snapshot: unchanged since last shown — "Web form" (38 refs)
+help[1]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+
+===== CALL rc=6 out=165B args=fillform @.5=Jan Kowalski @.7=secret1 =====
+error: "Error: Element uid \".5\" not found on page 1."
+code: REF_NOT_FOUND
+help[1]:
+  Run `opera-browser-cli snapshot` to see available elements and their @uid refs
+===== CALL rc=0 out=128B args=snapshot =====
+snapshot: unchanged since last shown — "Web form" (38 refs)
+help[1]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+
+===== CALL rc=0 out=611B args=fill @.5 Jan Kowalski =====
+diff: {changed: 1, added: 0, removed: 1}
+~ @16.5 textbox "Text input" focusable focused value="Jan Kowalski" (was: @16.5 textbox "Text input")
+help[6]:
+  Run `opera-browser-cli click @16.32` to click "Submit"
+  Run `opera-browser-cli click @16.25` to click the "File input" button
+  Run `opera-browser-cli click @16.14` to click the "Return to index" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+
+===== CALL rc=0 out=739B args=fill @.7 secret1 =====
+diff: {changed: 2, added: 0, removed: 0}
+~ @16.5 textbox "Text input" value="Jan Kowalski" (was: @16.5 textbox "Text input" focusable focused value="Jan Kowalski")
+~ @16.7 textbox "Password" focusable focused value="•••••••" (was: @16.7 textbox "Password")
+help[6]:
+  Run `opera-browser-cli click @16.32` to click "Submit"
+  Run `opera-browser-cli click @16.25` to click the "File input" button
+  Run `opera-browser-cli click @16.14` to click the "Return to index" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+  Run `opera-browser-cli snapshot` for the full page state
+
+===== CALL rc=0 out=419B args=click @.32 =====
+page:
+  title: Web form - target page
+  snap: "21"
+  refs: 4
+snapshot:
+@.0 root "Web form - target page" url=$u1
+  @.1 main
+    @.2 # Form submitted
+    @.3 text "Received!"
+urls:
+  $u1 [hidden 243b → /selenium/web/submitted-form.html?my-text=Jan+Kowalski&my-p…]
+help[1]:
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=419B args=snapshot =====
+page:
+  title: Web form - target page
+  snap: "21"
+  refs: 4
+snapshot:
+@.0 root "Web form - target page" url=$u1
+  @.1 main
+    @.2 # Form submitted
+    @.3 text "Received!"
+urls:
+  $u1 [hidden 243b → /selenium/web/submitted-form.html?my-text=Jan+Kowalski&my-p…]
+help[1]:
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`

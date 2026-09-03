@@ -17,6 +17,7 @@ Env:
     BENCH_TASKS_FILE (default harness/tasks.tsv — point at a subset to smoke-test)
     BENCH_RUN_ID (optional; writes isolated results/<id>/ and logs/<id>/ directories)
     BENCH_PRICES (optional USD/token input,output,cache-read,cache-write override)
+    TOOL_CAP (default 0/no extra cap; non-zero values are sensitivity runs only)
 """
 
 import json
@@ -86,8 +87,22 @@ for r in range(1, REPS + 1):
             cell = f"t{cidx}{TAG}{r}"
             outfile = os.path.join(results_root, ARM, f"{cond}-{slug}-r{r}.json")
             if os.path.exists(outfile):
-                print(f"  {slug} — done, skipping", flush=True)
-                continue
+                try:
+                    with open(outfile) as pf:
+                        prior = json.load(pf)
+                    if not prior.get("is_error"):
+                        print(f"  {slug} — done, skipping", flush=True)
+                        continue
+                except Exception:
+                    pass
+                print(f"  {slug} — retrying previous error", flush=True)
+                for ext in [".tsv", ".out"]:
+                    p = os.path.join(logs_root, f"{cond}-{cell}{ext}")
+                    if os.path.exists(p):
+                        try:
+                            os.remove(p)
+                        except OSError:
+                            pass
             wrapper_env = f"BENCH_LOG_DIR={logs_root} " if RUN_ID else ""
             wrapper = sh(f'{wrapper_env}{os.path.join(HERE, "gen.zsh")} {cond} {cell}')
             prompt = (

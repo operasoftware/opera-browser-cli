@@ -1,0 +1,327 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12691B args=open https://www.rfc-editor.org/rfc/rfc9110.html =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  url: "https://www.rfc-editor.org/rfc/rfc9110.html"
+  snap: "2"
+  refs: 6987
+snapshot:
+@.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html"
+  @.1 text "Status:Internet StandardObsoletes:"
+  @.4 link "2818" url="/rfc/rfc2818"
+  @.6 text ", "
+  @.7 link "7230" url="/rfc/rfc7230"
+  @.9 text ", "
+  @.10 link "7231" url="/rfc/rfc7231"
+  @.12 text ", "
+  @.13 link "7232" url="/rfc/rfc7232"
+  @.15 text ", "
+  @.16 link "7233" url="/rfc/rfc7233"
+  @.18 text ", "
+  @.19 link "7235" url="/rfc/rfc7235"
+  @.21 text ", "
+  @.22 link "7538" url="/rfc/rfc7538"
+  @.24 text ", "
+  @.25 link "7615" url="/rfc/rfc7615"
+  @.27 text ", "
+  @.28 link "7694" url="/rfc/rfc7694"
+  @.30 text "Updates:"
+  @.31 link "3864" url="/rfc/rfc3864"
+  @.33 text "More info:"
+  @.34 link "Errata exist" url="/errata/rfc9110"
+  @.36 text " | "
+  @.37 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @.39 text "| "
+  @.40 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @.42 text " | "
+  @.43 link "Info page" url="/info/rfc9110"
+  @.45 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @.48 link "9110" url="/rfc/rfc9110"
+  @.50 text "STD:97Obsoletes:"
+  @.53 link "2818" url="/rfc/rfc2818"
+  @.55 text ", "
+  @.56 link "7230" url="/rfc/rfc7230"
+  @.58 text ", "
+  @.59 link "7231" url="/rfc/rfc7231"
+  @.61 text ", "
+  @.62 link "7232" url="/rfc/rfc7232"
+  @.64 text ", "
+  @.65 link "7233" url="/rfc/rfc7233"
+  @.67 text ", "
+  @.68 link "7235" url="/rfc/rfc7235"
+  @.70 text ", "
+  @.71 link "7538" url="/rfc/rfc7538"
+  @.73 text ", "
+  @.74 link "7615" url="/rfc/rfc7615"
+  @.76 text ", "
+  @.77 link "7694" url="/rfc/rfc7694"
+  @.79 text "Updates:"
+  @.80 link "3864" url="/rfc/rfc3864"
+  @.82 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @.98 # RFC 9110
+  @.99 # HTTP Semantics
+  @.100 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @.102 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @.103 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @.104 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @.106 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @.109 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @.111 text "."
+  @.112 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @.114 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @.116 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @.118 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD Licens
+... [tee capped at 4096 of 12691 bytes]
+
+===== CALL rc=0 out=3668B args=find 404 =====
+find: 21 matches for "404"
+  root "RFC 9110: HTTP Semantics" > @2.1173 link "404 Not Found" url="/rfc/rfc9110.html#name-404-not-found"
+  @2.2404 text "Authoritative access refers to dereferencing a given identifier, for the sake of access to the identified resource, in a way that the client believes is authoritative (controlled by the resource owner). The process for determining whether access is granted is defined by the URI scheme and often uses data within the URI components, such as the authority component when the generic syntax is used. However, authoritative access is not limited to the identified mechanism."
+  @2.4040 link "HTTP/1.1" url="/rfc/rfc9110.html#HTTP11"
+  @2.4042 text "]), the codings listed in Content-Encoding are a characteristic of the representation; the representation is defined in terms of the coded form, and all other metadata about the representation is about the coded form unless otherwise noted in the metadata definition. Typically, the representation is only decoded just prior to rendering or analogous usage.If the media type includes an inherent encoding, such as a data format that is always compressed, then that encoding would not be restated in Content-Encoding even if it happens to be the same algorithm as one of the content codings. Such a content coding would only be listed if, for some bizarre reason, it is applied a second time to form the representation. Likewise, an origin server might choose to publish the same data as multiple representations that differ only in whether the coding is defined as part of "
+  @2.4045 link "Content-Type" url="/rfc/rfc9110.html#field.content-type"
+  @2.4047 text " or Content-Encoding, since some user agents will behave differently in their handling of each response (e.g., open a "Save as ..." dialog instead of automatic decompression and rendering of content)."
+  @2.4048 text "An origin server MAY respond with a status code of "
+  @2.7462 text "The status codes listed below are defined in this specification. The reason phrases listed here are only recommendations -- they can be replaced by local equivalents or left out altogether without affecting the protocol.Responses with status codes that are defined as heuristically cacheable (e.g., 200, 203, 204, 206, 300, 301, 308, 404, 405, 410, 414, and 501 in this specification) can be reused by a cache with heuristic expiration unless otherwise indicated by the method definition or explicit cache controls ["
+  @2.8298 link "404 (Not Found)" url="/rfc/rfc9110.html#status.404"
+  @2.8303 link "404 Not Found" url="/rfc/rfc9110.html#name-404-not-found"
+  @2.8305 text "The 404 (Not Found) status code indicates that the origin server did not find a current representation for the "
+  @2.8308 text " or is not willing to disclose that one exists. A 404 status code does not indicate whether this lack of representation is temporary or permanent; the "
+  @2.8311 text " status code is preferred over 404 if the origin server knows, presumably through some configurable means, that the condition is likely to be permanent.A 404 response is heuristically cacheable; i.e., unless otherwise indicated by the method definition or explicit cache controls (see "
+  @2.8411 link "404 (Not Found)" url="/rfc/rfc9110.html#status.404"
+  @2.9404 text " of ["
+  @2.9754 text "404Not Found"
+  @2.9756 link "15.5.5" url="/rfc/rfc9110.html#status.404"
+  @2.10404 text ">.[RFC5280]Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, "
+  @2.12404 link "M" url="/rfc/rfc9110.html#rfc.index.u77"
+  @2.12522 text "404 Not Found (status code)"
+  ... (1 more — run `opera-browser-cli find --next` to continue)
+
+===== CALL rc=0 out=318B args=find 15.5.5 =====
+find: 4 matches for "15.5.5"
+  root "RFC 9110: HTTP Semantics" > @2.1170 link "15.5.5" url="/rfc/rfc9110.html#section-15.5.5"
+  @2.8301 link "15.5.5. " url="/rfc/rfc9110.html#section-15.5.5"
+  @2.9756 link "15.5.5" url="/rfc/rfc9110.html#status.404"
+  @2.12523 link "Section 15.5.5" url="/rfc/rfc9110.html#status.404"
+
+===== CALL rc=0 out=12736B args=open https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.5 =====
+page:
+  title: "RFC 9110: HTTP Semantics"
+  url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.5"
+  snap: "2"
+  refs: 6987
+snapshot:
+@.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html#section-15.5.5"
+  @.1 text "Status:Internet StandardObsoletes:"
+  @.4 link "2818" url="/rfc/rfc2818"
+  @.6 text ", "
+  @.7 link "7230" url="/rfc/rfc7230"
+  @.9 text ", "
+  @.10 link "7231" url="/rfc/rfc7231"
+  @.12 text ", "
+  @.13 link "7232" url="/rfc/rfc7232"
+  @.15 text ", "
+  @.16 link "7233" url="/rfc/rfc7233"
+  @.18 text ", "
+  @.19 link "7235" url="/rfc/rfc7235"
+  @.21 text ", "
+  @.22 link "7538" url="/rfc/rfc7538"
+  @.24 text ", "
+  @.25 link "7615" url="/rfc/rfc7615"
+  @.27 text ", "
+  @.28 link "7694" url="/rfc/rfc7694"
+  @.30 text "Updates:"
+  @.31 link "3864" url="/rfc/rfc3864"
+  @.33 text "More info:"
+  @.34 link "Errata exist" url="/errata/rfc9110"
+  @.36 text " | "
+  @.37 link "Datatracker" url="https://datatracker.ietf.org/doc/rfc9110"
+  @.39 text "| "
+  @.40 link "IPR" url="https://datatracker.ietf.org/ipr/search/?rfc=9110&submit=rfc"
+  @.42 text " | "
+  @.43 link "Info page" url="/info/rfc9110"
+  @.45 text "Stream:Internet Engineering Task Force (IETF)RFC:"
+  @.48 link "9110" url="/rfc/rfc9110"
+  @.50 text "STD:97Obsoletes:"
+  @.53 link "2818" url="/rfc/rfc2818"
+  @.55 text ", "
+  @.56 link "7230" url="/rfc/rfc7230"
+  @.58 text ", "
+  @.59 link "7231" url="/rfc/rfc7231"
+  @.61 text ", "
+  @.62 link "7232" url="/rfc/rfc7232"
+  @.64 text ", "
+  @.65 link "7233" url="/rfc/rfc7233"
+  @.67 text ", "
+  @.68 link "7235" url="/rfc/rfc7235"
+  @.70 text ", "
+  @.71 link "7538" url="/rfc/rfc7538"
+  @.73 text ", "
+  @.74 link "7615" url="/rfc/rfc7615"
+  @.76 text ", "
+  @.77 link "7694" url="/rfc/rfc7694"
+  @.79 text "Updates:"
+  @.80 link "3864" url="/rfc/rfc3864"
+  @.82 text "Category:Standards TrackPublished:June 2022ISSN:2070-1721Authors:R. Fielding, Ed.AdobeM. Nottingham, Ed.FastlyJ. Reschke, Ed.greenbytes"
+  @.98 # RFC 9110
+  @.99 # HTTP Semantics
+  @.100 link "Abstract" url="/rfc/rfc9110.html#abstract"
+  @.102 text "The Hypertext Transfer Protocol (HTTP) is a stateless application-level protocol for distributed, collaborative, hypertext information systems. This document describes the overall architecture of HTTP, establishes common terminology, and defines aspects of the protocol that are shared by all versions. In this definition are core protocol elements, extensibility mechanisms, and the "http" and "https" Uniform Resource Identifier (URI) schemes."
+  @.103 text "This document updates RFC 3864 and obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615, 7694, and portions of 7230."
+  @.104 link "Status of This Memo" url="/rfc/rfc9110.html#name-status-of-this-memo"
+  @.106 text "This is an Internet Standards Track document.This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at "
+  @.109 link "https://www.rfc-editor.org/info/rfc9110" url="/info/rfc9110"
+  @.111 text "."
+  @.112 link "Copyright Notice" url="/rfc/rfc9110.html#name-copyright-notice"
+  @.114 text "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents ("
+  @.116 link "https://trustee.ietf.org/license-info" url="https://trustee.ietf.org/license-info"
+  @.118 text ") in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as descr
+... [tee capped at 4096 of 12736 bytes]
+
+===== CALL rc=0 out=2038B args=find 15.5. =====
+find: 96 matches for "15.5."
+  @2.0 root "RFC 9110: HTTP Semantics" url="/rfc/rfc9110.html#section-15.5.5"
+  root "RFC 9110: HTTP Semantics" > @2.1150 link "15.5.1" url="/rfc/rfc9110.html#section-15.5.1"
+  root "RFC 9110: HTTP Semantics" > @2.1155 link "15.5.2" url="/rfc/rfc9110.html#section-15.5.2"
+  root "RFC 9110: HTTP Semantics" > @2.1160 link "15.5.3" url="/rfc/rfc9110.html#section-15.5.3"
+  root "RFC 9110: HTTP Semantics" > @2.1165 link "15.5.4" url="/rfc/rfc9110.html#section-15.5.4"
+  root "RFC 9110: HTTP Semantics" > @2.1170 link "15.5.5" url="/rfc/rfc9110.html#section-15.5.5"
+  root "RFC 9110: HTTP Semantics" > @2.1175 link "15.5.6" url="/rfc/rfc9110.html#section-15.5.6"
+  root "RFC 9110: HTTP Semantics" > @2.1180 link "15.5.7" url="/rfc/rfc9110.html#section-15.5.7"
+  root "RFC 9110: HTTP Semantics" > @2.1185 link "15.5.8" url="/rfc/rfc9110.html#section-15.5.8"
+  root "RFC 9110: HTTP Semantics" > @2.1190 link "15.5.9" url="/rfc/rfc9110.html#section-15.5.9"
+  root "RFC 9110: HTTP Semantics" > @2.1195 link "15.5.10" url="/rfc/rfc9110.html#section-15.5.10"
+  root "RFC 9110: HTTP Semantics" > @2.1200 link "15.5.11" url="/rfc/rfc9110.html#section-15.5.11"
+  root "RFC 9110: HTTP Semantics" > @2.1205 link "15.5.12" url="/rfc/rfc9110.html#section-15.5.12"
+  root "RFC 9110: HTTP Semantics" > @2.1210 link "15.5.13" url="/rfc/rfc9110.html#section-15.5.13"
+  root "RFC 9110: HTTP Semantics" > @2.1215 link "15.5.14" url="/rfc/rfc9110.html#section-15.5.14"
+  root "RFC 9110: HTTP Semantics" > @2.1220 link "15.5.15" url="/rfc/rfc9110.html#section-15.5.15"
+  root "RFC 9110: HTTP Semantics" > @2.1225 link "15.5.16" url="/rfc/rfc9110.html#section-15.5.16"
+  root "RFC 9110: HTTP Semantics" > @2.1230 link "15.5.17" url="/rfc/rfc9110.html#section-15.5.17"
+  root "RFC 9110: HTTP Semantics" > @2.1235 link "15.5.18" url="/rfc/rfc9110.html#section-15.5.18"
+  root "RFC 9110: HTTP Semantics" > @2.1240 link "15.5.19" url="/rfc/rfc9110.html#section-15.5.19"
+  ... (76 more — run `opera-browser-cli find --next` to continue)
+
+===== CALL rc=0 out=385B args=find 15.5.4 =====
+find: 5 matches for "15.5.4"
+  root "RFC 9110: HTTP Semantics" > @2.1165 link "15.5.4" url="/rfc/rfc9110.html#section-15.5.4"
+  @2.5708 link "Section 15.5.4" url="/rfc/rfc9110.html#status.403"
+  @2.8282 link "15.5.4. " url="/rfc/rfc9110.html#section-15.5.4"
+  @2.9752 link "15.5.4" url="/rfc/rfc9110.html#status.403"
+  @2.12520 link "Section 15.5.4" url="/rfc/rfc9110.html#status.403"
+
+===== CALL rc=0 out=2158B args=find 403 =====
+find: 25 matches for "403"
+  root "RFC 9110: HTTP Semantics" > @2.403 link "Content" url="/rfc/rfc9110.html#name-content"
+  root "RFC 9110: HTTP Semantics" > @2.1168 link "403 Forbidden" url="/rfc/rfc9110.html#name-403-forbidden"
+  root "RFC 9110: HTTP Semantics" > @2.1403 link "Upgrade Token Registry" url="/rfc/rfc9110.html#name-upgrade-token-registry"
+  @2.3403 link "HTTP/2" url="/rfc/rfc9110.html#HTTP2"
+  @2.4030 link "Accept-Encoding" url="/rfc/rfc9110.html#field.accept-encoding"
+  @2.4032 text " and thus SHOULD NOT be included.Additional information about the encoding parameters can be provided by other header fields not defined by this specification.Unlike Transfer-Encoding ("
+  @2.4037 link "Section 6.1" url="/rfc/rfc9112#section-6.1"
+  @2.4039 text " of ["
+  @2.4403 link "8.8.2.1. " url="/rfc/rfc9110.html#section-8.8.2.1"
+  @2.5403 link "Section 6.5" url="/rfc/rfc9110.html#trailer.fields"
+  @2.5705 link "403 (Forbidden)" url="/rfc/rfc9110.html#status.403"
+  @2.5708 link "Section 15.5.4" url="/rfc/rfc9110.html#status.403"
+  @2.8284 link "403 Forbidden" url="/rfc/rfc9110.html#name-403-forbidden"
+  @2.8286 text "The 403 (Forbidden) status code indicates that the server understood the request but refuses to fulfill it. A server that wishes to make public why the request has been forbidden can describe that reason in the response content (if any).If authentication credentials were provided in the request, the server considers them insufficient to grant access. The client SHOULD NOT automatically repeat the request with the same credentials. The client MAY repeat the request with new or different credentials. However, a request might be forbidden for reasons unrelated to the credentials."
+  @2.8403 link "15.5.11. " url="/rfc/rfc9110.html#section-15.5.11"
+  @2.9245 link "RFC4033" url="/rfc/rfc9110.html#RFC4033"
+  @2.9750 text "403Forbidden"
+  @2.9752 link "15.5.4" url="/rfc/rfc9110.html#status.403"
+  @2.11259 text ">.[RFC4033]Arends, R., Austein, R., Larson, M., Massey, D., and S. Rose, "
+  @2.11273 text ", RFC 4033, DOI 10.17487/RFC4033, March 2005, <"
+  ... (5 more — run `opera-browser-cli find --next` to continue)
+
+===== CALL rc=0 out=318B args=find 15.5.6 =====
+find: 4 matches for "15.5.6"
+  root "RFC 9110: HTTP Semantics" > @2.1175 link "15.5.6" url="/rfc/rfc9110.html#section-15.5.6"
+  @2.8320 link "15.5.6. " url="/rfc/rfc9110.html#section-15.5.6"
+  @2.9760 link "15.5.6" url="/rfc/rfc9110.html#status.405"
+  @2.12526 link "Section 15.5.6" url="/rfc/rfc9110.html#status.405"
+
+===== CALL rc=0 out=2886B args=find 405 =====
+find: 32 matches for "405"
+  root "RFC 9110: HTTP Semantics" > @2.405 link "6.4.1" url="/rfc/rfc9110.html#section-6.4.1"
+  root "RFC 9110: HTTP Semantics" > @2.1178 link "405 Method Not Allowed" url="/rfc/rfc9110.html#name-405-method-not-allowed"
+  root "RFC 9110: HTTP Semantics" > @2.1405 link "17" url="/rfc/rfc9110.html#section-17"
+  root "RFC 9110: HTTP Semantics" > @2.1832 link "RFC7405" url="/rfc/rfc9110.html#RFC7405"
+  @2.2405 link "Section 4.3.1" url="/rfc/rfc9110.html#origin"
+  @2.3405 text "] and HTTP/3 ["
+  @2.4051 link "415 (Unsupported Media Type)" url="/rfc/rfc9110.html#status.415"
+  @2.4053 text " if a representation in the request message has a content coding that is not acceptable."
+  @2.4054 link "8.4.1. " url="/rfc/rfc9110.html#section-8.4.1"
+  @2.4056 link "Content Codings" url="/rfc/rfc9110.html#name-content-codings"
+  @2.4058 text "Content coding values indicate an encoding transformation that has been or can be applied to a representation. Content codings are primarily used to allow a representation to be compressed or otherwise usefully transformed without losing the identity of its underlying media type and without loss of information. Frequently, the representation is stored in coded form, transmitted directly, and only decoded by the final recipient."
+  @2.4059 text "  content-coding   = token
+  @2.4405 link "Generation" url="/rfc/rfc9110.html#name-generation"
+  @2.4663 link "405 (Method Not Allowed)" url="/rfc/rfc9110.html#status.405"
+  @2.5233 link "405 (Method Not Allowed)" url="/rfc/rfc9110.html#status.405"
+  @2.5405 text ", a TE field with a "trailers" member sent in a request indicates that the client will not discard trailer fields."
+  @2.5481 link "405 (Method Not Allowed)" url="/rfc/rfc9110.html#status.405"
+  @2.5483 text " response and MAY do so in any other response. An empty Allow field value indicates that the resource allows no methods, which might occur in a 405 response if the resource has been temporarily disabled by configuration.A proxy MUST NOT modify the Allow header field -- it does not need to understand all of the indicated methods in order to handle them according to the generic message handling rules."
+  @2.7462 text "The status codes listed below are defined in this specification. The reason phrases listed here are only recommendations -- they can be replaced by local equivalents or left out altogether without affecting the protocol.Responses with status codes that are defined as heuristically cacheable (e.g., 200, 203, 204, 206, 300, 301, 308, 404, 405, 410, 414, and 501 in this specification) can be reused by a cache with heuristic expiration unless otherwise indicated by the method definition or explicit cache controls ["
+  @2.8322 link "405 Method Not Allowed" url="/rfc/rfc9110.html#name-405-method-not-allowed"
+  ... (12 more — run `opera-browser-cli find --next` to continue)

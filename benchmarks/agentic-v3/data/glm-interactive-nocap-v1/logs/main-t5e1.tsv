@@ -1,0 +1,9 @@
+1788436537.8396699429	0.13	0	3156	0	--help
+1788436539.9977619648	1.22	0	12506	0	open https://en.wikipedia.org/wiki/Moon
+1788436544.8595509529	0.35	0	138	0	eval (() => { const links = [...document.querySelectorAll('a')]; const match = links.find(a => a.href.includes('Giant-impact') || a.textContent.includes('Giant-impact') || a.textContent.includes('giant-impact')); return match ? match.href : 'not found'; })()
+1788436548.5210309029	0.35	0	99	0	eval (() => { const links = [...document.querySelectorAll('a')]; const match = links.find(a => a.href.includes('Giant-impact_hypothesis')); return match ? match.textContent.trim() : 'not found'; })()
+1788436552.0714290142	0.61	0	12431	0	snapshot
+1788436557.8538830280	0.59	0	92	0	eval (() => { const links = [...document.querySelectorAll('a')]; const match = links.find(a => a.href.includes('Giant-impact_hypothesis')); if (match) { match.click(); return 'clicked'; } return 'not found'; })()
+1788436560.2542059422	2.16	0	85	0	wait 2000
+1788436564.6052510738	0.25	0	12436	0	snapshot
+1788436568.4327259064	0.36	0	2159	0	eval (() => { const text = document.body.innerText; const matches = text.match(/[^.]*\b\d{3,4}.*?(?:million|billion).*?(?:years?|ago|Ma|Ga)[^.]*\./gi) || []; return matches.slice(0, 10).join('\n---\n'); })()

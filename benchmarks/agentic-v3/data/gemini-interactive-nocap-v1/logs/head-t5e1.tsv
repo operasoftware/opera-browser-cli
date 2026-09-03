@@ -1,0 +1,9 @@
+1788353283.4404261112	0.15	0	3156	0	--help
+1788353285.6860179901	1.25	0	12564	0	open https://en.wikipedia.org/wiki/Moon
+1788353291.5224649906	0.36	0	362	0	eval (() => {   const links = Array.from(document.querySelectorAll('a'));   const match = links.find(a => a.textContent.includes('Giant-impact hypothesis') || a.href.includes('Giant-impact_hypothesis'));   if (match) {     return { text: match.textContent, href: match.href, outerHTML: match.outerHTML };   }   return 'Not found'; })()
+1788353294.9889540672	0.41	0	88	0	eval document.querySelector('a[href*="Giant-impact_hypothesis"]').click()
+1788353297.2699429989	2.16	1	50	0	wait 2000
+1788353310.5713560581	0.36	0	138	0	eval window.location.href
+1788353313.3525791168	0.36	0	2115	0	eval (() => {   const paragraphs = Array.from(document.querySelectorAll('p')).slice(0, 5).map(p => p.textContent);   return paragraphs.join('\n\n'); })()
+1788353316.3345699310	0.36	0	215	0	eval (() => {   const text = document.body.innerText;   const matches = text.match(/(?:[0-9.]+|[\w-]+)\s+(?:billion|million)\s+years\s+ago/gi) || [];   return Array.from(new Set(matches)); })()
+1788353318.9066030979	0.37	0	930	0	eval (() => {   const text = document.body.innerText;   const regex = /.{0,100}(?:4\.45|4\.47|4\.5)\s+billion\s+years\s+ago.{0,100}/gi;   let match;   const results = [];   while ((match = regex.exec(text)) !== null) {     results.push(match[0].replace(/\n/g, ' '));   }   return results; })()

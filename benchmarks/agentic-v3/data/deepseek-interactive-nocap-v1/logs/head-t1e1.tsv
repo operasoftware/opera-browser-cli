@@ -1,0 +1,6 @@
+1788360354.7501080036	0.15	0	3156	0	--help
+1788360355.6991078854	1.49	0	12685	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788360371.0234940052	0.35	0	106	0	eval (() => { const el = document.querySelector('[id="section-15.5.5"]'); if(!el) return 'not found 15.5.5'; let p = el.closest('div'); const h = el.querySelector('h2,h3,h4,h5'); return h ? h.textContent.trim() : 'no heading in section'; })()
+1788360372.8289020061	0.14	1	762	0	eval (() => { const el = document.querySelector('[id="section-15.5.5"]'); const h = el.querySelector('h3,h4,h5'); const nameEl = document.querySelector('[id="section-15.5.5"] .section-number, #section-15\.5\.5 h4'); const anchors = el.querySelectorAll('a[href*="name-"]'); return {heading: h? h.textContent.trim():null, anchors: Array.from(anchors).slice(0,3).map(a=>a.textContent.trim())}; })()
+1788360373.9922299385	0.35	0	106	0	eval (() => { const el = document.getElementById('section-15.5.5'); if(!el) return 'none'; const h = el.closest('h3') || el.querySelector('h3,h4,h5'); const txt = (h? h.textContent:'') .trim(); return txt.replace(/\s+/g,' '); })()
+1788360375.8724610806	0.37	0	185	0	eval (() => { const el = document.getElementById('section-15.5.5'); return {tag: el.tagName, id: el.id, cls: el.className, childTags: Array.from(el.children).map(c=>c.tagName)}; })()

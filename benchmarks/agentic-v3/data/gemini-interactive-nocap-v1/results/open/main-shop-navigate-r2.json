@@ -1,0 +1,33 @@
+{
+ "model": "pc_browser/vertex_ai/gemini-3.5-flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.35e-06,
+   "output": 8.1e-06,
+   "cache_read": 1.35e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.029463075000000002,
+ "num_turns": 4,
+ "calls": 3,
+ "is_error": false,
+ "result": "The travel category shows 11 results. The cheapest book in this category is \"The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)\" at \u00a323.21.\n\nANSWER: 11 results, \"The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)\" (\u00a323.21)\nCALLS: 3",
+ "usage": {
+  "input_tokens": 19912,
+  "output_tokens": 1230,
+  "cache_read_input_tokens": 6075,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.01867995,
+  "out": 0.009963,
+  "cache_read": 0.000820125,
+  "cache_write": 0.0
+ }
+}

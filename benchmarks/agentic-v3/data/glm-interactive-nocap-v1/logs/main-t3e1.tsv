@@ -1,0 +1,9 @@
+1788436480.8143539429	0.13	0	3156	0	--help
+1788436482.6177029610	0.52	0	2109	0	open https://www.selenium.dev/selenium/web/web-form.html
+1788436486.9932150841	0.14	0	2048	0	fillform @12.5=Jan Kowalski @12.7=secret1
+1788436488.9995179176	0.43	0	414	0	click @12.32
+1788436508.6905639172	0.35	0	367	0	eval document.querySelector('h1').textContent + ' | ' + document.querySelector('#message, p, h1+*').textContent + ' | URL: ' + window.location.href
+1788436512.8692440987	0.27	0	2066	0	back
+1788436515.0400879383	0.36	0	2069	0	fill @15.5 Jan Kowalski
+1788436517.8905949593	0.38	0	2099	0	fill @15.7 secret1
+1788436520.9835419655	0.32	0	414	0	click @15.32

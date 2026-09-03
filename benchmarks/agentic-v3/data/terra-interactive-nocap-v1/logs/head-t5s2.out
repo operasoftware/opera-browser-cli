@@ -1,0 +1,213 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12564B args=open https://en.wikipedia.org/wiki/Moon =====
+page:
+  title: Moon - Wikipedia
+  url: "https://en.wikipedia.org/wiki/Moon"
+  snap: "26"
+  refs: 8901
+snapshot:
+@.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/Moon#"
+    @.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @.28 button "Toggle Names and etymology subsection" expandable
+    @.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @.31 button "Toggle Natural history subsection" expandable
+    @.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @.34 button "Toggle Physical characteristics subsection" expandable
+    @.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @.37 button "Toggle Earth–Moon system subsection" expandable
+    @.38 link "Observation" url="/wiki/Moon#Observation"
+    @.40 button "Toggle Observation subsection" expandable
+    @.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @.46 button "Toggle Human interaction and presence subsection" expandable
+    @.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @.49 button "Toggle In culture and life subsection" expandable
+    @.50 link "See also" url="/wiki/Moon#See_also"
+    @.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @.54 link "References" url="/wiki/Moon#References"
+    @.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @.58 link "External links" url="/wiki/Moon#External_links"
+    @.60 button "Toggle External links subsection" expandable
+  @.61 main
+    @.62 # Moon
+    @.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @.64 navigation "Namespaces"
+      @.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @.69 navigation "Views"
+      @.70 link "Read" url="/wiki/Moon"
+      @.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @.76 navigation "Page tools"
+      @.77 button "Tools" haspopup="menu"
+    @.78 navigation "Appearance"
+      @.80 button "Hide Appearance"
+      @.81 text "Text"
+      @.82 form
+   
+... [tee capped at 4096 of 12564 bytes]
+
+===== CALL rc=0 out=200B args=snapshot =====
+snapshot: unchanged since last shown — "Moon - Wikipedia" (8901 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+
+===== CALL rc=0 out=318B args=find Giant-impact hypothesis =====
+find: 2 matches for "Giant-impact hypothesis"
+  root "Moon - Wikipedia" > main > @26.932 link "a giant impact" description="Giant-impact hypothesis" url="/wiki/Giant-impact_hypothesis"
+  main > region "Natural history" > region "Formation" > @26.1328 link "Giant-impact hypothesis" url="/wiki/Giant-impact_hypothesis"
+
+===== CALL rc=0 out=12648B args=click @26.1328 =====
+page:
+  title: Giant-impact hypothesis - Wikipedia
+  snap: "29"
+  refs: 1878
+snapshot:
+@.0 root "Giant-impact hypothesis - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/Giant-impact_hypothesis#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Giant-impact+hypothesis"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Giant-impact+hypothesis"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/Giant-impact_hypothesis#"
+    @.26 link "History" url="/wiki/Giant-impact_hypothesis#History"
+    @.28 link "Theia" url="/wiki/Giant-impact_hypothesis#Theia"
+    @.30 link "Basic model" url="/wiki/Giant-impact_hypothesis#Basic_model"
+    @.32 link "Composition" url="/wiki/Giant-impact_hypothesis#Composition"
+    @.34 button "Toggle Composition subsection" expandable expanded
+    @.35 link "Equilibration hypothesis" url="/wiki/Giant-impact_hypothesis#Equilibration_hypothesis"
+    @.37 link "Direct collision hypothesis" url="/wiki/Giant-impact_hypothesis#Direct_collision_hypothesis"
+    @.39 link "Synestia hypothesis" url="/wiki/Giant-impact_hypothesis#Synestia_hypothesis"
+    @.41 link "Terrestrial magma ocean hypothesis" url="/wiki/Giant-impact_hypothesis#Terrestrial_magma_ocean_hypothesis"
+    @.43 link "Evidence" url="/wiki/Giant-impact_hypothesis#Evidence"
+    @.45 link "Difficulties" url="/wiki/Giant-impact_hypothesis#Difficulties"
+    @.47 button "Toggle Difficulties subsection" expandable expanded
+    @.48 link "Composition" url="/wiki/Giant-impact_hypothesis#Composition_2"
+    @.50 link "Lack of a Venusian moon" url="/wiki/Giant-impact_hypothesis#Lack_of_a_Venusian_moon"
+    @.52 link "Possible origin of Theia" url="/wiki/Giant-impact_hypothesis#Possible_origin_of_Theia"
+    @.54 link "Alternative hypotheses" url="/wiki/Giant-impact_hypothesis#Alternative_hypotheses"
+    @.56 link "See also" url="/wiki/Giant-impact_hypothesis#See_also"
+    @.58 link "References" url="/wiki/Giant-impact_hypothesis#References"
+    @.60 button "Toggle References subsection" expandable expanded
+    @.61 link "Further reading" url="/wiki/Giant-impact_hypothesis#Further_reading"
+    @.63 link "External links" url="/wiki/Giant-impact_hypothesis#External_links"
+  @.65 main
+    @.66 # Giant-impact hypothesis
+    @.67 button "38 languages" description="Go to an article in another language. Available in 38 languages" haspopup="menu"
+    @.68 navigation "Namespaces"
+      @.69 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.71 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Giant-impact_hypothesis"
+    @.73 navigation "Views"
+      @.74 link "Read" url=$u1
+      @.76 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Giant-impact_hypothesis&action=edit"
+      @.78 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=
+... [tee capped at 4096 of 12648 bytes]
+
+===== CALL rc=0 out=3617B args=find million =====
+find: 9 matches for "million"
+  root "Giant-impact hypothesis - Wikipedia" > main > @29.183 text " (about 20 to 100million years after the "
+  root "Giant-impact hypothesis - Wikipedia" > main > region "Basic model" > @29.596 text " of the Moon. The smaller moon may have remained in orbit for tens of millions of years. As the two moons migrated outward from Earth, solar tidal effects would have made the Lagrange orbit unstable, resulting in a slow-velocity collision that "pancaked" the smaller moon onto what is now the far side of the Moon, adding material to its crust."
+  root "Giant-impact hypothesis - Wikipedia" > main > region "Possible origin of Theia" > @29.1052 text "It has been suggested that other significant objects might have been created by the impact, which could have remained in orbit between Earth and the Moon, stuck in Lagrangian points. Such objects might have stayed within the Earth–Moon system for as long as 100 million years, until the gravitational tugs of other planets destabilised the system enough to free the objects."
+  root "Giant-impact hypothesis - Wikipedia" > main > region "Alternative hypotheses" > @29.1126 text "Another hypothesis attributes the formation of the Moon to the impact of a large asteroid with Earth much later than previously thought, creating the satellite primarily from debris from Earth. In this hypothesis, the formation of the Moon occurs 60–140 million years after the formation of the Solar System (as compared to hypothesized Theia impact at 4.527 ± 0.010 billion years)."
+  root "Giant-impact hypothesis - Wikipedia" > main > region "References" > @29.1649 link ""How Old Is The Moon? 100 Million Years Younger Than Once Thought, New Research Suggests"" url="https://www.huffpost.com/entry/how-old-is-the-moon-younger-research_n_3975109?ir=Science"
+  root "Giant-impact hypothesis - Wikipedia" > main > region "References" > @29.1650 text ""How Old Is The Moon? 100 Million Years Younger Than Once Thought, New Research Suggests""
+  root "Giant-impact hypothesis - Wikipedia" > main > region "References" > @29.1655 generic description="ctx_ver=Z39.88-2004&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=unknown&rft.jtitle=HuffPost&rft.atitle=How+Old+Is+The+Moon%3F+100+Million+Years+Younger+Than+Once+Thought%2C+New+Research+Suggests&rft.date=2013-09-23&rft.aulast=Freeman&rft.aufirst=David&rft_id=https%3A%2F%2Fwww.huffpost.com%2Fentry%2Fhow-old-is-the-moon-younger-research_n_3975109%3Fir%3DScience&rfr_id=info%3Asid%2Fen.wikipedia.org%3AGiant-impact+hypothesis"
+  root "Giant-impact hypothesis - Wikipedia" > main > region "References" > @29.2674 text "Halliday, Alex N (November 28, 2008). "A young Moon-forming giant impact at 70–110 million years accompanied by late-stage mixing, core formation and degassing of the Earth". "
+  root "Giant-impact hypothesis - Wikipedia" > main > region "References" > @29.2706 generic description="ctx_ver=Z39.88-2004&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&rft.jtitle=Philosophical+Transactions+of+the+Royal+Society+A&rft.atitle=A+young+Moon-forming+giant+impact+at+70%E2%80%93110+million+years+accompanied+by+late-stage+mixing%2C+core+formation+and+degassing+of+the+Earth&rft.volume=366&rft.issue=1883&rft.pages=4163-4181&rft.date=2008-11-28&rft_id=info%3Adoi%2F10.1098%2Frsta.2008.0209&rft_id=https%3A%2F%2Fapi.semanticscholar.org%2FCorpusID%3A25704564%23id-name%3DS2CID&rft_id=info%3Apmid%2F18826916&rft_id=info%3Abibcode%2F2008RSPTA.366.4163H&rft.aulast=Halliday&rft.aufirst=Alex+N&rfr_id=info%3Asid%2Fen.wikipedia.org%3AGiant-impact+hypothesis"

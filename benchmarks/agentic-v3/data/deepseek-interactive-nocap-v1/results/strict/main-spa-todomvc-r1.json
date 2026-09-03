@@ -1,0 +1,33 @@
+{
+ "model": "opera-internal/deepseek-ai/DeepSeek-V4-Flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 0.0,
+   "output": 0.0,
+   "cache_read": 0.0,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.0,
+ "num_turns": 10,
+ "calls": 10,
+ "is_error": false,
+ "result": "All steps completed. Here's my summary:\n\n- Added todos: alpha, beta, gamma (each typed and submitted with Enter).\n- Marked beta completed by clicking its \"Toggle Todo\" checkbox (@10.0) \u2014 it became `checked`.\n- Clicked the \"Active\" filter link, which shows only the active (not completed) todos.\n\nUnder the Active filter, the listed todos are **alpha** and **gamma** (beta is hidden because it's completed). The items-left counter shows **2 items left** (the snapshot renders it as \"2items left\" due to adjacent text-node merging, but the counter's actual text is \"2 items left\").\n\nANSWER: (a) \"2 items left\" (b) alpha, gamma\nCALLS: 10",
+ "usage": {
+  "input_tokens": 39106,
+  "output_tokens": 3232,
+  "cache_read_input_tokens": 32512,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0,
+  "out": 0.0,
+  "cache_read": 0.0,
+  "cache_write": 0.0
+ }
+}

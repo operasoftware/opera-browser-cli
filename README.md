@@ -5,9 +5,12 @@
 
 ## Scope
 
-This branch evaluates changes to the browser snapshot and action interfaces, including
-bounded snapshots, targeted reads, continuation, post-action diffs, per-session state,
-action chaining, and assertions.
+This branch tests whether a more capable compact browser interface can reduce the total cost
+of agent workflows, not just the size of individual snapshots. The interface includes bounded
+snapshots, targeted reads, continuation, post-action diffs, per-session state, action chaining,
+and assertions. The benchmark also compares CLI output, model tokens, cache reads and writes,
+tool calls, and billed cost. This matters because smaller output does not always mean lower
+cost once repeated turns and prompt caching are included.
 
 The primary benchmark is the balanced six-task suite in `benchmarks/agentic-v3`. It covers:
 
@@ -20,7 +23,7 @@ The primary benchmark is the balanced six-task suite in `benchmarks/agentic-v3`.
 
 Both benchmark arms use the same tasks. `strict` disables page JavaScript to evaluate the
 snapshot/action interface; `open` allows `eval` and measures behavior with the full command
-set. Six model families ran three repeats per arm and condition: 432 cells total. Sonnet 5
+set. Six model families ran three repeats per mode and condition: 432 runs total. Sonnet 5
 used Claude Code so first-party Anthropic cache creation and reads were recorded; the other
 families used the same direct Responses API driver.
 
@@ -31,37 +34,39 @@ Strict-arm suite means compare this branch (`head`) with upstream `main`:
 | Model | Accuracy head / main | Cost head / main | Raw CLI output head / main | Calls head / main |
 |---|---:|---:|---:|---:|
 | Sonnet 5 | 18/18 / 17/18 | $0.690 / $0.705 | 205 / 1,666 KB | 36.3 / 29.7 |
-| GPT-5.6-Terra | 18/18 / 18/18 | $0.136 / $0.165 | 175 / 376 KB | 48.0 / 51.3 |
-| Gemini 3.5 Flash | 18/18 / 17/18 | $0.403 / $0.705* | 2,029 / 2,734 KB | 77.0 / 62.7 |
-| GLM-5.2 | 18/18 / 18/18 | $0.441 / $0.454 | 830 / 2,269 KB | 104.7 / 69.0 |
-| Qwen3.8-27B | 18/18 / 18/18 | unavailable | 2,390 / 2,551 KB | 50.3 / 43.0 |
-| DeepSeek-V4-Flash | 18/18 / 17/18 | unavailable | 2,102 / 3,514 KB | 223.0 / 58.0† |
+| GPT-5.6-Terra | 17/18 / 18/18 | $0.165 / $0.198 | 145 / 852 KB | 40.3 / 38.7 |
+| Gemini 3.5 Flash | 18/18 / 18/18 | $0.321 / $0.301 | 1,166 / 3,841 KB | 39.0 / 39.0 |
+| GLM-5.2 | 18/18 / 18/18 | $0.228 / $0.187 | 898 / 2,288 KB | 39.7 / 39.0 |
+| Qwen3.8-27B | 17/18 / 18/18 | unavailable | 452 / 3,173 KB | 43.0 / 37.7 |
+| DeepSeek-V4-Flash | 18/18 / 18/18 | unavailable | 277 / 3,209 KB | 43.3 / 61.7 |
 
-*Gemini main includes one 50-turn failed RFC cell and is high-variance. †DeepSeek head
-includes a pathological multi-call loop. Billing data is unavailable for Qwen and
-DeepSeek; zero-valued gateway placeholders are not treated as free usage.
+Billing data is unavailable for Qwen and DeepSeek; zero-valued gateway placeholders are not treated as free usage.
 
-Compact-v3 passed all 108 strict cells, versus 105/108 for main, and reduced strict raw
-output in every family. It did not consistently reduce work: five of six families made
-more calls on head, and priced cost effects ranged from a meaningful reduction for Terra
-to near parity for Sonnet and GLM. Sonnet reduced output by 87.7% but reinvested the saving
-in more targeted calls and cache reads. This is a model-policy result, not a universal
-relationship between snapshot size and cost.
+Compact-v3 passed 106 of 108 strict runs versus 107/108 for main; both conditions passed
+108/108 open runs. With three repeats per task, this establishes high observed accuracy but
+not a reliability ranking. Aggregate strict CLI stdout fell by 60.7% to 91.4% across model
+families (unweighted mean 79.7%). This is post-formatting stdout summed across all calls, not
+DOM size or model-context usage; ordinary snapshots in both conditions are already limited to
+12,000 characters per call. Across priced models, strict cost dropped for Terra (-16.7%),
+stayed near parity for Sonnet (-2.1%), was slightly higher for Gemini (+6.6%), and was higher
+on head for GLM (+21.9%). Calls were at parity for Gemini, near parity for GLM and Terra,
+lower on head for DeepSeek, and moderately higher for Sonnet and Qwen.
 
-The open arm is reported in the whitepaper, but it does not isolate compaction because
-models frequently use `eval` as a different page-information channel. Results are also
-primarily comparable within each model: Sonnet's Claude Code context handling differs from
-the common 8,000-character direct-driver tool cap.
+The open arm is reported in the whitepaper, where all models achieved 18/18 on both conditions
+and aggregate stdout converged to about 106 KB per six-task repeat on head. Primary direct-driver
+runs used no *additional harness-level* cap (`TOOL_CAP=0`), so the CLI's own output contract was
+passed through unchanged. Separate runs with an 8,000-character cap produced several large
+re-query loops. Because those were new runs rather than replays of the same model responses,
+they do not show that the cap alone caused the difference.
 
-These are bundle-level results. They do not establish the value of `find`, windowing,
-diffs, or chaining independently. Feature decisions require controlled ablations that
-change one interface property at a time.
+These results cover the feature set as a whole. They do not establish the value of `find`,
+windowing, diffs, or chaining on their own. Future work should compare each feature separately
+and test how output size, repeated calls, and cache pricing affect total workflow cost.
 
 - [Cross-model whitepaper](benchmarks/agentic-v3/model-family-browser-agents-whitepaper.md)
-- [Sonnet run report](benchmarks/agentic-v3/results-2026-09-01-comprehensive-sonnet.md)
 - [Suite definition](benchmarks/agentic-v3/suite.md)
 - [Run and measurement protocol](benchmarks/agentic-v3/COMPREHENSIVE-RUN.md)
-- [Retained envelopes and CLI logs](benchmarks/agentic-v3/data/)
+- [Saved results and CLI logs](benchmarks/agentic-v3/data/)
 
 ---
 
@@ -131,7 +136,8 @@ Run `opera-browser-cli setup` to get started, or `opera-browser-cli doctor` to c
 
 ## Install
 
-Prerequisites: **Node.js >= 20**, **Opera** browser ([Opera Neon](https://www.operaneon.com) recommended for AI features).
+Prerequisites: **Node.js >= 20**. The CLI auto-detects Opera or a Chromium-based browser;
+[Opera Neon](https://www.operaneon.com) is required for `invoke-do`, `make`, and `research`.
 
 ### npm (recommended)
 
@@ -519,7 +525,8 @@ Runs snapshot command on 50 static pages (Wikipedia, GitHub, MDN, Python docs, R
 | `axi`           | 98.5k      | 46.6k         | 396.9k     |
 | `mcp-raw`       | 94.7k      | 45.0k         | 391.3k     |
 
-`--full` variants (no char limit) are also measured; see the [detailed README](page-token-benchmark/README.md) and [results report](page-token-benchmark/results/report.md).
+`--full` variants (no char limit) are also measured; see the [detailed README](benchmarks/page-token-benchmark/README.md) and
+[retained results](benchmarks/page-token-benchmark/results/).
 
 ---
 
@@ -539,7 +546,7 @@ The agent was selecting each tool with or without `--full` flag, depending on th
 
 > opera-compact saves **80%** total tokens vs mcp-raw baseline.
 
-See the [detailed README](snapshot-agentic-use/README.md) and [results report](snapshot-agentic-use/results/v6/report.md).
+See the [detailed README](benchmarks/snapshot-agentic-use/README.md).
 
 ---
 

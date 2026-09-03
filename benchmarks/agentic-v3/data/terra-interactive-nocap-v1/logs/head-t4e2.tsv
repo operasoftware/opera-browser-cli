@@ -1,0 +1,4 @@
+1788351451.2302289009	0.15	0	3156	0	--help
+1788351453.7269079685	0.73	0	12735	0	open https://en.wikipedia.org/wiki/List_of_chemical_elements
+1788351454.4810659885	0.28	0	221	0	snapshot
+1788351457.0408558846	0.36	0	200	0	eval (() => [...document.querySelectorAll('tr')].find(r => r.innerText.includes('Tungsten'))?.innerText)()

@@ -1,0 +1,33 @@
+{
+ "model": "dashscope/glm-5.2",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": "none",
+  "prices_usd_per_token": {
+   "input": 1.4e-06,
+   "output": 4.4e-06,
+   "cache_read": 2.8e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.017705560000000002,
+ "num_turns": 5,
+ "calls": 4,
+ "is_error": false,
+ "result": "I found the section. The 404 status code is defined in section **15.5.5** with the title **404 Not Found**.\n\nANSWER: Section 15.5.5, titled \"404 Not Found\"\nCALLS: 3",
+ "usage": {
+  "input_tokens": 20305,
+  "output_tokens": 626,
+  "cache_read_input_tokens": 12032,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0115822,
+  "out": 0.0027543999999999997,
+  "cache_read": 0.00336896,
+  "cache_write": 0.0
+ }
+}

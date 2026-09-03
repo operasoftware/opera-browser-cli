@@ -1,0 +1,4 @@
+1788358599.8098471165	0.13	0	3156	0	--help
+1788358602.8131809235	0.66	0	12735	0	open https://en.wikipedia.org/wiki/List_of_chemical_elements
+1788358607.7538850307	0.26	0	147	0	find Tungsten
+1788358613.3602728844	0.34	0	200	0	eval (() => { const a = [...document.querySelectorAll('a')].find(x => x.textContent.trim() === 'Tungsten'); const row = a.closest('tr'); return row ? row.innerText.replace(/\n/g, ' | ') : 'not found'; })()

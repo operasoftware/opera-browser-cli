@@ -1,0 +1,8 @@
+1788353573.1606259346	0.15	0	3156	0	--help
+1788353574.8530199528	1.25	0	12506	0	open https://en.wikipedia.org/wiki/Moon
+1788353578.5306100845	0.37	0	581	0	eval (() => { return Array.from(document.querySelectorAll('a')).filter(a => a.textContent.toLowerCase().includes('giant-impact') || a.textContent.toLowerCase().includes('giant impact')).map(a => ({href: a.href, text: a.textContent})) })()
+1788353582.5538139343	0.36	0	94	0	eval (() => { const el = document.querySelector('a[href="/wiki/Giant-impact_hypothesis"]'); if (el) { el.click(); return 'clicked'; } else { return 'not found'; } })()
+1788353585.2905859947	0.36	0	381	0	eval (() => { return Array.from(document.querySelectorAll('a')).filter(a => a.href.includes('Giant-impact_hypothesis')).map(a => a.getAttribute('href')) })()
+1788353587.9243659973	0.80	0	92	0	eval (() => { const el = Array.from(document.querySelectorAll('a')).find(a => a.getAttribute('href') === 'https://en.wikipedia.org/wiki/Giant-impact_hypothesis' || a.getAttribute('href') === '/wiki/Giant-impact_hypothesis'); if (el) { el.click(); return 'clicked'; } else { return 'not found'; } })()
+1788353590.4221019745	2.17	0	85	0	wait 2000
+1788353594.0977499485	0.28	0	12436	0	snapshot

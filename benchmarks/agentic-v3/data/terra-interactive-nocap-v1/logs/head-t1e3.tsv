@@ -1,0 +1,4 @@
+1788351694.0890750885	0.15	0	3156	0	--help
+1788351697.1998429298	1.49	0	12691	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788351698.7147901058	0.55	0	208	0	snapshot
+1788351701.4043180943	0.36	0	116	0	eval JSON.stringify([...document.querySelectorAll('h2,h3,h4,h5,h6')].filter(x=>x.textContent.includes('404')).map(x=>x.textContent.trim()))

@@ -1,0 +1,5 @@
+1788351555.3461980820	0.15	0	3156	0	--help
+1788351557.5758709908	1.21	0	12027	0	open https://books.toscrape.com/
+1788351558.8195319176	0.16	0	11966	0	snapshot
+1788351562.5680379868	0.81	0	10682	0	click @24.12
+1788351563.4197080135	0.35	0	1400	0	eval (() => { const results=document.querySelector('.form-horizontal')?.innerText || document.body.innerText.match(/\d+ results - showing[^\n.]*/)?.[0]; const books=[...document.querySelectorAll('article.product_pod')].map(x=>({title:x.querySelector('h3 a')?.getAttribute('title'),price:x.querySelector('.price_color')?.textContent})).sort((a,b)=>parseFloat(a.price.replace('£',''))-parseFloat(b.price.replace('£',''))); return JSON.stringify({results,cheapest:books[0],books}); })()

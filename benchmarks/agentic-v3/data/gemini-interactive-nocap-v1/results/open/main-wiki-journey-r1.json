@@ -1,0 +1,33 @@
+{
+ "model": "pc_browser/vertex_ai/gemini-3.5-flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.35e-06,
+   "output": 8.1e-06,
+   "cache_read": 1.35e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.048174615,
+ "num_turns": 9,
+ "calls": 8,
+ "is_error": false,
+ "result": "The giant-impact hypothesis estimates that the collision between Proto-Earth and the Mars-sized protoplanet Theia occurred approximately 4.5 billion years ago (with various specific estimates ranging from 4.4 to 4.5 billion years ago).\n\nANSWER: Approximately 4.5 billion years ago (with scientific estimates ranging from 4.4 to 4.5 billion years ago).\nCALLS: 8",
+ "usage": {
+  "input_tokens": 55541,
+  "output_tokens": 2395,
+  "cache_read_input_tokens": 38029,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.023641199999999998,
+  "out": 0.0193995,
+  "cache_read": 0.005133915,
+  "cache_write": 0.0
+ }
+}

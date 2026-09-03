@@ -1,0 +1,4 @@
+1788360442.2349209785	0.15	0	3156	0	--help
+1788360443.6147520542	1.53	0	12685	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788360445.1700830460	0.60	0	92	0	wait 404 Not Found
+1788360447.0688788891	0.36	0	111	0	eval (()=>{const h=[...document.querySelectorAll('h1,h2,h3,h4,h5,.h1,.h2,.h3,.h4')];const t=h.find(e=>e.textContent.includes('404'));return t? t.tagName+' | '+t.textContent.trim() : 'not found via headings'})()

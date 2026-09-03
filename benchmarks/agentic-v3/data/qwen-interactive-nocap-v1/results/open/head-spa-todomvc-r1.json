@@ -1,0 +1,33 @@
+{
+ "model": "opera-internal/Qwen/Qwen3.8-27B",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 0.0,
+   "output": 0.0,
+   "cache_read": 0.0,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.0,
+ "num_turns": 7,
+ "calls": 6,
+ "is_error": false,
+ "result": "\n\nDone. Under the Active filter (URL now `/todomvc/#/active`), the list shows only the unchecked todos: **alpha** and **gamma** (beta is hidden as completed). The counter text reads \"2 items left\" (snapshot renders it as \"2items left\").\n\nANSWER: Counter: \"2 items left\"; Active list: alpha, gamma\nCALLS: 10",
+ "usage": {
+  "input_tokens": 20023,
+  "output_tokens": 1219,
+  "cache_read_input_tokens": 13328,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0,
+  "out": 0.0,
+  "cache_read": 0.0,
+  "cache_write": 0.0
+ }
+}

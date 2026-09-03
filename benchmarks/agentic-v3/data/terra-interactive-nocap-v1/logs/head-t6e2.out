@@ -1,0 +1,197 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12091B args=open https://books.toscrape.com/ =====
+page:
+  title: All products | Books to Scrape - Sandbox
+  url: "https://books.toscrape.com/"
+  snap: "25"
+  refs: 206
+snapshot:
+@.0 root "All products | Books to Scrape - Sandbox" url="/"
+  @.1 banner
+    @.2 link "Books to Scrape" url="/index.html"
+    @.4 text " We love being scraped!"
+  @.5 link "Home" url="/index.html"
+  @.7 text "/ All products"
+  @.9 complementary
+    @.10 link "Books" url="/catalogue/category/books_1/index.html"
+    @.12 link "Travel" url="/catalogue/category/books/travel_2/index.html"
+    @.14 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @.16 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @.18 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @.20 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @.22 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @.24 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @.26 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @.28 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @.30 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @.32 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @.34 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @.36 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @.38 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @.40 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @.42 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @.44 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @.46 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @.48 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @.50 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @.52 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @.54 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @.56 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @.58 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @.60 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @.62 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @.64 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @.66 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @.68 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @.70 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @.72 link "History" url="/catalogue/category/books/history_32/index.html"
+    @.74 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @.76 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @.78 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @.80 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @.82 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @.84 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @.86 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @.88 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @.90 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @.92 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @.94 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @.96 link "Suspense" url="/catalogue/category/books/suspense_44/index.html"
+    @.98 link "Short Stories" url="/catalogue/category/books/short-stories_45/index
+... [tee capped at 4096 of 12091 bytes]
+
+===== CALL rc=0 out=223B args=snapshot =====
+snapshot: unchanged since last shown — "All products | Books to Scrape - Sandbox" (206 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+
+===== CALL rc=0 out=10405B args=click @.12 =====
+page:
+  title: Travel | Books to Scrape - Sandbox
+  snap: "27"
+  refs: 143
+snapshot:
+@.0 root "Travel | Books to Scrape - Sandbox" url=$u1
+  @.1 banner
+    @.2 link "Books to Scrape" url="/index.html"
+    @.4 text " We love being scraped!"
+  @.5 link "Home" url="/index.html"
+  @.7 text "/ "
+  @.9 link "Books" url=$u2
+  @.7 text "/ Travel"
+  @.12 complementary
+    @.13 link "Books" url=$u2
+    @.15 link "Travel" url=$u1
+    @.17 link "Mystery" url="/catalogue/category/books/mystery_3/index.html"
+    @.19 link "Historical Fiction" url="/catalogue/category/books/historical-fiction_4/index.html"
+    @.21 link "Sequential Art" url="/catalogue/category/books/sequential-art_5/index.html"
+    @.23 link "Classics" url="/catalogue/category/books/classics_6/index.html"
+    @.25 link "Philosophy" url="/catalogue/category/books/philosophy_7/index.html"
+    @.27 link "Romance" url="/catalogue/category/books/romance_8/index.html"
+    @.29 link "Womens Fiction" url="/catalogue/category/books/womens-fiction_9/index.html"
+    @.31 link "Fiction" url="/catalogue/category/books/fiction_10/index.html"
+    @.33 link "Childrens" url="/catalogue/category/books/childrens_11/index.html"
+    @.35 link "Religion" url="/catalogue/category/books/religion_12/index.html"
+    @.37 link "Nonfiction" url="/catalogue/category/books/nonfiction_13/index.html"
+    @.39 link "Music" url="/catalogue/category/books/music_14/index.html"
+    @.41 link "Default" url="/catalogue/category/books/default_15/index.html"
+    @.43 link "Science Fiction" url="/catalogue/category/books/science-fiction_16/index.html"
+    @.45 link "Sports and Games" url="/catalogue/category/books/sports-and-games_17/index.html"
+    @.47 link "Add a comment" url="/catalogue/category/books/add-a-comment_18/index.html"
+    @.49 link "Fantasy" url="/catalogue/category/books/fantasy_19/index.html"
+    @.51 link "New Adult" url="/catalogue/category/books/new-adult_20/index.html"
+    @.53 link "Young Adult" url="/catalogue/category/books/young-adult_21/index.html"
+    @.55 link "Science" url="/catalogue/category/books/science_22/index.html"
+    @.57 link "Poetry" url="/catalogue/category/books/poetry_23/index.html"
+    @.59 link "Paranormal" url="/catalogue/category/books/paranormal_24/index.html"
+    @.61 link "Art" url="/catalogue/category/books/art_25/index.html"
+    @.63 link "Psychology" url="/catalogue/category/books/psychology_26/index.html"
+    @.65 link "Autobiography" url="/catalogue/category/books/autobiography_27/index.html"
+    @.67 link "Parenting" url="/catalogue/category/books/parenting_28/index.html"
+    @.69 link "Adult Fiction" url="/catalogue/category/books/adult-fiction_29/index.html"
+    @.71 link "Humor" url="/catalogue/category/books/humor_30/index.html"
+    @.73 link "Horror" url="/catalogue/category/books/horror_31/index.html"
+    @.75 link "History" url="/catalogue/category/books/history_32/index.html"
+    @.77 link "Food and Drink" url="/catalogue/category/books/food-and-drink_33/index.html"
+    @.79 link "Christian Fiction" url="/catalogue/category/books/christian-fiction_34/index.html"
+    @.81 link "Business" url="/catalogue/category/books/business_35/index.html"
+    @.83 link "Biography" url="/catalogue/category/books/biography_36/index.html"
+    @.85 link "Thriller" url="/catalogue/category/books/thriller_37/index.html"
+    @.87 link "Contemporary" url="/catalogue/category/books/contemporary_38/index.html"
+    @.89 link "Spirituality" url="/catalogue/category/books/spirituality_39/index.html"
+    @.91 link "Academic" url="/catalogue/category/books/academic_40/index.html"
+    @.93 link "Self Help" url="/catalogue/category/books/self-help_41/index.html"
+    @.95 link "Historical" url="/catalogue/category/books/historical_42/index.html"
+    @.97 link "Christian" url="/catalogue/category/books/christian_43/index.html"
+    @.99 link "Suspense" url="/catalogue/category/books/suspense_44/index.html"
+    @.101 link "Short Stories" url="/catalogue/category/books/short-stories_45/index.html"
+    @.103 link "Novels" url="/catalogue/category/books/novels_46/index.html"
+    @.
+... [tee capped at 4096 of 10405 bytes]
+
+===== CALL rc=0 out=3351B args=eval JSON.stringify({text:document.body.innerText, books:[...document.querySelectorAll('.product_pod')].map(x=>({title:x.querySelector('h3 a').getAttribute('title'),price:x.querySelector('.price_color').textContent}))}) =====
+result: "\"{\\\"text\\\":\\\"Books to Scrape We love being scraped!\\\\nHome  Books Travel\\\\nBooks\\\\nTravel\\\\nMystery\\\\nHistorical Fiction\\\\nSequential Art\\\\nClassics\\\\nPhilosophy\\\\nRomance\\\\nWomens Fiction\\\\nFiction\\\\nChildrens\\\\nReligion\\\\nNonfiction\\\\nMusic\\\\nDefault\\\\nScience Fiction\\\\nSports and Games\\\\nAdd a comment\\\\nFantasy\\\\nNew Adult\\\\nYoung Adult\\\\nScience\\\\nPoetry\\\\nParanormal\\\\nArt\\\\nPsychology\\\\nAutobiography\\\\nParenting\\\\nAdult Fiction\\\\nHumor\\\\nHorror\\\\nHistory\\\\nFood and Drink\\\\nChristian Fiction\\\\nBusiness\\\\nBiography\\\\nThriller\\\\nContemporary\\\\nSpirituality\\\\nAcademic\\\\nSelf Help\\\\nHistorical\\\\nChristian\\\\nSuspense\\\\nShort Stories\\\\nNovels\\\\nHealth\\\\nPolitics\\\\nCultural\\\\nErotica\\\\nCrime\\\\nTravel\\\\n11 results.\\\\nWarning! This is a demo website for web scraping purposes. Prices and ratings here were randomly assigned and have no real meaning.\\\\n\\\\n    \\\\n\\\\nIt's Only the Himalayas\\\\n\\\\n£45.17\\\\n\\\\n In stock\\\\n\\\\nAdd to basket\\\\n\\\\n    \\\\n\\\\nFull Moon over Noah’s ...\\\\n\\\\n£49.43\\\\n\\\\n In stock\\\\n\\\\nAdd to basket\\\\n\\\\n    \\\\n\\\\nSee America: A Celebration ...\\\\n\\\\n£48.87\\\\n\\\\n In stock\\\\n\\\\nAdd to basket\\\\n\\\\n    \\\\n\\\\nVagabonding: An Uncommon Guide ...\\\\n\\\\n£36.94\\\\n\\\\n In stock\\\\n\\\\nAdd to basket\\\\n\\\\n    \\\\n\\\\nUnder the Tuscan Sun\\\\n\\\\n£37.33\\\\n\\\\n In stock\\\\n\\\\nAdd to basket\\\\n\\\\n    \\\\n\\\\nA Summer In Europe\\\\n\\\\n£44.34\\\\n\\\\n In stock\\\\n\\\\nAdd to basket\\\\n\\\\n    \\\\n\\\\nThe Great Railway Bazaar\\\\n\\\\n£30.54\\\\n\\\\n In stock\\\\n\\\\nAdd to basket\\\\n\\\\n    \\\\n\\\\nA Year in Provence ...\\\\n\\\\n£56.88\\\\n\\\\n In stock\\\\n\\\\nAdd to basket\\\\n\\\\n    \\\\n\\\\nThe Road to Little ...\\\\n\\\\n£23.21\\\\n\\\\n In stock\\\\n\\\\nAdd to basket\\\\n\\\\n    \\\\n\\\\nNeither Here nor There: ...\\\\n\\\\n£38.95\\\\n\\\\n In stock\\\\n\\\\nAdd to basket\\\\n\\\\n    \\\\n\\\\n1,000 Places to See ...\\\\n\\\\n£26.08\\\\n\\\\n In stock\\\\n\\\\nAdd to basket\\\",\\\"books\\\":[{\\\"title\\\":\\\"It's Only the Himalayas\\\",\\\"price\\\":\\\"£45.17\\\"},{\\\"title\\\":\\\"Full Moon over Noah’s Ark: An Odyssey to Mount Ararat and Beyond\\\",\\\"price\\\":\\\"£49.43\\\"},{\\\"title\\\":\\\"See America: A Celebration of Our National Parks & Treasured Sites\\\",\\\"price\\\":\\\"£48.87\\\"},{\\\"title\\\":\\\"Vagabonding: An Uncommon Guide to the Art of Long-Term World Travel\\\",\\\"price\\\":\\\"£36.94\\\"},{\\\"title\\\":\\\"Under the Tuscan Sun\\\",\\\"price\\\":\\\"£37.33\\\"},{\\\"title\\\":\\\"A Summer In Europe\\\",\\\"price\\\":\\\"£44.34\\\"},{\\\"title\\\":\\\"The Great Railway Bazaar\\\",\\\"price\\\":\\\"£30.54\\\"},{\\\"title\\\":\\\"A Year in Provence (Provence #1)\\\",\\\"price\\\":\\\"£56.88\\\"},{\\\"title\\\":\\\"The Road to Little Dribbling: Adventures of an American in Britain (Notes From a Small Island #2)\\\",\\\"price\\\":\\\"£23.21\\\"},{\\\"title\\\":\\\"Neither Here nor There: Travels in Europe\\\",\\\"price\\\":\\\"£38.95\\\"},{\\\"title\\\":\\\"1,000 Places to See Before You Die\\\",\\\"price\\\":\\\"£26.08\\\"}]}\""
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state

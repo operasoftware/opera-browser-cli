@@ -1,0 +1,33 @@
+{
+ "model": "dashscope/glm-5.2",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": "none",
+  "prices_usd_per_token": {
+   "input": 1.4e-06,
+   "output": 4.4e-06,
+   "cache_read": 2.8e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.014969959999999997,
+ "num_turns": 4,
+ "calls": 3,
+ "is_error": false,
+ "result": "I found it. The table of contents shows:\n- **Section 15.5.5** \u2014 \"404 Not Found\"\n\nThis is the section that defines the 404 status code in RFC 9110.\n\nANSWER: Section 15.5.5, titled \"404 Not Found\"\nCALLS: 3",
+ "usage": {
+  "input_tokens": 14271,
+  "output_tokens": 458,
+  "cache_read_input_tokens": 6272,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.011198599999999998,
+  "out": 0.0020152,
+  "cache_read": 0.00175616,
+  "cache_write": 0.0
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "model": "pc_browser/vertex_ai/gemini-3.5-flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.35e-06,
+   "output": 8.1e-06,
+   "cache_read": 1.35e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.09118791000000001,
+ "num_turns": 11,
+ "calls": 10,
+ "is_error": false,
+ "result": "The section that defines the 404 status code in RFC 9110 is Section 15.5.5, and its exact title is \"404 Not Found\".\n\nANSWER: Section 15.5.5, \"404 Not Found\"\nCALLS: 10",
+ "usage": {
+  "input_tokens": 134284,
+  "output_tokens": 4643,
+  "cache_read_input_tokens": 105106,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.03939030000000001,
+  "out": 0.037608300000000004,
+  "cache_read": 0.01418931,
+  "cache_write": 0.0
+ }
+}

@@ -1,0 +1,155 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12506B args=open https://en.wikipedia.org/wiki/Moon =====
+page:
+  title: Moon - Wikipedia
+  url: "https://en.wikipedia.org/wiki/Moon"
+  refs: 8901
+snapshot:
+@17.0 root "Moon - Wikipedia" url="/wiki/Moon"
+  @17.1 generic live="polite"
+  @17.2 link "Jump to content" url="/wiki/Moon#bodyContent"
+  @17.4 banner
+    @17.5 navigation "Site"
+      @17.6 button "Main menu" haspopup="menu"
+    @17.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @17.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @17.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @17.10 search
+      @17.11 form
+        @17.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @17.13 button "Search"
+    @17.14 navigation "Personal tools"
+      @17.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @17.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=Moon"
+      @17.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=Moon"
+  @17.21 navigation "Contents"
+    @17.22 ## Contents
+    @17.23 button "Hide Contents"
+    @17.24 link "(Top)" url="/wiki/Moon#"
+    @17.26 link "Names and etymology" url="/wiki/Moon#Names_and_etymology"
+    @17.28 button "Toggle Names and etymology subsection" expandable
+    @17.29 link "Natural history" url="/wiki/Moon#Natural_history"
+    @17.31 button "Toggle Natural history subsection" expandable
+    @17.32 link "Physical characteristics" url="/wiki/Moon#Physical_characteristics"
+    @17.34 button "Toggle Physical characteristics subsection" expandable
+    @17.35 link "Earth–Moon system" url="/wiki/Moon#Earth%E2%80%93Moon_system"
+    @17.37 button "Toggle Earth–Moon system subsection" expandable
+    @17.38 link "Observation" url="/wiki/Moon#Observation"
+    @17.40 button "Toggle Observation subsection" expandable
+    @17.41 link "History of scientific understanding and exploration" url="/wiki/Moon#History_of_scientific_understanding_and_exploration"
+    @17.43 button "Toggle History of scientific understanding and exploration subsection" expandable
+    @17.44 link "Human interaction and presence" url="/wiki/Moon#Human_interaction_and_presence"
+    @17.46 button "Toggle Human interaction and presence subsection" expandable
+    @17.47 link "In culture and life" url="/wiki/Moon#In_culture_and_life"
+    @17.49 button "Toggle In culture and life subsection" expandable
+    @17.50 link "See also" url="/wiki/Moon#See_also"
+    @17.52 link "Explanatory notes" url="/wiki/Moon#Explanatory_notes"
+    @17.54 link "References" url="/wiki/Moon#References"
+    @17.56 link "Further reading" url="/wiki/Moon#Further_reading"
+    @17.58 link "External links" url="/wiki/Moon#External_links"
+    @17.60 button "Toggle External links subsection" expandable
+  @17.61 main
+    @17.62 # Moon
+    @17.63 button "294 languages" description="Go to an article in another language. Available in 294 languages" haspopup="menu"
+    @17.64 navigation "Namespaces"
+      @17.65 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url="/wiki/Moon"
+      @17.67 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:Moon"
+    @17.69 navigation "Views"
+      @17.70 link "Read" url="/wiki/Moon"
+      @17.72 link "View source" description="This page is protected. You can view its source [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=Moon&action=edit"
+      @17.74 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=Moon&action=history"
+    @17.76 navigation "Page tools"
+      @17.77 button "Tools" haspopup="menu"
+    @17.78 nav
+... [tee capped at 4096 of 12506 bytes]
+
+===== CALL rc=0 out=362B args=eval (() => {   const links = Array.from(document.querySelectorAll('a'));   const match = links.find(a => a.href.includes('Giant-impact_hypothesis') || a.textContent.includes('Giant-impact'));   if (match) {     return { href: match.href, text: match.textContent, outerHTML: match.outerHTML };   }   return 'not found'; })() =====
+result: "{\"href\":\"https://en.wikipedia.org/wiki/Giant-impact_hypothesis\",\"text\":\"a giant impact\",\"outerHTML\":\"<a rel=\\\"mw:WikiLink\\\" href=\\\"https://en.wikipedia.org/wiki/Giant-impact_hypothesis\\\" title=\\\"Giant-impact hypothesis\\\" id=\\\"mw7Q\\\">a giant impact</a>\"}"
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=88B args=eval document.querySelector('a[href*="Giant-impact_hypothesis"]').click() =====
+result: undefined
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=85B args=wait 2000 =====
+waited: "2000"
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=138B args=eval window.location.href =====
+result: "\"https://en.wikipedia.org/wiki/Giant-impact_hypothesis\""
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=2115B args=eval (() => {   const paragraphs = Array.from(document.querySelectorAll('main p, #bodyContent p')).slice(0, 5).map(p => p.textContent);   return paragraphs.join('\n\n'); })() =====
+result: "\"The giant-impact hypothesis, sometimes called the Theia Impact, is an astrogeology hypothesis for the formation of the Moon first proposed in 1946 by Canadian geologist Reginald Daly. The hypothesis suggests that the Proto-Earth collided with a Mars-sized co-orbital protoplanet likely from the L4 or L5 Lagrange points of the Earth's orbit[3] approximately 4.5 billion years ago in the early Hadean eon (about 20 to 100 million years after the Solar System formed), and some of the ejected debris from the impact event later re-accreted to form the Moon.[4] The impactor planet is sometimes called Theia, named after the mythical Greek Titan who was the mother of Selene, the goddess of the Moon.[5]\\n\\nAnalysis of lunar rocks published in a 2016 report suggests that the impact might have been a direct hit, causing a fragmentation and thorough mixing of both parent bodies.[6]\\n\\nThe giant-impact hypothesis is currently the favored hypothesis for lunar formation among astronomers.[7] Evidence that supports this hypothesis includes:\\n\\nHowever, several questions remain concerning the best current models of the giant-impact hypothesis.[10] The energy of such a giant impact is predicted to have heated Earth to produce a global magma ocean, and evidence of the resultant planetary differentiation of the heavier material sinking into Earth's mantle has been documented.[11] However, there is no self-consistent model that starts with the giant-impact event and follows the evolution of the debris into a single moon.\\n\\nIn 1898, George Darwin made the suggestion that Earth and the Moon were once a single body. Darwin's hypothesis was that a molten Moon had been spun from Earth because of centrifugal forces, and this became the dominant academic explanation.[12] Using Newtonian mechanics, he calculated that the Moon had orbited much more closely in the past and was drifting away from Earth. This drifting was later confirmed by American and Soviet experiments, using laser ranging targets placed on the Moon.\""
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state
+
+===== CALL rc=0 out=83B args=eval (() => {   const elements = Array.from(document.querySelectorAll('table.infobox td'));   return elements.map(td => td.textContent).slice(0, 10); })() =====
+result: "[]"
+help[1]:
+  Run `opera-browser-cli snapshot` to see current page state

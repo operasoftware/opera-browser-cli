@@ -1,0 +1,1036 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=12735B args=open https://en.wikipedia.org/wiki/List_of_chemical_elements =====
+page:
+  title: List of chemical elements - Wikipedia
+  url: "https://en.wikipedia.org/wiki/List_of_chemical_elements"
+  snap: "19"
+  refs: 1445
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.34 main
+    @.35 # List of chemical elements
+    @.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.37 navigation "Namespaces"
+      @.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.42 navigation "Views"
+      @.43 link "Read" url=$u1
+      @.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.49 navigation "Page tools"
+      @.50 button "Tools" haspopup="menu"
+    @.51 navigation "Appearance"
+      @.53 button "Hide Appearance"
+      @.54 text "Text"
+      @.55 form
+        @.56 radio "Small"
+        @.57 text "Small"
+        @.58 radio "Standard" checked
+        @.59 text "Standard"
+        @.60 radio "Large"
+        @.61 text "Large"
+      @.62 text "Width"
+      @.63 form
+        @.64 radio "Standard" checked
+        @.65 text "Standard"
+        @.66 radio "Wide"
+        @.67 text "Wide"
+      @.68 text "Color"
+      @.69 form
+        @.70 radio "Automatic"
+        @.71 text "Automatic"
+        @.72 radio "Light" checked
+        @.73 text "Light"
+        @.74 radio "Dark"
+        @.75 text "Dark"
+    @.76 text "From Wikipedia, the free encyclopedia118 "
+    @.78 link "chemical elements" description="Chemical element" url=$u2
+    @.80 text " have been "
+    @.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.83 text " and named officially by "
+    @.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @.86 text ". A chemical element, often simply called an element, is a type of "
+    @.87 link "atom" descripti
+... [tee capped at 4096 of 12735 bytes]
+
+===== CALL rc=0 out=147B args=find Tungsten =====
+find: 1 match for "Tungsten"
+  root "List of chemical elements - Wikipedia" > main > region "List" > @19.1835 link "Tungsten" url="/wiki/Tungsten"
+
+===== CALL rc=0 out=221B args=snapshot =====
+snapshot: unchanged since last shown — "List of chemical elements - Wikipedia" (1445 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+
+===== CALL rc=0 out=221B args=snapshot =====
+snapshot: unchanged since last shown — "List of chemical elements - Wikipedia" (1445 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+
+===== CALL rc=0 out=221B args=snapshot =====
+snapshot: unchanged since last shown — "List of chemical elements - Wikipedia" (1445 refs)
+help[2]:
+  Run `opera-browser-cli snapshot --force` to reprint it
+  Run `opera-browser-cli snapshot --next` to continue reading
+
+===== CALL rc=0 out=12618B args=snapshot --force =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "19"
+  refs: 1445
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.34 main
+    @.35 # List of chemical elements
+    @.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.37 navigation "Namespaces"
+      @.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.42 navigation "Views"
+      @.43 link "Read" url=$u1
+      @.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.49 navigation "Page tools"
+      @.50 button "Tools" haspopup="menu"
+    @.51 navigation "Appearance"
+      @.53 button "Hide Appearance"
+      @.54 text "Text"
+      @.55 form
+        @.56 radio "Small"
+        @.57 text "Small"
+        @.58 radio "Standard" checked
+        @.59 text "Standard"
+        @.60 radio "Large"
+        @.61 text "Large"
+      @.62 text "Width"
+      @.63 form
+        @.64 radio "Standard" checked
+        @.65 text "Standard"
+        @.66 radio "Wide"
+        @.67 text "Wide"
+      @.68 text "Color"
+      @.69 form
+        @.70 radio "Automatic"
+        @.71 text "Automatic"
+        @.72 radio "Light" checked
+        @.73 text "Light"
+        @.74 radio "Dark"
+        @.75 text "Dark"
+    @.76 text "From Wikipedia, the free encyclopedia118 "
+    @.78 link "chemical elements" description="Chemical element" url=$u2
+    @.80 text " have been "
+    @.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.83 text " and named officially by "
+    @.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @.86 text ". A chemical element, often simply called an element, is a type of "
+    @.87 link "atom" description="Atom" url="/wiki/Atom"
+    @.89 text " which has a specific n
+... [tee capped at 4096 of 12618 bytes]
+
+===== CALL rc=0 out=12618B args=snapshot --force =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "19"
+  refs: 1445
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.34 main
+    @.35 # List of chemical elements
+    @.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.37 navigation "Namespaces"
+      @.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.42 navigation "Views"
+      @.43 link "Read" url=$u1
+      @.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.49 navigation "Page tools"
+      @.50 button "Tools" haspopup="menu"
+    @.51 navigation "Appearance"
+      @.53 button "Hide Appearance"
+      @.54 text "Text"
+      @.55 form
+        @.56 radio "Small"
+        @.57 text "Small"
+        @.58 radio "Standard" checked
+        @.59 text "Standard"
+        @.60 radio "Large"
+        @.61 text "Large"
+      @.62 text "Width"
+      @.63 form
+        @.64 radio "Standard" checked
+        @.65 text "Standard"
+        @.66 radio "Wide"
+        @.67 text "Wide"
+      @.68 text "Color"
+      @.69 form
+        @.70 radio "Automatic"
+        @.71 text "Automatic"
+        @.72 radio "Light" checked
+        @.73 text "Light"
+        @.74 radio "Dark"
+        @.75 text "Dark"
+    @.76 text "From Wikipedia, the free encyclopedia118 "
+    @.78 link "chemical elements" description="Chemical element" url=$u2
+    @.80 text " have been "
+    @.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.83 text " and named officially by "
+    @.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @.86 text ". A chemical element, often simply called an element, is a type of "
+    @.87 link "atom" description="Atom" url="/wiki/Atom"
+    @.89 text " which has a specific n
+... [tee capped at 4096 of 12618 bytes]
+
+===== CALL rc=0 out=12618B args=snapshot --force =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "19"
+  refs: 1445
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.34 main
+    @.35 # List of chemical elements
+    @.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.37 navigation "Namespaces"
+      @.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.42 navigation "Views"
+      @.43 link "Read" url=$u1
+      @.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.49 navigation "Page tools"
+      @.50 button "Tools" haspopup="menu"
+    @.51 navigation "Appearance"
+      @.53 button "Hide Appearance"
+      @.54 text "Text"
+      @.55 form
+        @.56 radio "Small"
+        @.57 text "Small"
+        @.58 radio "Standard" checked
+        @.59 text "Standard"
+        @.60 radio "Large"
+        @.61 text "Large"
+      @.62 text "Width"
+      @.63 form
+        @.64 radio "Standard" checked
+        @.65 text "Standard"
+        @.66 radio "Wide"
+        @.67 text "Wide"
+      @.68 text "Color"
+      @.69 form
+        @.70 radio "Automatic"
+        @.71 text "Automatic"
+        @.72 radio "Light" checked
+        @.73 text "Light"
+        @.74 radio "Dark"
+        @.75 text "Dark"
+    @.76 text "From Wikipedia, the free encyclopedia118 "
+    @.78 link "chemical elements" description="Chemical element" url=$u2
+    @.80 text " have been "
+    @.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.83 text " and named officially by "
+    @.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @.86 text ". A chemical element, often simply called an element, is a type of "
+    @.87 link "atom" description="Atom" url="/wiki/Atom"
+    @.89 text " which has a specific n
+... [tee capped at 4096 of 12618 bytes]
+
+===== CALL rc=0 out=12066B args=snapshot --next =====
+snapshot[11953-23907 of 90048]:
+      @.389 link "[o]" url="/wiki/List_of_chemical_elements#cite_note-19"
+      @.393 text "22s-block9.01221.85156027421.8251.572.8primordialsolid5B"
+      @.407 link "Boron" url="/wiki/Boron"
+      @.409 link "[p]" url="/wiki/List_of_chemical_elements#cite_note-20"
+      @.413 text "132"
+      @.415 link "p-block" url="/wiki/Block_(periodic_table)#p-block"
+      @.417 text "10.812.34234942001.0262.0410primordialsolid6C"
+      @.428 link "Carbon" url="/wiki/Carbon"
+      @.430 link "[q]" url="/wiki/List_of_chemical_elements#cite_note-21"
+      @.434 text "142p-block12.0112.267>400043000.7092.55200primordialsolid7N"
+      @.448 link "Nitrogen" url="/wiki/Nitrogen"
+      @.450 link "[r]" url="/wiki/List_of_chemical_elements#cite_note-22"
+      @.454 text "152p-block14.0070.001250663.1577.361.043.0419primordialgas8O"
+      @.469 link "Oxygen" url="/wiki/Oxygen"
+      @.471 link "[s]" url="/wiki/List_of_chemical_elements#cite_note-23"
+      @.475 text "162p-block15.9990.00142954.3690.200.9183.44461000primordialgas9F"
+      @.491 link "Fluorine" url="/wiki/Fluorine"
+      @.493 link "[t]" url="/wiki/List_of_chemical_elements#cite_note-24"
+      @.497 text "172p-block18.9980.00169653.5385.030.8243.98585primordialgas10Ne"
+      @.512 link "Neon" url="/wiki/Neon"
+      @.514 link "[u]" url="/wiki/List_of_chemical_elements#cite_note-25"
+      @.518 text "182p-block20.1800.000900224.5627.071.03–0.005primordialgas11Na"
+      @.533 link "Sodium" url="/wiki/Sodium"
+      @.535 link "[v]" url="/wiki/List_of_chemical_elements#cite_note-26"
+      @.539 text "13s-block22.9900.968370.8711561.2280.9323600primordialsolid12Mg"
+      @.554 link "Magnesium" url="/wiki/Magnesium"
+      @.556 link "[w]" url="/wiki/List_of_chemical_elements#cite_note-27"
+      @.560 text "23s-block24.3051.73892313631.0231.3123300primordialsolid13Al"
+      @.575 link "Aluminium" url="/wiki/Aluminium"
+      @.577 link "[x]" url="/wiki/List_of_chemical_elements#cite_note-28"
+      @.581 text "133p-block26.9822.70933.4727920.8971.6182300primordialsolid14Si"
+      @.596 link "Silicon" url="/wiki/Silicon"
+      @.598 link "[y]" url="/wiki/List_of_chemical_elements#cite_note-29"
+      @.602 text "143p-block28.0852.3290168735380.7051.9282000primordialsolid15P"
+      @.617 link "Phosphorus" url="/wiki/Phosphorus"
+      @.619 link "[z]" url="/wiki/List_of_chemical_elements#cite_note-30"
+      @.623 text "153p-block30.9741.823317.305500.7692.191050primordialsolid16S"
+      @.638 link "Sulfur" url="/wiki/Sulfur"
+      @.640 link "[aa]" url="/wiki/List_of_chemical_elements#cite_note-31"
+      @.644 text "163p-block32.062.07388.36717.870.712.58350primordialsolid17Cl"
+      @.658 link "Chlorine" url="/wiki/Chlorine"
+      @.660 link "[ab]" url="/wiki/List_of_chemical_elements#cite_note-32"
+      @.664 text "173p-block35.450.0032171.6239.110.4793.16145primordialgas18Ar"
+      @.678 link "Argon" url="/wiki/Argon"
+      @.680 link "[ac]" url="/wiki/List_of_chemical_elements#cite_note-33"
+      @.684 text "183p-block39.950.00178483.8087.300.52–3.5primordialgas19K"
+      @.699 link "Potassium" url="/wiki/Potassium"
+      @.701 link "[ad]" url="/wiki/List_of_chemical_elements#cite_note-34"
+      @.705 text "14s-block39.0980.89336.5310320.7570.8220900primordialsolid20Ca"
+      @.720 link "Calcium" url="/wiki/Calcium"
+      @.722 link "[ae]" url="/wiki/List_of_chemical_elements#cite_note-35"
+      @.726 text "24s-block40.0781.55111517570.6471.0041500primordialsolid21Sc"
+      @.741 link "Scandium" url="/wiki/Scandium"
+      @.743 link "[af]" url="/wiki/List_of_chemical_elements#cite_note-36"
+      @.747 text "34"
+      @.749 link "d-block" url="/wiki/Block_(periodic_table)#d-block"
+      @.751 text "44.9562.985181431090.5681.3622primordialsolid22Ti"
+      @.762 link "Titanium" url="/wiki/Titanium"
+      @.764 link "[ag]" url="/wiki/List_of_chemical_elements#cite_note-37"
+      @.768 text "44d-block47.8674.506194135600.5231.545650primordialsolid23V"
+      @.783 link "Vanadium" url="/wiki/Vanadium"
+      @.785 link "[ah]" url="/wiki/List_of_chemical_el
+... [tee capped at 4096 of 12066 bytes]
+
+===== CALL rc=0 out=12229B args=snapshot --next =====
+snapshot[23908-35894 of 90048]:
+      @.1552 link "Neodymium" url="/wiki/Neodymium"
+      @.1554 link "[bt]" url="/wiki/List_of_chemical_elements#cite_note-76"
+      @.1558 text "f-block groups6f-block144.247.01129733470.191.1441.5primordialsolid61Pm"
+      @.1572 link "Promethium" url="/wiki/Promethium"
+      @.1574 link "[bu]" url="/wiki/List_of_chemical_elements#cite_note-77"
+      @.1578 text "f-block groups6f-block[145]7.2613153273–1.132×10−19from decaysolid62Sm"
+      @.1595 link "Samarium" url="/wiki/Samarium"
+      @.1597 link "[bv]" url="/wiki/List_of_chemical_elements#cite_note-78"
+      @.1601 text "f-block groups6f-block150.367.52134520670.1971.177.05primordialsolid63Eu"
+      @.1615 link "Europium" url="/wiki/Europium"
+      @.1617 link "[bw]" url="/wiki/List_of_chemical_elements#cite_note-79"
+      @.1621 text "f-block groups6f-block151.965.244109918020.1821.22primordialsolid64Gd"
+      @.1635 link "Gadolinium" url="/wiki/Gadolinium"
+      @.1637 link "[bx]" url="/wiki/List_of_chemical_elements#cite_note-80"
+      @.1641 text "f-block groups6f-block157.257.90158535460.2361.26.2primordialsolid65Tb"
+      @.1655 link "Terbium" url="/wiki/Terbium"
+      @.1657 link "[by]" url="/wiki/List_of_chemical_elements#cite_note-81"
+      @.1661 text "f-block groups6f-block158.938.23162935030.1821.21.2primordialsolid66Dy"
+      @.1675 link "Dysprosium" url="/wiki/Dysprosium"
+      @.1677 link "[bz]" url="/wiki/List_of_chemical_elements#cite_note-82"
+      @.1681 text "f-block groups6f-block162.508.540168028400.171.225.2primordialsolid67Ho"
+      @.1695 link "Holmium" url="/wiki/Holmium"
+      @.1697 link "[ca]" url="/wiki/List_of_chemical_elements#cite_note-83"
+      @.1701 text "f-block groups6f-block164.938.79173429930.1651.231.3primordialsolid68Er"
+      @.1715 link "Erbium" url="/wiki/Erbium"
+      @.1717 link "[cb]" url="/wiki/List_of_chemical_elements#cite_note-84"
+      @.1721 text "f-block groups6f-block167.269.066180231410.1681.243.5primordialsolid69Tm"
+      @.1735 link "Thulium" url="/wiki/Thulium"
+      @.1737 link "[cc]" url="/wiki/List_of_chemical_elements#cite_note-85"
+      @.1741 text "f-block groups6f-block168.939.32181822230.161.250.52primordialsolid70Yb"
+      @.1755 link "Ytterbium" url="/wiki/Ytterbium"
+      @.1757 link "[cd]" url="/wiki/List_of_chemical_elements#cite_note-86"
+      @.1761 text "f-block groups6f-block173.056.90109714690.1551.13.2primordialsolid71Lu"
+      @.1775 link "Lutetium" url="/wiki/Lutetium"
+      @.1777 link "[ce]" url="/wiki/List_of_chemical_elements#cite_note-87"
+      @.1781 text "36d-block174.979.841192536750.1541.270.8primordialsolid72Hf"
+      @.1795 link "Hafnium" url="/wiki/Hafnium"
+      @.1797 link "[cf]" url="/wiki/List_of_chemical_elements#cite_note-88"
+      @.1801 text "46d-block178.4913.31250648760.1441.33primordialsolid73Ta"
+      @.1815 link "Tantalum" url="/wiki/Tantalum"
+      @.1817 link "[cg]" url="/wiki/List_of_chemical_elements#cite_note-89"
+      @.1821 text "56d-block180.9516.69329057310.141.52primordialsolid74W"
+      @.1835 link "Tungsten" url="/wiki/Tungsten"
+      @.1837 link "[ch]" url="/wiki/List_of_chemical_elements#cite_note-90"
+      @.1841 text "66d-block183.8419.25369562030.1322.361.3primordialsolid75Re"
+      @.1855 link "Rhenium" url="/wiki/Rhenium"
+      @.1857 link "[ci]" url="/wiki/List_of_chemical_elements#cite_note-91"
+      @.1861 text "76d-block186.2121.02345958690.1371.97×10−4primordialsolid76Os"
+      @.1878 link "Osmium" url="/wiki/Osmium"
+      @.1880 link "[cj]" url="/wiki/List_of_chemical_elements#cite_note-92"
+      @.1884 text "86d-block190.2322.59330652850.132.20.002primordialsolid77Ir"
+      @.1898 link "Iridium" url="/wiki/Iridium"
+      @.1900 link "[ck]" url="/wiki/List_of_chemical_elements#cite_note-93"
+      @.1904 text "96d-block192.2222.56271947010.1312.200.001primordialsolid78Pt"
+      @.1918 link "Platinum" url="/wiki/Platinum"
+      @.1920 link "[cl]" url="/wiki/List_of_chemical_elements#cite_note-94"
+      @.1924 text "106d-block195.0821.452041.440980.1332.280.005primordialsolid79Au"
+      @.1940 link
+... [tee capped at 4096 of 12229 bytes]
+
+===== CALL rc=0 out=12115B args=snapshot --next =====
+snapshot[35895-47877 of 90048]:
+      @.2673 link "Copernicium" url="/wiki/Copernicium"
+      @.2675 link "[dt]" url="/wiki/List_of_chemical_elements#cite_note-131"
+      @.2679 text "127d-block[285](14.0)(283±11)(340±10)"
+      @.2690 link "[b]" url=$u1
+      @.2694 text "–––syntheticunknown phase113Nh"
+      @.2701 link "Nihonium" url="/wiki/Nihonium"
+      @.2703 link "[du]" url="/wiki/List_of_chemical_elements#cite_note-132"
+      @.2707 text "137p-block[286](16)(700)(1400)–––syntheticunknown phase114Fl"
+      @.2721 link "Flerovium" url="/wiki/Flerovium"
+      @.2723 link "[dv]" url="/wiki/List_of_chemical_elements#cite_note-133"
+      @.2727 text "147p-block[289](11.4±0.3)(284±50)"
+      @.2737 link "[b]" url=$u1
+      @.2741 text "––––syntheticunknown phase115Mc"
+      @.2749 link "Moscovium" url="/wiki/Moscovium"
+      @.2751 link "[dw]" url="/wiki/List_of_chemical_elements#cite_note-134"
+      @.2755 text "157p-block[290](13.5)(700)(1400)–––syntheticunknown phase116Lv"
+      @.2769 link "Livermorium" url="/wiki/Livermorium"
+      @.2771 link "[dx]" url="/wiki/List_of_chemical_elements#cite_note-135"
+      @.2775 text "167p-block[293](12.9)(700)(1100)–––syntheticunknown phase117Ts"
+      @.2789 link "Tennessine" url="/wiki/Tennessine"
+      @.2791 link "[dy]" url="/wiki/List_of_chemical_elements#cite_note-136"
+      @.2795 text "177p-block[294](7.1–7.3)(700)(883)–––syntheticunknown phase118Og"
+      @.2809 link "Oganesson" url="/wiki/Oganesson"
+      @.2811 link "[dz]" url="/wiki/List_of_chemical_elements#cite_note-137"
+      @.2815 text "187p-block[294](7)(325±15)(450±10)–––syntheticunknown phase^ "
+      @.2831 link "Jump up to: " url="/wiki/List_of_chemical_elements#cite_ref-saw_4-0"
+        @.143 text "aJump up to:"
+      @.2833 link url="/wiki/List_of_chemical_elements#cite_ref-saw_4-1"
+        @.143 text "b"
+      @.2835 text "Standard atomic weight or Ar°(E)'1.0080': abridged value, uncertainty ignored here'[97]', [] notation: mass number of most stable isotope^ "
+      @.2846 link "Jump up to: " url="/wiki/List_of_chemical_elements#cite_ref-prediction_5-0"
+        @.143 text "aJump up to:"
+      @.2848 link "  " url="/wiki/List_of_chemical_elements#cite_ref-prediction_5-1"
+        @.143 text "b"
+      @.2849 link "  " url="/wiki/List_of_chemical_elements#cite_ref-prediction_5-2"
+        @.143 text "c"
+      @.2850 link "  " url="/wiki/List_of_chemical_elements#cite_ref-prediction_5-3"
+        @.143 text "d"
+      @.2851 link url="/wiki/List_of_chemical_elements#cite_ref-prediction_5-4"
+        @.143 text "e"
+      @.2853 text "Values in () brackets are predictions"
+      @.2856 link "Jump up" description="Jump up" url="/wiki/List_of_chemical_elements#cite_ref-density_6-0"
+        @.143 text "^"
+      @.2858 text "Density ("
+      @.2859 link "sources" description="Densities of the elements (data page)" url="/wiki/Densities_of_the_elements_(data_page)"
+      @.2861 text ")"
+      @.2862 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-mp_7-0"
+        @.143 text "^"
+      @.2864 text "Melting point in "
+      @.2865 link "kelvin" url="/wiki/Kelvin"
+      @.2868 text "(K) ("
+      @.2869 link "sources" description="Melting points of the elements (data page)" url="/wiki/Melting_points_of_the_elements_(data_page)"
+      @.2871 text ")"
+      @.2872 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-bp_8-0"
+        @.143 text "^"
+      @.2874 text "Boiling point in "
+      @.2875 link "kelvin" url="/wiki/Kelvin"
+      @.2878 text "(K) ("
+      @.2879 link "sources" description="Boiling points of the elements (data page)" url="/wiki/Boiling_points_of_the_elements_(data_page)"
+      @.2881 text ")"
+      @.2882 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-heatcapacity_9-0"
+        @.143 text "^"
+      @.2884 text "Heat capacity ("
+      @.2885 link "sources" description="Heat capacities of the elements (data page)" url="/wiki/Heat_capacities_of_the_elements_(data_page)"
+      @.2887 text ")"
+      @.2888 link "Jump up" url=
+... [tee capped at 4096 of 12115 bytes]
+
+===== CALL rc=0 out=12208B args=snapshot --next =====
+snapshot[47878-59870 of 90048]:
+      @.3138 link "magnesium" url="/wiki/List_of_chemical_elements#Mg"
+      @.3140 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-41"
+        @.143 text "^"
+      @.3142 text "English, from "
+      @.3143 link "Proto-Celtic" url="/wiki/Proto-Celtic"
+      @.3145 text " *īsarnom 'iron', from a root meaning 'blood'"
+      @.3146 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-42"
+        @.143 text "^"
+      @.3148 link "German" description="German language" url="/wiki/German_language"
+      @.3151 link "Kobold" description="wikt:Kobold" url="https://en.wiktionary.org/wiki/Kobold#German"
+      @.3153 text ", '"
+      @.3154 link "goblin" description="Goblin" url="/wiki/Goblin"
+      @.3156 text "'"
+      @.3157 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-43"
+        @.143 text "^"
+      @.3159 text "Nickel, a mischievous "
+      @.3160 link "sprite" description="Sprite (folklore)" url="/wiki/Sprite_(folklore)"
+      @.3162 text " in German miner mythology"
+      @.3163 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-44"
+        @.143 text "^"
+      @.3165 text "English, from Latin "
+      @.3166 link "cuprum" description="wikt:cuprum" url="https://en.wiktionary.org/wiki/cuprum#Latin"
+      @.3168 text ", after "
+      @.3169 link "Cyprus" url="/wiki/Cyprus"
+      @.3171 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-45"
+        @.143 text "^"
+      @.3173 text "Most likely German "
+      @.3174 link "Zinke" description="wikt:Zinke" url="https://en.wiktionary.org/wiki/Zinke#German"
+      @.3176 text ", 'prong, tooth', but some suggest "
+      @.3177 link "Persian" description="Persian language" url=$u1
+      @.3180 link "sang" description="wikt:سنگ" url="https://en.wiktionary.org/wiki/%D8%B3%D9%86%DA%AF#Persian"
+      @.3182 text " 'stone'"
+      @.3183 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-46"
+        @.143 text "^"
+      @.3185 text "Latin "
+      @.3186 link "Gallia" url="/wiki/Gallia"
+      @.3188 text " '"
+      @.3189 link "France" url="/wiki/France"
+      @.3191 text "'"
+      @.3192 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-47"
+        @.143 text "^"
+      @.3194 text "Latin "
+      @.3195 link "Germania" url="/wiki/Germania"
+      @.3197 text " '"
+      @.3198 link "Germany" url="/wiki/Germany"
+      @.3200 text "'"
+      @.3201 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-48"
+        @.143 text "^"
+      @.3203 text "Middle English, from "
+      @.3204 link "Middle French" url="/wiki/Middle_French"
+      @.3207 link "arsenic" description="wikt:arsenic" url="https://en.wiktionary.org/wiki/arsenic#French"
+      @.3209 text ", from Greek "
+      @.3210 link "arsenikón" description="wikt:ἀρσενικόν" url="https://en.wiktionary.org/wiki/%E1%BC%80%CF%81%CF%83%CE%B5%CE%BD%CE%B9%CE%BA%CF%8C%CE%BD#Ancient_Greek"
+      @.3212 text " 'yellow arsenic' (influenced by "
+      @.3213 link "arsenikós" description="wikt:ἀρσενικός" url="https://en.wiktionary.org/wiki/%E1%BC%80%CF%81%CF%83%CE%B5%CE%BD%CE%B9%CE%BA%CF%8C%CF%82#Ancient_Greek"
+      @.3215 text " 'masculine, virile'), from a "
+      @.3216 link "West Asian" description="West Asia" url="/wiki/West_Asia"
+      @.3219 link "wanderword" description="Wanderword" url="/wiki/Wanderword"
+      @.3221 text " ultimately from "
+      @.3222 link "Old Persian" description="Old Persian language" url="/wiki/Old_Persian_language"
+      @.3224 text ": *zarniya-ka, "
+      @.3228 link "lit." description="Literal translation" url="/wiki/Literal_translation"
+      @.3231 text "'golden'"
+      @.3234 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-arsenic_49-0"
+        @.143 text "^"
+      @.3236 text "Arsenic sublimes at 1 atmosphere pressure."
+      @.3237 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-50"
+        @.143 text "^"
+      @.3239 text "Greek "
+      @.3240 link "selḗnē" description="wikt:σελήνη" url="https://en.wiktionary.org/wiki/%CF%83%CE%B5%CE%BB%CE%AE%CE
+... [tee capped at 4096 of 12208 bytes]
+
+===== CALL rc=0 out=12058B args=snapshot --next =====
+snapshot[59871-71860 of 90048]:
+        @.143 text "^"
+      @.3433 text "Greek "
+      @.3434 link "xénon" description="wikt:ξένον" url="https://en.wiktionary.org/wiki/%CE%BE%CE%AD%CE%BD%CE%BF%CE%BD#Ancient_Greek"
+      @.3436 text ", neuter of "
+      @.3437 link "xénos" description="wikt:ξένος" url="https://en.wiktionary.org/wiki/%CE%BE%CE%AD%CE%BD%CE%BF%CF%82#Ancient_Greek"
+      @.3439 text " 'strange, foreign'"
+      @.3440 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-71"
+        @.143 text "^"
+      @.3442 text "Latin "
+      @.3443 link "caesius" description="wikt:caesius" url="https://en.wiktionary.org/wiki/caesius#Latin"
+      @.3445 text " 'sky-blue'"
+      @.3446 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-72"
+        @.143 text "^"
+      @.3448 text "Greek "
+      @.3449 link "barýs" description="wikt:βαρύς" url="https://en.wiktionary.org/wiki/%CE%B2%CE%B1%CF%81%CF%8D%CF%82#Ancient_Greek"
+      @.3451 text " 'heavy'"
+      @.3452 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-73"
+        @.143 text "^"
+      @.3454 text "Greek "
+      @.3455 link "lanthánein" description="wikt:λᾰνθᾰ́νειν" url="https://en.wiktionary.org/wiki/%CE%BB%E1%BE%B0%CE%BD%CE%B8%E1%BE%B0%CC%81%CE%BD%CE%B5%CE%B9%CE%BD#Ancient_Greek"
+      @.3457 text " 'to lie hidden'"
+      @.3458 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-74"
+        @.143 text "^"
+      @.3460 link "Ceres (dwarf planet)" url="/wiki/Ceres_(dwarf_planet)"
+      @.3462 text ", then considered a planet"
+      @.3463 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-75"
+        @.143 text "^"
+      @.3465 text "Greek "
+      @.3466 link "prásios" description="wikt:πράσιος" url="https://en.wiktionary.org/wiki/%CF%80%CF%81%CE%AC%CF%83%CE%B9%CE%BF%CF%82#Ancient_Greek"
+      @.3469 link "dídymos" description="wikt:δίδυμος" url="https://en.wiktionary.org/wiki/%CE%B4%CE%AF%CE%B4%CF%85%CE%BC%CE%BF%CF%82#Ancient_Greek"
+      @.3471 text " 'green twin'"
+      @.3472 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-76"
+        @.143 text "^"
+      @.3474 text "Greek "
+      @.3475 link "néos" description="wikt:νέος" url="https://en.wiktionary.org/wiki/%CE%BD%CE%AD%CE%BF%CF%82#Ancient_Greek"
+      @.3478 text "dídymos 'new twin'"
+      @.3480 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-77"
+        @.143 text "^"
+      @.3482 link "Prometheus" url="/wiki/Prometheus"
+      @.3484 text ", a "
+      @.3485 link "Titan" description="Titans" url="/wiki/Titans"
+      @.3487 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-78"
+        @.143 text "^"
+      @.3489 link "Samarskite" url="/wiki/Samarskite"
+      @.3491 text ", a mineral named after "
+      @.3492 link "V. Samarsky-Bykhovets" description="Vasili Samarsky-Bykhovets" url="/wiki/Vasili_Samarsky-Bykhovets"
+      @.3494 text ", Russian mine official"
+      @.3495 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-79"
+        @.143 text "^"
+      @.3497 link "Europe" url="/wiki/Europe"
+      @.3499 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-80"
+        @.143 text "^"
+      @.3501 link "Gadolinite" url="/wiki/Gadolinite"
+      @.3503 text ", a mineral named after "
+      @.3504 link "Johan Gadolin" url="/wiki/Johan_Gadolin"
+      @.3506 text ", Finnish chemist, physicist and mineralogist"
+      @.3507 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-81"
+        @.143 text "^"
+      @.3509 link "Ytterby" url="/wiki/Ytterby"
+      @.3511 text ", Sweden, where it was found; see "
+      @.3512 link "yttrium" url=$u1
+      @.3514 text ", "
+      @.3515 link "erbium" url=$u2
+      @.3517 text ", "
+      @.3518 link "ytterbium" url=$u3
+      @.3520 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-82"
+        @.143 text "^"
+      @.3522 text "Greek "
+      @.3523 link "dysprósitos" description="wikt:δυσπρόσιτος" url="https://en.wiktionary.org/wiki/%CE%B4%CF%85%CF%83%CF%80%CF%81%CF%8C%CF%83%CE%B9%CF%84%CE%BF%CF%82#
+... [tee capped at 4096 of 12058 bytes]
+
+===== CALL rc=0 out=12028B args=snapshot --next =====
+snapshot[71861-83839 of 90048]:
+      @.3723 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-108"
+        @.143 text "^"
+      @.3725 text "English prefix "
+      @.3726 link "proto-" description="wikt:proto-" url="https://en.wiktionary.org/wiki/proto-#English"
+      @.3728 text " (from Greek "
+      @.3729 link "prôtos" description="wikt:πρῶτος" url="https://en.wiktionary.org/wiki/%CF%80%CF%81%E1%BF%B6%CF%84%CE%BF%CF%82#Ancient_Greek"
+      @.3731 text " 'first, before') + "
+      @.3732 link "actinium" description="Actinium" url="/wiki/Actinium"
+      @.3734 text "; protactinium decays into actinium."
+      @.3735 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-109"
+        @.143 text "^"
+      @.3737 link "Uranus" url="/wiki/Uranus"
+      @.3739 text ", the seventh planet"
+      @.3740 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-110"
+        @.143 text "^"
+      @.3742 link "Neptune" url="/wiki/Neptune"
+      @.3744 text ", the eighth planet"
+      @.3745 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-111"
+        @.143 text "^"
+      @.3747 link "Pluto" url="/wiki/Pluto"
+      @.3749 text ", dwarf planet, then considered a planet"
+      @.3750 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-112"
+        @.143 text "^"
+      @.3752 link "Americas" url="/wiki/Americas"
+      @.3754 text ", where the element was first synthesized, by analogy with its "
+      @.3755 link "homolog" description="Homologous series" url="/wiki/Homologous_series"
+      @.3758 link "europium" url="/wiki/List_of_chemical_elements#Eu"
+      @.3760 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-113"
+        @.143 text "^"
+      @.3762 link "Pierre" description="Pierre Curie" url="/wiki/Pierre_Curie"
+      @.3764 text " and "
+      @.3765 link "Marie Curie" url="/wiki/Marie_Curie"
+      @.3767 text ", physicists and chemists"
+      @.3768 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-114"
+        @.143 text "^"
+      @.3770 link "Berkeley, California" url="/wiki/Berkeley,_California"
+      @.3772 text ", where it was first synthesized"
+      @.3773 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-115"
+        @.143 text "^"
+      @.3775 link "California" url="/wiki/California"
+      @.3777 text ", where it was first synthesized in "
+      @.3778 link "LBNL" description="Lawrence Berkeley National Laboratory" url="/wiki/Lawrence_Berkeley_National_Laboratory"
+      @.3780 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-116"
+        @.143 text "^"
+      @.3782 link "Albert Einstein" url="/wiki/Albert_Einstein"
+      @.3784 text ", German physicist"
+      @.3785 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-117"
+        @.143 text "^"
+      @.3787 link "Enrico Fermi" url="/wiki/Enrico_Fermi"
+      @.3789 text ", Italian physicist"
+      @.3790 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-120"
+        @.143 text "^"
+      @.3792 link "Dmitri Mendeleev" url="/wiki/Dmitri_Mendeleev"
+      @.3794 text ", Russian chemist who proposed the "
+      @.3795 link "periodic table" description="Periodic table" url="/wiki/Periodic_table"
+      @.3797 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-121"
+        @.143 text "^"
+      @.3799 link "Alfred Nobel" url="/wiki/Alfred_Nobel"
+      @.3801 text ", Swedish chemist and engineer"
+      @.3802 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-122"
+        @.143 text "^"
+      @.3804 link "Ernest Lawrence" url="/wiki/Ernest_Lawrence"
+      @.3806 text ", American physicist"
+      @.3807 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-123"
+        @.143 text "^"
+      @.3809 link "Ernest Rutherford" url="/wiki/Ernest_Rutherford"
+      @.3811 text ", chemist and physicist from New Zealand"
+      @.3812 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-124"
+        @.143 text "^"
+      @.3814 link "Dubna" url="/wiki/Dubna"
+      @.3816 text ", Russia, where it was discovered in "
+      @.3817 link "JINR" descri
+... [tee capped at 4096 of 12028 bytes]
+
+===== CALL rc=0 out=6207B args=snapshot --next =====
+snapshot[83840-90048 of 90048]:
+        @.143 text "^"
+      @.3982 text "Konings, Rudy J. M.; Beneš, Ondrej. "
+      @.3983 link ""The Thermodynamic Properties of the 𝑓-Elements and Their Compounds. I. The Lanthanide and Actinide Metals"" url="https://aip.scitation.org/doi/10.1063/1.3474238"
+        @.3984 text ""The Thermodynamic Properties of the 𝑓-Elements and Their Compounds. I. The Lanthanide and Actinide Metals""
+      @.3985 text ". Journal of Physical and Chemical Reference Data. "
+      @.3988 link "doi" description="Doi (identifier)" url="/wiki/Doi_(identifier)"
+      @.3990 text ":"
+      @.3991 link "10.1063/1.3474238" url="https://doi.org/10.1063%2F1.3474238"
+      @.3993 text "."
+      @.3994 generic description="ctx_ver=Z39.88-2004&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=article&rft.jtitle=Journal+of+Physical+and+Chemical+Reference+Data&rft.atitle=The+Thermodynamic+Properties+of+the+%F0%9D%91%93-Elements+and+Their+Compounds.+I.+The+Lanthanide+and+Actinide+Metals&rft_id=info%3Adoi%2F10.1063%2F1.3474238&rft.aulast=Konings&rft.aufirst=Rudy+J.+M.&rft.au=Bene%C5%A1%2C+Ondrej&rft_id=https%3A%2F%2Faip.scitation.org%2Fdoi%2F10.1063%2F1.3474238&rfr_id=info%3Asid%2Fen.wikipedia.org%3AList+of+chemical+elements"
+      @.3995 link "Jump up" url="/wiki/List_of_chemical_elements#cite_ref-119"
+        @.143 text "^"
+      @.3997 link ""Fermium"" url="https://www.rsc.org/periodic-table/element/100/fermium"
+        @.3998 text ""Fermium""
+      @.3999 text ". RSC."
+      @.4002 generic description="ctx_ver=Z39.88-2004&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=unknown&rft.jtitle=RSC&rft.atitle=Fermium&rft_id=https%3A%2F%2Fwww.rsc.org%2Fperiodic-table%2Felement%2F100%2Ffermium&rfr_id=info%3Asid%2Fen.wikipedia.org%3AList+of+chemical+elements"
+    @.4003 region "External links"
+      @.4004 ## External links
+      @.4005 link "edit" description="Edit section: External links" url="/w/index.php?title=List_of_chemical_elements&action=edit&section=4"
+      @.4007 link "Atoms made thinkable" url="http://www.thingsmadethinkable.com/item/atoms.php"
+      @.4009 text ", an interactive visualisation of the elements allowing physical and chemical properties of the elements to be compared"
+      @.4010 navigation "Periodic table"
+        @.4011 button "[show]" expandable
+        @.4012 link "v" description="Template:Periodic table (navbox)" url="/wiki/Template:Periodic_table_(navbox)"
+        @.143 text " · "
+        @.4014 link "t" description="Template talk:Periodic table (navbox)" url="/wiki/Template_talk:Periodic_table_(navbox)"
+        @.143 text " · "
+        @.4016 link "e" description="Special:EditPage/Template:Periodic table (navbox)" url="/wiki/Special:EditPage/Template:Periodic_table_(navbox)"
+        @.4018 link "Periodic table" url=$u1
+      @.4020 navigation "Periodic table"
+        @.4021 button "[show]" expandable
+        @.4022 link "v" description="Template:Navbox periodic table" url="/wiki/Template:Navbox_periodic_table"
+        @.143 text " · "
+        @.4024 link "t" description="Template talk:Navbox periodic table" url="/wiki/Template_talk:Navbox_periodic_table"
+        @.143 text " · "
+        @.4026 link "e" description="Special:EditPage/Template:Navbox periodic table" url="/wiki/Special:EditPage/Template:Navbox_periodic_table"
+        @.4028 link "Periodic table" url=$u1
+    @.4030 link "Category" description="Help:Category" url="/wiki/Help:Category"
+    @.4032 text ": "
+    @.4033 link "Lists of chemical elements" description="Category:Lists of chemical elements" url="/wiki/Category:Lists_of_chemical_elements"
+  @.4035 contentinfo
+    @.4036 text "This page was last edited on 8 August 2026, at 20:40 (UTC).Page was rendered with "
+    @.4040 link "Parsoid" description="mw:Special:MyLanguage/Parsoid" url="https://www.mediawiki.org/wiki/Special:MyLanguage/Parsoid"
+    @.4042 text ".Text is available under the "
+    @.4044 link "Creative Commons Attribution-ShareAlike 4.0 License" description="Wikipedia:Text of the Creative Commons Attribution-ShareAlike 4.0 In
+... [tee capped at 4096 of 6207 bytes]
+
+===== CALL rc=0 out=128B args=snapshot --next =====
+snapshot: end reached — the whole snapshot has been shown
+help[1]:
+  Run `opera-browser-cli snapshot` to restart from the top
+
+===== CALL rc=0 out=128B args=snapshot --next =====
+snapshot: end reached — the whole snapshot has been shown
+help[1]:
+  Run `opera-browser-cli snapshot` to restart from the top
+
+===== CALL rc=0 out=147B args=find Tungsten =====
+find: 1 match for "Tungsten"
+  root "List of chemical elements - Wikipedia" > main > region "List" > @19.1835 link "Tungsten" url="/wiki/Tungsten"
+
+===== CALL rc=0 out=12618B args=snapshot --force =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "19"
+  refs: 1445
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.34 main
+    @.35 # List of chemical elements
+    @.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.37 navigation "Namespaces"
+      @.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.42 navigation "Views"
+      @.43 link "Read" url=$u1
+      @.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.49 navigation "Page tools"
+      @.50 button "Tools" haspopup="menu"
+    @.51 navigation "Appearance"
+      @.53 button "Hide Appearance"
+      @.54 text "Text"
+      @.55 form
+        @.56 radio "Small"
+        @.57 text "Small"
+        @.58 radio "Standard" checked
+        @.59 text "Standard"
+        @.60 radio "Large"
+        @.61 text "Large"
+      @.62 text "Width"
+      @.63 form
+        @.64 radio "Standard" checked
+        @.65 text "Standard"
+        @.66 radio "Wide"
+        @.67 text "Wide"
+      @.68 text "Color"
+      @.69 form
+        @.70 radio "Automatic"
+        @.71 text "Automatic"
+        @.72 radio "Light" checked
+        @.73 text "Light"
+        @.74 radio "Dark"
+        @.75 text "Dark"
+    @.76 text "From Wikipedia, the free encyclopedia118 "
+    @.78 link "chemical elements" description="Chemical element" url=$u2
+    @.80 text " have been "
+    @.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.83 text " and named officially by "
+    @.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url="/wiki/International_Union_of_Pure_and_Applied_Chemistry"
+    @.86 text ". A chemical element, often simply called an element, is a type of "
+    @.87 link "atom" description="Atom" url="/wiki/Atom"
+    @.89 text " which has a specific n
+... [tee capped at 4096 of 12618 bytes]
+
+===== CALL rc=0 out=90259B args=snapshot --full =====
+page:
+  title: List of chemical elements - Wikipedia
+  snap: "19"
+  refs: 1445
+snapshot:
+@.0 root "List of chemical elements - Wikipedia" url=$u1
+  @.1 generic live="polite"
+  @.2 link "Jump to content" url="/wiki/List_of_chemical_elements#bodyContent"
+  @.4 banner
+    @.5 navigation "Site"
+      @.6 button "Main menu" haspopup="menu"
+    @.7 link "Wikipedia The Free Encyclopedia" url="/wiki/Main_Page"
+      @.8 image "Wikipedia" url="/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg"
+      @.9 image "The Free Encyclopedia" url="/static/images/mobile/copyright/wikipedia-tagline-en-25.svg"
+    @.10 search
+      @.11 form
+        @.12 searchbox "Search Wikipedia" description="Search Wikipedia [ctrl-option-f]" keyshortcuts="Ctrl+Alt+f"
+        @.13 button "Search"
+    @.14 navigation "Personal tools"
+      @.15 link "Donate" url="https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en"
+      @.17 link "Create account" description="You are encouraged to create an account and log in; however, it is not mandatory" url="/w/index.php?title=Special:CreateAccount&returnto=List+of+chemical+elements"
+      @.19 link "Log in" description="You're encouraged to log in; however, it's not mandatory. [ctrl-option-o]" keyshortcuts="Ctrl+Alt+o" url="/w/index.php?title=Special:UserLogin&returnto=List+of+chemical+elements"
+  @.21 navigation "Contents"
+    @.22 ## Contents
+    @.23 button "Hide Contents"
+    @.24 link "(Top)" url="/wiki/List_of_chemical_elements#"
+    @.26 link "List" url="/wiki/List_of_chemical_elements#List"
+    @.28 link "See also" url="/wiki/List_of_chemical_elements#See_also"
+    @.30 link "References" url="/wiki/List_of_chemical_elements#References"
+    @.32 link "External links" url="/wiki/List_of_chemical_elements#External_links"
+  @.34 main
+    @.35 # List of chemical elements
+    @.36 button "100 languages" description="Go to an article in another language. Available in 100 languages" haspopup="menu"
+    @.37 navigation "Namespaces"
+      @.38 link "Article" description="View the content page [ctrl-option-c]" keyshortcuts="Ctrl+Alt+c" url=$u1
+      @.40 link "Talk" description="Discuss improvements to the content page [ctrl-option-t]" keyshortcuts="Ctrl+Alt+t" url="/wiki/Talk:List_of_chemical_elements"
+    @.42 navigation "Views"
+      @.43 link "Read" url=$u1
+      @.45 link "Edit" description="Edit this page [ctrl-option-e]" keyshortcuts="Ctrl+Alt+e" url="/w/index.php?title=List_of_chemical_elements&action=edit"
+      @.47 link "View history" description="Past revisions of this page [ctrl-option-h]" keyshortcuts="Ctrl+Alt+h" url="/w/index.php?title=List_of_chemical_elements&action=history"
+    @.49 navigation "Page tools"
+      @.50 button "Tools" haspopup="menu"
+    @.51 navigation "Appearance"
+      @.53 button "Hide Appearance"
+      @.54 text "Text"
+      @.55 form
+        @.56 radio "Small"
+        @.57 text "Small"
+        @.58 radio "Standard" checked
+        @.59 text "Standard"
+        @.60 radio "Large"
+        @.61 text "Large"
+      @.62 text "Width"
+      @.63 form
+        @.64 radio "Standard" checked
+        @.65 text "Standard"
+        @.66 radio "Wide"
+        @.67 text "Wide"
+      @.68 text "Color"
+      @.69 form
+        @.70 radio "Automatic"
+        @.71 text "Automatic"
+        @.72 radio "Light" checked
+        @.73 text "Light"
+        @.74 radio "Dark"
+        @.75 text "Dark"
+    @.76 text "From Wikipedia, the free encyclopedia118 "
+    @.78 link "chemical elements" description="Chemical element" url=$u2
+    @.80 text " have been "
+    @.81 link "identified" description="Timeline of chemical element discoveries" url="/wiki/Timeline_of_chemical_element_discoveries"
+    @.83 text " and named officially by "
+    @.84 link "IUPAC" description="International Union of Pure and Applied Chemistry" url=$u3
+    @.86 text ". A chemical element, often simply called an element, is a type of "
+    @.87 link "atom" description="Atom" url="/wiki/Atom"
+    @.89 text " which has a specific number of "
+    @.90 link "protons" description="Proton
+... [tee capped at 4096 of 90259 bytes]

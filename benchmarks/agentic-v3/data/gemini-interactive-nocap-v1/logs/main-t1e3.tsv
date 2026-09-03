@@ -1,0 +1,5 @@
+1788353619.0912749767	0.15	0	3156	0	--help
+1788353620.7069640160	1.47	0	12616	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788353636.1858699322	0.37	0	490	0	eval (() => { const links = Array.from(document.querySelectorAll('a')); return links.filter(l => l.textContent.includes('404')).map(l => ({text: l.textContent, href: l.href})) })()
+1788353639.4254429340	0.36	0	106	0	eval (() => {   const el = document.getElementById('name-404-not-found') || document.getElementById('status.404');   if (!el) return 'Not found';   // Let's find the closest heading or section   const heading = el.closest('h1, h2, h3, h4, h5, h6');   if (heading) return heading.innerText;   // If el itself is a heading or inside one, let's find the header text or surrounding content   return el.innerText || el.outerHTML; })()
+1788353642.3486139774	0.36	0	375	0	eval (() => {   const h = document.getElementById('name-404-not-found');   if (h) {     return {       tagName: h.tagName,       id: h.id,       innerText: h.innerText,       innerHTML: h.innerHTML     };   }   return null; })()

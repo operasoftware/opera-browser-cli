@@ -1,0 +1,3 @@
+1788436666.0985529423	0.15	0	3156	0	--help
+1788436668.6799979210	0.75	0	12735	0	open https://en.wikipedia.org/wiki/List_of_chemical_elements
+1788436674.0685439110	0.36	0	372	0	eval (() => { const rows = document.querySelectorAll('table.wikitable tbody tr'); for (const row of rows) { const cells = row.querySelectorAll('td'); const text = row.textContent.toLowerCase(); if (text.includes('tungsten')) { return { cells: Array.from(cells).map(c => c.textContent.trim()), raw: row.textContent.trim().substring(0, 300) }; } } return 'not found'; })()

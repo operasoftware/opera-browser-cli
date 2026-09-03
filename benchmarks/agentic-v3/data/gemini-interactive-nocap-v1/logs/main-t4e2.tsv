@@ -1,0 +1,5 @@
+1788353553.2585821152	0.15	0	3156	0	--help
+1788353555.0077669621	0.75	0	12631	0	open https://en.wikipedia.org/wiki/List_of_chemical_elements
+1788353558.5058200359	0.36	0	122	0	eval document.title
+1788353561.5294010639	0.36	0	232	0	eval (() => {   const rows = Array.from(document.querySelectorAll('table.wikitable tr'));   const tungstenRow = rows.find(row => row.textContent.includes('Tungsten'));   if (!tungstenRow) return 'Not found in table.wikitable tr';   return Array.from(tungstenRow.querySelectorAll('td, th')).map(el => el.textContent.trim()); })()
+1788353565.0201699734	0.36	0	4527	0	eval (() => {   const table = document.querySelector('table.wikitable');   if (!table) return 'No table';   const headers = Array.from(table.querySelectorAll('thead tr th, tr:first-child th, tr:nth-child(2) th')).map(el => el.textContent.trim());   return headers; })()

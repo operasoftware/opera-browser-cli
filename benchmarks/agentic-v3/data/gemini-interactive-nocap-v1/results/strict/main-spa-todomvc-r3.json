@@ -1,0 +1,33 @@
+{
+ "model": "pc_browser/vertex_ai/gemini-3.5-flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.35e-06,
+   "output": 8.1e-06,
+   "cache_read": 1.35e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.05841099,
+ "num_turns": 12,
+ "calls": 11,
+ "is_error": false,
+ "result": "(a) The exact \"items left\" counter text is \"2 items left\".\n(b) The todo names listed under the Active filter are \"alpha\" and \"gamma\".\n\nANSWER: (a) \"2 items left\", (b) \"alpha\", \"gamma\"\nCALLS: 11",
+ "usage": {
+  "input_tokens": 48542,
+  "output_tokens": 2654,
+  "cache_read_input_tokens": 23554,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0337338,
+  "out": 0.021497400000000003,
+  "cache_read": 0.00317979,
+  "cache_write": 0.0
+ }
+}

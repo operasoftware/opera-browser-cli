@@ -121,13 +121,14 @@ python snapshot-agentic-use/src/report.py
 
 ---
 
-## `agentic-v3` — cross-version agentic comparison (Claude Code subagents)
+## `agentic-v3` — cross-version and cross-model agentic comparison
 
-Six real-world tasks x three builds (`main`, `d9a1f4f`, `HEAD`) x one fresh Haiku agent
-each, run sequentially against a live browser; plus a post-fix `v4` re-run and a two-task
-Sonnet addendum. Unlike `snapshot-agentic-use` this suite
-uses no Python driver and no OpenAI key: the agents are Claude Code subagents, and
-measurement comes from a logging shim plus the subagent transcripts.
+The directory contains the original three-build Haiku study, later Sonnet reruns, and the
+current balanced cross-model experiment. The current experiment runs six real-world tasks
+against `main` and compact-v3 `head`, in strict and open modes, with three repeats across six
+model families (432 runs). Sonnet runs through Claude Code; the other families use the
+Responses API driver in `harness/agent.py`. Results come from the driver's JSON output and an
+independent CLI logging shim.
 
 ### File roles
 
@@ -136,23 +137,28 @@ measurement comes from a logging shim plus the subagent transcripts.
 | `agentic-v3/suite.md` | Task set, pinned expected answers, agent prompt, controls. |
 | `agentic-v3/results-2026-08-01.md` | v1/v2/v3 comparison: results tables and findings. |
 | `agentic-v3/results-2026-08-02-postfix.md` | Post-fix re-run (v4) + the Sonnet chain addendum. |
-| `agentic-v3/results-2026-08-02-n3-sonnet.md` | **Definitive**: n=3 Sonnet, v1 vs v2 vs v4 (54 runs). |
-| `agentic-v3/harness/_shim.zsh` | Wraps a condition binary; logs argv/exit/bytes/duration + full output. |
+| `agentic-v3/results-2026-08-02-n3-sonnet.md` | Original n=3 Sonnet report: v1 vs v2 vs v4 (54 runs). |
+| `agentic-v3/model-family-browser-agents-whitepaper.md` | Current six-family balanced-study report. |
+| `agentic-v3/COMPREHENSIVE-RUN.md` | Current run protocol and controls. |
+| `agentic-v3/harness/_shim.zsh` | Wraps a condition binary; logs argv/exit/bytes/duration; `.out` is only a capped excerpt. |
 | `agentic-v3/harness/gen.zsh` | `gen.zsh <cond> <task>` -> per-cell logging wrapper path. |
 | `agentic-v3/harness/runctl.zsh` | `switch <cond>` (restart that build's bridge) / `reset <cond>` (clear state). |
-| `agentic-v3/harness/analyze.py` | Joins shim TSVs with subagent transcripts -> cost tables. |
-| `agentic-v3/harness/analyze3.py` | Same, for the n=3 matrix: per-repeat totals, sd, per-task means. |
-| `agentic-v3/logs/*.tsv` | One row per CLI call, per (condition, task) cell. |
+| `agentic-v3/harness/run-direct.py` | Runs non-Anthropic matrices through the direct Responses API driver. |
+| `agentic-v3/harness/agent.py` | Single-cell direct driver; `TOOL_CAP=0` means no extra harness cap. |
+| `agentic-v3/harness/analyze-matrix.py` | Joins driver results with shim TSVs for current runs. |
+| `agentic-v3/harness/analyze.py`, `analyze3.py` | Analyzers kept for the original studies. |
+| `agentic-v3/data/` | Saved results, logs, and SHA-256 manifests. |
 
 ### Key design decisions
 
-- **Two instruments, no self-report** - shim bytes measure what the CLI emitted; the
-  transcripts measure what actually entered the agent's context. They disagree when the
-  client truncates oversized tool output, and that disagreement is itself a finding.
-- **Sequential only** - CLI session state is one machine-global directory, so parallel
-  agents corrupt each other's diff baselines (see `docs/compact-v3-review.md`, B-3).
-- **`eval` is forbidden in graded runs** - otherwise agents skip snapshots entirely and
-  the suite measures nothing (finding A-1).
+- **Two measurements, no self-report** — shim TSV bytes measure CLI stdout; driver results
+  contain provider-reported usage. Neither is the same as DOM size or exact model context.
+- **Sequential only** — runs share a browser; current runs isolate CLI state with per-run
+  `OPERA_CLI_SESSION`, while the original study required explicit global-state resets.
+- **Two modes** — strict forbids `eval` to test the snapshot/action interface; open permits
+  it to test the full command set.
+- **Capped comparison runs** — current direct-driver runs use `TOOL_CAP=0`; separate archived
+  runs used an 8,000-character cap. They are not replays of the same model responses.
 
 ## `agentic-dataset` — 51-task category corpus (A–E)
 

@@ -1,0 +1,5 @@
+1788353354.4650371075	0.14	0	3156	0	--help
+1788353356.1727259159	1.54	0	12685	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788353360.8920180798	0.36	0	196	0	eval (() => {   const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));   const results = headings.filter(h => h.textContent.includes('404')).map(h => ({     id: h.id,     text: h.textContent.trim(),     tagName: h.tagName   }));   return JSON.stringify(results); })()
+1788353364.1229379177	0.36	0	309	0	eval (() => {   const h = document.getElementById('name-404-not-found');   if (!h) return 'not found';   return h.outerHTML; })()
+1788353367.0859699249	0.36	0	598	0	eval (() => {   const h = document.getElementById('name-404-not-found');   if (!h) return 'not found';   let next = h.nextElementSibling;   let text = '';   while (next && !['H1','H2','H3','H4','H5','H6'].includes(next.tagName)) {     text += next.textContent.trim() + ' ';     next = next.nextElementSibling;   }   return text.substring(0, 500); })()

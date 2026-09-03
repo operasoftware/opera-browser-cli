@@ -1,0 +1,3 @@
+1788351570.7520399094	0.14	0	3156	0	--help
+1788351573.5077168941	1.51	0	12610	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788351575.0441210270	0.34	0	139	0	eval document.body.innerText.match(/\n\d+(?:\.\d+)*\.?[^\n]*404[^\n]*/g)?.slice(0,20).join('\n')

@@ -1,0 +1,33 @@
+{
+ "model": "dashscope/glm-5.2",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": "none",
+  "prices_usd_per_token": {
+   "input": 1.4e-06,
+   "output": 4.4e-06,
+   "cache_read": 2.8e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.0183738,
+ "num_turns": 5,
+ "calls": 4,
+ "is_error": false,
+ "result": "The section heading is an `<h4>` element with text \"15.5.5. 404 Not Found\". The section number is **15.5.5** and the exact title is **404 Not Found**.\n\nANSWER: Section 15.5.5 \u2014 404 Not Found\nCALLS: 3",
+ "usage": {
+  "input_tokens": 20759,
+  "output_tokens": 666,
+  "cache_read_input_tokens": 12160,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.012038599999999998,
+  "out": 0.0029304000000000005,
+  "cache_read": 0.0034048000000000004,
+  "cache_write": 0.0
+ }
+}

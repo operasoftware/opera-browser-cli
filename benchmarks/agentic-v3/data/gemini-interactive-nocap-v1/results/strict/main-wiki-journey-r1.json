@@ -1,0 +1,33 @@
+{
+ "model": "pc_browser/vertex_ai/gemini-3.5-flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.35e-06,
+   "output": 8.1e-06,
+   "cache_read": 1.35e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.05390361,
+ "num_turns": 8,
+ "calls": 7,
+ "is_error": false,
+ "result": "The giant impact is estimated to have occurred approximately 4.5 billion years ago (with astronomers specifically placing it at around 4.4 to 4.47 billion years ago).\n\nANSWER: Approximately 4.5 billion years ago (with estimates ranging from 4.4 to 4.47 billion years ago)\nCALLS: 7",
+ "usage": {
+  "input_tokens": 63019,
+  "output_tokens": 2502,
+  "cache_read_input_tokens": 42336,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.027922049999999997,
+  "out": 0.0202662,
+  "cache_read": 0.005715360000000001,
+  "cache_write": 0.0
+ }
+}

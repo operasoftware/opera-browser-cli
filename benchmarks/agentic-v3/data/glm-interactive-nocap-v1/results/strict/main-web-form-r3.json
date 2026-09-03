@@ -1,0 +1,33 @@
+{
+ "model": "dashscope/glm-5.2",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.4e-06,
+   "output": 4.4e-06,
+   "cache_read": 2.8e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.008818119999999999,
+ "num_turns": 5,
+ "calls": 4,
+ "is_error": false,
+ "result": "ANSWER: Heading: Form submitted \u2014 Message: Received!\nCALLS: 4",
+ "usage": {
+  "input_tokens": 11207,
+  "output_tokens": 328,
+  "cache_read_input_tokens": 7424,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.005296199999999999,
+  "out": 0.0014432000000000002,
+  "cache_read": 0.00207872,
+  "cache_write": 0.0
+ }
+}

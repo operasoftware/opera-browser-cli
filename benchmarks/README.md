@@ -1,6 +1,9 @@
 # Benchmarks
 
-Two benchmarks measure token cost and agentic quality of `opera-browser-cli` snapshot output. Results are in the [main README](../README.md#benchmarks).
+Three benchmark suites measure token cost and agentic quality of `opera-browser-cli`
+snapshot output. Legacy benchmark results are in the [main README](../README.md#benchmarks);
+the current compact-v3 cross-model study has its own
+[whitepaper](agentic-v3/model-family-browser-agents-whitepaper.md).
 
 ## Setup
 
@@ -17,6 +20,21 @@ pip install -r requirements-dev.txt
 make check       # format-check + lint + typecheck
 make format      # auto-format with black + isort
 ```
+
+---
+
+## `agentic-v3`
+
+The current balanced study compares compact-v3 `head` with upstream `main` on six tasks,
+two modes (`strict` and `open`), six model families, and three repeats (432 runs). Start with:
+
+- [cross-model whitepaper](agentic-v3/model-family-browser-agents-whitepaper.md);
+- [task suite](agentic-v3/suite.md);
+- [run protocol](agentic-v3/COMPREHENSIVE-RUN.md);
+- [retained data and manifests](agentic-v3/data/).
+
+The main non-Anthropic runs pass CLI output through without an additional harness cap
+(`TOOL_CAP=0`). Separate archived runs used an 8,000-character cap.
 
 ---
 

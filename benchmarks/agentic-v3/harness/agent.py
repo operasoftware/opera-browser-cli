@@ -58,7 +58,10 @@ PRICE_TIERS = {
     "openai/gpt-5.6-terra": (272_000, (4.0e-6, 1.8e-5, 4.0e-7, 5.0e-6)),
 }
 
-TOOL_CAP = int(os.environ.get("TOOL_CAP", "8000"))  # cap tool output fed back to the model
+# No harness-level truncation by default. The browser CLI's command-specific output
+# contract is the experimental interface and must reach the model unchanged. TOOL_CAP is
+# retained only for explicitly labelled sensitivity runs (for example, the archived 8K run).
+TOOL_CAP = int(os.environ.get("TOOL_CAP", "0"))
 
 
 def http_post(body):
@@ -67,28 +70,31 @@ def http_post(body):
         data=json.dumps(body).encode(),
         headers={"Content-Type": "application/json", "Authorization": f"Bearer {KEY}"},
     )
-    # Retry transient transport-level failures (SSL timeout, connection reset, 5xx)
+    # Retry transient transport-level failures (SSL timeout, connection reset, 5xx, 429)
     # with short backoff so a slow gateway round-trip on a heavy cell doesn't kill
-    # the whole matrix. HTTP-level 4xx errors (bad request/auth) are NOT retried.
+    # the whole matrix. HTTP-level 4xx errors (bad request/auth) other than 429 are NOT retried.
     last = None
-    for attempt in range(4):
+    for attempt in range(6):
         try:
             r = urllib.request.urlopen(req, timeout=300, context=_CTX)
             return json.load(r)
         except urllib.error.HTTPError as e:
-            if e.code >= 500:
-                last = e
-                time.sleep(2 * attempt)
+            body_snippet = e.read().decode()[:600]
+            if (e.code >= 500 or e.code == 429) and attempt < 5:
+                last = (e.code, body_snippet)
+                time.sleep(4 * (attempt + 1))
                 continue
-            return {"__http_error__": e.code, "__body__": e.read().decode()[:600]}
+            return {"__http_error__": e.code, "__body__": body_snippet}
         except (urllib.error.URLError, TimeoutError, ConnectionError, socket.timeout, ssl.SSLError, OSError) as e:
-            last = e
-            time.sleep(2 * attempt)
+            last = repr(e)
+            if attempt < 5:
+                time.sleep(4 * (attempt + 1))
+                continue
     return {"__http_error__": "transport-after-retries", "__body__": repr(last)}
 
 
 def run_bash(command: str) -> str:
-    """Run a shell command (the per-cell wrapper + browser-CLI args), capped output."""
+    """Run the per-cell wrapper command, applying TOOL_CAP only when configured."""
     try:
         p = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=300)
         out = (p.stdout or "") + ("\n[stderr]\n" + p.stderr if p.stderr else "")
@@ -96,8 +102,8 @@ def run_bash(command: str) -> str:
         out = "[bash timed out after 300s]"
     except Exception as e:  # noqa: BLE001
         out = f"[bash error] {e}"
-    if len(out) > TOOL_CAP:
-        out = out[:TOOL_CAP] + f"\n... [capped at {TOOL_CAP} chars]"
+    if TOOL_CAP > 0 and len(out) > TOOL_CAP:
+        out = out[:TOOL_CAP] + f"\n... [harness capped at {TOOL_CAP} chars]"
     return out
 
 
@@ -222,7 +228,7 @@ def main():
         "model": model,
         "driver": "agent.py (direct gateway, Responses API)",
         "run_config": {
-            "tool_cap_chars": TOOL_CAP,
+            "tool_cap_chars": TOOL_CAP or None,
             "max_turns": args.max_turns,
             "reasoning_effort": reasoning_effort or None,
             "prices_usd_per_token": {

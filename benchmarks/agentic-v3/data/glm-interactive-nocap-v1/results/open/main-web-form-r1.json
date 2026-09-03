@@ -1,0 +1,33 @@
+{
+ "model": "dashscope/glm-5.2",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": "none",
+  "prices_usd_per_token": {
+   "input": 1.4e-06,
+   "output": 4.4e-06,
+   "cache_read": 2.8e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.027922960000000004,
+ "num_turns": 10,
+ "calls": 9,
+ "is_error": false,
+ "result": "The form was submitted successfully. The URL now shows `my-text=Jan+Kowalski&my-p\u2026` confirming the values were properly filled.\n\nThe resulting page shows:\n- **Heading**: \"Form submitted\"\n- **Message text**: \"Received!\"\n\nANSWER: Heading: \"Form submitted\", Message: \"Received!\"\nCALLS: 7",
+ "usage": {
+  "input_tokens": 38202,
+  "output_tokens": 1978,
+  "cache_read_input_tokens": 30592,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.010653999999999999,
+  "out": 0.008703200000000001,
+  "cache_read": 0.008565760000000002,
+  "cache_write": 0.0
+ }
+}

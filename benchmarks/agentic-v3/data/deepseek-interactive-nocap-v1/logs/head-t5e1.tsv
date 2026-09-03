@@ -1,0 +1,8 @@
+1788360405.6095008850	0.14	0	3156	0	--help
+1788360406.4349370003	1.14	0	12564	0	open https://en.wikipedia.org/wiki/Moon
+1788360409.0651059151	0.35	0	328	0	eval (() => { const links = [...document.querySelectorAll('a')].filter(a => a.textContent.includes('Giant-impact')); return links.map(a => a.textContent.trim() + ' | ' + a.href).join('\n'); })()
+1788360411.3626019955	0.15	1	87	0	eval (() => { const a = [...document.querySelectorAll('a')].find(a => a.getAttribute('href') === '/wiki/Giant-impact_hypothesis'); return a.outerHTML.slice(0,200); })()
+1788360412.3181738853	0.35	0	300	0	eval (() => { const a = [...document.querySelectorAll('a')].find(a => a.textContent.includes('Giant-impact')); return a.href + ' | ' + a.outerHTML.slice(0,300); })()
+1788360413.7796990871	0.35	0	125	0	eval (() => { const a = [...document.querySelectorAll('a')].find(a => a.textContent.includes('Giant-impact')); return JSON.stringify([...a.attributes].map(x => x.name)); })()
+1788360415.3787260056	0.66	0	318	0	find Giant-impact hypothesis
+1788360416.7977960110	0.66	0	12648	0	click @19.1328

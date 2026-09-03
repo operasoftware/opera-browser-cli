@@ -1,0 +1,4 @@
+1788352981.8285510540	0.14	0	3156	0	--help
+1788352983.6034080982	1.47	0	12616	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788352988.7208209038	0.37	0	560	0	eval (() => {   const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, a'));   const matches = headings     .map(el => ({ tag: el.tagName, text: el.innerText, href: el.getAttribute('href') }))     .filter(item => item.text && item.text.includes('404'));   return JSON.stringify(matches.slice(0, 20)); })()
+1788352992.2599489689	0.36	0	420	0	eval (() => {   const el = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).find(h => h.innerText.includes('15.5.5'));   if (el) {     return JSON.stringify({       innerText: el.innerText,       innerHTML: el.innerHTML,       id: el.id     });   }   return 'Not found'; })()

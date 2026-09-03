@@ -1,0 +1,33 @@
+{
+ "model": "opera-internal/deepseek-ai/DeepSeek-V4-Flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 0.0,
+   "output": 0.0,
+   "cache_read": 0.0,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.0,
+ "num_turns": 6,
+ "calls": 5,
+ "is_error": false,
+ "result": "All steps done. Summary:\n- Added alpha, beta, gamma (each typed + Enter).\n- Clicked beta's checkbox \u2192 marked completed.\n- Clicked \"Active\" filter \u2192 now on `#/active`, showing alpha and gamma (beta hidden as completed), counter reads \"2 items left\".\n\nANSWER: items left = \"2 items left\"; Active filter lists: alpha, gamma\nCALLS: 10",
+ "usage": {
+  "input_tokens": 21240,
+  "output_tokens": 1767,
+  "cache_read_input_tokens": 14848,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0,
+  "out": 0.0,
+  "cache_read": 0.0,
+  "cache_write": 0.0
+ }
+}

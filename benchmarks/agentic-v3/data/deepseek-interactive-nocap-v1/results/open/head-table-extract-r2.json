@@ -1,0 +1,33 @@
+{
+ "model": "opera-internal/deepseek-ai/DeepSeek-V4-Flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 0.0,
+   "output": 0.0,
+   "cache_read": 0.0,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.0,
+ "num_turns": 4,
+ "calls": 3,
+ "is_error": false,
+ "result": "The row for Tungsten gives:\n- Atomic number (Z): 74\n- Chemical symbol: W\n- Standard atomic weight: 183.84\n\nANSWER: Tungsten \u2014 atomic number 74, symbol W, standard atomic weight 183.84\nCALLS: 3",
+ "usage": {
+  "input_tokens": 13699,
+  "output_tokens": 577,
+  "cache_read_input_tokens": 7936,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0,
+  "out": 0.0,
+  "cache_read": 0.0,
+  "cache_write": 0.0
+ }
+}

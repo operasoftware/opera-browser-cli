@@ -1,0 +1,4 @@
+1788353138.6578040123	0.14	0	3156	0	--help
+1788353151.9999990463	1.43	0	12685	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788353157.2915349007	0.36	0	149	0	eval (() => {   const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));   const results = [];   for (const h of headings) {     const text = h.textContent;     if (text.includes('404')) {       results.push({ id: h.id, text: text.trim().replace(/\s+/g, ' ') });     }   }   return results; })()
+1788353160.2570009232	0.36	0	587	0	eval (() => {   const h = document.getElementById('name-404-not-found');   if (!h) return 'not found';   // Let's get the text of its parent element or sibling elements   const parent = h.parentElement;   return {     headerText: h.textContent.trim().replace(/\s+/g, ' '),     parentText: parent ? parent.textContent.substring(0, 500).trim().replace(/\s+/g, ' ') : ''   }; })()

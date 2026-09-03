@@ -1,0 +1,33 @@
+{
+ "model": "dashscope/glm-5.2",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": "none",
+  "prices_usd_per_token": {
+   "input": 1.4e-06,
+   "output": 4.4e-06,
+   "cache_read": 2.8e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.01853304,
+ "num_turns": 5,
+ "calls": 4,
+ "is_error": false,
+ "result": "I now have all the information needed. The table cells clearly show:\n\n- Cell 0 (Z): 74\n- Cell 1 (Sym.): W\n- Cell 7 (Atomic weight): 183.84\n\nANSWER: Atomic number 74, symbol W, standard atomic weight 183.84\nCALLS: 3",
+ "usage": {
+  "input_tokens": 18226,
+  "output_tokens": 1052,
+  "cache_read_input_tokens": 10368,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.011001200000000001,
+  "out": 0.004628800000000001,
+  "cache_read": 0.00290304,
+  "cache_write": 0.0
+ }
+}

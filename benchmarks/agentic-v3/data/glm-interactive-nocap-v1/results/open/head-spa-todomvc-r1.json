@@ -1,0 +1,33 @@
+{
+ "model": "dashscope/glm-5.2",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": "none",
+  "prices_usd_per_token": {
+   "input": 1.4e-06,
+   "output": 4.4e-06,
+   "cache_read": 2.8e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.026129399999999997,
+ "num_turns": 10,
+ "calls": 9,
+ "is_error": false,
+ "result": "The exact counter text is \"2 items left\". Under the Active filter, the listed todos are \"alpha\" and \"gamma\" (beta is completed and hidden).\n\nANSWER: (a) \"2 items left\"; (b) alpha and gamma are listed under the Active filter (beta is completed and not shown).\nCALLS: 8",
+ "usage": {
+  "input_tokens": 31829,
+  "output_tokens": 1350,
+  "cache_read_input_tokens": 21760,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.014096599999999997,
+  "out": 0.00594,
+  "cache_read": 0.0060928,
+  "cache_write": 0.0
+ }
+}

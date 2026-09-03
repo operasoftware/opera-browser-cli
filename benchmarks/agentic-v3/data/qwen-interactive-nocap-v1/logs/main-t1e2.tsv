@@ -1,0 +1,5 @@
+1788358854.1125030518	0.13	0	3156	0	--help
+1788358859.1304440498	1.48	0	12616	0	open https://www.rfc-editor.org/rfc/rfc9110.html
+1788358866.3800060749	0.35	0	94	0	eval (() => { const el = document.querySelector('#name.not-found'); if (!el) return 'not found'; const h = el.closest('h2,h3,h4,h5') || el; const sec = el.closest('section'); const num = sec ? (sec.getAttribute('data-section-number') || '') : ''; return JSON.stringify({id: el.id, heading: h.textContent.trim(), number: num}); })()
+1788358871.7321588993	0.35	0	94	0	eval (() => { const el = document.getElementById('name.not-found'); if (!el) return 'not found'; const sec = el.closest('section'); const num = sec ? (sec.getAttribute('data-section-number') || '') : ''; return JSON.stringify({id: el.id, heading: el.textContent.trim(), number: num}); })()
+1788358887.9723229408	0.35	0	148	0	eval (() => { const out = []; document.querySelectorAll('h1,h2,h3,h4,h5').forEach(h => { if (/404/.test(h.textContent)) { const sec = h.closest('section'); out.push({text: h.textContent.trim(), num: sec ? sec.getAttribute('data-section-number') : null}); } }); return JSON.stringify(out); })()

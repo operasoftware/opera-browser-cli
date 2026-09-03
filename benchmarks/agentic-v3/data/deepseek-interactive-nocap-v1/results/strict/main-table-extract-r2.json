@@ -1,0 +1,33 @@
+{
+ "model": "opera-internal/deepseek-ai/DeepSeek-V4-Flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 0.0,
+   "output": 0.0,
+   "cache_read": 0.0,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.0,
+ "num_turns": 14,
+ "calls": 13,
+ "is_error": false,
+ "result": "I have everything I need. The `snapshot --full` command revealed the Tungsten row in the elements table.\n\nParsing the row `66d-block183.8419.25369562030.1322.361.3primordialsolid74W`:\n- Z = 74, Sym = W\n- Block = d-block, Group/Period = 6/6\n- **Atomic weight = 183.84 Da**\n\nANSWER: Tungsten (W): atomic number 74, symbol W, standard atomic weight 183.84 Da.\nCALLS: 54",
+ "usage": {
+  "input_tokens": 94396,
+  "output_tokens": 6098,
+  "cache_read_input_tokens": 85760,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0,
+  "out": 0.0,
+  "cache_read": 0.0,
+  "cache_write": 0.0
+ }
+}

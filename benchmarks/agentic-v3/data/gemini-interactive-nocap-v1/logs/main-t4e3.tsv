@@ -1,0 +1,6 @@
+1788353710.0900979042	0.15	0	3156	0	--help
+1788353725.3526709080	0.77	0	12631	0	open https://en.wikipedia.org/wiki/List_of_chemical_elements
+1788353742.8136599064	0.37	0	232	0	eval (() => {   const rows = Array.from(document.querySelectorAll('table tbody tr'));   const tungstenRow = rows.find(r => r.textContent.includes('Tungsten'));   if (!tungstenRow) return 'Tungsten not found';   return Array.from(tungstenRow.cells).map(cell => cell.textContent.trim()); })()
+1788353746.2997980118	0.35	0	4527	0	eval (() => {   const table = document.querySelector('table');   const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent.trim());   return headers; })()
+1788353749.5715379715	0.36	0	141	0	eval (() => {   const rows = Array.from(document.querySelectorAll('table tbody tr'));   const tungstenRow = rows.find(r => r.textContent.includes('Tungsten'));   return {     outerHTML: tungstenRow.cells[7].outerHTML,     innerText: tungstenRow.cells[7].innerText   }; })()
+1788353763.5977540016	0.36	0	131	0	eval (() => {   const rows = Array.from(document.querySelectorAll('table tbody tr'));   const tungstenRow = rows.find(r => r.textContent.includes('Tungsten'));   return {     z: tungstenRow.cells[0].innerText,     sym: tungstenRow.cells[1].innerText,     weight: tungstenRow.cells[7].innerText   }; })()

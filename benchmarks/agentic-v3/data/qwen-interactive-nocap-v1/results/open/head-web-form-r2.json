@@ -1,0 +1,33 @@
+{
+ "model": "opera-internal/Qwen/Qwen3.8-27B",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 0.0,
+   "output": 0.0,
+   "cache_read": 0.0,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.0,
+ "num_turns": 6,
+ "calls": 5,
+ "is_error": false,
+ "result": "\n\nThe form was submitted successfully. The page landed on (`submitted-form.html` with the submitted values in the query string) shows:\n\n- **Heading:** Form submitted\n- **Message text:** Received!\n\nANSWER: Heading \"Form submitted\" with message \"Received!\"\nCALLS: 5",
+ "usage": {
+  "input_tokens": 13739,
+  "output_tokens": 665,
+  "cache_read_input_tokens": 9408,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0,
+  "out": 0.0,
+  "cache_read": 0.0,
+  "cache_write": 0.0
+ }
+}

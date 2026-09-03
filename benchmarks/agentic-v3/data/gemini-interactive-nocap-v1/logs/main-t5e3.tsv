@@ -1,0 +1,8 @@
+1788353770.5320630074	0.15	0	3156	0	--help
+1788353786.4754281044	1.23	0	12506	0	open https://en.wikipedia.org/wiki/Moon
+1788353791.7554879189	0.36	0	362	0	eval (() => {   const links = Array.from(document.querySelectorAll('a'));   const match = links.find(a => a.href.includes('Giant-impact_hypothesis') || a.textContent.includes('Giant-impact'));   if (match) {     return { href: match.href, text: match.textContent, outerHTML: match.outerHTML };   }   return 'not found'; })()
+1788353809.3246049881	0.57	0	88	0	eval document.querySelector('a[href*="Giant-impact_hypothesis"]').click()
+1788353811.3744950294	2.17	0	85	0	wait 2000
+1788353815.7053930759	0.36	0	138	0	eval window.location.href
+1788353828.7775769234	0.37	0	2115	0	eval (() => {   const paragraphs = Array.from(document.querySelectorAll('main p, #bodyContent p')).slice(0, 5).map(p => p.textContent);   return paragraphs.join('\n\n'); })()
+1788353843.3192439079	0.42	0	83	0	eval (() => {   const elements = Array.from(document.querySelectorAll('table.infobox td'));   return elements.map(td => td.textContent).slice(0, 10); })()

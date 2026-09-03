@@ -1,0 +1,359 @@
+
+===== CALL rc=0 out=3156B args=--help =====
+usage: opera-browser-cli [command] [args] [flags]
+commands[49]:
+  open <url>, snapshot, screenshot <path>, click @<uid>, fill @<uid> <text>,
+  type <text>, press <key>, scroll <dir>, back, wait <ms|text>, eval <js>,
+  run,
+  hover @<uid>, drag @<from> @<to>, fillform @<uid>=<val>..., dialog <action>,
+  upload @<uid> <path>, pages, newpage <url>, selectpage <id>, closepage <id>,
+  resize <w> <h>, emulate, console, console-get <id>, network,
+  network-get [id], lighthouse, perf-start, perf-stop,
+  perf-insight <set> <name>, heap <path>, start, stop, restart, status,
+  attach, launch-args, login,
+  chat [--model <id>] <prompt>, invoke-do <prompt>, make <prompt>,
+  research <prompt>, models,
+  mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
+  setup, logs, doctor
+
+exit codes:
+  0 ok   2 bad arguments   3 environment not ready   4 sign-in required
+  5 timed out (retry)      6 stale page ref (re-snapshot)   1 other
+
+flags[3]:
+  --help, -v/-V/--version, --takeover
+
+environment:
+  OPERA_CLI_HEADED        Set to 1 to run Chrome in headed (visible) mode
+  OPERA_CLI_CHROME_ARGS   Whitespace-separated Chrome flags forwarded to the browser
+                                    (no shell-style quoting; flags with spaces are not supported)
+                                    e.g. "--enable-gpu --ignore-gpu-blocklist"
+  OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
+                                    tried in turn if it is occupied
+  OPERA_CLI_BROWSER_URL   Connect to an existing Chrome instance instead of launching one
+                                    e.g. "http://127.0.0.1:9222"
+  OPERA_CLI_USER_DATA_DIR Persistent Chrome profile directory (skips --isolated mode)
+                                    e.g. "/path/to/.chrome-profile"
+  OPERA_CLI_EXECUTABLE_PATH  Path to a custom browser binary (e.g. Opera Neon)
+  OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
+  OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
+                                    asking (same as the --takeover flag)
+
+  Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
+  Run `opera-browser-cli setup` to configure interactively.
+
+opera ai:
+  chat is available on any Opera browser. Use --model to select a model.
+  Run "models" to list available models.
+  invoke-do, make, research, mcp-servers, mcp-tools, and mcp-call require Opera Neon with an active sign-in.
+  Run `opera-browser-cli setup` to configure the executable path, or set
+  OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+
+gpu:
+  Headless Chrome cannot access hardware GPU on most Linux systems.
+  For GPU-accelerated WebGL, use headed mode with GPU flags:
+    OPERA_CLI_HEADED=1
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist"
+  For WebGPU, Vulkan must also be enabled (required for the Dawn backend):
+    OPERA_CLI_CHROME_ARGS="--enable-gpu --ignore-gpu-blocklist --enable-unsafe-webgpu --enable-features=Vulkan"
+
+tips:
+  Pipe output through grep/head to extract specific data from large pages.
+
+===== CALL rc=0 out=2109B args=open https://www.selenium.dev/selenium/web/web-form.html =====
+page:
+  title: Web form
+  url: "https://www.selenium.dev/selenium/web/web-form.html"
+  refs: 38
+snapshot:
+@14.0 root "Web form" url="/selenium/web/web-form.html"
+  @14.1 main
+    @14.2 # Web form
+    @14.3 form
+      @14.4 text "Text input"
+      @14.5 textbox "Text input"
+      @14.6 text "Password"
+      @14.7 textbox "Password"
+      @14.8 text "Textarea"
+      @14.9 textbox "Textarea" multiline
+      @14.10 text "Disabled input"
+      @14.11 textbox "Disabled input" disabled
+      @14.12 text "Readonly input"
+      @14.13 textbox "Readonly input" readonly value="Readonly input"
+      @14.14 link "Return to index" url="/selenium/web/index.html"
+      @14.16 text "Dropdown (select)"
+      @14.17 combobox "Dropdown (select)" value="Open this select menu"
+        @14.18 option "Open this select menu" selected value="Open this select menu"
+        @14.19 option "One" value="One"
+        @14.20 option "Two" value="Two"
+        @14.21 option "Three" value="Three"
+      @14.22 text "Dropdown (datalist)"
+      @14.23 combobox "Dropdown (datalist)"
+      @14.24 text "File input"
+      @14.25 button "File input" value="No file chosen"
+      @14.26 checkbox "Checked checkbox" checked
+      @14.27 text "Checked checkbox"
+      @14.28 checkbox "Default checkbox"
+      @14.29 text "Default checkbox"
+      @14.30 radio "Checked radio" checked
+      @14.31 radio "Default radio"
+      @14.32 button "Submit"
+      @14.33 text "Color picker"
+      @14.34 color "Color picker" value="#563d7c"
+      @14.35 text "Date picker"
+      @14.36 textbox "Date picker"
+      @14.37 text "Example range "
+      @14.38 slider "Example range " value=5 valuemax=10 valuemin=0 valuetext=5
+help[5]:
+  Run `opera-browser-cli fill @14.5 "text"` to fill the "Text input" field
+  Run `opera-browser-cli click @14.25` to click the "File input" button
+  Run `opera-browser-cli click @14.14` to click the "Return to index" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=2048B args=fillform @14.5=Jan Kowalski @14.7=secret1 =====
+page:
+  title: Web form
+  refs: 38
+snapshot:
+@14.0 root "Web form" url="/selenium/web/web-form.html"
+  @14.1 main
+    @14.2 # Web form
+    @14.3 form
+      @14.4 text "Text input"
+      @14.5 textbox "Text input"
+      @14.6 text "Password"
+      @14.7 textbox "Password"
+      @14.8 text "Textarea"
+      @14.9 textbox "Textarea" multiline
+      @14.10 text "Disabled input"
+      @14.11 textbox "Disabled input" disabled
+      @14.12 text "Readonly input"
+      @14.13 textbox "Readonly input" readonly value="Readonly input"
+      @14.14 link "Return to index" url="/selenium/web/index.html"
+      @14.16 text "Dropdown (select)"
+      @14.17 combobox "Dropdown (select)" value="Open this select menu"
+        @14.18 option "Open this select menu" selected value="Open this select menu"
+        @14.19 option "One" value="One"
+        @14.20 option "Two" value="Two"
+        @14.21 option "Three" value="Three"
+      @14.22 text "Dropdown (datalist)"
+      @14.23 combobox "Dropdown (datalist)"
+      @14.24 text "File input"
+      @14.25 button "File input" value="No file chosen"
+      @14.26 checkbox "Checked checkbox" checked
+      @14.27 text "Checked checkbox"
+      @14.28 checkbox "Default checkbox"
+      @14.29 text "Default checkbox"
+      @14.30 radio "Checked radio" checked
+      @14.31 radio "Default radio"
+      @14.32 button "Submit"
+      @14.33 text "Color picker"
+      @14.34 color "Color picker" value="#563d7c"
+      @14.35 text "Date picker"
+      @14.36 textbox "Date picker"
+      @14.37 text "Example range "
+      @14.38 slider "Example range " value=5 valuemax=10 valuemin=0 valuetext=5
+help[5]:
+  Run `opera-browser-cli fill @14.5 "text"` to fill the "Text input" field
+  Run `opera-browser-cli click @14.25` to click the "File input" button
+  Run `opera-browser-cli click @14.14` to click the "Return to index" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=414B args=click @14.32 =====
+page:
+  title: Web form - target page
+  refs: 4
+snapshot:
+@16.0 root "Web form - target page" url=$u1
+  @16.1 main
+    @16.2 # Form submitted
+    @16.3 text "Received!"
+urls:
+  $u1 [hidden 224b → /selenium/web/submitted-form.html?my-text=&my-password=&my-…]
+help[1]:
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=165B args=pages =====
+pages[1]{id,url,selected}:
+  1,Web,false
+help[2]:
+  Run `opera-browser-cli selectpage <id>` to switch tabs
+  Run `opera-browser-cli newpage <url>` to open a new tab
+
+===== CALL rc=0 out=719B args=network =====
+network:
+## Network requests
+Showing 1-4 of 4 (Page 1 of 1).
+reqid=32 GET https://www.selenium.dev/selenium/web/submitted-form.html?my-text=&my-password=&my-textarea=&my-readonly=Readonly+input&my-select=Open+this+select+menu&my-datalist=&my-file=&my-check=on&my-radio=on&my-colors=%23563d7c&my-date=&my-range=5&my-hidden= [200]
+reqid=33 GET https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css [200]
+reqid=34 GET https://code.jquery.com/jquery-3.6.0.min.js [200]
+reqid=35 GET https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js [200]
+help[2]:
+  Run `opera-browser-cli network-get <id>` to see request details
+  Run `opera-browser-cli network --type fetch` to filter by type
+
+===== CALL rc=0 out=2066B args=back =====
+page:
+  title: Web form
+  refs: 38
+snapshot:
+@17.0 root "Web form" url="/selenium/web/web-form.html"
+  @17.1 main
+    @17.2 # Web form
+    @17.3 form
+      @17.4 text "Text input"
+      @17.5 textbox "Text input"
+      @17.6 text "Password"
+      @17.7 textbox "Password"
+      @17.8 text "Textarea"
+      @17.9 textbox "Textarea" multiline
+      @17.10 text "Disabled input"
+      @17.11 textbox "Disabled input" disabled
+      @17.12 text "Readonly input"
+      @17.13 textbox "Readonly input" readonly value="Readonly input"
+      @17.14 link "Return to index" url="/selenium/web/index.html"
+      @17.16 text "Dropdown (select)"
+      @17.17 combobox "Dropdown (select)" value="Open this select menu"
+        @17.18 option "Open this select menu" selected value="Open this select menu"
+        @17.19 option "One" value="One"
+        @17.20 option "Two" value="Two"
+        @17.21 option "Three" value="Three"
+      @17.22 text "Dropdown (datalist)"
+      @17.23 combobox "Dropdown (datalist)"
+      @17.24 text "File input"
+      @17.25 button "File input" value="No file chosen"
+      @17.26 checkbox "Checked checkbox" checked
+      @17.27 text "Checked checkbox"
+      @17.28 checkbox "Default checkbox"
+      @17.29 text "Default checkbox"
+      @17.30 radio "Checked radio" checked
+      @17.31 radio "Default radio"
+      @17.32 button "Submit" focusable focused
+      @17.33 text "Color picker"
+      @17.34 color "Color picker" value="#563d7c"
+      @17.35 text "Date picker"
+      @17.36 textbox "Date picker"
+      @17.37 text "Example range "
+      @17.38 slider "Example range " value=5 valuemax=10 valuemin=0 valuetext=5
+help[5]:
+  Run `opera-browser-cli fill @17.5 "text"` to fill the "Text input" field
+  Run `opera-browser-cli click @17.25` to click the "File input" button
+  Run `opera-browser-cli click @17.14` to click the "Return to index" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=2069B args=fill @17.5 Jan Kowalski =====
+page:
+  title: Web form
+  refs: 38
+snapshot:
+@17.0 root "Web form" url="/selenium/web/web-form.html"
+  @17.1 main
+    @17.2 # Web form
+    @17.3 form
+      @17.4 text "Text input"
+      @17.5 textbox "Text input" focusable focused value="Jan Kowalski"
+      @17.6 text "Password"
+      @17.7 textbox "Password"
+      @17.8 text "Textarea"
+      @17.9 textbox "Textarea" multiline
+      @17.10 text "Disabled input"
+      @17.11 textbox "Disabled input" disabled
+      @17.12 text "Readonly input"
+      @17.13 textbox "Readonly input" readonly value="Readonly input"
+      @17.14 link "Return to index" url="/selenium/web/index.html"
+      @17.16 text "Dropdown (select)"
+      @17.17 combobox "Dropdown (select)" value="Open this select menu"
+        @17.18 option "Open this select menu" selected value="Open this select menu"
+        @17.19 option "One" value="One"
+        @17.20 option "Two" value="Two"
+        @17.21 option "Three" value="Three"
+      @17.22 text "Dropdown (datalist)"
+      @17.23 combobox "Dropdown (datalist)"
+      @17.24 text "File input"
+      @17.25 button "File input" value="No file chosen"
+      @17.26 checkbox "Checked checkbox" checked
+      @17.27 text "Checked checkbox"
+      @17.28 checkbox "Default checkbox"
+      @17.29 text "Default checkbox"
+      @17.30 radio "Checked radio" checked
+      @17.31 radio "Default radio"
+      @17.32 button "Submit"
+      @17.33 text "Color picker"
+      @17.34 color "Color picker" value="#563d7c"
+      @17.35 text "Date picker"
+      @17.36 textbox "Date picker"
+      @17.37 text "Example range "
+      @17.38 slider "Example range " value=5 valuemax=10 valuemin=0 valuetext=5
+help[5]:
+  Run `opera-browser-cli click @17.32` to click "Submit"
+  Run `opera-browser-cli click @17.25` to click the "File input" button
+  Run `opera-browser-cli click @17.14` to click the "Return to index" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=2099B args=fill @17.7 secret1 =====
+page:
+  title: Web form
+  refs: 38
+snapshot:
+@17.0 root "Web form" url="/selenium/web/web-form.html"
+  @17.1 main
+    @17.2 # Web form
+    @17.3 form
+      @17.4 text "Text input"
+      @17.5 textbox "Text input" value="Jan Kowalski"
+      @17.6 text "Password"
+      @17.7 textbox "Password" focusable focused value="•••••••"
+      @17.8 text "Textarea"
+      @17.9 textbox "Textarea" multiline
+      @17.10 text "Disabled input"
+      @17.11 textbox "Disabled input" disabled
+      @17.12 text "Readonly input"
+      @17.13 textbox "Readonly input" readonly value="Readonly input"
+      @17.14 link "Return to index" url="/selenium/web/index.html"
+      @17.16 text "Dropdown (select)"
+      @17.17 combobox "Dropdown (select)" value="Open this select menu"
+        @17.18 option "Open this select menu" selected value="Open this select menu"
+        @17.19 option "One" value="One"
+        @17.20 option "Two" value="Two"
+        @17.21 option "Three" value="Three"
+      @17.22 text "Dropdown (datalist)"
+      @17.23 combobox "Dropdown (datalist)"
+      @17.24 text "File input"
+      @17.25 button "File input" value="No file chosen"
+      @17.26 checkbox "Checked checkbox" checked
+      @17.27 text "Checked checkbox"
+      @17.28 checkbox "Default checkbox"
+      @17.29 text "Default checkbox"
+      @17.30 radio "Checked radio" checked
+      @17.31 radio "Default radio"
+      @17.32 button "Submit"
+      @17.33 text "Color picker"
+      @17.34 color "Color picker" value="#563d7c"
+      @17.35 text "Date picker"
+      @17.36 textbox "Date picker"
+      @17.37 text "Example range "
+      @17.38 slider "Example range " value=5 valuemax=10 valuemin=0 valuetext=5
+help[5]:
+  Run `opera-browser-cli click @17.32` to click "Submit"
+  Run `opera-browser-cli click @17.25` to click the "File input" button
+  Run `opera-browser-cli click @17.14` to click the "Return to index" link
+  Run `opera-browser-cli scroll down` to scroll down
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`
+
+===== CALL rc=0 out=414B args=click @17.32 =====
+page:
+  title: Web form - target page
+  refs: 4
+snapshot:
+@20.0 root "Web form - target page" url=$u1
+  @20.1 main
+    @20.2 # Form submitted
+    @20.3 text "Received!"
+urls:
+  $u1 [hidden 243b → /selenium/web/submitted-form.html?my-text=Jan+Kowalski&my-p…]
+help[1]:
+  Use `opera-browser-cli eval <expr>` for JS expressions. For multi-statement code, wrap in an IIFE: `eval "(() => { ...; return result })()"`

@@ -1,0 +1,9 @@
+1788437421.0157449245	0.14	0	3156	0	--help
+1788437423.4109060764	2.24	0	12564	0	open https://en.wikipedia.org/wiki/Moon
+1788437429.7911128998	0.35	0	164	0	eval (() => { const links = [...document.querySelectorAll('a')]; const g = links.find(a => a.textContent.includes('Giant-impact hypothesis') || a.textContent.includes('giant-impact')); return g ? g.href + ' | ' + g.textContent : 'not found'; })()
+1788437435.1533079147	1.02	0	92	0	eval (() => { const a = [...document.querySelectorAll('a')].find(a => a.textContent.includes('Giant-impact hypothesis')); if(a){a.click(); return 'clicked';} return 'not found'; })()
+1788437438.4638381004	2.17	1	50	0	wait 2000
+1788437442.7115890980	2.16	1	50	0	wait 2000
+1788437447.3742430210	3.36	0	88	0	eval new Promise(r => setTimeout(r, 3000))
+1788437452.7383699417	0.27	0	12651	0	snapshot
+1788437456.8415009975	0.36	0	8257	0	eval (() => { const text = document.body.innerText; const lines = text.split('\n').filter(l => /billion|4\.5|ago|formed|origin|solar system/i.test(l)); return lines.slice(0, 20).join('\n'); })()

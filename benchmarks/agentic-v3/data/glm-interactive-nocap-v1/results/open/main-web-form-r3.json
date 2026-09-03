@@ -1,0 +1,33 @@
+{
+ "model": "dashscope/glm-5.2",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": "none",
+  "prices_usd_per_token": {
+   "input": 1.4e-06,
+   "output": 4.4e-06,
+   "cache_read": 2.8e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.01182796,
+ "num_turns": 6,
+ "calls": 5,
+ "is_error": false,
+ "result": "I can see the resulting page. The heading is \"Form submitted\" and the message text is \"Received!\".\n\nANSWER: Heading: \"Form submitted\"; Message: \"Received!\"\nCALLS: 5",
+ "usage": {
+  "input_tokens": 14015,
+  "output_tokens": 477,
+  "cache_read_input_tokens": 8832,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.0072562,
+  "out": 0.0020988000000000005,
+  "cache_read": 0.00247296,
+  "cache_write": 0.0
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "model": "pc_browser/vertex_ai/gemini-3.5-flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.35e-06,
+   "output": 8.1e-06,
+   "cache_read": 1.35e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.062242425000000004,
+ "num_turns": 10,
+ "calls": 9,
+ "is_error": false,
+ "result": "ANSWER: Approximately 4.5 billion years ago (with other dating methods pointing to 4.4 to 4.47 billion years ago).\nCALLS: 9",
+ "usage": {
+  "input_tokens": 78213,
+  "output_tokens": 2784,
+  "cache_read_input_tokens": 54235,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.032370300000000005,
+  "out": 0.0225504,
+  "cache_read": 0.007321725,
+  "cache_write": 0.0
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "model": "pc_browser/vertex_ai/gemini-3.5-flash",
+ "driver": "agent.py (direct gateway, Responses API)",
+ "run_config": {
+  "tool_cap_chars": null,
+  "max_turns": 50,
+  "reasoning_effort": null,
+  "prices_usd_per_token": {
+   "input": 1.35e-06,
+   "output": 8.1e-06,
+   "cache_read": 1.35e-07,
+   "cache_write": 0.0
+  },
+  "price_source": "built-in gateway price snapshot"
+ },
+ "total_cost_usd": 0.028766745000000003,
+ "num_turns": 6,
+ "calls": 5,
+ "is_error": false,
+ "result": "The form has been successfully filled out and submitted. On the landing page, the heading is \"Form submitted\" and the message text is \"Received!\".\n\nANSWER: Heading: Form submitted, Message: Received!\nCALLS: 5",
+ "usage": {
+  "input_tokens": 16761,
+  "output_tokens": 1350,
+  "cache_read_input_tokens": 3947,
+  "cache_creation_input_tokens": 0
+ },
+ "cost_breakdown": {
+  "fresh_input": 0.017298900000000002,
+  "out": 0.010935,
+  "cache_read": 0.000532845,
+  "cache_write": 0.0
+ }
+}
