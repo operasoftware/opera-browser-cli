@@ -142,11 +142,15 @@ describe("buildTransportArgs", () => {
     savedEnv.OPERA_CLI_BROWSER_URL = process.env.OPERA_CLI_BROWSER_URL;
     savedEnv.OPERA_CLI_USER_DATA_DIR = process.env.OPERA_CLI_USER_DATA_DIR;
     savedEnv.OPERA_CLI_EXECUTABLE_PATH = process.env.OPERA_CLI_EXECUTABLE_PATH;
+    savedEnv.OPERA_CLI_BROWSER_BACKEND = process.env.OPERA_CLI_BROWSER_BACKEND;
+    savedEnv.OPERA_CLI_LIGHTPANDA_BIN = process.env.OPERA_CLI_LIGHTPANDA_BIN;
     delete process.env.OPERA_CLI_HEADED;
     delete process.env.OPERA_CLI_CHROME_ARGS;
     delete process.env.OPERA_CLI_BROWSER_URL;
     delete process.env.OPERA_CLI_USER_DATA_DIR;
     delete process.env.OPERA_CLI_EXECUTABLE_PATH;
+    delete process.env.OPERA_CLI_BROWSER_BACKEND;
+    delete process.env.OPERA_CLI_LIGHTPANDA_BIN;
   });
 
   afterEach(() => {
@@ -155,6 +159,8 @@ describe("buildTransportArgs", () => {
     process.env.OPERA_CLI_BROWSER_URL = savedEnv.OPERA_CLI_BROWSER_URL;
     process.env.OPERA_CLI_USER_DATA_DIR = savedEnv.OPERA_CLI_USER_DATA_DIR;
     process.env.OPERA_CLI_EXECUTABLE_PATH = savedEnv.OPERA_CLI_EXECUTABLE_PATH;
+    process.env.OPERA_CLI_BROWSER_BACKEND = savedEnv.OPERA_CLI_BROWSER_BACKEND;
+    process.env.OPERA_CLI_LIGHTPANDA_BIN = savedEnv.OPERA_CLI_LIGHTPANDA_BIN;
   });
 
   it("defaults to headless and isolated", () => {
@@ -260,6 +266,24 @@ describe("buildTransportArgs", () => {
     const args = buildTransportArgs();
     expect(args).toContain("--browserUrl=http://127.0.0.1:9222");
     expect(args).not.toContain("--executablePath=/Applications/Opera Neon.app/Contents/MacOS/Opera");
+  });
+
+  it("returns --lightpanda-bin= when backend=panda", () => {
+    process.env.OPERA_CLI_BROWSER_BACKEND = "panda";
+    process.env.OPERA_CLI_LIGHTPANDA_BIN = process.execPath;
+    expect(buildTransportArgs()).toEqual([`--lightpanda-bin=${process.execPath}`]);
+  });
+
+  it("ignores Chrome flags when backend=panda", () => {
+    process.env.OPERA_CLI_BROWSER_BACKEND = "panda";
+    process.env.OPERA_CLI_LIGHTPANDA_BIN = process.execPath;
+    process.env.OPERA_CLI_CHROME_ARGS = "--enable-gpu";
+    process.env.OPERA_CLI_HEADED = "1";
+    const args = buildTransportArgs();
+    expect(args).toEqual([`--lightpanda-bin=${process.execPath}`]);
+    expect(args).not.toContain("--headless");
+    expect(args).not.toContain("--isolated");
+    expect(args).not.toContain("--chrome-arg=--enable-gpu");
   });
 });
 

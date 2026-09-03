@@ -335,6 +335,20 @@ function collapseTextRuns(lines: string[]): string[] {
   return result;
 }
 
+/**
+ * Compact Lightpanda markdown for the panda snapshot's `text:` trailer:
+ * trim per-line whitespace and collapse blank-line runs to a single separator,
+ * preserving heading/list structure while dropping emitted padding.
+ */
+export function compactMarkdown(markdown: string): string {
+  return markdown
+    .split("\n")
+    .map((line) => line.trim())
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export interface TruncationResult {
   text: string;
   truncated: boolean;

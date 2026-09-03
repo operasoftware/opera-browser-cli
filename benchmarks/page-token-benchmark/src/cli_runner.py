@@ -129,6 +129,46 @@ def run_bridge(url: str, bridge_url: str, timeout: int) -> RunResult:
         return RunResult(stdout="", stderr="", returncode=-1, wall_seconds=wall, error=str(exc))
 
 
+def run_lightpanda_fetch(
+    url: str,
+    cli_bin: str,
+    dump: str,
+    timeout: int,
+) -> RunResult:
+    """One-shot Lightpanda fetch: `lightpanda fetch --dump <fmt> --log-level error <url>`.
+
+    Dump renders to stdout; logs go to stderr; no server/bridge/CDP involved.
+    `dump` is one of `markdown | html | semantic_tree | semantic_tree_text`.
+
+    Note: Lightpanda `fetch` exits 0 even when navigation fails (it prints
+    ``# Navigation failed`` to stdout), so failure is detected separately.
+    """
+    cmd = [cli_bin, "fetch", "--dump", dump, "--log-level", "error", url]
+    start = time.monotonic()
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        wall = time.monotonic() - start
+        error = _detect_error(proc.stdout, proc.returncode)
+        if error is None:
+            stripped = proc.stdout.lstrip()
+            if stripped.startswith("# Navigation failed") or "CouldntConnect" in stripped:
+                error = stripped.splitlines()[0] if stripped.splitlines() else "navigation failed"
+        return RunResult(
+            stdout=proc.stdout,
+            stderr=proc.stderr,
+            returncode=proc.returncode,
+            wall_seconds=wall,
+            error=error,
+        )
+    except subprocess.TimeoutExpired:
+        wall = time.monotonic() - start
+        return RunResult(stdout="", stderr="", returncode=-1, wall_seconds=wall,
+                         error=f"timeout after {timeout}s: {shlex.join(cmd)}")
+    except Exception as exc:
+        wall = time.monotonic() - start
+        return RunResult(stdout="", stderr="", returncode=-1, wall_seconds=wall, error=str(exc))
+
+
 def run_condition(url: str, condition: dict, timeout: int = 60) -> RunResult:
     """Dispatch to the right runner based on condition tool_mode."""
     mode = condition["tool_mode"]
@@ -145,4 +185,12 @@ def run_condition(url: str, condition: dict, timeout: int = 60) -> RunResult:
         )
     if mode == "bridge":
         return run_bridge(url, bridge_url=condition.get("bridge_url", "http://localhost:9224"), timeout=timeout)
+    if mode == "lightpanda":
+        return run_lightpanda_fetch(
+            url,
+            cli_bin=condition.get("cli_bin", "lightpanda"),
+            dump=condition.get("dump", "markdown"),
+            timeout=timeout,
+        )
+
     raise ValueError(f"Unknown tool_mode: {mode}")

@@ -1075,6 +1075,12 @@ export function mapErrorMessage(message: string): CdpError {
       ],
     );
   }
+  if (message.includes("UNSUPPORTED_ON_PANDA")) {
+    return new CdpError(message.replace(/^UNSUPPORTED_ON_PANDA:\s*/, ""), "UNSUPPORTED_OPERATION", [
+      "This command requires Chrome/Opera — switch backends with OPERA_CLI_BROWSER_BACKEND=chrome",
+      "Run `opera-browser-cli doctor` to inspect the current backend",
+    ]);
+  }
   if (message.includes("ECONNREFUSED") || message.includes("ECONNRESET")) {
     return new CdpError("Bridge is not running", "BRIDGE_NOT_READY", [
       "Run `opera-browser-cli open <url>` — the bridge starts automatically",

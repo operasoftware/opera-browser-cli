@@ -37,7 +37,7 @@ import {
   type StopResult,
 } from "./client.js";
 import { getPackageVersion } from "./version.js";
-import { resolveMcpBinStatus, shouldRunHeaded } from "./bridge.js";
+import { isPandaBackend, resolveMcpBinStatus, shouldRunHeaded } from "./bridge.js";
 import {
   autoConfigure,
   findUnknownConfigKeys,
@@ -48,6 +48,7 @@ import {
 import {
   browserDisplayName,
   detectBrowsers,
+  detectLightpanda,
   neonCandidatePaths,
   operaCandidatePaths,
 } from "./detect.js";
@@ -70,6 +71,7 @@ import {
   extractTitle,
   truncateSnapshot,
   truncateText,
+  compactMarkdown,
   compactSnapshot,
   applyUrlLut,
   resolveUrl,
@@ -141,6 +143,9 @@ environment:
   OPERA_CLI_ENABLE_HOOKS  Set to 1 to auto-install session hooks on startup
   OPERA_CLI_TAKEOVER      Set to 1 to allow restarting a running Opera without
                                     asking (same as the --takeover flag)
+  OPERA_CLI_BROWSER_BACKEND  Select the browser backend: "chrome" (default) or "panda"
+                                    panda uses the Lightpanda text-only browser
+  OPERA_CLI_LIGHTPANDA_BIN  Path to the lightpanda binary (auto-detected on PATH)
 
   Environment variables can also be set in ~/.opera-browser-cli/config (KEY=VALUE, one per line).
   Run \`opera-browser-cli setup\` to configure interactively.
@@ -1246,13 +1251,13 @@ function parseSnapshotFromResponse(response: string): string | null {
 }
 
 /** Format page metadata (TOON) + snapshot + suggestions. */
-function formatPageOutput(
+async function formatPageOutput(
   snapshot: string,
   command: string,
   url?: string,
   full = false,
   raw = false,
-): string {
+): Promise<string> {
   const tree = raw ? snapshot : compactSnapshot(snapshot);
 
   const title = extractTitle(tree);
@@ -1289,6 +1294,16 @@ function formatPageOutput(
   }
   blocks.push(snapshotBlock);
 
+  // Panda backend: append the compacted page markdown, since panda's tree is
+  // structure-only (roles + refs) and omits prose. Chrome/Opera carry text in
+  // the tree itself, so this trailer is panda-only.
+  if (isPandaBackend() && !raw) {
+    const markdown = await fetchPandaMarkdown();
+    if (markdown !== null) {
+      blocks.push(`text:\n${markdown}`);
+    }
+  }
+
   // Contextual suggestions
   const suggestions = getSuggestions({ command, url, snapshot: tree });
   if (tr.truncated) {
@@ -1301,6 +1316,19 @@ function formatPageOutput(
   }
 
   return renderOutput(blocks);
+}
+
+/** Read the current page's compacted markdown on the panda backend, or null when unavailable. */
+async function fetchPandaMarkdown(): Promise<string | null> {
+  try {
+    const result = await callTool("page_markdown", {});
+    if (typeof result !== "string" || result.length === 0) return null;
+    const compact = compactMarkdown(result);
+    return compact.length > 0 ? compact : null;
+  } catch {
+    // Markdown is an optional trailer: never fail the whole command over it.
+    return null;
+  }
 }
 
 /** Strip everything before the actual accessibility tree (MCP may prepend status lines and headers). */
@@ -2032,6 +2060,7 @@ export interface SetupArgs {
   executable: string | undefined;
   profile: string | undefined;
   headed: boolean | undefined;
+  backend: "chrome" | "panda" | undefined;
 }
 
 export function parseSetupArgs(args: string[]): SetupArgs {
@@ -2039,6 +2068,7 @@ export function parseSetupArgs(args: string[]): SetupArgs {
   let executable: string | undefined;
   let profile: string | undefined;
   let headed: boolean | undefined;
+  let backend: "chrome" | "panda" | undefined;
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
@@ -2059,6 +2089,13 @@ export function parseSetupArgs(args: string[]): SetupArgs {
           interactive = false;
         }
         break;
+      case "--backend":
+        if (i + 1 < args.length) {
+          const value = args[++i].toLowerCase();
+          backend = value === "panda" ? "panda" : "chrome";
+          interactive = false;
+        }
+        break;
       case "--headed":
         headed = true;
         interactive = false;
@@ -2069,7 +2106,7 @@ export function parseSetupArgs(args: string[]): SetupArgs {
         break;
     }
   }
-  return { interactive, executable, profile, headed };
+  return { interactive, executable, profile, headed, backend };
 }
 
 /** Install SKILL.md for Claude Code and the generic cross-agent path. */
@@ -2101,6 +2138,33 @@ function installSkillFiles(report: (line: string) => void): void {
  */
 function setupNonInteractive(parsed: SetupArgs): string {
   const config = readConfigFile();
+  const backend =
+    parsed.backend ??
+    (config.OPERA_CLI_BROWSER_BACKEND === "panda" ? "panda" : "chrome");
+
+  if (backend === "panda") {
+    config.OPERA_CLI_BROWSER_BACKEND = "panda";
+    const lightpandaBin = detectLightpanda();
+    if (lightpandaBin) config.OPERA_CLI_LIGHTPANDA_BIN = lightpandaBin;
+    writeConfigFile(config);
+    const notes: string[] = [];
+    installSkillFiles((line) => notes.push(line));
+    const help = [
+      "Run `opera-browser-cli open https://example.com` to browse with Lightpanda",
+    ];
+    if (!lightpandaBin) {
+      help.push(
+        "lightpanda not found — install it (https://github.com/lightpanda-io/browser) or set OPERA_CLI_LIGHTPANDA_BIN",
+      );
+    }
+    return renderOutput([
+      encode({ config: getConfigFile(), settings: config }),
+      notes.join("\n"),
+      renderHelp(help),
+    ]);
+  }
+
+  delete config.OPERA_CLI_BROWSER_BACKEND;
 
   const executable =
     parsed.executable ??
@@ -2159,6 +2223,38 @@ async function handleSetup(args: string[]): Promise<string> {
 
   try {
     process.stdout.write("opera-browser-cli setup\n\n");
+
+    // 0. Backend selection — panda configures lightpanda and skips the
+    // Chrome/Opera prompts below.
+    const currentBackend = existing["OPERA_CLI_BROWSER_BACKEND"] === "panda" ? "panda" : "chrome";
+    const backendAns = (
+      await ask(`Browser backend — "chrome" (Opera/Chrome) or "panda" (Lightpanda) [${currentBackend}]: `)
+    ).trim().toLowerCase();
+    const pandaChosen = backendAns === "panda" || (backendAns === "" && currentBackend === "panda");
+
+    if (pandaChosen) {
+      config["OPERA_CLI_BROWSER_BACKEND"] = "panda";
+      const detected = detectLightpanda();
+      if (detected) {
+        config["OPERA_CLI_LIGHTPANDA_BIN"] = detected;
+      } else {
+        const binAns = (await ask("lightpanda binary not found on PATH — enter its path: ")).trim();
+        if (binAns) config["OPERA_CLI_LIGHTPANDA_BIN"] = binAns;
+        else delete config["OPERA_CLI_LIGHTPANDA_BIN"];
+      }
+      writeConfigFile(config);
+      process.stdout.write(`\nSaved to ${configFile}\n`);
+      installSkillFiles((line) => process.stdout.write(line + "\n"));
+      return renderOutput([
+        encode({ config: configFile, settings: config }),
+        renderHelp([
+          "Run `opera-browser-cli --help` to see all commands",
+          "Run `opera-browser-cli open https://example.com` to browse with Lightpanda",
+        ]),
+      ]);
+    }
+
+    delete config["OPERA_CLI_BROWSER_BACKEND"];
 
     // 1. Browser executable path
     const detectedNeons = neonCandidatePaths(process.platform, homedir()).filter(
@@ -2405,6 +2501,27 @@ function formatBytes(n: number): string {
 
 async function runDoctorChecks(): Promise<DoctorCheck[]> {
   const checks: DoctorCheck[] = [];
+  const panda = isPandaBackend();
+
+  // Backend selection + Lightpanda binary (panda only).
+  checks.push({
+    name: "backend",
+    status: "ok",
+    detail: panda ? "panda (Lightpanda)" : "chrome",
+  });
+  if (panda) {
+    const lightpandaBin = detectLightpanda();
+    checks.push(
+      lightpandaBin
+        ? { name: "lightpanda", status: "ok", detail: lightpandaBin }
+        : {
+            name: "lightpanda",
+            status: "fail",
+            detail:
+              "lightpanda binary not found — set OPERA_CLI_LIGHTPANDA_BIN or install `lightpanda` on PATH",
+          },
+    );
+  }
 
   // Bridge
   const bridge = await getBridgeStatus();
@@ -2472,36 +2589,34 @@ async function runDoctorChecks(): Promise<DoctorCheck[]> {
     }
   }
 
-  // Opera Neon executable
-  const execPath = process.env.OPERA_CLI_EXECUTABLE_PATH;
+  // Opera Neon executable — Chrome/Opera backend only.
   const browserUrl = process.env.OPERA_CLI_BROWSER_URL;
-  if (browserUrl) {
-    checks.push({
-      name: "neon",
-      status: "ok",
-      detail: `OPERA_CLI_BROWSER_URL=${browserUrl} (skipping executable check)`,
-    });
-  } else if (!execPath) {
-    checks.push({
-      name: "neon",
-      status: "warn",
-      detail: "OPERA_CLI_EXECUTABLE_PATH not set — AI commands will fail",
-    });
-  } else if (!existsSync(execPath)) {
-    checks.push({
-      name: "neon",
-      status: "fail",
-      detail: `OPERA_CLI_EXECUTABLE_PATH=${execPath} does not exist`,
-    });
-  } else {
-    checks.push({
-      name: "neon",
-      status: "ok",
-      detail: execPath,
-    });
+  if (!panda) {
+    const execPath = process.env.OPERA_CLI_EXECUTABLE_PATH;
+    if (browserUrl) {
+      checks.push({
+        name: "neon",
+        status: "ok",
+        detail: `OPERA_CLI_BROWSER_URL=${browserUrl} (skipping executable check)`,
+      });
+    } else if (!execPath) {
+      checks.push({
+        name: "neon",
+        status: "warn",
+        detail: "OPERA_CLI_EXECUTABLE_PATH not set — AI commands will fail",
+      });
+    } else if (!existsSync(execPath)) {
+      checks.push({
+        name: "neon",
+        status: "fail",
+        detail: `OPERA_CLI_EXECUTABLE_PATH=${execPath} does not exist`,
+      });
+    } else {
+      checks.push({ name: "neon", status: "ok", detail: execPath });
+    }
   }
 
-  // opera-devtools-mcp — the bridge cannot start without it
+  // The MCP backend — either the panda adapter shim or opera-devtools-mcp.
   const mcp = resolveMcpBinStatus();
   checks.push(
     mcp.found
@@ -2509,12 +2624,12 @@ async function runDoctorChecks(): Promise<DoctorCheck[]> {
       : {
           name: "mcp",
           status: "fail",
-          detail: `opera-devtools-mcp not found at ${mcp.bin} (${mcp.source})`,
+          detail: `${panda ? "panda adapter" : "opera-devtools-mcp"} not found at ${mcp.bin} (${mcp.source})`,
         },
   );
 
-  // Browser target — launch, or attach to something already running
-  if (browserUrl) {
+  // Browser target — launch, or attach to something already running (Chrome only).
+  if (!panda && browserUrl) {
     const attachPort = Number.parseInt(new URL(browserUrl).port, 10);
     const identity = Number.isFinite(attachPort)
       ? await probeDevToolsEndpoint(attachPort)
@@ -2530,38 +2645,40 @@ async function runDoctorChecks(): Promise<DoctorCheck[]> {
     );
   }
 
-  // Profile lock — the usual reason a launch silently fails
-  const profileDir = process.env.OPERA_CLI_USER_DATA_DIR;
-  if (!profileDir) {
-    checks.push({
-      name: "profile",
-      status: "ok",
-      detail: "isolated (no persistent profile configured)",
-    });
-  } else if (!existsSync(profileDir)) {
-    checks.push({
-      name: "profile",
-      status: "ok",
-      detail: `${profileDir} (will be created on first launch)`,
-    });
-  } else {
-    const lock = inspectProfileLock(profileDir);
-    const attachable = readDevToolsPort(profileDir);
-    const live = attachable !== null ? await probeDevToolsEndpoint(attachable) : null;
-    if (lock.state === "free") {
-      checks.push({ name: "profile", status: "ok", detail: `${profileDir} (free)` });
-    } else if (live) {
+  // Profile lock — the usual reason a launch silently fails (Chrome only).
+  if (!panda) {
+    const profileDir = process.env.OPERA_CLI_USER_DATA_DIR;
+    if (!profileDir) {
       checks.push({
         name: "profile",
         status: "ok",
-        detail: `in use by ${live.browser}, attachable on port ${attachable}`,
+        detail: "isolated (no persistent profile configured)",
       });
-    } else {
+    } else if (!existsSync(profileDir)) {
       checks.push({
         name: "profile",
-        status: "warn",
-        detail: `in use${lock.pid ? ` by pid ${lock.pid}` : ""} with no debugging port — a separate profile will be used`,
+        status: "ok",
+        detail: `${profileDir} (will be created on first launch)`,
       });
+    } else {
+      const lock = inspectProfileLock(profileDir);
+      const attachable = readDevToolsPort(profileDir);
+      const live = attachable !== null ? await probeDevToolsEndpoint(attachable) : null;
+      if (lock.state === "free") {
+        checks.push({ name: "profile", status: "ok", detail: `${profileDir} (free)` });
+      } else if (live) {
+        checks.push({
+          name: "profile",
+          status: "ok",
+          detail: `in use by ${live.browser}, attachable on port ${attachable}`,
+        });
+      } else {
+        checks.push({
+          name: "profile",
+          status: "warn",
+          detail: `in use${lock.pid ? ` by pid ${lock.pid}` : ""} with no debugging port — a separate profile will be used`,
+        });
+      }
     }
   }
 
@@ -2708,7 +2825,14 @@ async function handleDoctor(args: string[]): Promise<string> {
   }
   if (checks.some((c) => c.name === "mcp" && c.status !== "ok")) {
     help.push(
-      "Install the MCP server: `npm install -g opera-devtools-mcp`, or set OPERA_CLI_MCP_BIN",
+      isPandaBackend()
+        ? "Build the package so dist/bin/panda-mcp-adapter.js exists (`npm run build`), or set OPERA_CLI_MCP_BIN"
+        : "Install the MCP server: `npm install -g opera-devtools-mcp`, or set OPERA_CLI_MCP_BIN",
+    );
+  }
+  if (checks.some((c) => c.name === "lightpanda" && c.status === "fail")) {
+    help.push(
+      "Install lightpanda (https://github.com/lightpanda-io/browser) or set OPERA_CLI_LIGHTPANDA_BIN to its binary path",
     );
   }
   if (checks.some((c) => c.name === "profile" && c.status === "warn")) {
@@ -3966,6 +4090,8 @@ async function resolveBrowserConflict(
   const launched = await launchAttachableBrowser(
     process.env.OPERA_CLI_EXECUTABLE_PATH,
     target.userDataDir,
+    [],
+    !shouldRunHeaded(),
   );
   if (!launched.ok || !launched.url) {
     throw new CdpError(
