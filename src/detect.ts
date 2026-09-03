@@ -8,6 +8,43 @@
  */
 
 import { existsSync } from "node:fs";
+import { resolve } from "node:path";
+
+/** Look a bare command up on PATH, returning its resolved path (like a shell). */
+export function whichOnPath(
+  command: string,
+  env: NodeJS.ProcessEnv = process.env,
+  exists: (p: string) => boolean = existsSync,
+): string | null {
+  const pathVar = env.PATH ?? "";
+  const separator = process.platform === "win32" ? ";" : ":";
+  const extensions =
+    process.platform === "win32"
+      ? (env.PATHEXT ?? ".EXE;.CMD;.BAT").split(";")
+      : [""];
+  for (const entry of pathVar.split(separator)) {
+    if (!entry) continue;
+    for (const ext of extensions) {
+      const candidate = resolve(entry, command + ext);
+      if (exists(candidate)) return candidate;
+    }
+  }
+  return null;
+}
+
+/**
+ * Locate the Lightpanda ("panda") browser binary, which powers the alternative
+ * backend behind the adapter shim. `OPERA_CLI_LIGHTPANDA_BIN` wins; otherwise it
+ * is found on PATH as `lightpanda`.
+ */
+export function detectLightpanda(
+  env: NodeJS.ProcessEnv = process.env,
+  exists: (p: string) => boolean = existsSync,
+): string | null {
+  const fromEnv = env.OPERA_CLI_LIGHTPANDA_BIN;
+  if (fromEnv && exists(fromEnv)) return fromEnv;
+  return whichOnPath("lightpanda", env, exists);
+}
 
 export function neonCandidatePaths(
   platform: NodeJS.Platform = process.platform,

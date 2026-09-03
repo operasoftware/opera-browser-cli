@@ -18,7 +18,8 @@
     "mcp"
   ],
   "bin": {
-    "opera-browser-cli": "dist/bin/opera-browser-cli.js"
+    "opera-browser-cli": "dist/bin/opera-browser-cli.js",
+    "panda-mcp-adapter": "dist/bin/panda-mcp-adapter.js"
   },
   "files": [
     "dist",

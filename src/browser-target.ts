@@ -140,6 +140,7 @@ export async function launchAttachableBrowser(
   executablePath: string | undefined,
   userDataDir: string,
   extraArgs: string[] = [],
+  headless = false,
   timeoutMs = 30_000,
 ): Promise<LaunchResult> {
   if (!executablePath || !existsSync(executablePath)) {
@@ -165,6 +166,10 @@ export async function launchAttachableBrowser(
     "--restore-last-session",
     ...extraArgs,
   ];
+
+  if (headless) {
+    args.push("--headless");
+  }
 
   let child;
   try {

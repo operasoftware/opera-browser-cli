@@ -36,6 +36,7 @@ import {
   type BridgeHealth,
 } from "./identity.js";
 import { getPackageVersion } from "./version.js";
+import { detectLightpanda } from "./detect.js";
 
 const DEFAULT_PORT = Number.parseInt(
   process.env.OPERA_CLI_PORT ?? "9225",
@@ -666,6 +667,7 @@ export function shouldRunHeaded(): boolean {
 }
 
 export function buildTransportArgs(): string[] {
+  if (isPandaBackend()) return buildPandaTransportArgs();
   const args: string[] = [];
 
   const browserUrl = process.env.OPERA_CLI_BROWSER_URL;
@@ -713,6 +715,44 @@ export function buildTransportArgs(): string[] {
   return args;
 }
 
+/** True when the Lightpanda ("panda") backend is selected instead of Chrome/Opera. */
+export function isPandaBackend(): boolean {
+  return process.env.OPERA_CLI_BROWSER_BACKEND === "panda";
+}
+
+/**
+ * Args for the panda adapter shim. Unlike Chrome, there are no browser-launch
+ * flags to forward — the shim resolves the lightpanda binary itself. We hand it
+ * the resolved path so `doctor` and the shim agree on the same binary.
+ */
+function buildPandaTransportArgs(): string[] {
+  const lightpanda = detectLightpanda();
+  return lightpanda ? [`--lightpanda-bin=${lightpanda}`] : [];
+}
+
+/** Resolve the adapter shim script path (OPERA_CLI_MCP_BIN override, else bundled). */
+function resolvePandaAdapterScript(): string {
+  if (process.env.OPERA_CLI_MCP_BIN) return process.env.OPERA_CLI_MCP_BIN;
+  const built = resolve(import.meta.dirname, "../bin/panda-mcp-adapter.js");
+  const source = built.replace(/\.js$/, ".ts");
+  return existsSync(source) ? source : built;
+}
+
+/** Decide how to launch the panda adapter shim, mirroring resolveBridgeLauncher. */
+function resolvePandaAdapterLauncher(): BridgeLauncher {
+  const built = resolve(import.meta.dirname, "../bin/panda-mcp-adapter.js");
+  const source = built.replace(/\.js$/, ".ts");
+  const preferSource =
+    process.env.OPERA_CLI_DEV === "1" || !existsSync(built);
+  if (preferSource && existsSync(source)) {
+    const tsx = resolveTsxCli();
+    if (tsx === null) return { ok: false, reason: "tsx-not-installed" };
+    return { ok: true, command: process.execPath, args: [tsx, source] };
+  }
+  if (!existsSync(built)) return { ok: false, reason: "panda-adapter-not-built" };
+  return { ok: true, command: process.execPath, args: [built] };
+}
+
 export interface McpBinStatus {
   bin: string;
   found: boolean;
@@ -742,6 +782,14 @@ function existsOnPath(command: string): boolean {
  * bridge start.
  */
 export function resolveMcpBinStatus(): McpBinStatus {
+  if (isPandaBackend()) {
+    const bin = resolveOperaMcpBin();
+    return {
+      bin,
+      found: existsSync(bin) || existsOnPath(bin),
+      source: process.env.OPERA_CLI_MCP_BIN ? "env" : "dependency",
+    };
+  }
   const bin = resolveOperaMcpBin();
   if (process.env.OPERA_CLI_MCP_BIN) {
     return { bin, found: existsSync(bin) || existsOnPath(bin), source: "env" };
@@ -753,6 +801,7 @@ export function resolveMcpBinStatus(): McpBinStatus {
 }
 
 function resolveOperaMcpBin(): string {
+  if (isPandaBackend()) return resolvePandaAdapterScript();
   if (process.env.OPERA_CLI_MCP_BIN) return process.env.OPERA_CLI_MCP_BIN;
   try {
     const require = createRequire(import.meta.url);
@@ -776,6 +825,16 @@ function resolveOperaMcpBin(): string {
 }
 
 function createTransport(): StdioClientTransport {
+  if (isPandaBackend()) {
+    const launcher = resolvePandaAdapterLauncher();
+    if (!launcher.ok) {
+      throw new Error(`Cannot launch the panda adapter: ${launcher.reason}`);
+    }
+    return new StdioClientTransport({
+      command: launcher.command,
+      args: [...launcher.args, ...buildPandaTransportArgs()],
+    });
+  }
   const bin = resolveOperaMcpBin();
   const args = buildTransportArgs();
   if (bin.endsWith(".js")) {

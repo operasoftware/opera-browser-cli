@@ -45,7 +45,7 @@ export interface BridgeHealth {
  */
 export function computeBootMinute(
   nowMs: number = Date.now(),
-  uptimeSeconds: number = uptime(),
+  uptimeSeconds: number = (() => { try { return uptime(); } catch { return 0; } })(),
 ): number {
   return Math.floor((nowMs - uptimeSeconds * 1000) / 60_000);
 }

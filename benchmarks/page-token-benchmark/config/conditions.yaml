@@ -1,6 +1,7 @@
 # Each condition defines how to fetch a page snapshot.
 # tool_mode: cli   → runs `<cli_bin> <nav_cmd> <url> [--raw]` as a subprocess
 # tool_mode: bridge → calls navigate_page via the bridge HTTP API
+# tool_mode: lightpanda → runs `lightpanda fetch --dump <dump> --log-level error <url>` as a subprocess
 
 - id: opera-compact
   description: opera-browser-cli compact snapshot, full page (--full)
@@ -37,3 +38,49 @@
     - "chrome-devtools-axi stop"
     - "chrome-devtools-axi start"
   stop: "chrome-devtools-axi stop"
+
+- id: lightpanda-fetch-markdown
+  description: lightpanda fetch --dump markdown (one-shot, no CDP/bridge)
+  tool_mode: lightpanda
+  cli_bin: lightpanda
+  dump: markdown
+
+- id: lightpanda-fetch-html
+  description: lightpanda fetch --dump html (one-shot, raw DOM)
+  tool_mode: lightpanda
+  cli_bin: lightpanda
+  dump: html
+
+- id: lightpanda-fetch-semantic-tree
+  description: lightpanda fetch --dump semantic_tree_text (pruned plain-text tree)
+  tool_mode: lightpanda
+  cli_bin: lightpanda
+  dump: semantic_tree_text
+
+- id: panda-compact
+  description: opera-browser-cli with panda backend, compact snapshot, full page (--full)
+  tool_mode: cli
+  cli_bin: /Users/opera_user/work/opera-browser-cli/dist/bin/opera-browser-cli.js
+  nav_cmd: open
+  raw: false
+  full: true
+  env:
+    OPERA_CLI_BROWSER_BACKEND: panda
+    OPERA_CLI_LIGHTPANDA_BIN: /Users/opera_user/work/browser/zig-out/bin/lightpanda
+  start:
+    - /Users/opera_user/work/opera-browser-cli/dist/bin/opera-browser-cli.js stop
+  stop: /Users/opera_user/work/opera-browser-cli/dist/bin/opera-browser-cli.js stop
+
+- id: panda-raw
+  description: opera-browser-cli with panda backend, uncompressed MCP output (--raw --full)
+  tool_mode: cli
+  cli_bin: /Users/opera_user/work/opera-browser-cli/dist/bin/opera-browser-cli.js
+  nav_cmd: open
+  raw: true
+  full: true
+  env:
+    OPERA_CLI_BROWSER_BACKEND: panda
+    OPERA_CLI_LIGHTPANDA_BIN: /Users/opera_user/work/browser/zig-out/bin/lightpanda
+  start:
+    - /Users/opera_user/work/opera-browser-cli/dist/bin/opera-browser-cli.js stop
+  stop: /Users/opera_user/work/opera-browser-cli/dist/bin/opera-browser-cli.js stop

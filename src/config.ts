@@ -31,6 +31,8 @@ export const KNOWN_CONFIG_KEYS = [
   "OPERA_CLI_ENABLE_HOOKS",
   "OPERA_CLI_TAKEOVER",
   "OPERA_CLI_DEV",
+  "OPERA_CLI_BROWSER_BACKEND",
+  "OPERA_CLI_LIGHTPANDA_BIN",
 ] as const;
 
 /** Levenshtein distance, capped — only used to suggest a corrected key. */
