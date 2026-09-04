@@ -9,3 +9,5 @@ dist/
 scripts/
 .env
 docker/.env
+benchmarks/agentic-v3/results/
+benchmarks/agentic-v3/logs/

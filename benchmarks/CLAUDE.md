@@ -1,7 +1,7 @@
 # benchmarks — Claude guidance
 
-Two benchmarks measure the token cost of `opera-browser-cli` snapshot output. Both live under
-`benchmarks/` and share the dev-tooling setup at that level.
+Three benchmarks measure the cost and agentic quality of browser-automation output.
+All live under `benchmarks/` and share the dev-tooling setup at that level.
 
 ---
 
@@ -120,6 +120,44 @@ python snapshot-agentic-use/src/report.py
   lives in `_CLI_SCHEMA` (module-level constant in `tools.py`), evaluated once at import.
 
 ---
+
+---
+
+## `agentic-v3` — cross-tool agentic cost comparison
+
+The current experiment in this branch reuses the six-task `agentic-v3` suite from
+`feat/compact-v3` to compare the cost of driving a browser through
+`opera-browser-cli@main` versus through `chrome-devtools-mcp`, across the same model
+families. For the run protocol and the Anthropic cost/caching requirement, see
+[`TEST-PLAN-chrome-devtools-mcp.md`](agentic-v3/TEST-PLAN-chrome-devtools-mcp.md).
+
+### File roles
+
+| File | Role |
+|---|---|
+| `agentic-v3/suite.md` | Task set, pinned expected answers, agent prompt, controls. |
+| `agentic-v3/TEST-PLAN-chrome-devtools-mcp.md` | Plan for the `opera-browser-cli` vs `chrome-devtools-mcp` cost comparison. |
+| `agentic-v3/results-2026-08-01.md` | v1/v2/v3 comparison: results tables and findings. |
+| `agentic-v3/results-2026-08-02-postfix.md` | Post-fix re-run (v4) + the Sonnet chain addendum. |
+| `agentic-v3/results-2026-08-02-n3-sonnet.md` | Original n=3 Sonnet report: v1 vs v2 vs v4. |
+| `agentic-v3/results-2026-09-01-comprehensive-sonnet.md` | Cache-aware Sonnet run report for the original study. |
+| `agentic-v3/model-family-browser-agents-whitepaper.md` | Six-family balanced-study report for the original main-vs-head study. |
+| `agentic-v3/harness/_shim.zsh` | Wraps a condition binary; logs argv/exit/bytes/duration; `.out` is only a capped excerpt. |
+| `agentic-v3/harness/gen.zsh` | `gen.zsh <cond> <task>` -> per-cell logging wrapper path. |
+| `agentic-v3/harness/runctl.zsh` | `switch <cond>` (restart that build's bridge) / `reset <cond>` (clear state). |
+| `agentic-v3/harness/run-direct.py` | Runs non-Anthropic matrices through the direct Responses API driver. |
+| `agentic-v3/harness/agent.py` | Single-cell direct driver; `TOOL_CAP=0` means no extra harness cap. |
+| `agentic-v3/harness/analyze-matrix.py` | Joins driver results with shim TSVs for current runs. |
+| `agentic-v3/harness/analyze.py`, `analyze3.py` | Analyzers kept for the original studies. |
+
+### Key design decisions
+
+- **Two measurements, no self-report** — shim TSV bytes measure tool output; driver results
+  contain provider-reported usage. Neither is the same as DOM size or exact model context.
+- **Sequential only** — runs share a browser; the current suite isolates CLI state with
+  per-run `OPERA_CLI_SESSION`, while the original study required explicit global-state resets.
+- **Two modes** — strict forbids page JavaScript to test the snapshot/action interface; open
+  permits it to test the full tool surface.
 
 ## Shared dev tooling
 
