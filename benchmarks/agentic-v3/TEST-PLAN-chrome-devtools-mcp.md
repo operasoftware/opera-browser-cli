@@ -92,10 +92,17 @@ turns, output bytes, and accuracy — never impute a dollar figure.
 balanced study. Budget and wall-time scale accordingly (the previous 432-run study is the
 reference; the `cdt` arm may be slower per cell depending on the MCP server).
 
-1. **One browser for the whole suite.** Both conditions drive the same Chromium/Chrome
-   instance via CDP (`chrome-devtools-mcp` connects with `--browser-url` to the same
-   `--remote-debugging-port` the CLI attaches to). Do not switch browser engines between
-   conditions.
+1. **One pinned browser for the whole suite.** Both conditions drive the same, pinned
+   Chrome/Chromium build via CDP (`chrome-devtools-mcp` connects with `--browser-url` to
+   the same `--remote-debugging-port` the CLI attaches to). Record the exact browser
+   build/version in the result report.
+
+   **Do not split browsers per tool** (Opera for `obc`, Chrome for `cdt`). That changes the
+   browser engine and the tool interface at once, so any cost delta becomes unattributable.
+   Chrome/Chromium is the safe common engine: `chrome-devtools-mcp` is tested against Chrome
+   CDP, and `opera-browser-cli` attaches to Chrome as well as Opera. A separate
+   "naturalistic" Opera-for-`obc` observation may be run later, but it must be reported as
+   its own arm — never merged into the primary controlled comparison.
 2. **Sequential only.** Never run two cells concurrently; both interfaces share the browser,
    and concurrency corrupts diff baselines / page state (same invariant as the original
    suite).
@@ -174,8 +181,10 @@ The suite currently only understands CLI conditions. Porting it to a second tran
   interface being measured; do not add a harness cap (`TOOL_CAP=0`) in the main runs.
 - **`strict` semantics** — `eval` (one CLI command) and `evaluate_script` (one MCP tool)
   are the analogues, but chrome-devtools-mcp leans on scripting more than the CLI. Verify
-  the `cdt` strict prompt visibly forbids it so the arm really measurs the inspection path.
-- **Browser must be constant** — a different Chrome/Opera build or a different debug-port
-  setup between conditions would confound timings and snapshots; use one browser and pin it.
+  the `cdt` strict prompt visibly forbids it so the arm really measures the inspection path.
+- **Browser-engine confound** — running `obc` on Opera and `cdt` on Chrome changes two
+  variables at once and makes the cost delta unattributable. Pin one Chrome/Chromium build
+  for both conditions. A separate Opera-for-`obc` arm is allowed later but must be reported
+  as its own naturalistic observation, not mixed into the primary comparison.
 - **Provider cache-reporting gaps** — Gemini/GLM/Qwen/DeepSeek routes may report cache reads
   but no cache-write bucket; record that as a provider difference, not a finding.
