@@ -4,7 +4,7 @@ import {
   formatStopOutput,
   formatScreenshotOutput,
   getCommandHelp,
-  parseChatArgs,
+  parseChatOrMakeArgs,
   parseScreenshotArgs,
   parseSetupArgs,
 } from "../src/cli.js";
@@ -161,44 +161,44 @@ describe("formatScreenshotOutput", () => {
   });
 });
 
-describe("parseChatArgs", () => {
+describe("parseChatOrMakeArgs", () => {
   it("parses prompt only", () => {
-    const result = parseChatArgs(["Hello", "world"]);
+    const result = parseChatOrMakeArgs(["Hello", "world"]);
     expect(result).toEqual({ prompt: "Hello world", model: undefined, conversationId: undefined });
   });
 
   it("parses --model flag with prompt", () => {
-    const result = parseChatArgs(["--model", "gpt-4o", "What", "is", "this?"]);
+    const result = parseChatOrMakeArgs(["--model", "gpt-4o", "What", "is", "this?"]);
     expect(result).toEqual({ prompt: "What is this?", model: "gpt-4o", conversationId: undefined });
   });
 
   it("parses --model at end of args", () => {
-    const result = parseChatArgs(["Hello", "--model", "claude-sonnet-4"]);
+    const result = parseChatOrMakeArgs(["Hello", "--model", "claude-sonnet-4"]);
     expect(result).toEqual({ prompt: "Hello", model: "claude-sonnet-4", conversationId: undefined });
   });
 
   it("returns empty prompt when only --model is given", () => {
-    const result = parseChatArgs(["--model", "gpt-4o"]);
+    const result = parseChatOrMakeArgs(["--model", "gpt-4o"]);
     expect(result).toEqual({ prompt: "", model: "gpt-4o", conversationId: undefined });
   });
 
   it("ignores --model without a value", () => {
-    const result = parseChatArgs(["Hello", "--model"]);
+    const result = parseChatOrMakeArgs(["Hello", "--model"]);
     expect(result).toEqual({ prompt: "Hello", model: undefined, conversationId: undefined });
   });
 
   it("parses --conversation-id flag", () => {
-    const result = parseChatArgs(["--conversation-id", "conversation-123", "Hello"]);
+    const result = parseChatOrMakeArgs(["--conversation-id", "conversation-123", "Hello"]);
     expect(result).toEqual({ prompt: "Hello", model: undefined, conversationId: "conversation-123" });
   });
 
   it("parses -c shorthand for conversation-id", () => {
-    const result = parseChatArgs(["-c", "conversation-456", "Hi"]);
+    const result = parseChatOrMakeArgs(["-c", "conversation-456", "Hi"]);
     expect(result).toEqual({ prompt: "Hi", model: undefined, conversationId: "conversation-456" });
   });
 
   it("parses both --model and --conversation-id", () => {
-    const result = parseChatArgs(["--model", "gpt-4o", "--conversation-id", "conv-1", "Hello"]);
+    const result = parseChatOrMakeArgs(["--model", "gpt-4o", "--conversation-id", "conv-1", "Hello"]);
     expect(result).toEqual({ prompt: "Hello", model: "gpt-4o", conversationId: "conv-1" });
   });
 });

@@ -112,8 +112,8 @@ commands[55]:
   network-get [id], lighthouse, perf-start, perf-stop,
   perf-insight <set> <name>, heap <path>, start, stop, restart, status,
   attach, launch-args, login,
-  chat [--model <id>] [--conversation-id <id>] <prompt>, invoke-do <prompt>, make <prompt>,
-  research <prompt>, models,
+  chat [--model <id>] [--conversation-id <id>] <prompt>, invoke-do <prompt>,
+  make [--conversation-id <id>] <prompt>, research <prompt>, models,
   mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
   mcp-add <name> <url>, mcp-auth <name>, mcp-remove <name>,
   mcp-enable <name>, mcp-disable <name>,
@@ -681,16 +681,20 @@ examples:
   opera-browser-cli invoke-do "Find the cheapest flight from London to Tokyo next month"
   opera-browser-cli invoke-do "Log in to my account and check my order history"`,
 
-  make: `usage: opera-browser-cli make <prompt>
+  make: `usage: opera-browser-cli make [--conversation-id <id>] <prompt>
 Ask the Opera AI to build something, e.g. a webpage or web app.
 Requires Opera Neon with an active sign-in. Run \`opera-browser-cli setup\` to configure.
 
 args:
   <prompt>  What to build (required)
 
+flags:
+  --conversation-id, -c <id>  Continue an existing make conversation (omit to start a new one)
+
 examples:
   opera-browser-cli make "A landing page for a coffee shop with a menu and contact form"
-  opera-browser-cli make "A todo app with local storage and drag-and-drop reordering"`,
+  opera-browser-cli make "A todo app with local storage and drag-and-drop reordering"
+  opera-browser-cli make --conversation-id conversation-123 "Change the hero section to full-width"`,
 
   research: `usage: opera-browser-cli research <prompt> [--type <mode>]
 Ask the Opera AI to research a topic in depth.
@@ -3113,30 +3117,20 @@ async function callAiTool(
   }
 }
 
-async function handleChat(args: string[]): Promise<string> {
-  const { prompt, model, conversationId } = parseChatArgs(args);
-  if (!prompt) {
-    throw new CdpError("Missing prompt", "VALIDATION_ERROR", [
-      'Run `opera-browser-cli chat "What is on this page?"` to chat with Opera AI',
-      "Use --model <id> to select a model (run `opera-browser-cli models` to list)",
-    ]);
-  }
-  const toolArgs: Record<string, unknown> = { prompt };
-  if (model !== undefined) {
-    toolArgs["model"] = model;
-  }
-  if (conversationId !== undefined) {
-    toolArgs["conversationId"] = conversationId;
-  }
-  const result = await callAiTool("chat", "opera_chat", toolArgs);
-  // CDP errors are raw strings checked first; only success responses are JSON.
-  checkAiResultForCdpError("chat", result);
+/**
+ * Render an Opera AI response that carries a conversation id.
+ *
+ * A current extension returns JSON `{conversationId, text}`; an older extension
+ * returns plain text (no conversation id yet). CDP errors are raw strings and
+ * must be checked with {@link checkAiResultForCdpError} before this is called.
+ */
+function formatConversationResult(result: string): string {
   let parsed: { conversationId: string; text: string };
   try {
     parsed = JSON.parse(result);
   } catch {
-    // Not JSON — the extension may not support the structured response format yet.
-    // Return the raw text as the chat response, without a conversation ID.
+    // Not JSON — the extension does not support the structured response yet.
+    // Return the raw text as the response, without a conversation ID.
     return (
       encode({ "conversation-id": null }) +
       "\n" +
@@ -3162,6 +3156,27 @@ async function handleChat(args: string[]): Promise<string> {
   );
 }
 
+async function handleChat(args: string[]): Promise<string> {
+  const { prompt, model, conversationId } = parseChatOrMakeArgs(args);
+  if (!prompt) {
+    throw new CdpError("Missing prompt", "VALIDATION_ERROR", [
+      'Run `opera-browser-cli chat "What is on this page?"` to chat with Opera AI',
+      "Use --model <id> to select a model (run `opera-browser-cli models` to list)",
+    ]);
+  }
+  const toolArgs: Record<string, unknown> = { prompt };
+  if (model !== undefined) {
+    toolArgs["model"] = model;
+  }
+  if (conversationId !== undefined) {
+    toolArgs["conversationId"] = conversationId;
+  }
+  const result = await callAiTool("chat", "opera_chat", toolArgs);
+  // CDP errors are raw strings checked first; only success responses are JSON.
+  checkAiResultForCdpError("chat", result);
+  return formatConversationResult(result);
+}
+
 async function handleInvokeDo(args: string[]): Promise<string> {
   const prompt = args.join(" ");
   if (!prompt) {
@@ -3176,22 +3191,26 @@ async function handleInvokeDo(args: string[]): Promise<string> {
 }
 
 async function handleMake(args: string[]): Promise<string> {
-  const prompt = args.join(" ");
+  const { prompt, conversationId } = parseMakeArgs(args);
   if (!prompt) {
     throw new CdpError("Missing prompt", "VALIDATION_ERROR", [
       'Run `opera-browser-cli make "A summary of this page"` to create something',
     ]);
   }
   requireNeon("make");
-  const result = await callAiTool("make", "opera_make", { prompt });
+  const toolArgs: Record<string, unknown> = { prompt };
+  if (conversationId !== undefined) {
+    toolArgs["conversationId"] = conversationId;
+  }
+  const result = await callAiTool("make", "opera_make", toolArgs);
   checkAiResultForCdpError("make", result);
-  return formatMcpResult("result", result, [], true);
+  return formatConversationResult(result);
 }
 
 const VALID_RESEARCH_TYPES = ["local", "one-minute", "deep"] as const;
 type ResearchType = (typeof VALID_RESEARCH_TYPES)[number];
 
-export function parseChatArgs(args: string[]): {
+export function parseChatOrMakeArgs(args: string[]): {
   prompt: string;
   model?: string;
   conversationId?: string;
@@ -3205,7 +3224,7 @@ export function parseChatArgs(args: string[]): {
       throw new CdpError(
         `Invalid syntax: ${arg}. Use --conversation-id <id> (space-separated, not =).`,
         "VALIDATION_ERROR",
-        ['Run `opera-browser-cli chat --conversation-id <id> "prompt"`'],
+        ['Use --conversation-id <id> (space-separated, not =)'],
       );
     }
     if (arg === "--model") {
@@ -3221,6 +3240,14 @@ export function parseChatArgs(args: string[]): {
     }
   }
   return { prompt: promptParts.join(" "), model, conversationId };
+}
+
+export function parseMakeArgs(args: string[]): {
+  prompt: string;
+  conversationId?: string;
+} {
+  const { prompt, conversationId } = parseChatOrMakeArgs(args);
+  return { prompt, conversationId };
 }
 
 export function parseResearchArgs(args: string[]): {
@@ -3262,7 +3289,9 @@ async function handleResearch(args: string[]): Promise<string> {
   if (researchType !== undefined) toolArgs.researchType = researchType;
   const result = await callAiTool("research", "opera_research", toolArgs);
   checkAiResultForCdpError("research", result);
-  return formatMcpResult("result", result, [], true);
+  // The content is streamed via CHUNK (sendLog -> stderr); the FINAL is empty on purpose to
+  // avoid duplicated output
+  return "";
 }
 
 async function handleModels(): Promise<string> {
