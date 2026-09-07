@@ -5,6 +5,7 @@ import {
   formatScreenshotOutput,
   getCommandHelp,
   parseChatOrMakeArgs,
+  parseMakeArgs,
   parseScreenshotArgs,
   parseSetupArgs,
 } from "../src/cli.js";
@@ -241,5 +242,27 @@ describe("handleChat JSON response parsing", () => {
 
   it("rejects an object with wrong types", () => {
     expect(isValidShape(JSON.parse('{"conversationId":42,"text":true}'))).toBe(false);
+  });
+});
+
+describe("parseMakeArgs", () => {
+  it("parses a bare prompt", () => {
+    expect(parseMakeArgs(["Build a todo app"])).toEqual({
+      prompt: "Build a todo app",
+      conversationId: undefined,
+    });
+  });
+
+  it("parses --conversation-id", () => {
+    expect(parseMakeArgs(["--conversation-id", "conv-1", "Change the hero"])).toEqual({
+      prompt: "Change the hero",
+      conversationId: "conv-1",
+    });
+  });
+
+  it("rejects --model instead of silently dropping it", () => {
+    expect(() => parseMakeArgs(["--model", "gpt-4o", "Build a todo app"])).toThrow(
+      "make does not accept --model",
+    );
   });
 });

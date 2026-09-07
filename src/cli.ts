@@ -3121,16 +3121,20 @@ async function callAiTool(
  * Render an Opera AI response that carries a conversation id.
  *
  * A current extension returns JSON `{conversationId, text}`; an older extension
- * returns plain text (no conversation id yet). CDP errors are raw strings and
- * must be checked with {@link checkAiResultForCdpError} before this is called.
+ * returns plain text, and `make` replies without a conversation are possible.
+ * CDP errors are raw strings and must be checked with
+ * {@link checkAiResultForCdpError} before this is called.
+ *
+ * Anything that is not the `{conversationId, text}` envelope is rendered raw
+ * (with a null conversation id) rather than failing, so an unknown response
+ * shape still prints.
  */
 function formatConversationResult(result: string): string {
   let parsed: { conversationId: string; text: string };
   try {
     parsed = JSON.parse(result);
   } catch {
-    // Not JSON — the extension does not support the structured response yet.
-    // Return the raw text as the response, without a conversation ID.
+    // Not JSON — render the raw text without a conversation ID.
     return (
       encode({ "conversation-id": null }) +
       "\n" +
@@ -3143,10 +3147,12 @@ function formatConversationResult(result: string): string {
     typeof (parsed as Record<string, unknown>).conversationId !== "string" ||
     typeof (parsed as Record<string, unknown>).text !== "string"
   ) {
-    throw new CdpError(
-      "Unexpected response format from Opera AI — the browser extension may be out of date",
-      "BROWSER_ERROR",
-      ["Run `opera-browser-cli setup` to ensure the latest extension is installed"],
+    // JSON, but not the `{conversationId, text}` envelope. Backward-compatible:
+    // print the raw response instead of throwing on an unknown shape.
+    return (
+      encode({ "conversation-id": null }) +
+      "\n" +
+      formatMcpResult("result", result, [], true)
     );
   }
   return (
@@ -3246,6 +3252,13 @@ export function parseMakeArgs(args: string[]): {
   prompt: string;
   conversationId?: string;
 } {
+  if (args.includes("--model")) {
+    throw new CdpError(
+      "make does not accept --model; select a model with `chat --model <id>` instead",
+      "VALIDATION_ERROR",
+      ["Run `opera-browser-cli models` to list the models available for chat"],
+    );
+  }
   const { prompt, conversationId } = parseChatOrMakeArgs(args);
   return { prompt, conversationId };
 }
@@ -3289,9 +3302,7 @@ async function handleResearch(args: string[]): Promise<string> {
   if (researchType !== undefined) toolArgs.researchType = researchType;
   const result = await callAiTool("research", "opera_research", toolArgs);
   checkAiResultForCdpError("research", result);
-  // The content is streamed via CHUNK (sendLog -> stderr); the FINAL is empty on purpose to
-  // avoid duplicated output
-  return "";
+  return formatMcpResult("result", result, [], true);
 }
 
 async function handleModels(): Promise<string> {
