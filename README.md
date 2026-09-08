@@ -55,6 +55,8 @@ opera-browser-cli make "a todo app in vanilla JS"  # generate and open a webpage
 opera-browser-cli research "solid-state batteries" # in-depth research across multiple sources
 ```
 
+Add `--open-fulltab-view` to any AI command to open the created tab in the foreground (default: background). Not available in headless mode.
+
 Run `opera-browser-cli setup` to get started, or `opera-browser-cli doctor` to check your configuration.
 
 ## Install
@@ -231,6 +233,7 @@ opera-browser-cli eval "(() => { const rows = [...document.querySelectorAll('tr'
 | `make <prompt>`      | Ask the AI to build a webpage or app          | Opera Neon |
 | `research <prompt>`  | Ask the AI to research a topic in depth       | Opera Neon |
 
+All four AI commands accept `--open-fulltab-view` to open the created tab in the foreground (default: background). Not available in headless mode.
 `research` accepts `--type local` (default), `--type one-minute`, or `--type deep`.
 
 ### Configuration

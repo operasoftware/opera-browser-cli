@@ -12,6 +12,7 @@ metadata: {"openclaw": {"requires": {"bins": ["opera-browser-cli"]}}}
 - **`chat`** — available on any Opera browser. Use `--model <id>` to select an AI model, `--conversation-id <id>` to continue a conversation.
 - **`models`** — list available AI models for chat (shows IDs and which is the default).
 - **`invoke-do`, `make`, `research`** — require **Opera Neon** with an active sign-in. `make` accepts `--conversation-id <id>` to continue an existing conversation.
+- **`--open-fulltab-view`** — applicable to `chat`, `invoke-do`, `make`, `research`. Opens the created tab in the foreground so the user sees the AI UI immediately (default: background). Not available in headless mode.
 - **Research conversation IDs**: Each research session creates a fresh, unique conversation. The conversation ID is **not resumable** for research (no `--conversation-id` flag). However, the conversation ID from a research can be used with `chat` or `make` for follow-up questions/actions in the same research context.
 - **`mcp-servers`** — list MCP servers registered in the browser (requires Opera Neon).
 - **`mcp-tools --server <name>`** — list tools exposed by a specific MCP server (requires Opera Neon).

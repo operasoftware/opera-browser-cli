@@ -6,6 +6,7 @@ import {
   getCommandHelp,
   parseChatOrMakeArgs,
   parseMakeArgs,
+  parseResearchArgs,
   parseScreenshotArgs,
   parseSetupArgs,
 } from "../src/cli.js";
@@ -202,6 +203,21 @@ describe("parseChatOrMakeArgs", () => {
     const result = parseChatOrMakeArgs(["--model", "gpt-4o", "--conversation-id", "conv-1", "Hello"]);
     expect(result).toEqual({ prompt: "Hello", model: "gpt-4o", conversationId: "conv-1" });
   });
+
+  it("parses --open-fulltab-view flag", () => {
+    const result = parseChatOrMakeArgs(["Hello", "--open-fulltab-view"]);
+    expect(result).toEqual({ prompt: "Hello", model: undefined, conversationId: undefined, openFullTabView: true });
+  });
+
+  it("omits openFullTabView when flag absent", () => {
+    const result = parseChatOrMakeArgs(["Hello"]);
+    expect(result).toEqual({ prompt: "Hello", model: undefined, conversationId: undefined });
+  });
+
+  it("parses --open-fulltab-view with --model and --conversation-id", () => {
+    const result = parseChatOrMakeArgs(["--model", "claude-sonnet-4", "-c", "conv-1", "Hello", "--open-fulltab-view"]);
+    expect(result).toEqual({ prompt: "Hello", model: "claude-sonnet-4", conversationId: "conv-1", openFullTabView: true });
+  });
 });
 
 describe("handleChat JSON response parsing", () => {
@@ -264,5 +280,40 @@ describe("parseMakeArgs", () => {
     expect(() => parseMakeArgs(["--model", "gpt-4o", "Build a todo app"])).toThrow(
       "make does not accept --model",
     );
+  });
+
+  it("parses --open-fulltab-view flag", () => {
+    expect(parseMakeArgs(["Build a todo app", "--open-fulltab-view"])).toEqual({
+      prompt: "Build a todo app",
+      conversationId: undefined,
+      openFullTabView: true,
+    });
+  });
+});
+
+describe("parseResearchArgs", () => {
+  it("parses prompt only", () => {
+    const result = parseResearchArgs(["quantum computing"]);
+    expect(result).toEqual({ prompt: "quantum computing", researchType: undefined });
+  });
+
+  it("parses --type flag", () => {
+    const result = parseResearchArgs(["quantum computing", "--type", "deep"]);
+    expect(result).toEqual({ prompt: "quantum computing", researchType: "deep" });
+  });
+
+  it("parses --open-fulltab-view flag", () => {
+    const result = parseResearchArgs(["quantum computing", "--open-fulltab-view"]);
+    expect(result).toEqual({ prompt: "quantum computing", researchType: undefined, openFullTabView: true });
+  });
+
+  it("omits openFullTabView when flag absent", () => {
+    const result = parseResearchArgs(["quantum computing"]);
+    expect(result).toEqual({ prompt: "quantum computing", researchType: undefined });
+  });
+
+  it("parses --type and --open-fulltab-view together", () => {
+    const result = parseResearchArgs(["--type", "one-minute", "quantum", "--open-fulltab-view"]);
+    expect(result).toEqual({ prompt: "quantum", researchType: "one-minute", openFullTabView: true });
   });
 });

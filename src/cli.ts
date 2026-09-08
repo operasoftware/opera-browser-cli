@@ -112,8 +112,10 @@ commands[55]:
   network-get [id], lighthouse, perf-start, perf-stop,
   perf-insight <set> <name>, heap <path>, start, stop, restart, status,
   attach, launch-args, login,
-  chat [--model <id>] [--conversation-id <id>] <prompt>, invoke-do <prompt>,
-  make [--conversation-id <id>] <prompt>, research <prompt>, models,
+  chat [--model <id>] [--conversation-id <id>] [--open-fulltab-view] <prompt>,
+  invoke-do [--open-fulltab-view] <prompt>,
+  make [--conversation-id <id>] [--open-fulltab-view] <prompt>,
+  research [--open-fulltab-view] <prompt>, models,
   mcp-servers, mcp-tools --server <name>, mcp-call --server <name> --tool <name>,
   mcp-add <name> <url>, mcp-auth <name>, mcp-remove <name>,
   mcp-enable <name>, mcp-disable <name>,
@@ -152,6 +154,8 @@ opera ai:
   mcp-remove, mcp-enable, and mcp-disable require Opera Neon with an active sign-in.
   Run \`opera-browser-cli setup\` to configure the executable path, or set
   OPERA_CLI_EXECUTABLE_PATH="/Applications/Opera Neon.app/Contents/MacOS/Opera".
+  chat, invoke-do, make, and research accept --open-fulltab-view to open the
+  created tab in the foreground (default: background). Not available in headless mode.
 
 gpu:
   Headless Chrome cannot access hardware GPU on most Linux systems.
@@ -664,6 +668,7 @@ args:
 options:
   --model <model-id>               AI model to use (run "opera-browser-cli models" to list)
   --conversation-id, -c <id>       Continue an existing conversation (omit to start a new one)
+  --open-fulltab-view              Open the chat tab in the foreground (default: background)
 
 examples:
   opera-browser-cli chat "Hello, who are you?"
@@ -676,6 +681,9 @@ Requires Opera Neon with an active sign-in. Run \`opera-browser-cli setup\` to c
 
 args:
   <prompt>  Task to perform (required)
+
+flags:
+  --open-fulltab-view  Open the do tab in the foreground (default: background)
 
 examples:
   opera-browser-cli invoke-do "Find the cheapest flight from London to Tokyo next month"
@@ -690,6 +698,7 @@ args:
 
 flags:
   --conversation-id, -c <id>  Continue an existing make conversation (omit to start a new one)
+  --open-fulltab-view        Open the make tab in the foreground (default: background)
 
 examples:
   opera-browser-cli make "A landing page for a coffee shop with a menu and contact form"
@@ -705,6 +714,7 @@ args:
 
 flags:
   --type <mode>  Research depth: local, one-minute, or deep (default: local)
+  --open-fulltab-view  Open the research tab in the foreground (default: background)
 
 examples:
   opera-browser-cli research "the history of the Roman Empire"
@@ -2931,6 +2941,25 @@ function requireNeon(command: string): void {
   }
 }
 
+/**
+ * Reject `--open-fulltab-view` in headless mode. Activating a foreground tab
+ * in a headless window is nonsensical; the extension cannot distinguish headed
+ * from headless, so the CLI owns this validation. Mirrors the contract in
+ * docs/cdp-fulltab-view-contract.md §4.
+ */
+function requireHeadedForFullTabView(command: string): void {
+  if (!shouldRunHeaded()) {
+    throw new CdpError(
+      "--open-fulltab-view is not available in headless mode.",
+      "VALIDATION_ERROR",
+      [
+        "Run with `OPERA_CLI_HEADED=1` to use a visible browser",
+        `Or omit the flag to run ${command} in the background`,
+      ],
+    );
+  }
+}
+
 // --- Login ---
 
 const OPERA_ACCOUNT_URL = "https://auth.opera.com/account/";
@@ -3163,19 +3192,23 @@ function formatConversationResult(result: string): string {
 }
 
 async function handleChat(args: string[]): Promise<string> {
-  const { prompt, model, conversationId } = parseChatOrMakeArgs(args);
+  const { prompt, model, conversationId, openFullTabView } = parseChatOrMakeArgs(args);
   if (!prompt) {
     throw new CdpError("Missing prompt", "VALIDATION_ERROR", [
       'Run `opera-browser-cli chat "What is on this page?"` to chat with Opera AI',
       "Use --model <id> to select a model (run `opera-browser-cli models` to list)",
     ]);
   }
+  if (openFullTabView) requireHeadedForFullTabView("chat");
   const toolArgs: Record<string, unknown> = { prompt };
   if (model !== undefined) {
     toolArgs["model"] = model;
   }
   if (conversationId !== undefined) {
     toolArgs["conversationId"] = conversationId;
+  }
+  if (openFullTabView) {
+    toolArgs["openFullTabView"] = true;
   }
   const result = await callAiTool("chat", "opera_chat", toolArgs);
   // CDP errors are raw strings checked first; only success responses are JSON.
@@ -3184,29 +3217,39 @@ async function handleChat(args: string[]): Promise<string> {
 }
 
 async function handleInvokeDo(args: string[]): Promise<string> {
-  const prompt = args.join(" ");
+  const openFullTabView = args.includes("--open-fulltab-view");
+  const prompt = args.filter(a => a !== "--open-fulltab-view").join(" ");
   if (!prompt) {
     throw new CdpError("Missing prompt", "VALIDATION_ERROR", [
       'Run `opera-browser-cli invoke-do "Click the login button"` to perform an action',
     ]);
   }
+  if (openFullTabView) requireHeadedForFullTabView("invoke-do");
   requireNeon("invoke-do");
-  const result = await callAiTool("invoke-do", "opera_do", { prompt });
+  const toolArgs: Record<string, unknown> = { prompt };
+  if (openFullTabView) {
+    toolArgs["openFullTabView"] = true;
+  }
+  const result = await callAiTool("invoke-do", "opera_do", toolArgs);
   checkAiResultForCdpError("invoke-do", result);
   return formatMcpResult("result", result, [], true);
 }
 
 async function handleMake(args: string[]): Promise<string> {
-  const { prompt, conversationId } = parseMakeArgs(args);
+  const { prompt, conversationId, openFullTabView } = parseMakeArgs(args);
   if (!prompt) {
     throw new CdpError("Missing prompt", "VALIDATION_ERROR", [
       'Run `opera-browser-cli make "A summary of this page"` to create something',
     ]);
   }
+  if (openFullTabView) requireHeadedForFullTabView("make");
   requireNeon("make");
   const toolArgs: Record<string, unknown> = { prompt };
   if (conversationId !== undefined) {
     toolArgs["conversationId"] = conversationId;
+  }
+  if (openFullTabView) {
+    toolArgs["openFullTabView"] = true;
   }
   const result = await callAiTool("make", "opera_make", toolArgs);
   checkAiResultForCdpError("make", result);
@@ -3220,9 +3263,11 @@ export function parseChatOrMakeArgs(args: string[]): {
   prompt: string;
   model?: string;
   conversationId?: string;
+  openFullTabView?: boolean;
 } {
   let model: string | undefined;
   let conversationId: string | undefined;
+  let openFullTabView = false;
   const promptParts: string[] = [];
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -3241,16 +3286,24 @@ export function parseChatOrMakeArgs(args: string[]): {
       if (i + 1 < args.length) {
         conversationId = args[++i];
       }
+    } else if (arg === "--open-fulltab-view") {
+      openFullTabView = true;
     } else {
       promptParts.push(arg);
     }
   }
-  return { prompt: promptParts.join(" "), model, conversationId };
+  return {
+    prompt: promptParts.join(" "),
+    model,
+    conversationId,
+    openFullTabView: openFullTabView || undefined,
+  };
 }
 
 export function parseMakeArgs(args: string[]): {
   prompt: string;
   conversationId?: string;
+  openFullTabView?: boolean;
 } {
   if (args.includes("--model")) {
     throw new CdpError(
@@ -3259,28 +3312,36 @@ export function parseMakeArgs(args: string[]): {
       ["Run `opera-browser-cli models` to list the models available for chat"],
     );
   }
-  const { prompt, conversationId } = parseChatOrMakeArgs(args);
-  return { prompt, conversationId };
+  const { prompt, conversationId, openFullTabView } = parseChatOrMakeArgs(args);
+  return { prompt, conversationId, openFullTabView };
 }
 
 export function parseResearchArgs(args: string[]): {
   prompt: string;
   researchType?: ResearchType;
+  openFullTabView?: boolean;
 } {
   let researchType: ResearchType | undefined;
+  let openFullTabView = false;
   const promptParts: string[] = [];
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--type" && i + 1 < args.length) {
       researchType = args[++i] as ResearchType;
+    } else if (args[i] === "--open-fulltab-view") {
+      openFullTabView = true;
     } else {
       promptParts.push(args[i]);
     }
   }
-  return { prompt: promptParts.join(" "), researchType };
+  return {
+    prompt: promptParts.join(" "),
+    researchType,
+    openFullTabView: openFullTabView || undefined,
+  };
 }
 
 async function handleResearch(args: string[]): Promise<string> {
-  const { prompt, researchType } = parseResearchArgs(args);
+  const { prompt, researchType, openFullTabView } = parseResearchArgs(args);
   if (!prompt) {
     throw new CdpError("Missing prompt", "VALIDATION_ERROR", [
       'Run `opera-browser-cli research "quantum computing"` to research a topic',
@@ -3297,9 +3358,13 @@ async function handleResearch(args: string[]): Promise<string> {
       ["Valid types: local, one-minute, deep"],
     );
   }
+  if (openFullTabView) requireHeadedForFullTabView("research");
   requireNeon("research");
   const toolArgs: Record<string, unknown> = { prompt };
   if (researchType !== undefined) toolArgs.researchType = researchType;
+  if (openFullTabView) {
+    toolArgs["openFullTabView"] = true;
+  }
   const result = await callAiTool("research", "opera_research", toolArgs);
   checkAiResultForCdpError("research", result);
   return formatMcpResult("result", result, [], true);
