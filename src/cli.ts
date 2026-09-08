@@ -2944,8 +2944,7 @@ function requireNeon(command: string): void {
 /**
  * Reject `--open-fulltab-view` in headless mode. Activating a foreground tab
  * in a headless window is nonsensical; the extension cannot distinguish headed
- * from headless, so the CLI owns this validation. Mirrors the contract in
- * docs/cdp-fulltab-view-contract.md §4.
+ * from headless, so the CLI owns this validation.
  */
 function requireHeadedForFullTabView(command: string): void {
   if (!shouldRunHeaded()) {
@@ -3217,8 +3216,7 @@ async function handleChat(args: string[]): Promise<string> {
 }
 
 async function handleInvokeDo(args: string[]): Promise<string> {
-  const openFullTabView = args.includes("--open-fulltab-view");
-  const prompt = args.filter(a => a !== "--open-fulltab-view").join(" ");
+  const { prompt, openFullTabView } = parseChatOrMakeArgs(args);
   if (!prompt) {
     throw new CdpError("Missing prompt", "VALIDATION_ERROR", [
       'Run `opera-browser-cli invoke-do "Click the login button"` to perform an action',
