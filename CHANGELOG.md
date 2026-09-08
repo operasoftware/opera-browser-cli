@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.52](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.51...opera-browser-cli-v0.1.52) (2026-09-08)
+
+
+### Features
+
+* Add propagation of openFullTabView parameter to Opera tools ([#40](https://github.com/operasoftware/opera-browser-cli/issues/40)) ([5382514](https://github.com/operasoftware/opera-browser-cli/commit/5382514307bd0cc9c9d3bf7b8f101b5adacd1ee9))
+* make now accepts --conversation-id to continue existing convers… ([#38](https://github.com/operasoftware/opera-browser-cli/issues/38)) ([58d1d72](https://github.com/operasoftware/opera-browser-cli/commit/58d1d7236c273226ff2110675954ca6ce74575b2))
+
 ## [0.1.51](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.50...opera-browser-cli-v0.1.51) (2026-09-01)
 
 
