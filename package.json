@@ -1,6 +1,6 @@
 {
   "name": "opera-browser-cli",
-  "version": "0.1.51",
+  "version": "0.1.52",
   "description": "AXI-compliant opera-devtools-mcp wrapper — combined operations, TOON output, contextual suggestions",
   "type": "module",
   "repository": {
@@ -46,7 +46,7 @@
     "@modelcontextprotocol/sdk": "^1.12.1",
     "@toon-format/toon": "^2.1.0",
     "axi-sdk-js": "^0.1.4",
-    "opera-devtools-mcp": "^0.5.0"
+    "opera-devtools-mcp": "^0.6.1"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
