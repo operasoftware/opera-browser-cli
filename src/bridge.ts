@@ -668,6 +668,10 @@ export function shouldRunHeaded(): boolean {
 export function buildTransportArgs(): string[] {
   const args: string[] = [];
 
+  // opera-devtools-mcp 0.6+ requires pageId on page-scoped tools by default.
+  // We never route by pageId — disable it so every tool works on the selected page.
+  args.push("--no-page-id-routing");
+
   const browserUrl = process.env.OPERA_CLI_BROWSER_URL;
   const userDataDir = process.env.OPERA_CLI_USER_DATA_DIR;
   const executablePath = process.env.OPERA_CLI_EXECUTABLE_PATH;
