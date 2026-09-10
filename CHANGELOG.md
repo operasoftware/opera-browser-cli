@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.53](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.52...opera-browser-cli-v0.1.53) (2026-09-10)
+
+
+### Bug Fixes
+
+* Adapt the opera-browser-cli to the latest changes on devtools-mcp side. ([#41](https://github.com/operasoftware/opera-browser-cli/issues/41)) ([3fd7c8b](https://github.com/operasoftware/opera-browser-cli/commit/3fd7c8bed6f0bcf202fe3201fb1dfb8fd5502913))
+* require opera-devtools-mcp 0.7.0 and @toon-format/toon 4.x ([4129513](https://github.com/operasoftware/opera-browser-cli/commit/4129513b30a0143455e5a50ef856a2fb6a595058))
+
 ## [0.1.52](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.51...opera-browser-cli-v0.1.52) (2026-09-08)
 
 
