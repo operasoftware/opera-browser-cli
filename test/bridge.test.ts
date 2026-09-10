@@ -157,15 +157,15 @@ describe("buildTransportArgs", () => {
     process.env.OPERA_CLI_EXECUTABLE_PATH = savedEnv.OPERA_CLI_EXECUTABLE_PATH;
   });
 
-  it("defaults to headless and isolated", () => {
+  it("defaults to headless and isolated with no-page-id-routing", () => {
     const args = buildTransportArgs();
-    expect(args).toEqual(["--isolated", "--headless"]);
+    expect(args).toEqual(["--no-page-id-routing", "--isolated", "--headless"]);
   });
 
   it("omits --headless when OPERA_CLI_HEADED=1", () => {
     process.env.OPERA_CLI_HEADED = "1";
     const args = buildTransportArgs();
-    expect(args).toEqual(["--isolated"]);
+    expect(args).toEqual(["--no-page-id-routing", "--isolated"]);
   });
 
   it("forwards chrome args via --chrome-arg=", () => {
