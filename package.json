@@ -44,9 +44,9 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
-    "@toon-format/toon": "^2.1.0",
+    "@toon-format/toon": "^4.1.1",
     "axi-sdk-js": "^0.1.4",
-    "opera-devtools-mcp": "^0.6.1"
+    "opera-devtools-mcp": "^0.7.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
