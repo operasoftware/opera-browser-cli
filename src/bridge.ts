@@ -709,8 +709,15 @@ export function buildTransportArgs(): string[] {
 
   const extraChromeArgs = process.env.OPERA_CLI_CHROME_ARGS;
   if (extraChromeArgs) {
-    for (const arg of extraChromeArgs.trim().split(/\s+/)) {
+    for (const arg of extraChromeArgs.trim().split(/\s+/).filter(Boolean)) {
       args.push(`--chrome-arg=${arg}`);
+    }
+  }
+
+  const extraMcpArgs = process.env.OPERA_CLI_MCP_ARGS;
+  if (extraMcpArgs) {
+    for (const arg of extraMcpArgs.trim().split(/\s+/).filter(Boolean)) {
+      args.push(arg);
     }
   }
 
