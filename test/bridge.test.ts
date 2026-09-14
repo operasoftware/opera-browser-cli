@@ -139,11 +139,13 @@ describe("buildTransportArgs", () => {
   beforeEach(() => {
     savedEnv.OPERA_CLI_HEADED = process.env.OPERA_CLI_HEADED;
     savedEnv.OPERA_CLI_CHROME_ARGS = process.env.OPERA_CLI_CHROME_ARGS;
+    savedEnv.OPERA_CLI_MCP_ARGS = process.env.OPERA_CLI_MCP_ARGS;
     savedEnv.OPERA_CLI_BROWSER_URL = process.env.OPERA_CLI_BROWSER_URL;
     savedEnv.OPERA_CLI_USER_DATA_DIR = process.env.OPERA_CLI_USER_DATA_DIR;
     savedEnv.OPERA_CLI_EXECUTABLE_PATH = process.env.OPERA_CLI_EXECUTABLE_PATH;
     delete process.env.OPERA_CLI_HEADED;
     delete process.env.OPERA_CLI_CHROME_ARGS;
+    delete process.env.OPERA_CLI_MCP_ARGS;
     delete process.env.OPERA_CLI_BROWSER_URL;
     delete process.env.OPERA_CLI_USER_DATA_DIR;
     delete process.env.OPERA_CLI_EXECUTABLE_PATH;
@@ -152,6 +154,7 @@ describe("buildTransportArgs", () => {
   afterEach(() => {
     process.env.OPERA_CLI_HEADED = savedEnv.OPERA_CLI_HEADED;
     process.env.OPERA_CLI_CHROME_ARGS = savedEnv.OPERA_CLI_CHROME_ARGS;
+    process.env.OPERA_CLI_MCP_ARGS = savedEnv.OPERA_CLI_MCP_ARGS;
     process.env.OPERA_CLI_BROWSER_URL = savedEnv.OPERA_CLI_BROWSER_URL;
     process.env.OPERA_CLI_USER_DATA_DIR = savedEnv.OPERA_CLI_USER_DATA_DIR;
     process.env.OPERA_CLI_EXECUTABLE_PATH = savedEnv.OPERA_CLI_EXECUTABLE_PATH;
@@ -182,6 +185,64 @@ describe("buildTransportArgs", () => {
     expect(args).toContain("--chrome-arg=--flag-b");
     expect(args).toContain("--chrome-arg=--flag-c");
     expect(args.filter((a) => a.startsWith("--chrome-arg="))).toHaveLength(3);
+  });
+
+  it("forwards mcp server flags via OPERA_CLI_MCP_ARGS", () => {
+    process.env.OPERA_CLI_MCP_ARGS = "--categoryExtensions";
+    const args = buildTransportArgs();
+    expect(args).toContain("--categoryExtensions");
+  });
+
+  it("forwards multiple mcp server flags", () => {
+    process.env.OPERA_CLI_MCP_ARGS = "--categoryExtensions --experimentalVision";
+    const args = buildTransportArgs();
+    expect(args).toContain("--categoryExtensions");
+    expect(args).toContain("--experimentalVision");
+  });
+
+  it("handles whitespace in mcp args like chrome args", () => {
+    process.env.OPERA_CLI_MCP_ARGS = "  --flag-a\t--flag-b\n--flag-c  ";
+    const args = buildTransportArgs();
+    expect(args).toContain("--flag-a");
+    expect(args).toContain("--flag-b");
+    expect(args).toContain("--flag-c");
+    expect(args.filter((a) => a.startsWith("--flag"))).toHaveLength(3);
+  });
+
+  it("defaults to no extra mcp args when OPERA_CLI_MCP_ARGS is unset", () => {
+    delete process.env.OPERA_CLI_MCP_ARGS;
+    const args = buildTransportArgs();
+    expect(args).toEqual(["--no-page-id-routing", "--isolated", "--headless"]);
+  });
+
+  it("rejects whitespace-only OPERA_CLI_MCP_ARGS", () => {
+    process.env.OPERA_CLI_MCP_ARGS = "   ";
+    const args = buildTransportArgs();
+    expect(args).toEqual(["--no-page-id-routing", "--isolated", "--headless"]);
+  });
+
+  it("rejects whitespace-only OPERA_CLI_CHROME_ARGS", () => {
+    process.env.OPERA_CLI_CHROME_ARGS = "   ";
+    const args = buildTransportArgs();
+    expect(args).toEqual(["--no-page-id-routing", "--isolated", "--headless"]);
+  });
+
+  it("combines mcp args with chrome args", () => {
+    process.env.OPERA_CLI_MCP_ARGS = "--categoryExtensions";
+    process.env.OPERA_CLI_CHROME_ARGS = "--some-flag";
+    const args = buildTransportArgs();
+    expect(args).toContain("--categoryExtensions");
+    expect(args).toContain("--chrome-arg=--some-flag");
+  });
+
+  it("passes mcp args alongside --browserUrl", () => {
+    process.env.OPERA_CLI_BROWSER_URL = "http://127.0.0.1:9222";
+    process.env.OPERA_CLI_MCP_ARGS = "--categoryExtensions";
+    const args = buildTransportArgs();
+    expect(args).toContain("--browserUrl=http://127.0.0.1:9222");
+    expect(args).toContain("--categoryExtensions");
+    expect(args).not.toContain("--isolated");
+    expect(args).not.toContain("--headless");
   });
 
   it("combines headed mode with chrome args", () => {

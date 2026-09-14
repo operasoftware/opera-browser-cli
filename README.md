@@ -364,6 +364,7 @@ session is active or the no-session status/help block when one is not.
 | `OPERA_CLI_USER_DATA_DIR`   | —                                | Persistent Chrome profile directory (skips isolated mode)        |
 | `OPERA_CLI_HEADED`          | `1` when an Opera binary is configured | `1` headed, `0` headless. Opera AI needs a window to sign in |
 | `OPERA_CLI_CHROME_ARGS`     | —                                | Extra Chrome flags, space-separated                              |
+| `OPERA_CLI_MCP_ARGS`        | —                                | Extra MCP server flags, space-separated                          |
 | `OPERA_CLI_ENABLE_HOOKS`    | —                                | Set to `1` to auto-install session hooks on startup              |
 | `OPERA_CLI_TAKEOVER`        | —                                | Set to `1` to restart a running Opera without asking             |
 
