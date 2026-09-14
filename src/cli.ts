@@ -135,6 +135,7 @@ environment:
                                     e.g. "--enable-gpu --ignore-gpu-blocklist"
   OPERA_CLI_MCP_ARGS      Whitespace-separated MCP server flags forwarded to the server
                                     (no shell-style quoting; flags with spaces are not supported)
+                                    (raw server args, appended after bridge-set flags, so they can override --isolated/--headless/--userDataDir)
                                     e.g. "--categoryExtensions"
   OPERA_CLI_PORT          Base bridge port (default: 9225); the next 9 ports are
                                     tried in turn if it is occupied

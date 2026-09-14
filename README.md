@@ -368,6 +368,8 @@ session is active or the no-session status/help block when one is not.
 | `OPERA_CLI_ENABLE_HOOKS`    | —                                | Set to `1` to auto-install session hooks on startup              |
 | `OPERA_CLI_TAKEOVER`        | —                                | Set to `1` to restart a running Opera without asking             |
 
+`OPERA_CLI_MCP_ARGS` values are raw server arguments, forwarded verbatim after the bridge's own flags: a misspelled or unknown flag goes straight to the MCP server and can fail bridge startup, and a valid one can override bridge-managed flags such as `--isolated`, `--headless`, or `--userDataDir`. `OPERA_CLI_CHROME_ARGS` is namespaced (`--chrome-arg=…`), so it only affects the browser launch.
+
 State is stored in `~/.opera-browser-cli/`:
 
 | File         | Purpose                            |

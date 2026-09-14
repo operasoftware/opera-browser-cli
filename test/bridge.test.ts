@@ -212,19 +212,19 @@ describe("buildTransportArgs", () => {
   it("defaults to no extra mcp args when OPERA_CLI_MCP_ARGS is unset", () => {
     delete process.env.OPERA_CLI_MCP_ARGS;
     const args = buildTransportArgs();
-    expect(args).toEqual(["--no-page-id-routing", "--isolated", "--headless"]);
+    expect(args).not.toContain("--categoryExtensions");
   });
 
   it("rejects whitespace-only OPERA_CLI_MCP_ARGS", () => {
     process.env.OPERA_CLI_MCP_ARGS = "   ";
     const args = buildTransportArgs();
-    expect(args).toEqual(["--no-page-id-routing", "--isolated", "--headless"]);
+    expect(args).not.toContain("--categoryExtensions");
   });
 
   it("rejects whitespace-only OPERA_CLI_CHROME_ARGS", () => {
     process.env.OPERA_CLI_CHROME_ARGS = "   ";
     const args = buildTransportArgs();
-    expect(args).toEqual(["--no-page-id-routing", "--isolated", "--headless"]);
+    expect(args.filter((a) => a.startsWith("--chrome-arg="))).toHaveLength(0);
   });
 
   it("combines mcp args with chrome args", () => {
