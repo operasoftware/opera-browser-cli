@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.54](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.53...opera-browser-cli-v0.1.54) (2026-09-14)
+
+
+### Features
+
+* forward MCP server flags via OPERA_CLI_MCP_ARGS env var ([#43](https://github.com/operasoftware/opera-browser-cli/issues/43)) ([7b813a8](https://github.com/operasoftware/opera-browser-cli/commit/7b813a8af8df5489618271f650b4c1a79799e346))
+
 ## [0.1.53](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.52...opera-browser-cli-v0.1.53) (2026-09-10)
 
 
