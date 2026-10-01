@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.55](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.54...opera-browser-cli-v0.1.55) (2026-10-01)
+
+
+### Features
+
+* **launcher:** add the launcher and tombstone packages ([#45](https://github.com/operasoftware/opera-browser-cli/issues/45)) ([36cad35](https://github.com/operasoftware/opera-browser-cli/commit/36cad3594d5adaffcf8190e7370ebcbf3c8b9d8d))
+
 ## [0.1.54](https://github.com/operasoftware/opera-browser-cli/compare/opera-browser-cli-v0.1.53...opera-browser-cli-v0.1.54) (2026-09-14)
 
 
