@@ -11,7 +11,7 @@
 > npm install -g opera-browser-cli    # or: npm update -g opera-browser-cli
 > ```
 >
-> That installs the **compatibility launcher** (`0.1.55`): the same package name and the same
+> That installs the **compatibility launcher** (`0.1.56`): the same package name and the same
 > command, delegating to the new implementation inside `opera-devtools-mcp`. No uninstall, no
 > `--force`, no changes to your scripts, and your `~/.opera-browser-cli/config` is reused.
 > Add the MCP server as its own global install if you want it too:

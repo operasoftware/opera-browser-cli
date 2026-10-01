@@ -1,6 +1,6 @@
 {
   "name": "opera-browser-cli",
-  "version": "0.1.55",
+  "version": "0.1.56",
   "description": "Compatibility launcher — delegates to opera-devtools-mcp",
   "license": "MIT",
   "repository": {

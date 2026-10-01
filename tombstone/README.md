@@ -10,7 +10,7 @@ npm rm -g opera-browser-cli
 npm i -g opera-devtools-mcp@latest
 ```
 
-If you installed `opera-browser-cli@0.1.55`, that version was a **launcher**: it
+If you installed `opera-browser-cli@0.1.56`, that version was a **launcher**: it
 kept the package name so the command you already run delivered the new
 implementation, and it delegated every invocation to `opera-devtools-mcp`.
 
