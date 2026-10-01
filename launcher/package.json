@@ -3,8 +3,13 @@
   "version": "0.1.55",
   "description": "Compatibility launcher — delegates to opera-devtools-mcp",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/operasoftware/opera-browser-cli.git",
+    "directory": "launcher"
+  },
   "bin": {
-    "opera-browser-cli": "./bin/cli.js"
+    "opera-browser-cli": "bin/cli.js"
   },
   "dependencies": {
     "opera-devtools-mcp": "^0.8.0"
@@ -12,6 +17,9 @@
   "files": [
     "bin/"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": "^20.19.0 || ^22.12.0 || >=23"
   }
