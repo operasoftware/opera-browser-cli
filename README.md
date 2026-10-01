@@ -2,6 +2,31 @@
 
 <h3 align="center">The most agent-ergonomic browser automation</h3>
 
+> [!IMPORTANT]
+> **This package has moved to [`opera-devtools-mcp`](https://github.com/operasoftware/opera-devtools-mcp).**
+> `opera-browser-cli` is no longer developed here; the CLI now ships inside `opera-devtools-mcp`,
+> still as the `opera-browser-cli` command.
+>
+> ```sh
+> npm install -g opera-browser-cli    # or: npm update -g opera-browser-cli
+> ```
+>
+> That installs the **compatibility launcher** (`0.1.55`): the same package name and the same
+> command, delegating to the new implementation inside `opera-devtools-mcp`. No uninstall, no
+> `--force`, no changes to your scripts, and your `~/.opera-browser-cli/config` is reused.
+> Add the MCP server as its own global install if you want it too:
+> `npm install -g opera-devtools-mcp`.
+>
+> When you want to drop the launcher and keep a single global package:
+>
+> ```sh
+> npm install -g opera-devtools-mcp@0.9.0 opera-browser-cli@0.2.0
+> npm rm -g opera-browser-cli       # optional: drops the inert tombstone
+> ```
+>
+> Existing `0.1.x` installs keep working; they are simply no longer maintained.
+> Run `opera-browser-cli doctor` for the same instructions on the installed CLI.
+
 `opera-browser-cli` is a fork of [chrome-devtools-axi](https://github.com/kunchenguid/chrome-devtools-axi).
 It wraps [opera-devtools-mcp](https://github.com/operasoftware/opera-devtools-mcp) with an [AXI](https://axi.md)-compliant CLI.
 
@@ -12,7 +37,7 @@ It wraps [opera-devtools-mcp](https://github.com/operasoftware/opera-devtools-mc
 ## Quick Start
 
 ```sh
-npm install -g opera-browser-cli
+npm install -g opera-browser-cli    # installs the launcher that delivers the new implementation
 opera-browser-cli open https://example.com
 ```
 
@@ -68,6 +93,10 @@ Prerequisites: **Node.js >= 20**, **Opera** browser ([Opera Neon](https://www.op
 ```sh
 npm install -g opera-browser-cli
 ```
+
+Development has moved to `opera-devtools-mcp`, which ships this CLI as the
+`opera-browser-cli` command; this package name installs the compatibility
+launcher that delivers it. See the notice at the top of this file.
 
 No setup step is required. The first command you run detects your Opera
 installation, writes `~/.opera-browser-cli/config`, and continues:

@@ -1,0 +1,18 @@
+{
+  "name": "opera-browser-cli",
+  "version": "0.1.55",
+  "description": "Compatibility launcher — delegates to opera-devtools-mcp",
+  "license": "MIT",
+  "bin": {
+    "opera-browser-cli": "./bin/cli.js"
+  },
+  "dependencies": {
+    "opera-devtools-mcp": "^0.8.0"
+  },
+  "files": [
+    "bin/"
+  ],
+  "engines": {
+    "node": "^20.19.0 || ^22.12.0 || >=23"
+  }
+}
