@@ -1,8 +1,10 @@
 name: release-please
 
+# Manual only: `opera-browser-cli` is retired and its 0.1.55 launcher is
+# published by hand from `launcher/`. Auto-publishing on push would release the
+# old root implementation under versions the launcher/tombstone own.
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
